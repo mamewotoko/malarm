@@ -6,7 +6,8 @@
     <uses-sdk android:minSdkVersion="10" />
 
     <application android:icon="@drawable/icon" android:label="@string/app_name">
-        <activity android:name=".HelloActivity"
+		<!--  .HelloActivity -->
+        <activity android:name=".TestCircle"
                   android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
