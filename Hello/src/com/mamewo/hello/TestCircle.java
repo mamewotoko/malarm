@@ -37,6 +37,7 @@ class MyCircleView extends View {
 		paint.setColor(Color.RED);
 		paint.setTextSize(24.0f);
 		canvas.drawText(_x + ", " + _y, 10, 40, paint);
+		canvas.drawRect(new Rect(149, 149, 151, 151), paint);
 	}
 	
 	private class MyMotionListener implements View.OnTouchListener {
