@@ -51,8 +51,8 @@ class MyCircleView extends View {
 		canvas.drawText(coord, 10, 40, paint);
 		canvas.drawText(_timestr, 10, 400, paint);
 		canvas.drawRect(new Rect(149, 149, 151, 151), paint);
-		paint.setAlpha(0xAA);
-		canvas.drawBitmap(_bitmap, _x, _y, paint);
+		paint.setAlpha(0x88);
+		canvas.drawBitmap(_bitmap, _x-20, _y-20, paint);
 	}
 
 	private class MyTimerTask extends TimerTask {
@@ -62,7 +62,8 @@ class MyCircleView extends View {
 			_v = v; 
 		}
 		public void run() {
-			_timestr = "time: " + (_time++);
+			Date now = new Date();
+			_timestr = "time: " + now.toString () + " | " + (_time++);
 			//View.invalidate cannot be called from non-UI thread
 			_v.postInvalidate();
 		}
