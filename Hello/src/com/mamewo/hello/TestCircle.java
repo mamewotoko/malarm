@@ -64,7 +64,9 @@ class MyCircleView extends View implements View.OnTouchListener {
 	public boolean onTouch(View v, MotionEvent event) {
 		_x = event.getX();
 		_y = event.getY();
-		if (_y > 500) {
+		System.out.printf("onTouch: (%.0f, %.0f)", _x, _y);
+
+		if (event.getAction() == MotionEvent.ACTION_UP && _y > 500) {
 			if (_x < 200) {
 				Uri u = Uri.parse("http://www002.upp.so-net.ne.jp/mamewo/");
 				Intent i = new Intent(Intent.ACTION_VIEW, u);
