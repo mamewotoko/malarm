@@ -45,7 +45,7 @@ class MyCircleView extends View implements View.OnTouchListener {
 		Paint paint = new Paint();
 		paint.setAntiAlias(true);
 		paint.setStyle(Paint.Style.FILL);
-		paint.setColor(Color.BLUE);
+		paint.setColor(Color.CYAN);
 		canvas.drawCircle(150, 150, 100, paint);
 		paint.setColor(Color.RED);
 		paint.setTextSize(24.0f);
