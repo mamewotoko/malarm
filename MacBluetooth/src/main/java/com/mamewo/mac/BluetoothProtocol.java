@@ -18,114 +18,127 @@ import javax.bluetooth.RemoteDevice;
 import javax.bluetooth.ServiceRecord;
 import javax.bluetooth.UUID;
 
-
 public class BluetoothProtocol {
-    public static final Vector/*<RemoteDevice>*/ devicesDiscovered = new Vector();
 
-    public static void mainDiscovery(String[] args) throws IOException, InterruptedException {
+	public static Vector discoverDevices() throws IOException,
+			InterruptedException {
+		// RemoteDevice
+		final Vector devicesDiscovered = new Vector();
+		final Object inquiryCompletedEvent = new Object();
 
-        final Object inquiryCompletedEvent = new Object();
+		System.out.println("discoverDevices start");
+		DiscoveryListener listener = new DiscoveryListener() {
 
-        devicesDiscovered.clear();
+			public void deviceDiscovered(RemoteDevice btDevice, DeviceClass cod) {
+				System.out.println("Device " + btDevice.getBluetoothAddress()
+						+ " found");
+				devicesDiscovered.addElement(btDevice);
+				try {
+					System.out.println("     name "
+							+ btDevice.getFriendlyName(false));
+				} catch (IOException cantGetDeviceName) {
+				}
+			}
 
-        DiscoveryListener listener = new DiscoveryListener() {
+			public void inquiryCompleted(int discType) {
+				System.out.println("Device Inquiry completed!");
+				synchronized (inquiryCompletedEvent) {
+					inquiryCompletedEvent.notifyAll();
+				}
+			}
 
-            public void deviceDiscovered(RemoteDevice btDevice, DeviceClass cod) {
-                System.out.println("Device " + btDevice.getBluetoothAddress() + " found");
-                devicesDiscovered.addElement(btDevice);
-                try {
-                    System.out.println("     name " + btDevice.getFriendlyName(false));
-                } catch (IOException cantGetDeviceName) {
-                }
-            }
+			public void serviceSearchCompleted(int transID, int respCode) {
+			}
 
-            public void inquiryCompleted(int discType) {
-                System.out.println("Device Inquiry completed!");
-                synchronized(inquiryCompletedEvent){
-                    inquiryCompletedEvent.notifyAll();
-                }
-            }
+			public void servicesDiscovered(int transID,
+					ServiceRecord[] servRecord) {
+			}
+		};
 
-            public void serviceSearchCompleted(int transID, int respCode) {
-            }
+		synchronized (inquiryCompletedEvent) {
+			boolean started = LocalDevice.getLocalDevice().getDiscoveryAgent()
+					.startInquiry(DiscoveryAgent.GIAC, listener);
+			if (started) {
+				System.out.println("wait for device inquiry to complete...");
+				inquiryCompletedEvent.wait();
+				System.out.println(devicesDiscovered.size()
+						+ " device(s) found");
+			}
+		}
+		return devicesDiscovered;
+	}
 
-            public void servicesDiscovered(int transID, ServiceRecord[] servRecord) {
-            }
-        };
+	static final UUID OBEX_FILE_TRANSFER = new UUID(0x1106);
 
-        synchronized(inquiryCompletedEvent) {
-            boolean started = LocalDevice.getLocalDevice().getDiscoveryAgent().startInquiry(DiscoveryAgent.GIAC, listener);
-            if (started) {
-                System.out.println("wait for device inquiry to complete...");
-                inquiryCompletedEvent.wait();
-                System.out.println(devicesDiscovered.size() +  " device(s) found");
-            }
-        }
-    }
-    static final UUID OBEX_FILE_TRANSFER = new UUID(0x1106);
+	// show services of remote devices
+	public static Vector discoverServices(Vector devices) throws IOException,
+			InterruptedException {
+		final Vector/* <String> */serviceFound = new Vector();
 
-    public static final Vector/*<String>*/ serviceFound = new Vector();
+		// TODO change UUID
+		UUID serviceUUID = OBEX_FILE_TRANSFER;
+		// if ((args != null) && (args.length > 0)) {
+		// serviceUUID = new UUID(args[0], false);
+		// }
 
-    public static void mainServiceSearch(String[] args) throws IOException, InterruptedException {
+		final Object serviceSearchCompletedEvent = new Object();
 
-        // First run RemoteDeviceDiscovery and use discovered device
-        mainDiscovery(null);
+		DiscoveryListener listener = new DiscoveryListener() {
 
-        serviceFound.clear();
+			public void deviceDiscovered(RemoteDevice btDevice, DeviceClass cod) {
+			}
 
-        UUID serviceUUID = OBEX_FILE_TRANSFER;
-        if ((args != null) && (args.length > 0)) {
-            serviceUUID = new UUID(args[0], false);
-        }
+			public void inquiryCompleted(int discType) {
+			}
 
-        final Object serviceSearchCompletedEvent = new Object();
+			public void servicesDiscovered(int transID,
+					ServiceRecord[] servRecord) {
+				for (int i = 0; i < servRecord.length; i++) {
+					String url = servRecord[i].getConnectionURL(
+							ServiceRecord.NOAUTHENTICATE_NOENCRYPT, false);
+					if (url == null) {
+						continue;
+					}
+					serviceFound.add(url);
+					DataElement serviceName = servRecord[i]
+							.getAttributeValue(0x0100);
+					if (serviceName != null) {
+						System.out.println("service " + serviceName.getValue()
+								+ " found " + url);
+					} else {
+						System.out.println("service found " + url);
+					}
+				}
+			}
 
-        DiscoveryListener listener = new DiscoveryListener() {
+			public void serviceSearchCompleted(int transID, int respCode) {
+				System.out.println("service search completed!");
+				synchronized (serviceSearchCompletedEvent) {
+					serviceSearchCompletedEvent.notifyAll();
+				}
+			}
 
-            public void deviceDiscovered(RemoteDevice btDevice, DeviceClass cod) {
-            }
+		};
 
-            public void inquiryCompleted(int discType) {
-            }
+		UUID[] searchUuidSet = new UUID[] { serviceUUID };
+		int[] attrIDs = new int[] { 0x0100 // Service name
+		};
 
-            public void servicesDiscovered(int transID, ServiceRecord[] servRecord) {
-                for (int i = 0; i < servRecord.length; i++) {
-                    String url = servRecord[i].getConnectionURL(ServiceRecord.NOAUTHENTICATE_NOENCRYPT, false);
-                    if (url == null) {
-                        continue;
-                    }
-                    serviceFound.add(url);
-                    DataElement serviceName = servRecord[i].getAttributeValue(0x0100);
-                    if (serviceName != null) {
-                        System.out.println("service " + serviceName.getValue() + " found " + url);
-                    } else {
-                        System.out.println("service found " + url);
-                    }
-                }
-            }
+		for (Enumeration en = devices.elements(); en.hasMoreElements();) {
+			RemoteDevice btDevice = (RemoteDevice) en.nextElement();
 
-            public void serviceSearchCompleted(int transID, int respCode) {
-                System.out.println("service search completed!");
-                synchronized(serviceSearchCompletedEvent){
-                    serviceSearchCompletedEvent.notifyAll();
-                }
-            }
-
-        };
-
-        UUID[] searchUuidSet = new UUID[] { serviceUUID };
-        int[] attrIDs =  new int[] {
-                0x0100 // Service name
-        };
-
-        for(Enumeration en = devicesDiscovered.elements(); en.hasMoreElements(); ) {
-            RemoteDevice btDevice = (RemoteDevice)en.nextElement();
-
-            synchronized(serviceSearchCompletedEvent) {
-                System.out.println("search services on " + btDevice.getBluetoothAddress() + " " + btDevice.getFriendlyName(false));
-                LocalDevice.getLocalDevice().getDiscoveryAgent().searchServices(attrIDs, searchUuidSet, btDevice, listener);
-                serviceSearchCompletedEvent.wait();
-            }
-        }
-    }
+			synchronized (serviceSearchCompletedEvent) {
+				System.out.println("search services on "
+						+ btDevice.getBluetoothAddress() + " "
+						+ btDevice.getFriendlyName(false));
+				LocalDevice
+						.getLocalDevice()
+						.getDiscoveryAgent()
+						.searchServices(attrIDs, searchUuidSet, btDevice,
+								listener);
+				serviceSearchCompletedEvent.wait();
+			}
+		}
+		return serviceFound;
+	}
 }
