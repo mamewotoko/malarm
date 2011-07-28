@@ -20,7 +20,8 @@ import javax.microedition.io.*;
  * Minimal Device Discovery example.
  */
 public class MacBluetoothMain {
-    
+    private static final Charset _UTF8 = Charset.forName("UTF-8");
+	
     private static void printAsHex (byte[] b, int len) {
     	for (int i = 0; i < len; i++) {
     		System.out.printf("0x%02X ", b[i]);
@@ -36,12 +37,13 @@ public class MacBluetoothMain {
     		_os = os;
     	}
     	public void run() {
-    		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    		BufferedReader br = new BufferedReader(new InputStreamReader(System.in, _UTF8));
     		while (! _done) {
 	    		try {
 	    			String line = br.readLine();
 	    			if (line.length() > 0) {
-	    				_os.write(line.getBytes(Charset.forName("UTF-8")));
+	    				_os.write(line.getBytes());
+	    				_os.flush();
 	    			}
 	    		} catch (IOException e) {
 	    			e.printStackTrace();
@@ -76,9 +78,9 @@ public class MacBluetoothMain {
 	    		//mainServiceSearch(null);
 	    		//btspp
 	    		//TODO: discover insecure UUID from device! (copied from BluetoothChatService.java)
-	    		System.out.println("before wait: default charset = " + Charset.defaultCharset());
+	    		System.out.println("before waiting:");
 				sock = cn.acceptAndOpen();
-	    		System.out.println("accept!");
+	    		System.out.println("accept!: " + Charset.defaultCharset());
 	   			InputStream is = sock.openInputStream();
 	   			OutputStream os = sock.openOutputStream ();
 
@@ -89,7 +91,7 @@ public class MacBluetoothMain {
 	    			int len = is.read(buffer);
 	    			//printAsHex(buffer, len);
 	    			if (len > 0) {
-	    				System.out.printf("received message(%d): %s\n", len, new String(buffer, 0, len, Charset.forName("UTF-8")));
+	    				System.out.printf("received message(%d): %s\n", len, new String(buffer, 0, len));
 	    			}
 	    		}
 	    	} catch (Exception e) {

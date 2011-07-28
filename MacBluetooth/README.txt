@@ -21,7 +21,7 @@ http://snapshot.bluecove.org/distribution/download/2.1.1-SNAPSHOT/2.1.1-SNAPSHOT
 
 1. From console, start jar file in the target directory.
 
- java -jar MacBluetooth-0.0.1-SNAPSHOT.one-jar.jar
+ java -Dfile.encoding=utf-8 -jar MacBluetooth-0.0.1-SNAPSHOT.one-jar.jar
 
 2. From Android device, start sample Bluetooth chat application and connect to Mac using Insecure
   connection.
