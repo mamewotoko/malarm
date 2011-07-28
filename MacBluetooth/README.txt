@@ -28,10 +28,11 @@ http://snapshot.bluecove.org/distribution/download/2.1.1-SNAPSHOT/2.1.1-SNAPSHOT
 
 3. Start chat! From Mac, standard input is sent as a chat message to android application.
 
-Future work?
-  Implement Service Discovery
+* Future work?
+
+  Implement client mode
   Write test
-  Turn on Bluetooth, if it is off.
+  Turn on Bluetooth module, if it is off.
   
 ---
 Takashi Masuyama <mamewotoko@gmail.com>
