@@ -116,12 +116,18 @@ public class MacBluetoothMain {
 	public static void startChatClient() throws IOException, InterruptedException {
 		Vector v = BluetoothProtocol.discoverDevices();
 		BluetoothProtocol.discoverServices(v);
+		//TODO: connect and start chat!
 	}
 
 	public static void main(String argv[]) {
 		try {
-			System.out.println("hello");
-			startChatClient();
+			if (argv[0].equals("--discover")) {
+				System.out.println ("start as client");
+				startChatClient();
+			} else {
+				System.out.println ("start as server");
+				startChatServer();
+			}
 		} catch(Exception e) {
 			e.printStackTrace();
 		}

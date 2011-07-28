@@ -18,8 +18,13 @@ import javax.bluetooth.RemoteDevice;
 import javax.bluetooth.ServiceRecord;
 import javax.bluetooth.UUID;
 
+import com.intel.bluetooth.BluetoothConsts;
+
 public class BluetoothProtocol {
 
+//	static final UUID OBEX_FILE_TRANSFER = new UUID(0x1106);
+//	static final UUID RFCOMM = new UUID(0x0003);
+	
 	public static Vector discoverDevices() throws IOException,
 			InterruptedException {
 		// RemoteDevice
@@ -68,15 +73,14 @@ public class BluetoothProtocol {
 		return devicesDiscovered;
 	}
 
-	static final UUID OBEX_FILE_TRANSFER = new UUID(0x1106);
-
+	
 	// show services of remote devices
 	public static Vector discoverServices(Vector devices) throws IOException,
 			InterruptedException {
 		final Vector/* <String> */serviceFound = new Vector();
 
 		// TODO change UUID
-		UUID serviceUUID = OBEX_FILE_TRANSFER;
+		UUID serviceUUID = BluetoothConsts.RFCOMM_PROTOCOL_UUID;
 		// if ((args != null) && (args.length > 0)) {
 		// serviceUUID = new UUID(args[0], false);
 		// }
