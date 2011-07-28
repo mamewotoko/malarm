@@ -1,17 +1,20 @@
+package com.mamewo.mac;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.util.Vector;
-import javax.bluetooth.*;
 import java.util.Enumeration;
-import javax.obex.*;
-import javax.microedition.io.*;
+import java.util.Vector;
 
-/**
- * Minimal Device Discovery example.
- */
-public class MacBluetoothMain {
+import javax.bluetooth.DataElement;
+import javax.bluetooth.DeviceClass;
+import javax.bluetooth.DiscoveryAgent;
+import javax.bluetooth.DiscoveryListener;
+import javax.bluetooth.LocalDevice;
+import javax.bluetooth.RemoteDevice;
+import javax.bluetooth.ServiceRecord;
+import javax.bluetooth.UUID;
+
+
+public class BluetoothProtocol {
     public static final Vector/*<RemoteDevice>*/ devicesDiscovered = new Vector();
 
     public static void mainDiscovery(String[] args) throws IOException, InterruptedException {
@@ -60,7 +63,7 @@ public class MacBluetoothMain {
 
     public static void mainServiceSearch(String[] args) throws IOException, InterruptedException {
 
-        // First run RemoteDeviceDiscovery and use discoved device
+        // First run RemoteDeviceDiscovery and use discovered device
         mainDiscovery(null);
 
         serviceFound.clear();
@@ -119,38 +122,5 @@ public class MacBluetoothMain {
                 serviceSearchCompletedEvent.wait();
             }
         }
-    }
-    
-    private static void printAsHex (byte[] b, int len) {
-    	for (int i = 0; i < len; i++) {
-    		System.out.printf("0x%02X ", b[i]);
-    	}
-    	System.out.println("");
-    }
-    
-    public static void main(String argv[]) {
-    	boolean done = false;
-    	byte[] buffer = new byte[1024];
-
-    	try {
-        	//mainServiceSearch(null);
-    		LocalDevice local = LocalDevice.getLocalDevice();
-    		local.setDiscoverable(DiscoveryAgent.GIAC);
-    		System.out.println("before wait ‚Ü‚Á‚Ä‚é‚º‚Á‚Æ");
-    		//btspp
-    		//TODO: discover insecure UUID from device! (copied from BluetoothChatService.java)
-    		StreamConnectionNotifier cn = (StreamConnectionNotifier) Connector.open("btspp://localhost:8ce255c0200a11e0ac640800200c9a66;name=BluetoothChatInsecure");
-			StreamConnection sock = null;
-			sock = cn.acceptAndOpen();
-    		System.out.println("accept! ");
-   			InputStream is = sock.openInputStream();
-   		    while (! done) {
-    			int len = is.read(buffer);
-    			printAsHex(buffer, len);
-    			System.out.printf("received message(%d): %s\n", len, new String(buffer, 0, len, Charset.forName("UTF-8")));
-    		}
-    	} catch (Exception e) {
-    		e.printStackTrace();
-    	}
     }
 }
