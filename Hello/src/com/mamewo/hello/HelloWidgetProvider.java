@@ -18,6 +18,9 @@ public class HelloWidgetProvider extends AppWidgetProvider {
     	if (intent.getAction().equals(HELLO_ACTION)) {
             Toast.makeText(context, "Touched!", Toast.LENGTH_LONG).show();
         }
+    	Intent i = new Intent(context, HelloActivity.class);
+		i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    	context.startActivity(i);
     	super.onReceive(context, intent);
     }
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {

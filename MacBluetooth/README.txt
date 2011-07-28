@@ -5,6 +5,8 @@ following web site. This program is included in Android SDK.
 
 http://developer.android.com/resources/samples/BluetoothChat/index.html
 
+This program accepts connection as server.
+
 * How to build
 1. Install bluecove library. To use it in 64bit Mac, you should install 2.1.1-SNAPSHOT version.
 Put jar file into lib directory of this project.

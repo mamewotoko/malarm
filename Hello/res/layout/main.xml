@@ -10,4 +10,5 @@
     />
 <TextView android:textAppearance="?android:attr/textAppearanceSmall" android:text="" android:id="@+id/textView1" android:layout_height="wrap_content" android:layout_width="wrap_content"></TextView>
 <Button android:id="@+id/button1" android:layout_weight="0.07" android:text="Browse!" android:layout_height="30dp" android:layout_width="match_parent"></Button>
+<Button android:layout_height="wrap_content" android:id="@+id/button2" android:text="Bluetooth" android:layout_width="257dp"></Button>
 </LinearLayout>

@@ -1,5 +1,10 @@
 package com.mamewo.mac;
 
+/** 
+ * Sample code of bluecove in following site
+ * http://www.bluecove.org/bluecove/apidocs/overview-summary.html
+ */
+
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Vector;

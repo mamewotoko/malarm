@@ -51,7 +51,7 @@ class MyCircleView extends View implements View.OnTouchListener {
 		paint.setTextSize(24.0f);
 		String coord = String.format("(%3.0f, %3.0f)", _x, _y);
 		canvas.drawText(coord, 10, 40, paint);
-		System.out.println("TestCircle: print debug: " + coord);
+		//System.out.println("TestCircle: print debug: " + coord);
 		canvas.drawText(_timestr, 10, 400, paint);
 		canvas.drawRect(new Rect(149, 149, 151, 151), paint);
 		paint.setColor(Color.GREEN);
