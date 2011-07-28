@@ -13,9 +13,9 @@ Put jar file into lib directory of this project.
 
 http://snapshot.bluecove.org/distribution/download/2.1.1-SNAPSHOT/2.1.1-SNAPSHOT.62/bluecove-2.1.1-SNAPSHOT.jar
 
-2. Configure goal of Run into "package"
+2. Run maven build by following command.
 
-3. Run maven build
+  mvn package
 
 * How to run
 
@@ -30,7 +30,9 @@ http://snapshot.bluecove.org/distribution/download/2.1.1-SNAPSHOT/2.1.1-SNAPSHOT
 
 Future work?
   Implement Service Discovery
-
+  Write test
+  Turn on Bluetooth, if it is off.
+  
 ---
 Takashi Masuyama <mamewotoko@gmail.com>
 http://www002.upp.so-net.ne.jp/mamewo/
