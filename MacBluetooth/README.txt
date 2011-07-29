@@ -31,9 +31,12 @@ http://snapshot.bluecove.org/distribution/download/2.1.1-SNAPSHOT/2.1.1-SNAPSHOT
 
 * Future work?
 
+  Handle disconnect
   Implement client mode
   Write test
   Add proper license file for this source code
+  Use reader class
+  Define InputThread
 
 ---
 Takashi Masuyama <mamewotoko@gmail.com>

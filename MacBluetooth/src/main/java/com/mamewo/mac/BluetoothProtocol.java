@@ -73,6 +73,20 @@ public class BluetoothProtocol {
 		return devicesDiscovered;
 	}
 
+	public static class ServiceDesc {
+		final String _name;
+		final String _url;
+		protected ServiceDesc(String name, String url) {
+			_name = name;
+			_url = url;
+		}
+		public String getName() {
+			return _name;
+		}
+		public String getUrl() {
+			return _url;
+		}
+	}
 	
 	// show services of remote devices
 	public static Vector discoverServices(Vector devices) throws IOException,
@@ -81,9 +95,6 @@ public class BluetoothProtocol {
 
 		// TODO change UUID
 		UUID serviceUUID = BluetoothConsts.RFCOMM_PROTOCOL_UUID;
-		// if ((args != null) && (args.length > 0)) {
-		// serviceUUID = new UUID(args[0], false);
-		// }
 
 		final Object serviceSearchCompletedEvent = new Object();
 
@@ -95,20 +106,23 @@ public class BluetoothProtocol {
 			public void inquiryCompleted(int discType) {
 			}
 
-			public void servicesDiscovered(int transID,
-					ServiceRecord[] servRecord) {
+			public void servicesDiscovered(int transID, ServiceRecord[] servRecord) {
 				for (int i = 0; i < servRecord.length; i++) {
 					String url = servRecord[i].getConnectionURL(
 							ServiceRecord.NOAUTHENTICATE_NOENCRYPT, false);
 					if (url == null) {
 						continue;
 					}
-					serviceFound.add(url);
-					DataElement serviceName = servRecord[i]
-							.getAttributeValue(0x0100);
+					DataElement serviceName = servRecord[i].getAttributeValue(0x0100);
+					String name = null;
 					if (serviceName != null) {
-						System.out.println("service " + serviceName.getValue()
-								+ " found " + url);
+						name = (String)serviceName.getValue();
+					}
+					//DataElement serviceID = servRecord[i].getAttributeValue(0x0003);
+					serviceFound.add(new ServiceDesc(name, url));
+					
+					if (serviceName != null) {
+						System.out.printf("service(0x%X) %s found: %s\n", transID, name, url);
 					} else {
 						System.out.println("service found " + url);
 					}
@@ -116,17 +130,39 @@ public class BluetoothProtocol {
 			}
 
 			public void serviceSearchCompleted(int transID, int respCode) {
-				System.out.println("service search completed!");
+				System.out.printf("service search completed!: 0x%X\n", transID);
+				switch (respCode) {
+				case SERVICE_SEARCH_COMPLETED:
+					System.out.println ("COMPLETED");
+					break;
+				case SERVICE_SEARCH_TERMINATED:
+					System.out.println ("TERMINATED");
+					break;
+				case SERVICE_SEARCH_ERROR:
+					System.out.println ("ERROR");
+					break;
+				case SERVICE_SEARCH_NO_RECORDS:
+					System.out.println ("NORECORDS");
+					break;
+				case SERVICE_SEARCH_DEVICE_NOT_REACHABLE:
+					System.out.println ("NOT_REACHABLE");
+					break;
+				default:
+					System.out.println ("Unknown case");
+					break;
+				}
 				synchronized (serviceSearchCompletedEvent) {
 					serviceSearchCompletedEvent.notifyAll();
 				}
 			}
-
 		};
 
-		UUID[] searchUuidSet = new UUID[] { serviceUUID };
-		int[] attrIDs = new int[] { 0x0100 // Service name
-		};
+		//TODO: Parameterize Protocol
+		UUID[] searchUuidSet = new UUID[] { BluetoothConsts.RFCOMM_PROTOCOL_UUID };
+//				BluetoothConsts.SERIAL_PORT_UUID};
+//					BluetoothConsts.L2CAP_PROTOCOL_UUID,
+		//					BluetoothConsts.OBEX_PROTOCOL_UUID,
+		int[] attrIDs = new int[] { 0x0100 }; //Service name?
 
 		for (Enumeration en = devices.elements(); en.hasMoreElements();) {
 			RemoteDevice btDevice = (RemoteDevice) en.nextElement();
