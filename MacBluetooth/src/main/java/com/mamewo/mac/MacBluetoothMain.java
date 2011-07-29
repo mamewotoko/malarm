@@ -48,16 +48,16 @@ public class MacBluetoothMain {
 		}
 
 		public void run() {
-			while (!_done) {
-				try {
+			try {
+				while (!_done) {
 					String line = _br.readLine();
 					if (line.length() > 0) {
 						_writer.write(line);
 						_writer.flush();
 					}
-				} catch (IOException e) {
-					e.printStackTrace();
 				}
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 
@@ -68,7 +68,6 @@ public class MacBluetoothMain {
 
 	//TODO: support multiple user?
 	public static void startChatServer() {
-		boolean done = false;
 		byte[] buffer = new byte[1024];
 		StreamConnectionNotifier cn = null;
 		try {
@@ -82,26 +81,24 @@ public class MacBluetoothMain {
 		while (true) {
 			OutputThread t = null;
 			StreamConnection sock = null;
+			InputStream is = null;
+			OutputStream os = null;
 			try {
-				// mainServiceSearch(null);
-				// btspp
-				// TODO: discover insecure UUID from device! (copied from
-				// BluetoothChatService.java)
 				System.out.println("accepting connection:");
 				sock = cn.acceptAndOpen();
 				System.out.println("accept!: " + Charset.defaultCharset());
-				InputStream is = sock.openInputStream();
-				OutputStream os = sock.openOutputStream();
+				is = sock.openInputStream();
+				os = sock.openOutputStream();
 
 				t = new OutputThread(os);
 				t.start();
 
-				while (!done) {
+				while (t.isAlive()) {
+					//TODO: use timeout read?
 					int len = is.read(buffer);
 					// printAsHex(buffer, len);
 					if (len > 0) {
-						System.out.printf("received message(%d): %s\n", len,
-								new String(buffer, 0, len));
+						System.out.printf("received message(%d): %s\n", len, new String(buffer, 0, len));
 					}
 				}
 				//TODO: check connection is live or not,
@@ -112,6 +109,7 @@ public class MacBluetoothMain {
 				t = null;
 				try {
 					sock.close();
+					cn.close();
 				} catch (IOException e) {
 					//
 				}
@@ -130,43 +128,60 @@ public class MacBluetoothMain {
 		return BluetoothProtocol.discoverServices(v);
 	}
 	public static final String INSECURE_CHAT_SERVICENAME = "BluetoothChatInsecure";
-
+	
 	//RFCOMM
-//	private static final String INSECURE_CLIENT_URL = "btspp://8C6422221610:23;authenticate=false;encrypt=false;master=false";
-	private static final String INSECURE_CLIENT_URL = "btspp://8C6422221610:23";
 	public static void startChatClient() throws IOException, InterruptedException {
 		Vector service = discoverServices();
-		//TODO: connect and start chat!
 		//find InsecureChat
+		String servicename = INSECURE_CHAT_SERVICENAME;
 		String url = null;
 		for (int i = 0; i < service.size(); i++) {
 			ServiceDesc desc = (ServiceDesc)service.get(i);
-			if (desc.getName().equals(INSECURE_CHAT_SERVICENAME)) {
+			if (desc.getName().equals(servicename)) {
 				url = desc.getUrl();
 				break;
 			}
 		}
 		if (url == null) {
-			System.out.println("startChatClient: cannot find chat service");
+			System.out.println("startChatClient: cannot find chat service:" + servicename);
 			return;
 		}
 
-		//TODO: connect and start chat!
+		OutputStream os = null;
+		InputStream is = null;
+		byte[] buffer = new byte[1024];
+
+		// RFCOMM
+		// TODO: finalize con
 		StreamConnection con = (StreamConnection) Connector.open(url);
-		System.out.println("connected as client:");
-		OutputStream os = con.openOutputStream();
-		InputStream is = con.openInputStream();
+		System.out.println("connected as client(RFCOMM)");
+		os = con.openOutputStream();
+		is = con.openInputStream();
+
 		//BufferedReader br = new BufferedReader(new InputStreamReader(is));
 		OutputThread t = new OutputThread(os);
 		t.start();
 
-		byte[] buffer = new byte[1024];
 		//TODO: define InputThread
-		while (true) {
-			int len = is.read(buffer);
-			// printAsHex(buffer, len);
-			if (len > 0) {
-				System.out.printf("received message(%d): %s\n", len, new String(buffer, 0, len));
+		try {
+			while (t.isAlive()) {
+				int len = is.read(buffer);
+				// printAsHex(buffer, len);
+				if (len > 0) {
+					System.out.printf("received message(%d): %s\n", len, new String(buffer, 0, len));
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (t.isAlive()) {
+				t.interrupt();
+			}
+			t = null;
+			try {
+				con.close();
+			} catch (IOException e) {
+				//
 			}
 		}
 	}
@@ -180,14 +195,16 @@ public class MacBluetoothMain {
 			}
 			//To get address, device power must be on
 			LocalDevice local = LocalDevice.getLocalDevice();
-			System.out.println ("local bluetooth address: " + local.getBluetoothAddress());
+			System.out.println ("\tlocal bluetooth address: " + local.getBluetoothAddress());
 
-			if (argv.length > 0 && argv[0].equals("--discover")) {
-				System.out.println ("start as client");
-				startChatClient();
-			} else {
-				System.out.println ("start as server");
-				startChatServer();
+			while (true) {
+				if (argv.length > 0 && argv[0].equals("--discover")) {
+					System.out.println ("start as client");
+					startChatClient();
+				} else {
+					System.out.println ("start as server");
+					startChatServer();
+				}
 			}
 		} catch(Exception e) {
 			e.printStackTrace();

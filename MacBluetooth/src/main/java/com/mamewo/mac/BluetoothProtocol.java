@@ -159,7 +159,8 @@ public class BluetoothProtocol {
 
 		//TODO: Parameterize Protocol
 		UUID[] searchUuidSet = new UUID[] { BluetoothConsts.RFCOMM_PROTOCOL_UUID };
-//				BluetoothConsts.SERIAL_PORT_UUID};
+//		UUID[] searchUuidSet = new UUID[] { BluetoothConsts.L2CAP_PROTOCOL_UUID };
+		//				BluetoothConsts.SERIAL_PORT_UUID};
 //					BluetoothConsts.L2CAP_PROTOCOL_UUID,
 		//					BluetoothConsts.OBEX_PROTOCOL_UUID,
 		int[] attrIDs = new int[] { 0x0100 }; //Service name?
