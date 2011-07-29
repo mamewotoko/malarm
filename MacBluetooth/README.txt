@@ -24,15 +24,22 @@ http://snapshot.bluecove.org/distribution/download/2.1.1-SNAPSHOT/2.1.1-SNAPSHOT
 
  java -Dfile.encoding=utf-8 -jar MacBluetooth-0.0.1-SNAPSHOT.one-jar.jar
 
+OR use start.sh
+
+ ./start.sh
+
 2. From Android device, start sample Bluetooth chat application and connect to Mac using Insecure
   connection.
 
 3. Start chat! From Mac, standard input is sent as a chat message to android application.
+(This is server mode)
+
+  If you start with --client command line option, this program starts as client. At first, you must
+  configure android device to make discoverable. Then start this program with --client option.
 
 * Future work?
 
   Handle disconnect
-  Implement client mode
   Write test
   Add proper license file for this source code
   Use reader class

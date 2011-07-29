@@ -198,13 +198,14 @@ public class MacBluetoothMain {
 			System.out.println ("\tlocal bluetooth address: " + local.getBluetoothAddress());
 
 			while (true) {
-				if (argv.length > 0 && argv[0].equals("--discover")) {
+				if (argv.length > 0 && argv[0].equals("--client")) {
 					System.out.println ("start as client");
 					startChatClient();
 				} else {
 					System.out.println ("start as server");
 					startChatServer();
 				}
+				//TODO: add obex?
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
