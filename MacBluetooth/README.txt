@@ -8,6 +8,7 @@ http://developer.android.com/resources/samples/BluetoothChat/index.html
 This program accepts connection as server.
 
 * How to build
+
 1. Install bluecove library. To use it in 64bit Mac, you should install 2.1.1-SNAPSHOT version.
 Put jar file into lib directory of this project.
 
@@ -32,8 +33,8 @@ http://snapshot.bluecove.org/distribution/download/2.1.1-SNAPSHOT/2.1.1-SNAPSHOT
 
   Implement client mode
   Write test
-  Turn on Bluetooth module, if it is off.
-  
+  Add proper license file for this source code
+
 ---
 Takashi Masuyama <mamewotoko@gmail.com>
 http://www002.upp.so-net.ne.jp/mamewo/

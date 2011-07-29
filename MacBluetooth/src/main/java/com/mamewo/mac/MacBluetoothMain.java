@@ -82,7 +82,7 @@ public class MacBluetoothMain {
 				// btspp
 				// TODO: discover insecure UUID from device! (copied from
 				// BluetoothChatService.java)
-				System.out.println("before waiting:");
+				System.out.println("accepting connection:");
 				sock = cn.acceptAndOpen();
 				System.out.println("accept!: " + Charset.defaultCharset());
 				InputStream is = sock.openInputStream();
@@ -120,8 +120,17 @@ public class MacBluetoothMain {
 	}
 
 	public static void main(String argv[]) {
+		
 		try {
-			if (argv[0].equals("--discover")) {
+			if (! LocalDevice.isPowerOn()) {
+				System.err.println ("Please turn on bluetooth");
+				return;
+			}
+			//To get address, device power must be on
+			LocalDevice local = LocalDevice.getLocalDevice();
+			System.out.println ("local bluetooth address: " + local.getBluetoothAddress());
+
+			if (argv.length > 0 && argv[0].equals("--discover")) {
 				System.out.println ("start as client");
 				startChatClient();
 			} else {
