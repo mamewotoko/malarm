@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="hello">Hello World, HelloActivity!</string>
-    <string name="app_name">Hello</string>
+    <string name="app_name">Alarm</string>
+    <string name="stop_music">Stop Music</string>
+    <string name="tomorrow">tomorrow</string>
+    <string name="alarm_set">Alarm set!</string>
+    <string name="unknown_button">Unknown button!</string>
+    <string name="no_bluetooth">No bluetooth device</string>
+    <string name="start_bluetooth">Start bluetooth device</string>
+    <string name="search_bluetooth">Search bluetooth device</string>
+    <string name="touched">Touched!</string>
+
+<!--  UI -->
+    <string name="set_stop_alarm">Alarm ON/OFF</string>
+    <string name="next">Next</string>
+    <string name="time_to_wakeup">Time to Wake-up</string>
 </resources>

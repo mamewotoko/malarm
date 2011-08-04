@@ -17,7 +17,7 @@ public class HelloWidgetProvider extends AppWidgetProvider {
         //AppWidgetManager mgr = AppWidgetManager.getInstance(context);
     	Log.i("Hello", "action: " + intent.getAction());
     	if (intent.getAction().equals(HELLO_ACTION)) {
-            Toast.makeText(context, "Touched!", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, context.getString(R.string.touched), Toast.LENGTH_LONG).show();
         	Intent i = new Intent(context, HelloActivity.class);
     		i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         	context.startActivity(i);

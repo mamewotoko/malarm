@@ -26,16 +26,17 @@ public class HelloActivity extends Activity implements OnClickListener {
 	public static final String WAKEUP_ACTION = "com.mamewo.hello.WAKEUP_ACTION";
 	// 1 hour
 	public static long SLEEP_TIME = 60 * 60 * 1000;
-
+	private static final Integer DEFAULT_HOUR = new Integer(7);
+	private static final Integer DEFAULT_MIN = new Integer(0);
+	
 	private Button _next_button;
 	private Button _sleep_wakeup_button;
-	private static final int REQUEST_ENABLE_BT = 10;
-	private BluetoothAdapter _adapter;
 	private TimePicker _time_picker;
 	private TextView _time_label;
-	
-	// private Player _player;
 
+	private static final int REQUEST_ENABLE_BT = 10;
+	private BluetoothAdapter _adapter;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -47,17 +48,19 @@ public class HelloActivity extends Activity implements OnClickListener {
 		_next_button = (Button) findViewById(R.id.next_button);
 		_next_button.setOnClickListener(this);
 		_time_label = (TextView) findViewById(R.id.target_time_label);
-		// _player = new Player();
+		// set default time
+		_time_picker.setCurrentHour(DEFAULT_HOUR);
+		_time_picker.setCurrentMinute(DEFAULT_MIN);
 	}
 
-	// TODO: add time parameter
+	// TODO: implement alarm cancel
 	public void scheduleToPlaylist() {
 		Log.i("Hello", "scheduleToPlaylist is called");
 		//TODO: hide keyboard?
 		//TODO: use different button?
 		if (Player.isPlaying()) {
 			Player.stopMusic();
-			showMessage(this, "Stop Music");
+			showMessage(this, getString(R.string.stop_music));
 			return;
 		}
 		Player.startSleepMusic();
@@ -72,7 +75,7 @@ public class HelloActivity extends Activity implements OnClickListener {
 		if (target_millis <= System.currentTimeMillis()) {
 			//tomorrow
 			target_millis =  + 24 * 60 * 60 * 1000;
-			tommorow = " (tomorrow)";
+			tommorow = " (" + getString(R.string.tomorrow) + ")";
 		}
 		_time_label.setText(String.format("%02d:%02d", target_hour, target_min));
 		AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
@@ -81,7 +84,7 @@ public class HelloActivity extends Activity implements OnClickListener {
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, i,
 				PendingIntent.FLAG_CANCEL_CURRENT);
 		mgr.set(AlarmManager.RTC_WAKEUP, target_millis, pendingIntent);
-		showMessage(this, "Alarm set!" + tommorow);
+		showMessage(this, getString(R.string.alarm_set) + tommorow);
 	}
 
 	void displayBluetoothDevices() {
@@ -109,7 +112,7 @@ public class HelloActivity extends Activity implements OnClickListener {
 		} else if (v == _sleep_wakeup_button) {
 			scheduleToPlaylist();
 		} else {
-			showMessage(v.getContext(), "Unknown button!");
+			showMessage(v.getContext(), getString(R.string.unknown_button));
 		}
 	}
 
@@ -249,17 +252,19 @@ public class HelloActivity extends Activity implements OnClickListener {
 	}
 	//obsolete code...
 	public void discoverBluetoothDevices(View v) {
+		Context context = v.getContext();
 		_adapter = BluetoothAdapter.getDefaultAdapter();
 		if (_adapter == null) {
-			showMessage(v.getContext(), "no bluetooth");
+			showMessage(v.getContext(), context.getString(R.string.no_bluetooth));
 			return;
 		}
-		showMessage(v.getContext(), "start bluetooth");
+		showMessage(v.getContext(), context.getString(R.string.start_bluetooth));
 		if (!_adapter.isEnabled()) {
 			Intent i = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+			//TODO: use id!
 			startActivityForResult(i, REQUEST_ENABLE_BT);
 		}
-		showMessage(v.getContext(), "request bluetooth");
+		showMessage(context, context.getString(R.string.search_bluetooth));
 		displayBluetoothDevices();
 	}
 }
