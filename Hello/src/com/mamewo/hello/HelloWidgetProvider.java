@@ -5,24 +5,27 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
 public class HelloWidgetProvider extends AppWidgetProvider {
     public static final String HELLO_ACTION = "com.mamewo.hello.HELLO_ACTION";
-    
+
     @Override
     public void onReceive(Context context, Intent intent) {
         //AppWidgetManager mgr = AppWidgetManager.getInstance(context);
-    	System.out.println("action: " + intent.getAction());
+    	Log.i("Hello", "action: " + intent.getAction());
     	if (intent.getAction().equals(HELLO_ACTION)) {
             Toast.makeText(context, "Touched!", Toast.LENGTH_LONG).show();
+        	Intent i = new Intent(context, HelloActivity.class);
+    		i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        	context.startActivity(i);
         }
-    	Intent i = new Intent(context, HelloActivity.class);
-		i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    	context.startActivity(i);
     	super.onReceive(context, intent);
     }
+    
+    @Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
     	RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.hellowidget_provider);
     	Intent intent = new Intent(context, HelloWidgetProvider.class);
