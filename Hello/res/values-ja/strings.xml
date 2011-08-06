@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, HelloActivity!</string>
+    <string name="app_name">アラーム</string>
+    <string name="stop_music">音楽をとめました</string>
+    <string name="tomorrow">あした</string>
+    <string name="alarm_set">アラームをセットしました</string>
+    <string name="unknown_button">知らないボタンが押されました</string>
+    <string name="no_bluetooth">Bluetooth機器が見つかりません</string>
+    <string name="start_bluetooth">Bluetooth機器を有効にしています</string>
+    <string name="search_bluetooth">近くのBluetooth機器を探しています</string>
+    <string name="touched">さわられちゃった!</string>
+    <string name="goodnight">おやすみ</string>
+
+<!--  UI -->
+    <string name="set_stop_alarm">アラームON/OFF</string>
+    <string name="next">次の曲</string>
+    <string name="time_to_wakeup">起きる時刻</string>
+    <string name="cancel_alarm">アラームをキャンセル</string>
+</resources>

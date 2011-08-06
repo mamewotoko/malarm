@@ -10,9 +10,11 @@
     <string name="start_bluetooth">Start bluetooth device</string>
     <string name="search_bluetooth">Search bluetooth device</string>
     <string name="touched">Touched!</string>
+    <string name="goodnight">Good Night</string>
 
 <!--  UI -->
     <string name="set_stop_alarm">Alarm ON/OFF</string>
     <string name="next">Next</string>
     <string name="time_to_wakeup">Time to Wake-up</string>
+    <string name="cancel_alarm">Cancel Alarm</string>
 </resources>
