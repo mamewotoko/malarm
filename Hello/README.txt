@@ -17,4 +17,4 @@ After set/stop alarm button
 
 ----
 Takashi Masuyama <mamewotoko@gmail.com>
-http://www002.upp.so-net.ne.jp/
+http://www002.upp.so-net.ne.jp/mamewo/
