@@ -12,5 +12,5 @@ cat > settings.xml << "END_OF_XML";
 <localRepository>/tmp/mavenrepo</localRepository>
 </settings>
 END_OF_XML
-mvn --settings /Users/tak/tmp/settings.xml package
+mvn --settings settings.xml package
 
