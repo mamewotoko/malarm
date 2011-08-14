@@ -17,10 +17,10 @@ After set/stop alarm button
 * TODO:
 - editable playlist support
 -- add favorite music
-- vibrate support?
+- preset volume of sleep / wakeup mode.
 - add tweet button of now playing
 - link to music store?
-- add license file
+- add license file of this source
 
 ----
 Takashi Masuyama <mamewotoko@gmail.com>

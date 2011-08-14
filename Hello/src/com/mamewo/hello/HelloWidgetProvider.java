@@ -7,7 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.RemoteViews;
-import android.widget.Toast;
+//import android.widget.Toast;
 
 public class HelloWidgetProvider extends AppWidgetProvider {
     public static final String HELLO_ACTION = "com.mamewo.hello.HELLO_ACTION";

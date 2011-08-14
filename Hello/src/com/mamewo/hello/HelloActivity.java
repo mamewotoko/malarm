@@ -35,6 +35,7 @@ import android.net.http.*;
 
 public class HelloActivity extends Activity implements OnClickListener {
 	/** Called when the activity is first created. */
+	//TODO: add to resource?
 	public static final String WAKEUP_ACTION = "com.mamewo.hello.WAKEUP_ACTION";
 	public static final String WAKEUPAPP_ACTION = "com.mamewo.hello.WAKEUPAPP_ACTION";
 	public static final String SLEEP_ACTION = "com.mamewo.hello.SLEEP_ACTION";
@@ -49,7 +50,8 @@ public class HelloActivity extends Activity implements OnClickListener {
 	private TimePicker _time_picker;
 	private TextView _time_label;
 	private WebView _webview;
-
+	private Vibrator _vibrator;
+	
 	private static final int REQUEST_ENABLE_BT = 10;
 	private BluetoothAdapter _adapter;
 	
@@ -65,6 +67,7 @@ public class HelloActivity extends Activity implements OnClickListener {
 		_next_button.setOnClickListener(this);
 		_time_label = (TextView) findViewById(R.id.target_time_label);
 		// set default time
+		_vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 		_webview = (WebView)findViewById(R.id.webView1);
 		WebSettings config = _webview.getSettings();
 		config.setJavaScriptEnabled(true);
@@ -103,6 +106,13 @@ public class HelloActivity extends Activity implements OnClickListener {
 		_time_picker.setCurrentHour(DEFAULT_HOUR);
 		_time_picker.setCurrentMinute(DEFAULT_MIN);
 		loadWebPage();
+		String action = getIntent().getAction();
+		if (action != null && action.equals(WAKEUPAPP_ACTION)) {
+			if (_vibrator != null) {
+				long pattern[] = { 10, 2000, 500, 1500, 1000, 2000 };
+				_vibrator.vibrate(pattern, 1);
+			}
+		}
 	}
 	
 	private PendingIntent makePintent(String action) {
@@ -142,6 +152,15 @@ public class HelloActivity extends Activity implements OnClickListener {
     		_time_picker.setCurrentHour(now.get(Calendar.HOUR_OF_DAY));
     		_time_picker.setCurrentMinute(now.get(Calendar.MINUTE));
     		break;
+    	case R.id.stop_vibaration:
+    		if (_vibrator != null) {
+    			_vibrator.cancel();
+    		}
+    		break;
+    	case R.id.play_wakeup:
+    		Player.reset();
+    		Player.startMusic(Playlist.WAKEUP_PLAYLIST);
+    		break;
     	default:
     		Log.i("Hello", "Unknown menu");
     		return false;
@@ -154,6 +173,9 @@ public class HelloActivity extends Activity implements OnClickListener {
 		//TODO: hide keyboard?
 		//TODO: use different button?
 		if (Player.isPlaying()) {
+			if (_vibrator != null) {
+				_vibrator.cancel();
+			}
 			Player.stopMusic();
 			//TODO: what's happen if now playing alarm sound?
 			cancelAlarm();
@@ -209,6 +231,7 @@ public class HelloActivity extends Activity implements OnClickListener {
 		private static MediaPlayer _player = null;
 		private static int _index = 0;
 
+		
 		//Please give list of filename as String array
 		private static final String[] SLEEP_PLAYLIST = Playlist.SLEEP_PLAYLIST;
 		private static final String[] WAKEUP_PLAYLIST = Playlist.WAKEUP_PLAYLIST;
@@ -219,6 +242,10 @@ public class HelloActivity extends Activity implements OnClickListener {
 			return _player != null && _player.isPlaying();
 		}
 
+		public static void reset () {
+			_index = 0;
+		}
+		
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			// AppWidgetManager mgr = AppWidgetManager.getInstance(context);
@@ -233,18 +260,12 @@ public class HelloActivity extends Activity implements OnClickListener {
 				mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
 				mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
 				mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
-				mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
-				mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
-				_index = 0;
+				Player.reset();
 				startMusic(WAKEUP_PLAYLIST);
-				//TODO: vibrate?
-//				Vibrator vib = (Vibrator) context.getSystemService(VIBRATOR_SERVICE);
-				//				if (vib != null) {
-				//long pattern[] = { 10, 2000, 500, 1500, 1000, 2000 };
-				//vib.vibrate(pattern, 1);
-				//}
-				//Start app
-				
+				Intent i = new Intent(context, HelloActivity.class);
+				i.setAction(WAKEUPAPP_ACTION);
+				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				context.startActivity(i);
 			} else if (intent.getAction().equals(SLEEP_ACTION)) {
 				stopMusic();
 				showMessage(context, context.getString(R.string.goodnight));
@@ -287,7 +308,7 @@ public class HelloActivity extends Activity implements OnClickListener {
 			// TODO: use Alarm instead of Thread
 			SleepThread t = new SleepThread(playtime_millis);
 			t.start();
-			_index = 0;
+			reset();
 			startMusic(SLEEP_PLAYLIST);
 		}
 

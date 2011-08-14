@@ -19,4 +19,5 @@
     <string name="cancel_alarm">Cancel Alarm</string>
     <string name="set_now">Set current time to time picker</string>
     <string name="stop_vibaration">Stop vibaration</string>
+    <string name="play_wakeup">Play wakeup music</string>
 </resources>
