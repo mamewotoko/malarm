@@ -6,7 +6,7 @@
     <LinearLayout android:layout_height="wrap_content" android:id="@+id/linearLayout1" android:layout_width="match_parent">
         <LinearLayout android:layout_height="match_parent" android:id="@+id/linearLayout2" android:orientation="vertical" android:layout_width="173dp">
             <TextView android:id="@+id/textView2" android:layout_width="wrap_content" android:text="@string/time_to_wakeup" android:textAppearance="?android:attr/textAppearanceLarge" android:layout_height="wrap_content"></TextView>
-            <TimePicker android:layout_height="wrap_content" android:id="@+id/timePicker1" android:layout_width="match_parent"></TimePicker>
+            <TimePicker android:id="@+id/timePicker1" android:layout_width="match_parent" android:layout_height="wrap_content"></TimePicker>
         </LinearLayout>
         <TableLayout android:layout_height="match_parent" android:id="@+id/tableLayout1" android:layout_width="wrap_content">
             <TableRow android:id="@+id/tableRow1" android:layout_width="wrap_content" android:layout_height="wrap_content">
@@ -22,5 +22,5 @@
             </TableRow>
         </TableLayout>
     </LinearLayout>
-<WebView android:id="@+id/webView1" android:layout_width="match_parent" android:layout_height="match_parent"></WebView>
+<WebView android:id="@+id/webView1" android:layout_width="match_parent" android:layout_height="match_parent" android:focusable="true" android:focusableInTouchMode="true"></WebView>
 </LinearLayout>

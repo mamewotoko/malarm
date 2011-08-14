@@ -17,4 +17,6 @@
     <string name="next">次の曲</string>
     <string name="time_to_wakeup">起きる時刻</string>
     <string name="cancel_alarm">アラームをキャンセル</string>
+    <string name="set_now">現在時刻をセットする</string>
+    <string name="stop_vibaration">バイブレーションをとめる</string>
 </resources>

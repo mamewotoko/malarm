@@ -6,9 +6,11 @@
     <uses-sdk android:minSdkVersion="10" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
-    <application android:icon="@drawable/icon" android:label="@string/app_name">
+    <application android:label="@string/app_name" android:icon="@drawable/img">
 		<!--  .HelloActivity -->
+		<!-- 
         <activity android:name="TestCircle"
                   android:label="@string/app_name">
             <intent-filter>
@@ -16,6 +18,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+ -->
         <activity android:name=".HelloActivity"
                   android:label="@string/app_name">
             <intent-filter>
@@ -23,7 +26,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    <receiver android:name="HelloActivity$Player" />
+    <receiver android:name="HelloActivity$Player"
+              android:permission="android.permission.VIBRATE" />
     <receiver android:name="HelloWidgetProvider" >
         <intent-filter>
             <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
