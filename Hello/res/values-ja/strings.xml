@@ -18,6 +18,6 @@
     <string name="time_to_wakeup">起きる時刻</string>
     <string name="cancel_alarm">アラームをキャンセル</string>
     <string name="set_now">現在時刻をセットする</string>
-    <string name="stop_vibaration">バイブレーションをとめる</string>
+    <string name="stop_vibration">バイブレーションをとめる</string>
     <string name="play_wakeup">目覚めの音楽をかける</string>
 </resources>

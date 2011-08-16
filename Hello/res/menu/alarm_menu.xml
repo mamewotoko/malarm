@@ -2,6 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/cancel_alarm" android:enabled="true" android:title="@string/cancel_alarm" android:visible="true" />
     <item android:checked="false" android:id="@+id/set_now" android:checkable="false" android:enabled="true" android:visible="true" android:title="@string/set_now"></item>
-    <item android:id="@+id/stop_vibaration" android:title="@string/stop_vibaration"></item>
+<!--  
+    <item android:id="@+id/stop_vibration" android:title="@string/stop_vibration"></item>
+    -->
     <item android:id="@+id/play_wakeup" android:title="@string/play_wakeup"></item>
 </menu>

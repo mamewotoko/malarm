@@ -21,6 +21,8 @@ After set/stop alarm button
 - add tweet button of now playing
 - link to music store?
 - add license file of this source
+- fix vibration bug (related to intent handling)
+- fix multiple application instance bug
 
 ----
 Takashi Masuyama <mamewotoko@gmail.com>
