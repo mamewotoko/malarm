@@ -1,6 +1,10 @@
 * What is this?
 
-This is a sample application of android (version 2.3.3).
+This is a simple alarm application of android (version 2.3.3).
+
+OVERVIEW
+            sleep music (1h)                     wakeup music w/ vibration
+ Alarm set ------------------> ..... Alarm time --------------->
 
 HOW TO RUN:
 1. Rename Playlist_tmpl.java into Playlist.java.
@@ -17,12 +21,14 @@ After set/stop alarm button
 * TODO:
 - editable playlist support
 -- add favorite music
+- implement music player as Service to play long time
 - preset volume of sleep / wakeup mode.
-- add tweet button of now playing
-- link to music store?
 - add license file of this source
-- fix vibration bug (related to intent handling)
-- fix multiple application instance bug
+- fix vibration bug (onNewIntent is called after unlocking device?)
+
+* FUTURE WORK:
+- add tweet button of now playing
+- link to music store
 
 ----
 Takashi Masuyama <mamewotoko@gmail.com>

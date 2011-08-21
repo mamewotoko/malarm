@@ -112,6 +112,10 @@ public class HelloActivity extends Activity implements OnClickListener {
 	
 	protected void onNewIntent (Intent intent) {
 		String action = intent.getAction();
+		if (_time_picker.isEnabled()) {
+			_time_picker.setCurrentHour(DEFAULT_HOUR);
+			_time_picker.setCurrentMinute(DEFAULT_MIN);
+		}
 		if (action != null && action.equals(WAKEUPAPP_ACTION)) {
 			if (_vibrator != null) {
 				long pattern[] = { 10, 2000, 500, 1500, 1000, 2000 };
@@ -202,14 +206,13 @@ public class HelloActivity extends Activity implements OnClickListener {
 		}
 		//TODO: make function
 		_time_picker.setEnabled(false);
-		//TODO: localize date format?
 		_time_label.setText(String.format("%2d/%2d %02d:%02d", target.get(Calendar.MONTH)+1, target.get(Calendar.DATE), target_hour, target_min));
 		AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		PendingIntent pendingIntent = makePintent(WAKEUP_ACTION);
 		mgr.set(AlarmManager.RTC_WAKEUP, target_millis, pendingIntent);
 		showMessage(this, getString(R.string.alarm_set) + tommorow);
 		Player.startSleepMusic();
-		//TODO: fix design...
+
 		if (target_millis - now_millis >= SLEEP_TIME) {
 			pendingIntent = makePintent(SLEEP_ACTION);
 			mgr.set(AlarmManager.RTC_WAKEUP, now_millis+SLEEP_TIME, pendingIntent);
@@ -230,6 +233,7 @@ public class HelloActivity extends Activity implements OnClickListener {
 		Toast.makeText(c, message, Toast.LENGTH_LONG).show();
 	}
 
+	//TODO: implement music player as Service to play long time
 	public static class Player extends BroadcastReceiver {
 		private static final String MUSIC_PATH = "/sdcard/music/";
 		private static MediaPlayer _player = null;
