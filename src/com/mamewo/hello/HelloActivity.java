@@ -59,15 +59,21 @@ public class HelloActivity extends Activity implements OnClickListener {
 	private PhoneStateListener _calllistener;
 	
     public class MyCallListener extends PhoneStateListener{
-    	public MyCallListener(Context context) {
+    	HelloActivity _activity;
+    	public MyCallListener(HelloActivity context) {
+    		_activity = context;
     		TelephonyManager telmgr = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
     		telmgr.listen(this, LISTEN_CALL_STATE);
     	}
     	
     	public void onCallStateChanged (int state, String incomingNumber) {
-    		if (state == TelephonyManager.CALL_STATE_RINGING && _vibrator != null) {
+    		if (state == TelephonyManager.CALL_STATE_RINGING) {
     			//stop vibration
-    			_vibrator.cancel();
+    			if (_vibrator != null) {
+    				_vibrator.cancel();
+    			}
+    			_activity.cancelAlarm();
+    			//TODO: fix cancelAlarm or design
     			Player.stopMusic();
     		}
     	}
@@ -160,6 +166,7 @@ public class HelloActivity extends Activity implements OnClickListener {
         return true;
     }
 
+    //TODO: cancel or stop? (playing alarm?)
     private void cancelAlarm () {
 		PendingIntent p = makePintent(WAKEUP_ACTION);
 		AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
