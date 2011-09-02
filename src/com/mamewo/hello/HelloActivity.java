@@ -18,6 +18,8 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -54,6 +56,22 @@ public class HelloActivity extends Activity implements OnClickListener {
 	
 	private static final int REQUEST_ENABLE_BT = 10;
 	private BluetoothAdapter _adapter;
+	private PhoneStateListener _calllistener;
+	
+    public class MyCallListener extends PhoneStateListener{
+    	public MyCallListener(Context context) {
+    		TelephonyManager telmgr = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
+    		telmgr.listen(this, LISTEN_CALL_STATE);
+    	}
+    	
+    	public void onCallStateChanged (int state, String incomingNumber) {
+    		if (state == TelephonyManager.CALL_STATE_RINGING && _vibrator != null) {
+    			//stop vibration
+    			_vibrator.cancel();
+    			Player.stopMusic();
+    		}
+    	}
+    }
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -93,6 +111,7 @@ public class HelloActivity extends Activity implements OnClickListener {
 			 Toast.makeText(activity, "SSL error " + error, Toast.LENGTH_SHORT).show();
 		   }
 		 });
+		_calllistener = new MyCallListener(this);
 	}
 
 	private void loadWebPage () {

@@ -11,12 +11,13 @@ import android.widget.RemoteViews;
 
 public class HelloWidgetProvider extends AppWidgetProvider {
     public static final String HELLO_ACTION = "com.mamewo.hello.HELLO_ACTION";
-
+    
     @Override
     public void onReceive(Context context, Intent intent) {
         //AppWidgetManager mgr = AppWidgetManager.getInstance(context);
-    	Log.i("Hello", "action: " + intent.getAction());
-    	if (intent.getAction().equals(HELLO_ACTION)) {
+    	String action = intent.getAction();
+    	Log.i("Hello", "action: " + action);
+    	if (action.equals(HELLO_ACTION)) {
             //Toast.makeText(context, context.getString(R.string.touched), Toast.LENGTH_LONG).show();
         	Intent i = new Intent(context, HelloActivity.class);
     		i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
