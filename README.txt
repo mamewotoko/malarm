@@ -28,11 +28,15 @@ This is a simple alarm application of android (version 2.3.3).
 
 ## APPENDIX
 ### BUILD FROM COMMAND LINE
-1. In project top directory execute following command
+1. Create local.properties file and set sdk.dir property to location where you installed android SDK
+
+sdk.dir=<path to android SDK>
+
+2. In project top directory execute following command
 
 ant debug
 
-2. malarm-cmd.apk will be created in bin directory, if successed
+3. malarm-cmd.apk will be created in bin directory, if successed
 
 ### START EMULATOR AND INSTALL APK FROM COMMAND LINE
 1. 
