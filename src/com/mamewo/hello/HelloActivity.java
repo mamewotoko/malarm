@@ -225,7 +225,6 @@ public class HelloActivity extends Activity implements OnClickListener {
     		Player.startMusic(Playlist.WAKEUP_PLAYLIST);
     		break;
     	case R.id.pref:
-    		//TODO: show pref dialog
     		startActivity(new Intent(this, MyPreference.class));
     		break;
     	default:
