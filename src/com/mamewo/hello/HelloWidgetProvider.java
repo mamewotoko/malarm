@@ -1,5 +1,9 @@
 package com.mamewo.hello;
 
+/**
+ * @author Takashi Masuyama <mamewotoko@gmail.com>
+ */
+
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;

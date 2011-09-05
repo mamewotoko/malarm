@@ -1,5 +1,9 @@
 package com.mamewo.hello;
 
+/**
+ * @author Takashi Masuyama <mamewotoko@gmail.com>
+ */
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;

@@ -1,5 +1,10 @@
 package com.mamewo.hello;
 
+/**
+ * @author Takashi Masuyama <mamewotoko@gmail.com>
+ * This Activity is not used now...
+ */
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;

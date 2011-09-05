@@ -1,5 +1,9 @@
 package com.mamewo.hello;
 
+/**
+ * @author Takashi Masuyama <mamewotoko@gmail.com>
+ */
+
 import android.os.Bundle;
 import android.preference.*;
 
