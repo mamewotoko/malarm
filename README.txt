@@ -20,6 +20,7 @@ This is a simple alarm application of android (version 2.3.3).
 - preset volume of sleep / wakeup mode.
 - add license file of this source
 - fix vibration bug (onNewIntent is called after unlocking device?)
+- implement more smart scroll
 
 ## FUTURE WORK:
 - add tweet button of now playing

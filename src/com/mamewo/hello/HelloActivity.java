@@ -14,10 +14,12 @@ import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.preference.PreferenceManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -97,6 +99,7 @@ public class HelloActivity extends Activity implements OnClickListener {
 		config.setJavaScriptEnabled(true);
 		//to display twitter...
 		config.setDomStorageEnabled(true);
+		config.setJavaScriptEnabled(true);
 		config.setSupportZoom(true);
 		_webview.setOnTouchListener(new OnTouchListener() {
 			public boolean onTouch(View v, MotionEvent event) {
@@ -116,13 +119,38 @@ public class HelloActivity extends Activity implements OnClickListener {
 		   public void onReceivedSslError (WebView view, SslErrorHandler handler, SslError error) {
 			 Toast.makeText(activity, "SSL error " + error, Toast.LENGTH_SHORT).show();
 		   }
+		   public void onPageFinished(WebView view, String url) {
+			   Log.i("Hello", "onPageFinshed: " + url);
+			   if (url.indexOf("bijint") > 0) {
+				   //disable touch event on view?
+				   //for normal layout
+				   //view.scrollTo(480, 330);
+				   //TODO: get precise posiiton....
+				   view.zoomOut();
+				   //add sleep?
+				   if(url.indexOf("binan") > 0) {
+					   view.scrollTo(0, 300);
+				   } else {
+					   view.scrollTo(0, 780);
+				   }
+			   }
+		   }
 		 });
 		_calllistener = new MyCallListener(this);
 	}
 
-	private void loadWebPage () {
-		_webview.loadData("<html><head><title>Loading</title></head><body>Loading....</body></html>", "text/html", "utf-8");
-		_webview.loadUrl("http://twitter.com/");
+	private void loadWebPage (WebView view) {
+		//for bijin-tokei
+		String url = "http://www.bijint.com/jp/";
+		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+		url = pref.getString("url", "http://headlines.yahoo.co.jp/");
+		WebSettings config = _webview.getSettings();
+		if (url.indexOf("bijint") > 0) {
+			config.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+		} else {
+			config.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
+		}
+		_webview.loadUrl(url);
 	}
 	
 	protected void onStart () {
@@ -132,7 +160,7 @@ public class HelloActivity extends Activity implements OnClickListener {
 			_time_picker.setCurrentHour(DEFAULT_HOUR);
 			_time_picker.setCurrentMinute(DEFAULT_MIN);
 		}
-		loadWebPage();
+		loadWebPage(_webview);
 	}
 	
 	protected void onNewIntent (Intent intent) {
@@ -195,6 +223,10 @@ public class HelloActivity extends Activity implements OnClickListener {
     	case R.id.play_wakeup:
     		Player.reset();
     		Player.startMusic(Playlist.WAKEUP_PLAYLIST);
+    		break;
+    	case R.id.pref:
+    		//TODO: show pref dialog
+    		startActivity(new Intent(this, MyPreference.class));
     		break;
     	default:
     		Log.i("Hello", "Unknown menu");

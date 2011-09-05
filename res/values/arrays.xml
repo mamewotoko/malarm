@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="preference_item_key">
+        <item>Twitter</item>
+        <item>bijin-tokei</item>
+        <item>binan-tokei</item>
+    </string-array>
+    <!--  TODO: get URL from resource? -->
+    <string-array name="preference_item_value">
+        <item>http://twitter.com/</item>
+        <item>http://www.bijint.com/jp/</item>
+        <item>http://www.bijint.com/binan/</item>
+    </string-array>
+</resources>

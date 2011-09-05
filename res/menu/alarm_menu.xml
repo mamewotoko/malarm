@@ -4,4 +4,5 @@
     <item android:checked="false" android:id="@+id/set_now" android:checkable="false" android:enabled="true" android:visible="true" android:title="@string/set_now"></item>
     <item android:id="@+id/stop_vibration" android:title="@string/stop_vibration"></item>
     <item android:id="@+id/play_wakeup" android:title="@string/play_wakeup"></item>
+    <item android:title="@string/pref_menu" android:id="@+id/pref"></item>
 </menu>

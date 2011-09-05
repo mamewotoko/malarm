@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference android:dialogTitle="@string/preference_title" android:entryValues="@array/preference_item_value" android:entries="@array/preference_item_key" android:key="url" android:title="@string/pref_webview_url"></ListPreference>
+    
+</PreferenceScreen>
