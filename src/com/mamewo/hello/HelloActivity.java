@@ -8,13 +8,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Set;
 
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -59,9 +56,6 @@ public class HelloActivity extends Activity implements OnClickListener {
 	private TextView _time_label;
 	private WebView _webview;
 	private Vibrator _vibrator;
-	
-	private static final int REQUEST_ENABLE_BT = 10;
-	private BluetoothAdapter _adapter;
 	private PhoneStateListener _calllistener;
 	
     public class MyCallListener extends PhoneStateListener{
@@ -132,9 +126,17 @@ public class HelloActivity extends Activity implements OnClickListener {
 				   //TODO: get precise posiiton....
 				   view.zoomOut();
 				   //add sleep?
+				   try {
+					   //TODO: find more good solution... implement onAnimcationEnd?
+					   Thread.sleep(500);
+				   } catch (InterruptedException e) {
+					   
+				   }
 				   if(url.indexOf("binan") > 0) {
-					   view.scrollTo(0, 300);
+					   //TODO: fix scroll problem
+					   view.scrollTo(0, 650);
 				   } else {
+					   //Log.i("Hello", "bijin");
 					   view.scrollTo(0, 780);
 				   }
 			   }
@@ -440,42 +442,5 @@ public class HelloActivity extends Activity implements OnClickListener {
 
 			}
 		}
-	}
-
-	//obsoleted code...
-	void displayBluetoothDevices() {
-		Set<BluetoothDevice> devices = _adapter.getBondedDevices();
-		String message = "";
-		for (BluetoothDevice dev : devices) {
-			message += dev.getName() + ": " + dev.getAddress() + "\n";
-		}
-		showMessage(this.getBaseContext(), message);
-	}
-
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		Log.d("DEBUG", "onActivityResult: " + requestCode + ": " + resultCode);
-		if (requestCode == REQUEST_ENABLE_BT) {
-			if (resultCode != RESULT_OK) {
-				return;
-			}
-			displayBluetoothDevices();
-		}
-	}
-	
-	public void discoverBluetoothDevices(View v) {
-		Context context = v.getContext();
-		_adapter = BluetoothAdapter.getDefaultAdapter();
-		if (_adapter == null) {
-			showMessage(v.getContext(), context.getString(R.string.no_bluetooth));
-			return;
-		}
-		showMessage(v.getContext(), context.getString(R.string.start_bluetooth));
-		if (!_adapter.isEnabled()) {
-			Intent i = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-			//TODO: use id!
-			startActivityForResult(i, REQUEST_ENABLE_BT);
-		}
-		showMessage(context, context.getString(R.string.search_bluetooth));
-		displayBluetoothDevices();
 	}
 }

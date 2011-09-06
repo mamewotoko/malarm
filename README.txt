@@ -12,7 +12,6 @@ This is a simple alarm application of android (version 2.3.3).
   filename in /sdcard/music/ folder
 3. Build and run on your target device
 
-
 ## TODO:
 - editable playlist support
 -- add favorite music
@@ -23,8 +22,8 @@ This is a simple alarm application of android (version 2.3.3).
 - implement more smart scroll
 
 ## FUTURE WORK:
-- add tweet button of now playing
-- link to music store
+- add "good morning" or "now playing" tweet button
+- link to music store (where?)
 - redesign alarm function
 
 ## APPENDIX
