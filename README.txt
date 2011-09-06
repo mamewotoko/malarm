@@ -7,7 +7,7 @@ This is a simple alarm application of android (version 2.3.3).
  Alarm set ------------------> ..... Alarm time --------------->
 
 ## HOW TO RUN:
-1. Rename Playlist_tmpl.java into Playlist.java.
+1. Rename Playlist_tmpl.java into Playlist.java and put it into src/com/mamewo/hello directory.
 2. Fill Playlist.WAKEUP_PLAYLIST and Playlist.SLEEP_PLAYLIST by music
   filename in /sdcard/music/ folder
 3. Build and run on your target device
