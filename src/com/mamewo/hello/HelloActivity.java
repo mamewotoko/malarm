@@ -81,6 +81,7 @@ public class HelloActivity extends Activity implements OnClickListener {
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		Log.i("Hello", "onCreate is called");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		_time_picker = (TimePicker) findViewById(R.id.timePicker1);
@@ -123,28 +124,38 @@ public class HelloActivity extends Activity implements OnClickListener {
 				   //disable touch event on view?
 				   //for normal layout
 				   //view.scrollTo(480, 330);
-				   //TODO: get precise posiiton....
-				   view.zoomOut();
-				   //add sleep?
-				   try {
-					   //TODO: find more good solution... implement onAnimcationEnd?
-					   Thread.sleep(500);
-				   } catch (InterruptedException e) {
-					   
-				   }
+				   //TODO: get precise position....
 				   if(url.indexOf("binan") > 0) {
 					   //TODO: fix scroll problem
-					   view.scrollTo(0, 650);
+					   view.scrollTo(0, 420);
 				   } else {
 					   //Log.i("Hello", "bijin");
-					   view.scrollTo(0, 780);
+					   view.scrollTo(0, 960);
 				   }
 			   }
 		   }
 		 });
 		_calllistener = new MyCallListener(this);
 	}
-
+	
+	@Override
+	protected void onResume() {
+		//start tokei
+		Log.i("Hello", "onPause is called, start JavaScript");
+		super.onResume();
+		//WebView.onResume is hidden, why!?!?
+		_webview.getSettings().setJavaScriptEnabled(true);
+		loadWebPage(_webview);
+	}
+	
+	@Override
+	protected void onPause() {
+		Log.i("Hello", "onPause is called, stop JavaScript");
+		super.onPause();
+		//stop tokei
+		_webview.getSettings().setJavaScriptEnabled(false);
+	}
+	
 	private void loadWebPage (WebView view) {
 		//for bijin-tokei
 		String url = "http://www.bijint.com/jp/";
@@ -153,20 +164,24 @@ public class HelloActivity extends Activity implements OnClickListener {
 		WebSettings config = _webview.getSettings();
 		if (url.indexOf("bijint") > 0) {
 			config.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+			config.setDefaultZoom(WebSettings.ZoomDensity.MEDIUM);
 		} else {
 			config.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
 		}
+		//TODO: show loading toast
+		showMessage(this, "Loading...");
 		_webview.loadUrl(url);
 	}
 	
+	@Override
 	protected void onStart () {
+		Log.i("Hello", "onStart is called");
 		super.onStart();
 		Log.i("Hello", "onStart is called");
 		if (_time_picker.isEnabled()) {
 			_time_picker.setCurrentHour(DEFAULT_HOUR);
 			_time_picker.setCurrentMinute(DEFAULT_MIN);
 		}
-		loadWebPage(_webview);
 	}
 	
 	protected void onNewIntent (Intent intent) {
