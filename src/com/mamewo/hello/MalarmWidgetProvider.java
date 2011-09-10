@@ -13,7 +13,7 @@ import android.util.Log;
 import android.widget.RemoteViews;
 //import android.widget.Toast;
 
-public class HelloWidgetProvider extends AppWidgetProvider {
+public class MalarmWidgetProvider extends AppWidgetProvider {
     public static final String HELLO_ACTION = "com.mamewo.hello.HELLO_ACTION";
     
     @Override
@@ -23,7 +23,7 @@ public class HelloWidgetProvider extends AppWidgetProvider {
     	Log.i("Hello", "action: " + action);
     	if (action.equals(HELLO_ACTION)) {
             //Toast.makeText(context, context.getString(R.string.touched), Toast.LENGTH_LONG).show();
-        	Intent i = new Intent(context, HelloActivity.class);
+        	Intent i = new Intent(context, MalarmActivity.class);
     		i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         	context.startActivity(i);
         }
@@ -33,7 +33,7 @@ public class HelloWidgetProvider extends AppWidgetProvider {
     @Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
     	RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.hellowidget_provider);
-    	Intent intent = new Intent(context, HelloWidgetProvider.class);
+    	Intent intent = new Intent(context, MalarmWidgetProvider.class);
     	intent.setAction(HELLO_ACTION);
     	PendingIntent pintent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         rv.setOnClickPendingIntent(R.id.hellowidget_text, pintent);

@@ -38,7 +38,7 @@ import android.widget.*;
 import android.webkit.*;
 import android.net.http.*;
 
-public class HelloActivity extends Activity implements OnClickListener {
+public class MalarmActivity extends Activity implements OnClickListener {
 	/** Called when the activity is first created. */
 	//TODO: add to resource?
 	public static final String WAKEUP_ACTION = "com.mamewo.hello.WAKEUP_ACTION";
@@ -56,11 +56,12 @@ public class HelloActivity extends Activity implements OnClickListener {
 	private TextView _time_label;
 	private WebView _webview;
 	private Vibrator _vibrator;
+	@SuppressWarnings("unused")
 	private PhoneStateListener _calllistener;
 	
     public class MyCallListener extends PhoneStateListener{
-    	HelloActivity _activity;
-    	public MyCallListener(HelloActivity context) {
+    	MalarmActivity _activity;
+    	public MyCallListener(MalarmActivity context) {
     		_activity = context;
     		TelephonyManager telmgr = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
     		telmgr.listen(this, LISTEN_CALL_STATE);
@@ -160,7 +161,7 @@ public class HelloActivity extends Activity implements OnClickListener {
 		//for bijin-tokei
 		String url = "http://www.bijint.com/jp/";
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-		url = pref.getString("url", "http://headlines.yahoo.co.jp/");
+		url = pref.getString("url", "http://twitter.com/");
 		WebSettings config = _webview.getSettings();
 		if (url.indexOf("bijint") > 0) {
 			config.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
@@ -346,7 +347,7 @@ public class HelloActivity extends Activity implements OnClickListener {
 				mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
 				Player.reset();
 				startMusic(WAKEUP_PLAYLIST);
-				Intent i = new Intent(context, HelloActivity.class);
+				Intent i = new Intent(context, MalarmActivity.class);
 				i.setAction(WAKEUPAPP_ACTION);
 				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				context.startActivity(i);
