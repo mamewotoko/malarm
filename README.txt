@@ -12,9 +12,10 @@ This is a simple alarm application of android (version 2.3.3).
   filename in /sdcard/music/ folder
 3. Build and run on your target device
 
-## TODO:
+## TODO (bugs?):
 - editable playlist support
 -- add favorite music
+- change vibration timing
 - implement music player as Service to play long time
 - preset volume of sleep / wakeup mode.
 - add license file of this source

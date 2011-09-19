@@ -229,9 +229,6 @@ public class MalarmActivity extends Activity implements OnClickListener {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
     	switch(item.getItemId()) {
-    	case R.id.cancel_alarm:
-    		cancelAlarm();
-    		break;
     	case R.id.set_now:
     		Calendar now = new GregorianCalendar();
     		_time_picker.setCurrentHour(now.get(Calendar.HOUR_OF_DAY));
