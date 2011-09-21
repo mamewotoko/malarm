@@ -286,13 +286,16 @@ public class MalarmActivity extends Activity implements OnClickListener {
 		AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		PendingIntent pendingIntent = makePintent(WAKEUP_ACTION);
 		mgr.set(AlarmManager.RTC_WAKEUP, target_millis, pendingIntent);
-		showMessage(this, getString(R.string.alarm_set) + tommorow);
-		Player.startSleepMusic();
-
+		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+		int min = Integer.valueOf(pref.getString("sleeptime", "60"));
+		Player.startSleepMusic(min);
+		//TODO: localize
+		String sleeptime_str = String.valueOf(min) + " min";
 		if (target_millis - now_millis >= SLEEP_TIME) {
 			pendingIntent = makePintent(SLEEP_ACTION);
 			mgr.set(AlarmManager.RTC_WAKEUP, now_millis+SLEEP_TIME, pendingIntent);
 		}
+		showMessage(this, getString(R.string.alarm_set) + tommorow + " " + sleeptime_str);
 	}
 
 	public void onClick(View v) {
@@ -311,6 +314,7 @@ public class MalarmActivity extends Activity implements OnClickListener {
 
 	//TODO: implement music player as Service to play long time
 	public static class Player extends BroadcastReceiver {
+		//TODO: move MUSIC_PATH into playlist
 		private static final String MUSIC_PATH = "/sdcard/music/";
 		private static MediaPlayer _player = null;
 		private static int _index = 0;
@@ -383,11 +387,10 @@ public class MalarmActivity extends Activity implements OnClickListener {
 			}
 		}
 
-		public static void startSleepMusic() {
+		public static void startSleepMusic(int min) {
 			Log.i("Hello", "start sleep music and stop");
-			//long playtime_millis = System.currentTimeMillis() + 60 * 60 * 1000;
-			long playtime_millis = System.currentTimeMillis() + 10 * 1000;
 			// TODO: use Alarm instead of Thread
+			long playtime_millis = min * 60 * 1000;
 			SleepThread t = new SleepThread(playtime_millis);
 			t.start();
 			reset();

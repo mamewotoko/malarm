@@ -22,4 +22,6 @@
     <string name="preference_title">malarmの設定</string>
     <string name="pref_menu">設定</string>
     <string name="pref_webview_url">表示するサイト</string>
+    <string name="preference_time_title">スリープまでの時間</string>
+    <string name="pref_sleeptime">スリープまでの時間</string>
 </resources>

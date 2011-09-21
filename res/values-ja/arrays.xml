@@ -11,4 +11,24 @@
         <item>http://www.bijint.com/jp/</item>
         <item>http://www.bijint.com/binan/</item>
     </string-array>
+
+    <string-array name="preference_time_key">
+        <item>15 分</item>
+        <item>30 分</item>
+        <item>45 分</item>
+        <item>60 分</item>
+        <item>75 分</item>
+        <item>90 分</item>
+        <item>1 分</item>
+    </string-array>
+    <string-array name="preference_time_value">
+        <item>15</item>
+        <item>30</item>
+        <item>45</item>
+        <item>60</item>
+        <item>75</item>
+        <item>90</item>
+        <item>1</item>
+    </string-array>
+
 </resources>
