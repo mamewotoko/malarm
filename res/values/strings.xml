@@ -24,4 +24,7 @@
     <string name="pref_webview_url">Web site to display</string>
     <string name="preference_time_title">Sleep time</string>
     <string name="pref_sleeptime">Sleep time</string>
+    <string name="enable_vibration">ON</string>
+    <string name="disable_vibration">OFF</string>
+    <string name="pref_title">Wakeup Vibration</string>
 </resources>

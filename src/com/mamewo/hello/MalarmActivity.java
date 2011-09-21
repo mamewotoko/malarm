@@ -46,7 +46,6 @@ public class MalarmActivity extends Activity implements OnClickListener {
 	public static final String SLEEP_ACTION = "com.mamewo.hello.SLEEP_ACTION";
 	// 1 hour
 	//TODO: add to preference
-	public static long SLEEP_TIME = 60 * 60 * 1000;
 	private static final Integer DEFAULT_HOUR = new Integer(7);
 	private static final Integer DEFAULT_MIN = new Integer(0);
 	
@@ -55,6 +54,7 @@ public class MalarmActivity extends Activity implements OnClickListener {
 	private TimePicker _time_picker;
 	private TextView _time_label;
 	private WebView _webview;
+	//TODO: add vibration preference
 	private Vibrator _vibrator;
 	@SuppressWarnings("unused")
 	private PhoneStateListener _calllistener;
@@ -156,24 +156,7 @@ public class MalarmActivity extends Activity implements OnClickListener {
 		//stop tokei
 		_webview.getSettings().setJavaScriptEnabled(false);
 	}
-	
-	private void loadWebPage (WebView view) {
-		//for bijin-tokei
-		String url = "http://www.bijint.com/jp/";
-		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-		url = pref.getString("url", "http://twitter.com/");
-		WebSettings config = _webview.getSettings();
-		if (url.indexOf("bijint") > 0) {
-			config.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
-			config.setDefaultZoom(WebSettings.ZoomDensity.MEDIUM);
-		} else {
-			config.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
-		}
-		//TODO: show loading toast
-		showMessage(this, "Loading...");
-		_webview.loadUrl(url);
-	}
-	
+
 	@Override
 	protected void onStart () {
 		Log.i("Hello", "onStart is called");
@@ -183,6 +166,20 @@ public class MalarmActivity extends Activity implements OnClickListener {
 			_time_picker.setCurrentHour(DEFAULT_HOUR);
 			_time_picker.setCurrentMinute(DEFAULT_MIN);
 		}
+	}
+
+	private void loadWebPage (WebView view) {
+		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+		String url = pref.getString("url", "http://twitter.com/");
+		WebSettings config = _webview.getSettings();
+		if (url.indexOf("bijint") > 0) {
+			config.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+			config.setDefaultZoom(WebSettings.ZoomDensity.MEDIUM);
+		} else {
+			config.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
+		}
+		showMessage(this, "Loading...");
+		_webview.loadUrl(url);
 	}
 	
 	protected void onNewIntent (Intent intent) {
@@ -289,11 +286,12 @@ public class MalarmActivity extends Activity implements OnClickListener {
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		int min = Integer.valueOf(pref.getString("sleeptime", "60"));
 		Player.startSleepMusic(min);
+		long sleep_time_millis = min * 60 * 1000;
 		//TODO: localize
 		String sleeptime_str = String.valueOf(min) + " min";
-		if (target_millis - now_millis >= SLEEP_TIME) {
-			pendingIntent = makePintent(SLEEP_ACTION);
-			mgr.set(AlarmManager.RTC_WAKEUP, now_millis+SLEEP_TIME, pendingIntent);
+		if (target_millis - now_millis >= sleep_time_millis) {
+			PendingIntent sleepIntent = makePintent(SLEEP_ACTION);
+			mgr.set(AlarmManager.RTC_WAKEUP, now_millis+sleep_time_millis, sleepIntent);
 		}
 		showMessage(this, getString(R.string.alarm_set) + tommorow + " " + sleeptime_str);
 	}
@@ -314,15 +312,13 @@ public class MalarmActivity extends Activity implements OnClickListener {
 
 	//TODO: implement music player as Service to play long time
 	public static class Player extends BroadcastReceiver {
-		//TODO: move MUSIC_PATH into playlist
-		private static final String MUSIC_PATH = "/sdcard/music/";
-		private static MediaPlayer _player = null;
-		private static int _index = 0;
-
+		private static final String MUSIC_PATH = Playlist.MUSIC_PATH;
 		private static final String[] SLEEP_PLAYLIST = Playlist.SLEEP_PLAYLIST;
 		private static final String[] WAKEUP_PLAYLIST = Playlist.WAKEUP_PLAYLIST;
 
 		private static String[] current_playlist = SLEEP_PLAYLIST;
+		private static MediaPlayer _player = null;
+		private static int _index = 0;
 
 		public static boolean isPlaying() {
 			return _player != null && _player.isPlaying();

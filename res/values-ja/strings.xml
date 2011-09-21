@@ -24,4 +24,7 @@
     <string name="pref_webview_url">表示するサイト</string>
     <string name="preference_time_title">スリープまでの時間</string>
     <string name="pref_sleeptime">スリープまでの時間</string>
+    <string name="enable_vibration">ON</string>
+    <string name="disable_vibration">OFF</string>
+    <string name="pref_vibration">起床時バイブレーション</string>
 </resources>
