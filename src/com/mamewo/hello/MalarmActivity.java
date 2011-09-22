@@ -16,6 +16,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -58,6 +59,9 @@ public class MalarmActivity extends Activity implements OnClickListener {
 	private Vibrator _vibrator;
 	@SuppressWarnings("unused")
 	private PhoneStateListener _calllistener;
+	private static boolean _SCHEDULED = false;
+	private static boolean _PREF_USE_NATIVE_PLAYER;
+	private static boolean _PREF_VIBRATE;
 	
     public class MyCallListener extends PhoneStateListener{
     	MalarmActivity _activity;
@@ -115,13 +119,8 @@ public class MalarmActivity extends Activity implements OnClickListener {
 		   //for debug
 		   public void onLoadResource (WebView view, String url) {
 			   Log.i("Hello", "loading: " + url);
-		   }
-		   public void onReceivedSslError (WebView view, SslErrorHandler handler, SslError error) {
-			 Toast.makeText(activity, "SSL error " + error, Toast.LENGTH_SHORT).show();
-		   }
-		   public void onPageFinished(WebView view, String url) {
-			   Log.i("Hello", "onPageFinshed: " + url);
-			   if (url.indexOf("bijint") > 0) {
+			   //addhoc polling...
+			   if (url.indexOf("bijint") > 0 && view.getContentHeight() > 400) {
 				   //disable touch event on view?
 				   //for normal layout
 				   //view.scrollTo(480, 330);
@@ -135,8 +134,29 @@ public class MalarmActivity extends Activity implements OnClickListener {
 				   }
 			   }
 		   }
+		   public void onReceivedSslError (WebView view, SslErrorHandler handler, SslError error) {
+			 Toast.makeText(activity, "SSL error " + error, Toast.LENGTH_SHORT).show();
+		   }
+		   public void onPageFinished(WebView view, String url) {
+			   Log.i("Hello", "onPageFinshed: " + url);
+		   }
 		 });
+		//stop alarm when phone call
 		_calllistener = new MyCallListener(this);
+		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+		_PREF_USE_NATIVE_PLAYER = pref.getBoolean("use_native_player", false);
+		_PREF_VIBRATE = pref.getBoolean("vibrate", false);
+
+		pref.registerOnSharedPreferenceChangeListener(new OnSharedPreferenceChangeListener() {
+			@Override
+			public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+				if (key.equals("use_native_player")) {
+					_PREF_USE_NATIVE_PLAYER = sharedPreferences.getBoolean(key, false);
+				} else if (key.equals("vibrate")) {
+					_PREF_VIBRATE = sharedPreferences.getBoolean(key, true);
+				}
+			}
+		});
 	}
 	
 	@Override
@@ -161,7 +181,10 @@ public class MalarmActivity extends Activity implements OnClickListener {
 	protected void onStart () {
 		Log.i("Hello", "onStart is called");
 		super.onStart();
-		Log.i("Hello", "onStart is called");
+		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+		_PREF_USE_NATIVE_PLAYER = pref.getBoolean("use_native_player", false);
+		_PREF_VIBRATE = pref.getBoolean("vibrate", false);
+
 		if (_time_picker.isEnabled()) {
 			_time_picker.setCurrentHour(DEFAULT_HOUR);
 			_time_picker.setCurrentMinute(DEFAULT_MIN);
@@ -184,15 +207,16 @@ public class MalarmActivity extends Activity implements OnClickListener {
 	
 	protected void onNewIntent (Intent intent) {
 		String action = intent.getAction();
-		if (_time_picker.isEnabled()) {
-			_time_picker.setCurrentHour(DEFAULT_HOUR);
-			_time_picker.setCurrentMinute(DEFAULT_MIN);
-		}
 		if (action != null && action.equals(WAKEUPAPP_ACTION)) {
-			if (_vibrator != null) {
+			if (_PREF_VIBRATE && _vibrator != null) {
 				long pattern[] = { 10, 2000, 500, 1500, 1000, 2000 };
 				_vibrator.vibrate(pattern, 1);
 			}
+			_time_picker.setEnabled(true);
+		}
+		if (_time_picker.isEnabled()) {
+			_time_picker.setCurrentHour(DEFAULT_HOUR);
+			_time_picker.setCurrentMinute(DEFAULT_MIN);
 		}
 	}
 	
@@ -253,17 +277,23 @@ public class MalarmActivity extends Activity implements OnClickListener {
     	return true;
     }
 	
-	public void scheduleToPlaylist() {
+	public void startAlarm() {
 		Log.i("Hello", "scheduleToPlaylist is called");
 		//TODO: hide keyboard?
-		if (Player.isPlaying()) {
+		if (_SCHEDULED) {
+			cancelAlarm();
 			if (_vibrator != null) {
 				_vibrator.cancel();
 			}
-			Player.stopMusic();
+			//TODO: fix design
+			if (_PREF_USE_NATIVE_PLAYER) {
+				Player.stopMusicNativePlayer(this);
+			} else {
+				Player.stopMusic();
+			}
 			//TODO: what's happen if now playing alarm sound?
-			cancelAlarm();
 			showMessage(this, getString(R.string.music_stopped));
+			_SCHEDULED = false;
 			return;
 		}
 		//set timer
@@ -288,7 +318,7 @@ public class MalarmActivity extends Activity implements OnClickListener {
 		mgr.set(AlarmManager.RTC_WAKEUP, target_millis, pendingIntent);
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		int min = Integer.valueOf(pref.getString("sleeptime", "60"));
-		Player.playSleepMusic(min);
+		Player.playSleepMusic(this, min);
 		long sleep_time_millis = min * 60 * 1000;
 		//TODO: localize
 		String sleeptime_str = String.valueOf(min) + " min";
@@ -297,13 +327,14 @@ public class MalarmActivity extends Activity implements OnClickListener {
 			mgr.set(AlarmManager.RTC_WAKEUP, now_millis+sleep_time_millis, sleepIntent);
 		}
 		showMessage(this, getString(R.string.alarm_set) + tommorow + " " + sleeptime_str);
+		_SCHEDULED = true;
 	}
 
 	public void onClick(View v) {
 		if (v == _next_button) {
 			Player.playNext();
 		} else if (v == _sleep_wakeup_button) {
-			scheduleToPlaylist();
+			startAlarm();
 		} else {
 			showMessage(v.getContext(), getString(R.string.unknown_button));
 		}
@@ -323,6 +354,8 @@ public class MalarmActivity extends Activity implements OnClickListener {
 		private static MediaPlayer _player = null;
 		private static int _index = 0;
 
+		enum PLAYER_KIND { NATIVE, NOT_NATIVE };
+		
 		public static boolean isPlaying() {
 			return _player != null && _player.isPlaying();
 		}
@@ -368,17 +401,25 @@ public class MalarmActivity extends Activity implements OnClickListener {
 
 		private static class SleepThread extends Thread {
 			long _sleeptime;
-
-			public SleepThread(long sleeptime) {
+			PLAYER_KIND _kind;
+			Context _context;
+			
+			public SleepThread(Context context, long sleeptime, PLAYER_KIND kind) {
 				Log.i("Hello", "SleepThread is created");
+				_context = context;
 				_sleeptime = sleeptime;
+				_kind = kind;
 			}
 
 			public void run() {
 				Log.i("Hello", "SleepThread run");
 				try {
 					Thread.sleep(_sleeptime);
-					Player.stopMusic();
+					if (_kind == PLAYER_KIND.NATIVE) {
+						Player.stopMusicNativePlayer(_context);
+					} else {
+						Player.stopMusic();
+					}
 					// TODO: sleep device?
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -406,23 +447,33 @@ public class MalarmActivity extends Activity implements OnClickListener {
 		//TODO: fix design
 		public static void playWakeupMusic(Context context) {
 			File f = new File(Playlist.WAKEUP_PLAYLIST_PATH);
-			if (f.isFile()) {
+			if (_PREF_USE_NATIVE_PLAYER && f.isFile()) {
 				playMusicNativePlayer(context, f);
 				//TODO: show tokei
 			} else {
 				Player.reset();
-				startMusic(WAKEUP_PLAYLIST);
+				playMusic(WAKEUP_PLAYLIST);
 			}
 		}
 
-		public static void playSleepMusic(int min) {
+		public static void playSleepMusic(Context context, int min) {
 			Log.i("Hello", "start sleep music and stop");
 			// TODO: use Alarm instead of Thread
 			long playtime_millis = min * 60 * 1000;
-			SleepThread t = new SleepThread(playtime_millis);
-			t.start();
 			reset();
-			startMusic(SLEEP_PLAYLIST);
+			File f = new File(Playlist.SLEEP_PLAYLIST_PATH);
+			SleepThread t;
+			if (_PREF_USE_NATIVE_PLAYER && f.isFile()) {
+				Log.i("Hello", "playSleepMusic: NativePlayer");
+				playMusicNativePlayer(context, f);
+				t = new SleepThread(context, playtime_millis, PLAYER_KIND.NATIVE);
+			} else {
+				//TODO: use native player
+				Log.i("Hello", "playSleepMusic: MediaPlayer");
+				t = new SleepThread(context, playtime_millis, PLAYER_KIND.NOT_NATIVE);
+				playMusic(SLEEP_PLAYLIST);
+			}
+			t.start();
 		}
 
 		public static void playNext() {
@@ -431,7 +482,7 @@ public class MalarmActivity extends Activity implements OnClickListener {
 			if (Player.isPlaying()) {
 				stopMusic();
 			}
-			startMusic(current_playlist);
+			playMusic(current_playlist);
 		}
 
 		public static class MusicCompletionListener implements
@@ -450,7 +501,7 @@ public class MalarmActivity extends Activity implements OnClickListener {
 			}
 		}
 
-		public static void startMusic(String[] playlist) {
+		public static void playMusic(String[] playlist) {
 			current_playlist = playlist;
 			Log.i("Hello", "startMusic");
 			if (_player == null) {
