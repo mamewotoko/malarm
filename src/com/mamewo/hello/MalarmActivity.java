@@ -77,8 +77,7 @@ public class MalarmActivity extends Activity implements OnClickListener {
     			if (_vibrator != null) {
     				_vibrator.cancel();
     			}
-    			_activity.cancelAlarm();
-    			//TODO: fix cancelAlarm or design
+    			//native player is OK
     			Player.stopMusic();
     		}
     	}
