@@ -36,6 +36,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.*;
 import android.webkit.*;
+import android.net.Uri;
 import android.net.http.*;
 
 public class MalarmActivity extends Activity implements OnClickListener {
@@ -44,8 +45,7 @@ public class MalarmActivity extends Activity implements OnClickListener {
 	public static final String WAKEUP_ACTION = "com.mamewo.hello.WAKEUP_ACTION";
 	public static final String WAKEUPAPP_ACTION = "com.mamewo.hello.WAKEUPAPP_ACTION";
 	public static final String SLEEP_ACTION = "com.mamewo.hello.SLEEP_ACTION";
-	// 1 hour
-	//TODO: add to preference
+	
 	private static final Integer DEFAULT_HOUR = new Integer(7);
 	private static final Integer DEFAULT_MIN = new Integer(0);
 	
@@ -148,7 +148,7 @@ public class MalarmActivity extends Activity implements OnClickListener {
 		_webview.getSettings().setJavaScriptEnabled(true);
 		loadWebPage(_webview);
 	}
-	
+
 	@Override
 	protected void onPause() {
 		Log.i("Hello", "onPause is called, stop JavaScript");
@@ -222,9 +222,10 @@ public class MalarmActivity extends Activity implements OnClickListener {
 		_time_label.setText("");
 		mgr.cancel(p);
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+    	
     	switch(item.getItemId()) {
     	case R.id.set_now:
     		Calendar now = new GregorianCalendar();
@@ -237,11 +238,13 @@ public class MalarmActivity extends Activity implements OnClickListener {
     		}
     		break;
     	case R.id.play_wakeup:
-    		Player.reset();
-    		Player.startMusic(Playlist.WAKEUP_PLAYLIST);
+    		Player.playWakeupMusic(this);
     		break;
     	case R.id.pref:
     		startActivity(new Intent(this, MyPreference.class));
+    		break;
+    	case R.id.stop_music:
+    		Player.stopMusicNativePlayer(this);
     		break;
     	default:
     		Log.i("Hello", "Unknown menu");
@@ -260,7 +263,7 @@ public class MalarmActivity extends Activity implements OnClickListener {
 			Player.stopMusic();
 			//TODO: what's happen if now playing alarm sound?
 			cancelAlarm();
-			showMessage(this, getString(R.string.stop_music));
+			showMessage(this, getString(R.string.music_stopped));
 			return;
 		}
 		//set timer
@@ -285,7 +288,7 @@ public class MalarmActivity extends Activity implements OnClickListener {
 		mgr.set(AlarmManager.RTC_WAKEUP, target_millis, pendingIntent);
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		int min = Integer.valueOf(pref.getString("sleeptime", "60"));
-		Player.startSleepMusic(min);
+		Player.playSleepMusic(min);
 		long sleep_time_millis = min * 60 * 1000;
 		//TODO: localize
 		String sleeptime_str = String.valueOf(min) + " min";
@@ -333,21 +336,21 @@ public class MalarmActivity extends Activity implements OnClickListener {
 			// AppWidgetManager mgr = AppWidgetManager.getInstance(context);
 			Log.i("Hello", "action: " + intent.getAction());
 			if (intent.getAction().equals(WAKEUP_ACTION)) {
+				Log.i("Hello", "Wakeup action");
 				if (Player.isPlaying()) {
 					stopMusic();
 				}
-				Log.i("Hello", "Wakeup action");
 				AudioManager mgr = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+				//TODO: add volume to pref
 				mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
 				mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
 				mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
 				mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
-				Player.reset();
-				startMusic(WAKEUP_PLAYLIST);
 				Intent i = new Intent(context, MalarmActivity.class);
 				i.setAction(WAKEUPAPP_ACTION);
 				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				context.startActivity(i);
+				playWakeupMusic(context);
 			} else if (intent.getAction().equals(SLEEP_ACTION)) {
 				stopMusic();
 				showMessage(context, context.getString(R.string.goodnight));
@@ -383,7 +386,36 @@ public class MalarmActivity extends Activity implements OnClickListener {
 			}
 		}
 
-		public static void startSleepMusic(int min) {
+		public static void playMusicNativePlayer(Context context, File f) {
+			Intent i = new Intent();
+			i.setAction(Intent.ACTION_VIEW);
+			i.setDataAndType(Uri.fromFile(f), "audio/*");
+			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			context.startActivity(i);
+		}
+		
+		public static void stopMusicNativePlayer(Context context) {
+			File f = new File(Playlist.STOP_MUSIC);
+			if(! f.isFile()) {
+				Log.i("Hello", "No stop play list is found");
+				return;
+			}
+			playMusicNativePlayer(context, f);
+		}
+
+		//TODO: fix design
+		public static void playWakeupMusic(Context context) {
+			File f = new File(Playlist.WAKEUP_PLAYLIST_PATH);
+			if (f.isFile()) {
+				playMusicNativePlayer(context, f);
+				//TODO: show tokei
+			} else {
+				Player.reset();
+				startMusic(WAKEUP_PLAYLIST);
+			}
+		}
+
+		public static void playSleepMusic(int min) {
 			Log.i("Hello", "start sleep music and stop");
 			// TODO: use Alarm instead of Thread
 			long playtime_millis = min * 60 * 1000;

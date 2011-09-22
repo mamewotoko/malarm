@@ -13,10 +13,12 @@ This is a simple alarm application of android (version 2.3.3).
 3. Build and run on your target device
 
 ## TODO (bugs?):
-- editable playlist support
--- add favorite music
-- change vibration timing
 - implement music player as Service to play long time
+-- or use native player
+- editable playlist support
+-- use au music player????
+- add stop music into resource
+- change vibration timing
 - preset volume of sleep / wakeup mode.
 - add license file of this source
 - fix vibration bug (onNewIntent is called after unlocking device?)

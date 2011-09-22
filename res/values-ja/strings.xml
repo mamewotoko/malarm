@@ -2,7 +2,8 @@
 <resources>
     <string name="hello">Hello World, HelloActivity!</string>
     <string name="app_name">アラーム</string>
-    <string name="stop_music">音楽をとめました</string>
+    <string name="stop_music">音楽をとめる</string>
+    <string name="music_stopped">音楽をとめました</string>
     <string name="tomorrow">あした</string>
     <string name="alarm_set">アラームをセットしました</string>
     <string name="unknown_button">知らないボタンが押されました</string>

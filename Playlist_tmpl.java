@@ -1,6 +1,14 @@
 package com.mamewo.hello;
 
 public class Playlist {
+	//There are two ways to play music (a/b)
+	//a) Use native music player by sending intent
+	protected static final String WAKEUP_PLAYLIST_PATH = "/sdcard/music/wakeup.m3u";
+	protected static final String SLEEP_PLAYLIST_PATH = "/sdcard/music/sleep.m3u";
+	//TODO: add to resource?
+	protected static final String STOP_MUSIC = "/sdcard/music/stop.m4a";
+	
+	//b) Use internal MediaPlayer instance
 	protected static final String MUSIC_PATH = "/sdcard/music/";
 
 	//TODO: list filenames of music file in "music" folder of SD card

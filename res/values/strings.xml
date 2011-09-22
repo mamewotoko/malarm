@@ -3,6 +3,7 @@
     <string name="hello">Hello World, HelloActivity!</string>
     <string name="app_name">Alarm</string>
     <string name="stop_music">Stop Music</string>
+    <string name="music_stopped">Music stopped</string>
     <string name="tomorrow">tomorrow</string>
     <string name="alarm_set">Alarm set!</string>
     <string name="unknown_button">Unknown button!</string>
@@ -26,5 +27,5 @@
     <string name="pref_sleeptime">Sleep time</string>
     <string name="enable_vibration">ON</string>
     <string name="disable_vibration">OFF</string>
-    <string name="pref_title">Wakeup Vibration</string>
+    <string name="pref_title">Wakeup vibration</string>
 </resources>
