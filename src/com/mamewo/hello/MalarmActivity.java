@@ -63,6 +63,8 @@ public class MalarmActivity extends Activity implements OnClickListener {
 	private static boolean _PREF_USE_NATIVE_PLAYER;
 	private static boolean _PREF_VIBRATE;
 	
+	private static String _NATIVE_PLAYER_KEY = "nativeplayer";
+	
     public class MyCallListener extends PhoneStateListener{
     	MalarmActivity _activity;
     	public MyCallListener(MalarmActivity context) {
@@ -284,14 +286,11 @@ public class MalarmActivity extends Activity implements OnClickListener {
 			if (_vibrator != null) {
 				_vibrator.cancel();
 			}
-			//TODO: fix design
-			if (_PREF_USE_NATIVE_PLAYER) {
-				Player.stopMusicNativePlayer(this);
-			} else {
+			if (! _PREF_USE_NATIVE_PLAYER) {
 				Player.stopMusic();
+				//TODO: what's happen if now playing alarm sound?
+				showMessage(this, getString(R.string.music_stopped));
 			}
-			//TODO: what's happen if now playing alarm sound?
-			showMessage(this, getString(R.string.music_stopped));
 			_SCHEDULED = false;
 			return;
 		}
@@ -322,7 +321,11 @@ public class MalarmActivity extends Activity implements OnClickListener {
 		//TODO: localize
 		String sleeptime_str = String.valueOf(min) + " min";
 		if (target_millis - now_millis >= sleep_time_millis) {
-			PendingIntent sleepIntent = makePintent(SLEEP_ACTION);
+			Intent i = new Intent(this, Player.class);
+			i.setAction(SLEEP_ACTION);
+			i.putExtra(_NATIVE_PLAYER_KEY, true);
+			PendingIntent sleepIntent = PendingIntent.getBroadcast(this, 0, i,
+					PendingIntent.FLAG_CANCEL_CURRENT);
 			mgr.set(AlarmManager.RTC_WAKEUP, now_millis+sleep_time_millis, sleepIntent);
 		}
 		showMessage(this, getString(R.string.alarm_set) + tommorow + " " + sleeptime_str);
@@ -353,8 +356,6 @@ public class MalarmActivity extends Activity implements OnClickListener {
 		private static MediaPlayer _player = null;
 		private static int _index = 0;
 
-		enum PLAYER_KIND { NATIVE, NOT_NATIVE };
-		
 		public static boolean isPlaying() {
 			return _player != null && _player.isPlaying();
 		}
@@ -384,7 +385,11 @@ public class MalarmActivity extends Activity implements OnClickListener {
 				context.startActivity(i);
 				playWakeupMusic(context);
 			} else if (intent.getAction().equals(SLEEP_ACTION)) {
-				stopMusic();
+				if (intent.getExtras().getBoolean(_NATIVE_PLAYER_KEY)) {
+					Player.stopMusicNativePlayer(context);
+				} else {
+					stopMusic();
+				}
 				showMessage(context, context.getString(R.string.goodnight));
 				//TODO: power off?
 			}
@@ -396,34 +401,6 @@ public class MalarmActivity extends Activity implements OnClickListener {
 			}
 			_player.stop();
 			// TODO: delete?
-		}
-
-		private static class SleepThread extends Thread {
-			long _sleeptime;
-			PLAYER_KIND _kind;
-			Context _context;
-			
-			public SleepThread(Context context, long sleeptime, PLAYER_KIND kind) {
-				Log.i("malarm", "SleepThread is created");
-				_context = context;
-				_sleeptime = sleeptime;
-				_kind = kind;
-			}
-
-			public void run() {
-				Log.i("malarm", "SleepThread run");
-				try {
-					Thread.sleep(_sleeptime);
-					if (_kind == PLAYER_KIND.NATIVE) {
-						Player.stopMusicNativePlayer(_context);
-					} else {
-						Player.stopMusic();
-					}
-					// TODO: sleep device?
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
 		}
 
 		public static void playMusicNativePlayer(Context context, File f) {
@@ -458,21 +435,16 @@ public class MalarmActivity extends Activity implements OnClickListener {
 		public static void playSleepMusic(Context context, int min) {
 			Log.i("malarm", "start sleep music and stop");
 			// TODO: use Alarm instead of Thread
-			long playtime_millis = min * 60 * 1000;
 			reset();
 			File f = new File(Playlist.SLEEP_PLAYLIST_PATH);
-			SleepThread t;
 			if (_PREF_USE_NATIVE_PLAYER && f.isFile()) {
 				Log.i("malarm", "playSleepMusic: NativePlayer");
 				playMusicNativePlayer(context, f);
-				t = new SleepThread(context, playtime_millis, PLAYER_KIND.NATIVE);
 			} else {
 				//TODO: use native player
 				Log.i("malarm", "playSleepMusic: MediaPlayer");
-				t = new SleepThread(context, playtime_millis, PLAYER_KIND.NOT_NATIVE);
 				playMusic(SLEEP_PLAYLIST);
 			}
-			t.start();
 		}
 
 		public static void playNext() {
