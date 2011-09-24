@@ -38,7 +38,7 @@ class MyCircleView extends View implements View.OnTouchListener {
 		super(context);
 		setFocusable(true);
 		this.setOnTouchListener(this);
-		_timer = new Timer("hello", true);
+		_timer = new Timer("malarm", true);
 		_timer.schedule(new MyTimerTask(this), 1000, 1000);
 		Resources res = getResources();
 		_bitmap = ((BitmapDrawable)res.getDrawable(R.drawable.img)).getBitmap();		

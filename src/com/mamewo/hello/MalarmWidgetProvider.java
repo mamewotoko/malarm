@@ -19,7 +19,7 @@ public class MalarmWidgetProvider extends AppWidgetProvider {
     public void onReceive(Context context, Intent intent) {
         //AppWidgetManager mgr = AppWidgetManager.getInstance(context);
     	String action = intent.getAction();
-    	Log.i("Hello", "action: " + action);
+    	Log.i("malarm", "action: " + action);
     	if (action.equals(HELLO_ACTION)) {
             //Toast.makeText(context, context.getString(R.string.touched), Toast.LENGTH_LONG).show();
         	Intent i = new Intent(context, MalarmActivity.class);

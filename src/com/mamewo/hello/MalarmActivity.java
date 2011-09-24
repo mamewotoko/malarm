@@ -85,7 +85,7 @@ public class MalarmActivity extends Activity implements OnClickListener {
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		Log.i("Hello", "onCreate is called");
+		Log.i("malarm", "onCreate is called");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		_time_picker = (TimePicker) findViewById(R.id.timePicker1);
@@ -117,7 +117,7 @@ public class MalarmActivity extends Activity implements OnClickListener {
 		   }
 		   //for debug
 		   public void onLoadResource (WebView view, String url) {
-			   Log.i("Hello", "loading: " + url);
+			   Log.i("malarm", "loading: " + url);
 			   //addhoc polling...
 			   if (url.indexOf("bijint") > 0 && view.getContentHeight() > 400) {
 				   //disable touch event on view?
@@ -128,7 +128,7 @@ public class MalarmActivity extends Activity implements OnClickListener {
 					   //TODO: fix scroll problem
 					   view.scrollTo(0, 420);
 				   } else {
-					   //Log.i("Hello", "bijin");
+					   //Log.i("malarm", "bijin");
 					   view.scrollTo(0, 960);
 				   }
 			   }
@@ -137,7 +137,7 @@ public class MalarmActivity extends Activity implements OnClickListener {
 			 Toast.makeText(activity, "SSL error " + error, Toast.LENGTH_SHORT).show();
 		   }
 		   public void onPageFinished(WebView view, String url) {
-			   Log.i("Hello", "onPageFinshed: " + url);
+			   Log.i("malarm", "onPageFinshed: " + url);
 		   }
 		 });
 		//stop alarm when phone call
@@ -161,7 +161,7 @@ public class MalarmActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onResume() {
 		//start tokei
-		Log.i("Hello", "onPause is called, start JavaScript");
+		Log.i("malarm", "onPause is called, start JavaScript");
 		super.onResume();
 		//WebView.onResume is hidden, why!?!?
 		_webview.getSettings().setJavaScriptEnabled(true);
@@ -170,7 +170,7 @@ public class MalarmActivity extends Activity implements OnClickListener {
 
 	@Override
 	protected void onPause() {
-		Log.i("Hello", "onPause is called, stop JavaScript");
+		Log.i("malarm", "onPause is called, stop JavaScript");
 		super.onPause();
 		//stop tokei
 		_webview.getSettings().setJavaScriptEnabled(false);
@@ -178,7 +178,7 @@ public class MalarmActivity extends Activity implements OnClickListener {
 
 	@Override
 	protected void onStart () {
-		Log.i("Hello", "onStart is called");
+		Log.i("malarm", "onStart is called");
 		super.onStart();
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		_PREF_USE_NATIVE_PLAYER = pref.getBoolean("use_native_player", false);
@@ -270,14 +270,14 @@ public class MalarmActivity extends Activity implements OnClickListener {
     		Player.stopMusicNativePlayer(this);
     		break;
     	default:
-    		Log.i("Hello", "Unknown menu");
+    		Log.i("malarm", "Unknown menu");
     		return false;
     	}
     	return true;
     }
 	
 	public void startAlarm() {
-		Log.i("Hello", "scheduleToPlaylist is called");
+		Log.i("malarm", "scheduleToPlaylist is called");
 		//TODO: hide keyboard?
 		if (_SCHEDULED) {
 			cancelAlarm();
@@ -366,9 +366,9 @@ public class MalarmActivity extends Activity implements OnClickListener {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			// AppWidgetManager mgr = AppWidgetManager.getInstance(context);
-			Log.i("Hello", "action: " + intent.getAction());
+			Log.i("malarm", "action: " + intent.getAction());
 			if (intent.getAction().equals(WAKEUP_ACTION)) {
-				Log.i("Hello", "Wakeup action");
+				Log.i("malarm", "Wakeup action");
 				if (Player.isPlaying()) {
 					stopMusic();
 				}
@@ -404,14 +404,14 @@ public class MalarmActivity extends Activity implements OnClickListener {
 			Context _context;
 			
 			public SleepThread(Context context, long sleeptime, PLAYER_KIND kind) {
-				Log.i("Hello", "SleepThread is created");
+				Log.i("malarm", "SleepThread is created");
 				_context = context;
 				_sleeptime = sleeptime;
 				_kind = kind;
 			}
 
 			public void run() {
-				Log.i("Hello", "SleepThread run");
+				Log.i("malarm", "SleepThread run");
 				try {
 					Thread.sleep(_sleeptime);
 					if (_kind == PLAYER_KIND.NATIVE) {
@@ -437,7 +437,7 @@ public class MalarmActivity extends Activity implements OnClickListener {
 		public static void stopMusicNativePlayer(Context context) {
 			File f = new File(Playlist.STOP_MUSIC);
 			if(! f.isFile()) {
-				Log.i("Hello", "No stop play list is found");
+				Log.i("malarm", "No stop play list is found");
 				return;
 			}
 			playMusicNativePlayer(context, f);
@@ -456,19 +456,19 @@ public class MalarmActivity extends Activity implements OnClickListener {
 		}
 
 		public static void playSleepMusic(Context context, int min) {
-			Log.i("Hello", "start sleep music and stop");
+			Log.i("malarm", "start sleep music and stop");
 			// TODO: use Alarm instead of Thread
 			long playtime_millis = min * 60 * 1000;
 			reset();
 			File f = new File(Playlist.SLEEP_PLAYLIST_PATH);
 			SleepThread t;
 			if (_PREF_USE_NATIVE_PLAYER && f.isFile()) {
-				Log.i("Hello", "playSleepMusic: NativePlayer");
+				Log.i("malarm", "playSleepMusic: NativePlayer");
 				playMusicNativePlayer(context, f);
 				t = new SleepThread(context, playtime_millis, PLAYER_KIND.NATIVE);
 			} else {
 				//TODO: use native player
-				Log.i("Hello", "playSleepMusic: MediaPlayer");
+				Log.i("malarm", "playSleepMusic: MediaPlayer");
 				t = new SleepThread(context, playtime_millis, PLAYER_KIND.NOT_NATIVE);
 				playMusic(SLEEP_PLAYLIST);
 			}
@@ -477,7 +477,7 @@ public class MalarmActivity extends Activity implements OnClickListener {
 
 		public static void playNext() {
 			_index++;
-			Log.i("Hello", "playNext is called: " + _index);
+			Log.i("malarm", "playNext is called: " + _index);
 			if (Player.isPlaying()) {
 				stopMusic();
 			}
@@ -488,21 +488,21 @@ public class MalarmActivity extends Activity implements OnClickListener {
 			MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener {
 			public void onCompletion(MediaPlayer mp) {
 				// TODO: manage index....(sleep / wakeup)
-				Log.i("Hello", "onCompletion listener is called");
+				Log.i("malarm", "onCompletion listener is called");
 				Player.playNext();
 			}
 
 			// This method is not called when DRM error is occured
 			public boolean onError(MediaPlayer mp, int what, int extra) {
 				// TODO: notify error
-				Log.i("Hello", "onError is called");
+				Log.i("malarm", "onError is called");
 				return false;
 			}
 		}
 
 		public static void playMusic(String[] playlist) {
 			current_playlist = playlist;
-			Log.i("Hello", "startMusic");
+			Log.i("malarm", "startMusic");
 			if (_player == null) {
 				_player = new MediaPlayer();
 				MusicCompletionListener l = new MusicCompletionListener();
