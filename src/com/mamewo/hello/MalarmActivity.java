@@ -40,9 +40,8 @@ import android.webkit.*;
 import android.net.Uri;
 import android.net.http.*;
 
-public class MalarmActivity extends Activity implements OnClickListener {
+public class MalarmActivity extends Activity implements OnClickListener, OnSharedPreferenceChangeListener {
 	/** Called when the activity is first created. */
-	//TODO: add to resource?
 	public static final String WAKEUP_ACTION = "com.mamewo.hello.WAKEUP_ACTION";
 	public static final String WAKEUPAPP_ACTION = "com.mamewo.hello.WAKEUPAPP_ACTION";
 	public static final String SLEEP_ACTION = "com.mamewo.hello.SLEEP_ACTION";
@@ -55,7 +54,6 @@ public class MalarmActivity extends Activity implements OnClickListener {
 	private TimePicker _time_picker;
 	private TextView _time_label;
 	private WebView _webview;
-	//TODO: add vibration preference
 	private Vibrator _vibrator;
 	@SuppressWarnings("unused")
 	private PhoneStateListener _calllistener;
@@ -121,14 +119,14 @@ public class MalarmActivity extends Activity implements OnClickListener {
 		   public void onLoadResource (WebView view, String url) {
 			   Log.i("malarm", "loading: " + url);
 			   //addhoc polling...
-			   if (url.indexOf("bijint") > 0 && view.getContentHeight() > 400) {
+			   int height = view.getContentHeight();
+			   if (url.indexOf("bijint") > 0 && height > 400) {
 				   //disable touch event on view?
 				   //for normal layout
-				   //view.scrollTo(480, 330);
 				   //TODO: get precise position....
-				   if(url.indexOf("binan") > 0) {
+				   if(url.indexOf("binan") > 0 && height > 420) {
 					   view.scrollTo(0, 420);
-				   } else {
+				   } else if (height > 960) {
 					   view.scrollTo(0, 960);
 				   }
 			   }
@@ -142,22 +140,6 @@ public class MalarmActivity extends Activity implements OnClickListener {
 		 });
 		//stop alarm when phone call
 		_calllistener = new MyCallListener(this);
-		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-		_PREF_USE_NATIVE_PLAYER = pref.getBoolean("use_native_player", false);
-		_PREF_VIBRATE = pref.getBoolean("vibrate", false);
-
-		//TODO: add unregister to proper function
-		pref.registerOnSharedPreferenceChangeListener(new OnSharedPreferenceChangeListener() {
-			@Override
-			public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-				//TODO: show value when url and sleeptime is changed
-				if (key.equals("use_native_player")) {
-					_PREF_USE_NATIVE_PLAYER = sharedPreferences.getBoolean(key, false);
-				} else if (key.equals("vibrate")) {
-					_PREF_VIBRATE = sharedPreferences.getBoolean(key, true);
-				}
-			}
-		});
 	}
 	
 	@Override
@@ -168,6 +150,12 @@ public class MalarmActivity extends Activity implements OnClickListener {
 		//WebView.onResume is hidden, why!?!?
 		_webview.getSettings().setJavaScriptEnabled(true);
 		loadWebPage(_webview);
+
+		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+		_PREF_USE_NATIVE_PLAYER = pref.getBoolean("use_native_player", false);
+		_PREF_VIBRATE = pref.getBoolean("vibrate", false);
+
+		pref.registerOnSharedPreferenceChangeListener(this);
 	}
 
 	@Override
@@ -176,6 +164,8 @@ public class MalarmActivity extends Activity implements OnClickListener {
 		super.onPause();
 		//stop tokei
 		_webview.getSettings().setJavaScriptEnabled(false);
+		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+		pref.unregisterOnSharedPreferenceChangeListener(this);
 	}
 
 	@Override
@@ -192,18 +182,35 @@ public class MalarmActivity extends Activity implements OnClickListener {
 		}
 	}
 
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+		//TODO: show value when url and sleeptime is changed
+		if (key.equals("use_native_player")) {
+			_PREF_USE_NATIVE_PLAYER = sharedPreferences.getBoolean(key, false);
+		} else if (key.equals("vibrate")) {
+			_PREF_VIBRATE = sharedPreferences.getBoolean(key, true);
+		}
+	}
+
 	private void loadWebPage (WebView view) {
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		String url = pref.getString("url", "http://twitter.com/");
 		WebSettings config = _webview.getSettings();
+		config.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
 		if (url.indexOf("bijint") > 0) {
-			config.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
 			config.setDefaultZoom(WebSettings.ZoomDensity.MEDIUM);
 		} else {
 			config.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
 		}
 		showMessage(this, "Loading...");
 		_webview.loadUrl(url);
+	}
+	
+	private void clearAlarmUI() {
+		_time_picker.setEnabled(true);
+		_time_label.setText("");
+		_time_picker.setCurrentHour(DEFAULT_HOUR);
+		_time_picker.setCurrentMinute(DEFAULT_MIN);
 	}
 	
 	protected void onNewIntent (Intent intent) {
@@ -213,12 +220,7 @@ public class MalarmActivity extends Activity implements OnClickListener {
 				long pattern[] = { 10, 2000, 500, 1500, 1000, 2000 };
 				_vibrator.vibrate(pattern, 1);
 			}
-			_time_picker.setEnabled(true);
-			_time_label.setText("");
-		}
-		if (_time_picker.isEnabled()) {
-			_time_picker.setCurrentHour(DEFAULT_HOUR);
-			_time_picker.setCurrentMinute(DEFAULT_MIN);
+			clearAlarmUI();
 		}
 	}
 	
@@ -239,20 +241,16 @@ public class MalarmActivity extends Activity implements OnClickListener {
         return true;
     }
 
-    //TODO: cancel or stop? (playing alarm?)
     private void cancelAlarm () {
     	Log.i("malarm", "cancelAlarm");
 		PendingIntent p = makePintent(WAKEUP_ACTION);
 		AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-		// TODO: adjust time of _time_picker
-		_time_picker.setEnabled(true);
-		_time_label.setText("");
+		clearAlarmUI();
 		mgr.cancel(p);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-    	
     	switch(item.getItemId()) {
     	case R.id.set_now:
     		Calendar now = new GregorianCalendar();
