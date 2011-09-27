@@ -127,10 +127,8 @@ public class MalarmActivity extends Activity implements OnClickListener {
 				   //view.scrollTo(480, 330);
 				   //TODO: get precise position....
 				   if(url.indexOf("binan") > 0) {
-					   //TODO: fix scroll problem
 					   view.scrollTo(0, 420);
 				   } else {
-					   //Log.i("malarm", "bijin");
 					   view.scrollTo(0, 960);
 				   }
 			   }
@@ -148,9 +146,11 @@ public class MalarmActivity extends Activity implements OnClickListener {
 		_PREF_USE_NATIVE_PLAYER = pref.getBoolean("use_native_player", false);
 		_PREF_VIBRATE = pref.getBoolean("vibrate", false);
 
+		//TODO: add unregister to proper function
 		pref.registerOnSharedPreferenceChangeListener(new OnSharedPreferenceChangeListener() {
 			@Override
 			public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+				//TODO: show value when url and sleeptime is changed
 				if (key.equals("use_native_player")) {
 					_PREF_USE_NATIVE_PLAYER = sharedPreferences.getBoolean(key, false);
 				} else if (key.equals("vibrate")) {
@@ -214,6 +214,7 @@ public class MalarmActivity extends Activity implements OnClickListener {
 				_vibrator.vibrate(pattern, 1);
 			}
 			_time_picker.setEnabled(true);
+			_time_label.setText("");
 		}
 		if (_time_picker.isEnabled()) {
 			_time_picker.setCurrentHour(DEFAULT_HOUR);
@@ -240,6 +241,7 @@ public class MalarmActivity extends Activity implements OnClickListener {
 
     //TODO: cancel or stop? (playing alarm?)
     private void cancelAlarm () {
+    	Log.i("malarm", "cancelAlarm");
 		PendingIntent p = makePintent(WAKEUP_ACTION);
 		AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		// TODO: adjust time of _time_picker
@@ -269,7 +271,7 @@ public class MalarmActivity extends Activity implements OnClickListener {
     		startActivity(new Intent(this, MyPreference.class));
     		break;
     	case R.id.stop_music:
-    		Player.stopMusicNativePlayer(this);
+    		Player.stopMusic();
     		break;
     	default:
     		Log.i("malarm", "Unknown menu");
@@ -323,11 +325,12 @@ public class MalarmActivity extends Activity implements OnClickListener {
 		if (target_millis - now_millis >= sleep_time_millis) {
 			Intent i = new Intent(this, Player.class);
 			i.setAction(SLEEP_ACTION);
-			i.putExtra(_NATIVE_PLAYER_KEY, true);
+			i.putExtra(_NATIVE_PLAYER_KEY, _PREF_USE_NATIVE_PLAYER);
 			PendingIntent sleepIntent = PendingIntent.getBroadcast(this, 0, i,
 					PendingIntent.FLAG_CANCEL_CURRENT);
 			mgr.set(AlarmManager.RTC_WAKEUP, now_millis+sleep_time_millis, sleepIntent);
 		}
+		//TODO: add alarm time as Notification
 		showMessage(this, getString(R.string.alarm_set) + tommorow + " " + sleeptime_str);
 		_SCHEDULED = true;
 	}
@@ -420,29 +423,26 @@ public class MalarmActivity extends Activity implements OnClickListener {
 			playMusicNativePlayer(context, f);
 		}
 
-		//TODO: fix design
 		public static void playWakeupMusic(Context context) {
 			File f = new File(Playlist.WAKEUP_PLAYLIST_PATH);
 			if (_PREF_USE_NATIVE_PLAYER && f.isFile()) {
 				playMusicNativePlayer(context, f);
 				//TODO: show tokei
 			} else {
-				Player.reset();
+				reset();
 				playMusic(WAKEUP_PLAYLIST);
 			}
 		}
 
 		public static void playSleepMusic(Context context, int min) {
 			Log.i("malarm", "start sleep music and stop");
-			// TODO: use Alarm instead of Thread
-			reset();
 			File f = new File(Playlist.SLEEP_PLAYLIST_PATH);
 			if (_PREF_USE_NATIVE_PLAYER && f.isFile()) {
 				Log.i("malarm", "playSleepMusic: NativePlayer");
 				playMusicNativePlayer(context, f);
 			} else {
-				//TODO: use native player
 				Log.i("malarm", "playSleepMusic: MediaPlayer");
+				reset();
 				playMusic(SLEEP_PLAYLIST);
 			}
 		}
