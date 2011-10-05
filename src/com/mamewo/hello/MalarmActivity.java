@@ -156,6 +156,10 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		_PREF_VIBRATE = pref.getBoolean("vibrate", false);
 
 		pref.registerOnSharedPreferenceChangeListener(this);
+		if (_time_picker.isEnabled()) {
+			_time_picker.setCurrentHour(DEFAULT_HOUR);
+			_time_picker.setCurrentMinute(DEFAULT_MIN);
+		}
 	}
 
 	@Override
@@ -175,11 +179,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		_PREF_USE_NATIVE_PLAYER = pref.getBoolean("use_native_player", false);
 		_PREF_VIBRATE = pref.getBoolean("vibrate", false);
-
-		if (_time_picker.isEnabled()) {
-			_time_picker.setCurrentHour(DEFAULT_HOUR);
-			_time_picker.setCurrentMinute(DEFAULT_MIN);
-		}
 	}
 
 	@Override
@@ -224,9 +223,11 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		}
 	}
 	
-	private PendingIntent makePintent(String action) {
+	private PendingIntent makePlayPintent(String action, boolean use_native) {
 		Intent i = new Intent(this, Player.class);
 		i.setAction(action);
+		i.putExtra(_NATIVE_PLAYER_KEY, use_native);
+
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, i,
 				PendingIntent.FLAG_CANCEL_CURRENT);
 		return pendingIntent;
@@ -243,7 +244,8 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 
     private void cancelAlarm () {
     	Log.i("malarm", "cancelAlarm");
-		PendingIntent p = makePintent(WAKEUP_ACTION);
+    	//TODO: second parameter is correct?
+		PendingIntent p = makePlayPintent(WAKEUP_ACTION, true);
 		AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		clearAlarmUI();
 		mgr.cancel(p);
@@ -253,9 +255,11 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
     public boolean onOptionsItemSelected(MenuItem item) {
     	switch(item.getItemId()) {
     	case R.id.set_now:
-    		Calendar now = new GregorianCalendar();
-    		_time_picker.setCurrentHour(now.get(Calendar.HOUR_OF_DAY));
-    		_time_picker.setCurrentMinute(now.get(Calendar.MINUTE));
+    		if (_time_picker.isEnabled()) {
+    			Calendar now = new GregorianCalendar();
+    			_time_picker.setCurrentHour(now.get(Calendar.HOUR_OF_DAY));
+    			_time_picker.setCurrentMinute(now.get(Calendar.MINUTE));
+    		}
     		break;
        	case R.id.stop_vibration:
     		if (_vibrator != null) {
@@ -263,7 +267,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
     		}
     		break;
     	case R.id.play_wakeup:
-    		Player.playWakeupMusic(this);
+    		Player.playWakeupMusic(this, _PREF_USE_NATIVE_PLAYER);
     		break;
     	case R.id.pref:
     		startActivity(new Intent(this, MyPreference.class));
@@ -312,8 +316,9 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		_time_picker.setEnabled(false);
 		_time_label.setText(String.format("%2d/%2d %02d:%02d", target.get(Calendar.MONTH)+1, target.get(Calendar.DATE), target_hour, target_min));
 		AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-		PendingIntent pendingIntent = makePintent(WAKEUP_ACTION);
+		PendingIntent pendingIntent = makePlayPintent(WAKEUP_ACTION, false);
 		mgr.set(AlarmManager.RTC_WAKEUP, target_millis, pendingIntent);
+
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		int min = Integer.valueOf(pref.getString("sleeptime", "60"));
 		Player.playSleepMusic(this, min);
@@ -321,11 +326,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		//TODO: localize
 		String sleeptime_str = String.valueOf(min) + " min";
 		if (target_millis - now_millis >= sleep_time_millis) {
-			Intent i = new Intent(this, Player.class);
-			i.setAction(SLEEP_ACTION);
-			i.putExtra(_NATIVE_PLAYER_KEY, _PREF_USE_NATIVE_PLAYER);
-			PendingIntent sleepIntent = PendingIntent.getBroadcast(this, 0, i,
-					PendingIntent.FLAG_CANCEL_CURRENT);
+			PendingIntent sleepIntent = makePlayPintent(SLEEP_ACTION, _PREF_USE_NATIVE_PLAYER);
 			mgr.set(AlarmManager.RTC_WAKEUP, now_millis+sleep_time_millis, sleepIntent);
 		}
 		//TODO: add alarm time as Notification
@@ -347,6 +348,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		Toast.makeText(c, message, Toast.LENGTH_LONG).show();
 	}
 
+	//TODO: separate BroadcastReceiver
 	//TODO: implement music player as Service to play long time
 	public static class Player extends BroadcastReceiver {
 		private static final String MUSIC_PATH = Playlist.MUSIC_PATH;
@@ -384,7 +386,9 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				i.setAction(WAKEUPAPP_ACTION);
 				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				context.startActivity(i);
-				playWakeupMusic(context);
+				
+				//native player cannot start until lock screen is displayed
+				Player.playWakeupMusic(context, false);
 			} else if (intent.getAction().equals(SLEEP_ACTION)) {
 				if (intent.getExtras().getBoolean(_NATIVE_PLAYER_KEY)) {
 					Player.stopMusicNativePlayer(context);
@@ -392,7 +396,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 					stopMusic();
 				}
 				showMessage(context, context.getString(R.string.goodnight));
-				//TODO: power off?
 			}
 		}
 
@@ -401,7 +404,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				return;
 			}
 			_player.stop();
-			// TODO: delete?
 		}
 
 		public static void playMusicNativePlayer(Context context, File f) {
@@ -421,11 +423,10 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			playMusicNativePlayer(context, f);
 		}
 
-		public static void playWakeupMusic(Context context) {
+		public static void playWakeupMusic(Context context, boolean use_native) {
 			File f = new File(Playlist.WAKEUP_PLAYLIST_PATH);
-			if (_PREF_USE_NATIVE_PLAYER && f.isFile()) {
+			if (use_native && f.isFile()) {
 				playMusicNativePlayer(context, f);
-				//TODO: show tokei
 			} else {
 				reset();
 				playMusic(WAKEUP_PLAYLIST);
@@ -445,6 +446,9 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			}
 		}
 
+		/**
+		 * MediaPlayer only
+		 */
 		public static void playNext() {
 			_index++;
 			Log.i("malarm", "playNext is called: " + _index);
@@ -457,14 +461,13 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		public static class MusicCompletionListener implements
 			MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener {
 			public void onCompletion(MediaPlayer mp) {
-				// TODO: manage index....(sleep / wakeup)
 				Log.i("malarm", "onCompletion listener is called");
 				Player.playNext();
 			}
 
 			// This method is not called when DRM error is occured
 			public boolean onError(MediaPlayer mp, int what, int extra) {
-				// TODO: notify error
+				// TODO: handle error
 				Log.i("malarm", "onError is called");
 				return false;
 			}
@@ -490,7 +493,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				if ((!path.endsWith(".m4p")) && f.exists()) {
 					break;
 				}
-				// TODO: use resource music
 				_index++;
 				if (_index >= playlist.length) {
 					_index = 0;
