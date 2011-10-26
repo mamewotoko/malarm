@@ -5,17 +5,16 @@
     android:weightSum="1" android:orientation="vertical">
     <LinearLayout android:layout_height="wrap_content" android:id="@+id/linearLayout1" android:layout_width="match_parent">
         <LinearLayout android:layout_height="match_parent" android:id="@+id/linearLayout2" android:orientation="vertical" android:layout_width="173dp">
-            <TextView android:id="@+id/textView2" android:layout_width="wrap_content" android:text="@string/time_to_wakeup" android:textAppearance="?android:attr/textAppearanceLarge" android:layout_height="wrap_content"></TextView>
-            <TimePicker android:id="@+id/timePicker1" android:layout_width="match_parent" android:layout_height="wrap_content"></TimePicker>
+            <TimePicker android:id="@+id/timePicker1" android:layout_width="152dp" android:layout_height="wrap_content" android:inputType="number"></TimePicker>
         </LinearLayout>
         <TableLayout android:layout_height="match_parent" android:id="@+id/tableLayout1" android:layout_width="wrap_content">
-            <TableRow android:id="@+id/tableRow1" android:layout_width="wrap_content" android:layout_height="wrap_content">
-                <TextView android:id="@+id/target_time_label" android:layout_height="wrap_content" android:text="" android:textAppearance="?android:attr/textAppearanceLarge" android:layout_width="wrap_content"></TextView>
+            <TableRow android:id="@+id/tableRow1" android:layout_width="fill_parent" android:layout_height="wrap_content">
+                <TextView android:id="@+id/target_time_label" android:layout_height="fill_parent" android:text="" android:textAppearance="?android:attr/textAppearanceLarge" android:layout_width="wrap_content" android:textSize="10pt"></TextView>
             </TableRow>
-            <TableRow android:id="@+id/tableRow2" android:layout_width="wrap_content" android:layout_height="wrap_content">
-                <Button android:id="@+id/play_button" android:layout_height="wrap_content" android:text="@string/set_stop_alarm" android:layout_width="wrap_content"></Button>
+            <TableRow android:id="@+id/tableRow2" android:layout_width="fill_parent" android:layout_height="wrap_content">
+                <Button android:id="@+id/play_button" android:layout_height="fill_parent" android:text="@string/set_stop_alarm" android:layout_width="wrap_content"></Button>
             </TableRow>
-            <TableRow android:id="@+id/tableRow3" android:layout_width="wrap_content" android:layout_height="wrap_content">
+            <TableRow android:id="@+id/tableRow3" android:layout_width="fill_parent" android:layout_height="wrap_content">
                 <Button android:id="@+id/next_button" android:layout_height="wrap_content" android:text="@string/next" android:layout_width="wrap_content"></Button>
             </TableRow>
             <TableRow android:id="@+id/tableRow4" android:layout_width="wrap_content" android:layout_height="wrap_content">

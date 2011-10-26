@@ -32,6 +32,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.Window;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -46,15 +47,17 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	public static final String WAKEUPAPP_ACTION = "com.mamewo.hello.WAKEUPAPP_ACTION";
 	public static final String SLEEP_ACTION = "com.mamewo.hello.SLEEP_ACTION";
 	
-	private static final Integer DEFAULT_HOUR = new Integer(7);
-	private static final Integer DEFAULT_MIN = new Integer(0);
+	private static final Integer DEFAULT_HOUR = new Integer(6);
+	private static final Integer DEFAULT_MIN = new Integer(45);
+	private static Vibrator _vibrator = null;
 	
 	private Button _next_button;
 	private Button _sleep_wakeup_button;
 	private TimePicker _time_picker;
 	private TextView _time_label;
 	private WebView _webview;
-	private Vibrator _vibrator;
+	private Button _alarm_button;
+	
 	@SuppressWarnings("unused")
 	private PhoneStateListener _calllistener;
 	private static boolean _SCHEDULED = false;
@@ -87,6 +90,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	public void onCreate(Bundle savedInstanceState) {
 		Log.i("malarm", "onCreate is called");
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.main);
 		_time_picker = (TimePicker) findViewById(R.id.timePicker1);
 		_time_picker.setIs24HourView(true);
@@ -95,9 +99,9 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		_next_button = (Button) findViewById(R.id.next_button);
 		_next_button.setOnClickListener(this);
 		_time_label = (TextView) findViewById(R.id.target_time_label);
-		// set default time
-		_vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+		//TODO: set default time
 		_webview = (WebView)findViewById(R.id.webView1);
+		_alarm_button = (Button)findViewById(R.id.play_button);
 		WebSettings config = _webview.getSettings();
 		config.setJavaScriptEnabled(true);
 		//to display twitter...
@@ -140,6 +144,9 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		 });
 		//stop alarm when phone call
 		_calllistener = new MyCallListener(this);
+		if (_vibrator == null) {
+			_vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+		}
 	}
 	
 	@Override
@@ -160,6 +167,8 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			_time_picker.setCurrentHour(DEFAULT_HOUR);
 			_time_picker.setCurrentMinute(DEFAULT_MIN);
 		}
+		//
+		
 	}
 
 	@Override
@@ -179,6 +188,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		_PREF_USE_NATIVE_PLAYER = pref.getBoolean("use_native_player", false);
 		_PREF_VIBRATE = pref.getBoolean("vibrate", false);
+		_alarm_button.requestFocus();
 	}
 
 	@Override
@@ -261,14 +271,15 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
     			_time_picker.setCurrentMinute(now.get(Calendar.MINUTE));
     		}
     		break;
-       	case R.id.stop_vibration:
+    	case R.id.stop_vibration:
     		if (_vibrator != null) {
     			_vibrator.cancel();
     		}
     		break;
-    	case R.id.play_wakeup:
-    		Player.playWakeupMusic(this, _PREF_USE_NATIVE_PLAYER);
-    		break;
+//TODO: remove
+//    	case R.id.play_wakeup:
+//    		Player.playWakeupMusic(this, _PREF_USE_NATIVE_PLAYER);
+//    		break;
     	case R.id.pref:
     		startActivity(new Intent(this, MyPreference.class));
     		break;
