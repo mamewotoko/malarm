@@ -14,7 +14,7 @@ This is a simple alarm application of android (version 2.3.3).
 
 ## HOW TO RUN:
 1. Rename Playlist_tmpl.java into Playlist.java and put it into src/com/mamewo/hello directory.
-2. prepare playlist by writing Playlist class in following way "a" or "b".
+2. prepare playlist by writing Playlist class in following way "a" or "b". Playlist_tmpl.java is a sample file.
 a) Fill Playlist.WAKEUP_PLAYLIST and Playlist.SLEEP_PLAYLIST by music
   filename in "/sdcard/music/" folder
 OR
