@@ -1,4 +1,4 @@
-package com.mamewo.hello;
+package com.mamewo.malarm;
 
 /**
  * @author Takashi Masuyama <mamewotoko@gmail.com>
@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+
+import com.mamewo.malarm.R;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -43,12 +45,12 @@ import android.net.http.*;
 
 public class MalarmActivity extends Activity implements OnClickListener, OnSharedPreferenceChangeListener {
 	/** Called when the activity is first created. */
-	public static final String WAKEUP_ACTION = "com.mamewo.hello.WAKEUP_ACTION";
-	public static final String WAKEUPAPP_ACTION = "com.mamewo.hello.WAKEUPAPP_ACTION";
-	public static final String SLEEP_ACTION = "com.mamewo.hello.SLEEP_ACTION";
+	public static final String WAKEUP_ACTION = "com.mamewo.malarm.WAKEUP_ACTION";
+	public static final String WAKEUPAPP_ACTION = "com.mamewo.malarm.WAKEUPAPP_ACTION";
+	public static final String SLEEP_ACTION = "com.mamewo.malarm.SLEEP_ACTION";
 	
-	private static final Integer DEFAULT_HOUR = new Integer(6);
-	private static final Integer DEFAULT_MIN = new Integer(45);
+	private static final Integer DEFAULT_HOUR = new Integer(7);
+	private static final Integer DEFAULT_MIN = new Integer(0);
 	private static Vibrator _vibrator = null;
 	
 	private Button _next_button;
@@ -66,7 +68,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	
 	private static String _NATIVE_PLAYER_KEY = "nativeplayer";
 	
-    public class MyCallListener extends PhoneStateListener{
+    public class MyCallListener extends PhoneStateListener {
     	MalarmActivity _activity;
     	public MyCallListener(MalarmActivity context) {
     		_activity = context;
@@ -75,6 +77,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
     	}
     	
     	public void onCallStateChanged (int state, String incomingNumber) {
+    		//TODO: restart music when phone call is killed?
     		if (state == TelephonyManager.CALL_STATE_RINGING) {
     			//stop vibration
     			if (_vibrator != null) {
@@ -124,12 +127,17 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			   Log.i("malarm", "loading: " + url);
 			   //addhoc polling...
 			   int height = view.getContentHeight();
-			   if (url.indexOf("bijint") > 0 && height > 400) {
+			   if ((url.indexOf("bijint") > 0 || url.indexOf("bijo-linux") > 0) && height > 400) {
 				   //disable touch event on view?
 				   //for normal layout
 				   //TODO: get precise position....
 				   if(url.indexOf("binan") > 0 && height > 420) {
 					   view.scrollTo(0, 420);
+				   } else if (url.indexOf("bijo-linux") > 0 && height > 100) {
+					   //TODO: forbid vertical scroll?
+					   //TODO: open next page in same tab
+					   int x = view.getLeft();
+					   view.scrollTo(x, 100);
 				   } else if (height > 960) {
 					   view.scrollTo(0, 960);
 				   }
@@ -205,11 +213,15 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		String url = pref.getString("url", "http://twitter.com/");
 		WebSettings config = _webview.getSettings();
-		config.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
-		if (url.indexOf("bijint") > 0) {
-			config.setDefaultZoom(WebSettings.ZoomDensity.MEDIUM);
+		if (url.indexOf("bijo-linux") == -1) {
+			config.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
 		} else {
 			config.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
+		}
+		if (url.indexOf("bijint") > 0) {
+			config.setDefaultZoom(WebSettings.ZoomDensity.MEDIUM);
+		} else if (url.indexOf("bijo-linux") > 0) {
+			config.setDefaultZoom(WebSettings.ZoomDensity.FAR);
 		}
 		showMessage(this, "Loading...");
 		_webview.loadUrl(url);

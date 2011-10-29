@@ -1,8 +1,10 @@
-package com.mamewo.hello;
+package com.mamewo.malarm;
 
 /**
  * @author Takashi Masuyama <mamewotoko@gmail.com>
  */
+
+import com.mamewo.malarm.R;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -13,7 +15,7 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 public class MalarmWidgetProvider extends AppWidgetProvider {
-    public static final String HELLO_ACTION = "com.mamewo.hello.HELLO_ACTION";
+    public static final String HELLO_ACTION = "com.mamewo.malarm.HELLO_ACTION";
     
     @Override
     public void onReceive(Context context, Intent intent) {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android">
-    <ListPreference android:dialogTitle="@string/preference_title" android:entryValues="@array/preference_item_value" android:entries="@array/preference_item_key" android:key="url" android:title="@string/pref_webview_url"></ListPreference>
+    <ListPreference android:dialogTitle="@string/preference_title" android:entryValues="@array/preference_item_value" android:entries="@array/preference_item_key" android:key="url" android:title="@string/pref_webview_url" android:defaultValue="http://twitter.com/"></ListPreference>
     <ListPreference android:entries="@array/preference_time_key" android:entryValues="@array/preference_time_value" android:dialogTitle="@string/preference_time_title" android:key="sleeptime" android:title="@string/pref_sleeptime" android:defaultValue="60"></ListPreference>
     <CheckBoxPreference android:summaryOff="@string/use_internal_player" android:title="@string/use_native_player_title" android:defaultValue="false" android:key="use_native_player" android:summaryOn="@string/use_native_player"></CheckBoxPreference>
     <CheckBoxPreference android:summaryOff="@string/disable_vibration" android:title="@string/pref_vibration" android:defaultValue="true" android:key="vibrate" android:summaryOn="@string/enable_vibration"></CheckBoxPreference>

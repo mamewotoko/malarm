@@ -1,4 +1,4 @@
-package com.mamewo.hello;
+package com.mamewo.malarm;
 
 public class Playlist {
 	//There are two ways to play music (a/b)

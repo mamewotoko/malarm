@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="com.mamewo.hello"
+      package="com.mamewo.malarm"
       android:versionCode="1"
       android:versionName="1.0">
     <uses-sdk android:minSdkVersion="10" />
@@ -17,12 +17,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MyPreference"
+        <activity android:name="com.mamewo.malarm.MyPreference"
                   android:label="@string/app_name">
         </activity>
        <receiver android:name="MalarmActivity$Player"
               android:permission="android.permission.VIBRATE" />
-        <receiver android:name="MalarmWidgetProvider" >
+        <receiver android:name="com.mamewo.malarm.MalarmWidgetProvider" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

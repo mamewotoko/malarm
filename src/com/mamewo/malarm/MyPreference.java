@@ -1,8 +1,10 @@
-package com.mamewo.hello;
+package com.mamewo.malarm;
 
 /**
  * @author Takashi Masuyama <mamewotoko@gmail.com>
  */
+
+import com.mamewo.malarm.R;
 
 import android.os.Bundle;
 import android.preference.*;
