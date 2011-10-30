@@ -37,6 +37,7 @@ import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+//import android.webkit.WebView.WebViewTransport;
 import android.webkit.WebViewClient;
 import android.widget.*;
 import android.webkit.*;
@@ -58,6 +59,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	private TimePicker _time_picker;
 	private TextView _time_label;
 	private WebView _webview;
+//	private WebView _subwebview;
 	private Button _alarm_button;
 	
 	@SuppressWarnings("unused")
@@ -67,6 +69,16 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	private static boolean _PREF_VIBRATE;
 	
 	private static String _NATIVE_PLAYER_KEY = "nativeplayer";
+	
+	private static final int DOW_INDEX[] = {
+		Calendar.SUNDAY, 
+		Calendar.MONDAY, 
+		Calendar.TUESDAY, 
+		Calendar.WEDNESDAY, 
+		Calendar.THURSDAY, 
+		Calendar.FRIDAY, 
+		Calendar.SATURDAY, 
+	};
 	
     public class MyCallListener extends PhoneStateListener {
     	MalarmActivity _activity;
@@ -102,54 +114,76 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		_next_button = (Button) findViewById(R.id.next_button);
 		_next_button.setOnClickListener(this);
 		_time_label = (TextView) findViewById(R.id.target_time_label);
-		//TODO: set default time
 		_webview = (WebView)findViewById(R.id.webView1);
+//		_subwebview = new WebView(this);
 		_alarm_button = (Button)findViewById(R.id.play_button);
 		WebSettings config = _webview.getSettings();
-		config.setJavaScriptEnabled(true);
 		//to display twitter...
 		config.setDomStorageEnabled(true);
 		config.setJavaScriptEnabled(true);
 		config.setSupportZoom(true);
+//		config.setSupportMultipleWindows(true);
 		_webview.setOnTouchListener(new OnTouchListener() {
+			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				_webview.requestFocus();
 				return false;
 			}
 		});
+		
 		final Activity activity = this;
 		_webview.setWebViewClient(new WebViewClient() {
-		   public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-		     Toast.makeText(activity, "Oh no! " + description, Toast.LENGTH_SHORT).show();
-		   }
-		   //for debug
-		   public void onLoadResource (WebView view, String url) {
-			   Log.i("malarm", "loading: " + url);
-			   //addhoc polling...
-			   int height = view.getContentHeight();
-			   if ((url.indexOf("bijint") > 0 || url.indexOf("bijo-linux") > 0) && height > 400) {
-				   //disable touch event on view?
-				   //for normal layout
-				   //TODO: get precise position....
-				   if(url.indexOf("binan") > 0 && height > 420) {
-					   view.scrollTo(0, 420);
-				   } else if (url.indexOf("bijo-linux") > 0 && height > 100) {
-					   //TODO: forbid vertical scroll?
-					   //TODO: open next page in same tab
-					   int x = view.getLeft();
-					   view.scrollTo(x, 100);
-				   } else if (height > 960) {
-					   view.scrollTo(0, 960);
-				   }
-			   }
-		   }
-		   public void onReceivedSslError (WebView view, SslErrorHandler handler, SslError error) {
-			 Toast.makeText(activity, "SSL error " + error, Toast.LENGTH_SHORT).show();
-		   }
-		   public void onPageFinished(WebView view, String url) {
-			   Log.i("malarm", "onPageFinshed: " + url);
-		   }
-		 });
+//			@Override
+//			public boolean shouldOverrideUrlLoading (WebView view, String url) {
+//				Log.i("malarm", "shouldOverrideUrlLoading: " + url);
+//				return false;
+//			}
+			@Override
+			public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+				Toast.makeText(activity, "Oh no! " + description, Toast.LENGTH_SHORT).show();
+			}
+			@Override
+			public void onLoadResource (WebView view, String url) {
+				Log.i("malarm", "loading: " + url);
+				//addhoc polling...
+				int height = view.getContentHeight();
+				if ((url.indexOf("bijint") > 0 || url.indexOf("bijo-linux") > 0) && height > 400) {
+					//TODO: get precise position....
+					if(url.indexOf("binan") > 0 && height > 420) {
+						view.scrollTo(0, 420);
+					} else if (url.indexOf("bijo-linux") > 0 && height > 100) {
+						//TODO: forbid vertical scroll?
+						//TODO: open next page in same tab
+						int x = view.getLeft();
+						view.scrollTo(x, 100);
+					} else if (height > 960) {
+						view.scrollTo(0, 960);
+					}
+				}
+			}
+
+			@Override
+			public void onReceivedSslError (WebView view, SslErrorHandler handler, SslError error) {
+				Toast.makeText(activity, "SSL error " + error, Toast.LENGTH_SHORT).show();
+			}
+
+			@Override
+			public void onPageFinished(WebView view, String url) {
+				Log.i("malarm", "onPageFinshed: " + url);
+			}
+		});
+
+		//TODO: fix
+//		_webview.setWebChromeClient(new WebChromeClient() {
+//			@Override
+//			public boolean onCreateWindow (WebView view, boolean dialog, boolean userGesture, Message resultMsg) {
+//				Log.i("malarm", "onCreateWindow: " + dialog + " " + userGesture + " " + resultMsg.obj);
+//				((WebViewTransport)resultMsg.obj).setWebView(_subwebview);
+//				resultMsg.sendToTarget();
+//				return true;
+//			}
+//		});
+
 		//stop alarm when phone call
 		_calllistener = new MyCallListener(this);
 		if (_vibrator == null) {
@@ -175,8 +209,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			_time_picker.setCurrentHour(DEFAULT_HOUR);
 			_time_picker.setCurrentMinute(DEFAULT_MIN);
 		}
-		//
-		
 	}
 
 	@Override
@@ -213,15 +245,15 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		String url = pref.getString("url", "http://twitter.com/");
 		WebSettings config = _webview.getSettings();
-		if (url.indexOf("bijo-linux") == -1) {
-			config.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
-		} else {
+		if (url.indexOf("bijo-linux") > 0) {
 			config.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
+		} else {
+			config.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
 		}
-		if (url.indexOf("bijint") > 0) {
-			config.setDefaultZoom(WebSettings.ZoomDensity.MEDIUM);
-		} else if (url.indexOf("bijo-linux") > 0) {
+		if (url.indexOf("bijo-linux") > 0) {
 			config.setDefaultZoom(WebSettings.ZoomDensity.FAR);
+		} else {
+			config.setDefaultZoom(WebSettings.ZoomDensity.MEDIUM);
 		}
 		showMessage(this, "Loading...");
 		_webview.loadUrl(url);
@@ -333,11 +365,22 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		if (target_millis <= now_millis) {
 			//tomorrow
 			target_millis += 24 * 60 * 60 * 1000;
+			target.setTimeInMillis(target_millis);
 			tommorow = " (" + getString(R.string.tomorrow) + ")";
 		}
 		//TODO: make function
 		_time_picker.setEnabled(false);
-		_time_label.setText(String.format("%2d/%2d %02d:%02d", target.get(Calendar.MONTH)+1, target.get(Calendar.DATE), target_hour, target_min));
+		//get dow string
+		String dow_str = "";
+		int dow_int = target.get(Calendar.DAY_OF_WEEK);
+		String[] dow_name_table = getResources().getStringArray(R.array.day_of_week);
+		for (int i = 0; i < DOW_INDEX.length; i++) {
+			if (DOW_INDEX[i] == dow_int) {
+				dow_str = dow_name_table[i];
+				break;
+			}
+		}
+		_time_label.setText(String.format("%2d/%2d %02d:%02d (%s)", target.get(Calendar.MONTH)+1, target.get(Calendar.DATE), target_hour, target_min, dow_str));
 		AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		PendingIntent pendingIntent = makePlayPintent(WAKEUP_ACTION, false);
 		mgr.set(AlarmManager.RTC_WAKEUP, target_millis, pendingIntent);
@@ -401,6 +444,8 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				}
 				AudioManager mgr = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 				//TODO: add volume to pref
+				mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
+				mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
 				mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
 				mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
 				mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
@@ -528,7 +573,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				_player.prepare();
 				_player.start();
 			} catch (IOException e) {
-
+				//do nothing
 			}
 		}
 	}
