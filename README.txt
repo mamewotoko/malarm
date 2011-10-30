@@ -19,10 +19,12 @@ a) Fill Playlist.WAKEUP_PLAYLIST and Playlist.SLEEP_PLAYLIST by music
   filename in "/sdcard/music/" folder
 OR
 b) put m3u file, which lists one music filename as one line and put them as "wakeup.m3u" and
-"sleep.m3u" into "/sdcard/music/" folder
+"sleep.m3u" into "/sdcard/music/" folder.
+copy stop.m3u file in this folder into "/sdcard/music/" folder.
 3. Build and run on your target device
 
 ## TODO (bugs?):
+- add interface for Playlist
 - implement music player as Service to play long time
 -- or use native player
 - editable playlist support
