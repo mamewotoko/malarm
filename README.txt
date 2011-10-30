@@ -3,8 +3,8 @@
 This is a simple alarm application of android (version 2.3.3).
 
 ## OVERVIEW
-            sleep music (1h)                     wakeup music w/ vibration
-                                                 applicaiton starts
+            sleep music (1h)                     wake-up music w/ vibration
+                                                 application starts
  Alarm set ------------------> ..... Alarm time --------------->
  (press "set/stop alarm"
   button)
