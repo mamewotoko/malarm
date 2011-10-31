@@ -6,6 +6,7 @@ package com.mamewo.malarm;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -46,14 +47,27 @@ import android.net.http.*;
 
 public class MalarmActivity extends Activity implements OnClickListener, OnSharedPreferenceChangeListener {
 	/** Called when the activity is first created. */
-	public static final String WAKEUP_ACTION = "com.mamewo.malarm.WAKEUP_ACTION";
-	public static final String WAKEUPAPP_ACTION = "com.mamewo.malarm.WAKEUPAPP_ACTION";
-	public static final String SLEEP_ACTION = "com.mamewo.malarm.SLEEP_ACTION";
+	public static final String PACKAGE_NAME = MalarmActivity.class.getPackage().getName();
+	public static final String WAKEUP_ACTION = PACKAGE_NAME + ".WAKEUP_ACTION";
+	public static final String WAKEUPAPP_ACTION = PACKAGE_NAME + ".WAKEUPAPP_ACTION";
+	public static final String SLEEP_ACTION = PACKAGE_NAME + ".SLEEP_ACTION";
+	
+	public static class MalarmState implements Serializable {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		public Calendar _target;
+		public MalarmState(Calendar target) {
+			_target = target;
+		}
+	}
 	
 	private static final Integer DEFAULT_HOUR = new Integer(7);
 	private static final Integer DEFAULT_MIN = new Integer(0);
 	private static Vibrator _vibrator = null;
 	
+	private MalarmState _state = null;
 	private Button _next_button;
 	private Button _sleep_wakeup_button;
 	private TimePicker _time_picker;
@@ -64,7 +78,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	
 	@SuppressWarnings("unused")
 	private PhoneStateListener _calllistener;
-	private static boolean _SCHEDULED = false;
 	private static boolean _PREF_USE_NATIVE_PLAYER;
 	private static boolean _PREF_VIBRATE;
 	
@@ -80,35 +93,41 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		Calendar.SATURDAY, 
 	};
 	
-    public class MyCallListener extends PhoneStateListener {
-    	MalarmActivity _activity;
-    	public MyCallListener(MalarmActivity context) {
-    		_activity = context;
-    		TelephonyManager telmgr = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
-    		telmgr.listen(this, LISTEN_CALL_STATE);
-    	}
-    	
-    	public void onCallStateChanged (int state, String incomingNumber) {
-    		//TODO: restart music when phone call is killed?
-    		if (state == TelephonyManager.CALL_STATE_RINGING) {
-    			//stop vibration
-    			if (_vibrator != null) {
-    				_vibrator.cancel();
-    			}
-    			//native player is OK
-    			Player.stopMusic();
-    		}
-    	}
-    }
+	public class MyCallListener extends PhoneStateListener {
+		MalarmActivity _activity;
+		public MyCallListener(MalarmActivity context) {
+			_activity = context;
+			TelephonyManager telmgr = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
+			telmgr.listen(this, LISTEN_CALL_STATE);
+		}
+
+		public void onCallStateChanged (int state, String incomingNumber) {
+			//TODO: restart music when phone call is killed?
+			if (state == TelephonyManager.CALL_STATE_RINGING) {
+				//stop vibration
+				if (_vibrator != null) {
+					_vibrator.cancel();
+				}
+				//native player is OK
+				Player.stopMusic();
+			}
+		}
+	}
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		Log.i("malarm", "onCreate is called");
+		Log.i(PACKAGE_NAME, "onCreate is called");
 		super.onCreate(savedInstanceState);
+		Log.i(PACKAGE_NAME, PACKAGE_NAME);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.main);
 		_time_picker = (TimePicker) findViewById(R.id.timePicker1);
 		_time_picker.setIs24HourView(true);
+		if (savedInstanceState != null) {
+			_state = (MalarmState)savedInstanceState.get("state");
+		} else {
+			_state = null;
+		}
 		_sleep_wakeup_button = (Button) findViewById(R.id.play_button);
 		_sleep_wakeup_button.setOnClickListener(this);
 		_next_button = (Button) findViewById(R.id.next_button);
@@ -135,7 +154,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		_webview.setWebViewClient(new WebViewClient() {
 //			@Override
 //			public boolean shouldOverrideUrlLoading (WebView view, String url) {
-//				Log.i("malarm", "shouldOverrideUrlLoading: " + url);
+//				Log.i(PACKAGE_NAME, "shouldOverrideUrlLoading: " + url);
 //				return false;
 //			}
 			@Override
@@ -144,7 +163,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			}
 			@Override
 			public void onLoadResource (WebView view, String url) {
-				Log.i("malarm", "loading: " + url);
+				Log.i(PACKAGE_NAME, "loading: " + url);
 				//addhoc polling...
 				int height = view.getContentHeight();
 				if ((url.indexOf("bijint") > 0 || url.indexOf("bijo-linux") > 0) && height > 400) {
@@ -169,7 +188,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 
 			@Override
 			public void onPageFinished(WebView view, String url) {
-				Log.i("malarm", "onPageFinshed: " + url);
+				Log.i(PACKAGE_NAME, "onPageFinshed: " + url);
 			}
 		});
 
@@ -177,7 +196,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 //		_webview.setWebChromeClient(new WebChromeClient() {
 //			@Override
 //			public boolean onCreateWindow (WebView view, boolean dialog, boolean userGesture, Message resultMsg) {
-//				Log.i("malarm", "onCreateWindow: " + dialog + " " + userGesture + " " + resultMsg.obj);
+//				Log.i(PACKAGE_NAME, "onCreateWindow: " + dialog + " " + userGesture + " " + resultMsg.obj);
 //				((WebViewTransport)resultMsg.obj).setWebView(_subwebview);
 //				resultMsg.sendToTarget();
 //				return true;
@@ -194,7 +213,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	@Override
 	protected void onResume() {
 		//start tokei
-		Log.i("malarm", "onPause is called, start JavaScript");
+		Log.i(PACKAGE_NAME, "onPause is called, start JavaScript");
 		super.onResume();
 		//WebView.onResume is hidden, why!?!?
 		_webview.getSettings().setJavaScriptEnabled(true);
@@ -213,7 +232,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 
 	@Override
 	protected void onPause() {
-		Log.i("malarm", "onPause is called, stop JavaScript");
+		Log.i(PACKAGE_NAME, "onPause is called, stop JavaScript");
 		super.onPause();
 		//stop tokei
 		_webview.getSettings().setJavaScriptEnabled(false);
@@ -223,12 +242,20 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 
 	@Override
 	protected void onStart () {
-		Log.i("malarm", "onStart is called");
+		Log.i(PACKAGE_NAME, "onStart is called");
 		super.onStart();
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		_PREF_USE_NATIVE_PLAYER = pref.getBoolean("use_native_player", false);
 		_PREF_VIBRATE = pref.getBoolean("vibrate", false);
+		if (_state != null) {
+			updateAlarmUI(_state._target);
+		}
 		_alarm_button.requestFocus();
+	}
+	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		outState.putSerializable("state", _state);
 	}
 
 	@Override
@@ -265,7 +292,17 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		_time_picker.setCurrentHour(DEFAULT_HOUR);
 		_time_picker.setCurrentMinute(DEFAULT_MIN);
 	}
-	
+
+    private void cancelAlarm () {
+    	Log.i(PACKAGE_NAME, "cancelAlarm");
+    	//TODO: second parameter is correct?
+		PendingIntent p = makePlayPintent(WAKEUP_ACTION, true);
+		AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		clearAlarmUI();
+		_state = null;
+		mgr.cancel(p);
+    }
+
 	protected void onNewIntent (Intent intent) {
 		String action = intent.getAction();
 		if (action != null && action.equals(WAKEUPAPP_ACTION)) {
@@ -273,7 +310,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				long pattern[] = { 10, 2000, 500, 1500, 1000, 2000 };
 				_vibrator.vibrate(pattern, 1);
 			}
-			clearAlarmUI();
 		}
 	}
 	
@@ -296,14 +332,74 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
         return true;
     }
 
-    private void cancelAlarm () {
-    	Log.i("malarm", "cancelAlarm");
-    	//TODO: second parameter is correct?
-		PendingIntent p = makePlayPintent(WAKEUP_ACTION, true);
-		AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-		clearAlarmUI();
-		mgr.cancel(p);
+    private void updateAlarmUI (Calendar target) {
+    	String dow_str = "";
+		int dow_int = target.get(Calendar.DAY_OF_WEEK);
+		String[] dow_name_table = getResources().getStringArray(R.array.day_of_week);
+		for (int i = 0; i < DOW_INDEX.length; i++) {
+			if (DOW_INDEX[i] == dow_int) {
+				dow_str = dow_name_table[i];
+				break;
+			}
+		}
+		_time_label.setText(String.format("%2d/%2d %02d:%02d (%s)", target.get(Calendar.MONTH)+1,
+										target.get(Calendar.DATE), target.get(Calendar.HOUR_OF_DAY), target.get(Calendar.MINUTE), dow_str));
+		_time_picker.setCurrentHour(target.get(Calendar.HOUR_OF_DAY));
+		_time_picker.setCurrentMinute(target.get(Calendar.MINUTE));
+		_time_picker.setEnabled(false);
     }
+    
+	public void setAlarm() {
+		Log.i(PACKAGE_NAME, "scheduleToPlaylist is called");
+		//TODO: hide keyboard?
+		if (_state != null) {
+			cancelAlarm();
+			if (_vibrator != null) {
+				_vibrator.cancel();
+			}
+			if (! _PREF_USE_NATIVE_PLAYER) {
+				Player.stopMusic();
+				//TODO: what's happen if now playing alarm sound?
+				showMessage(this, getString(R.string.music_stopped));
+			}
+			_state = null;
+			return;
+		}
+		//set timer
+		Calendar now = new GregorianCalendar();
+		int target_hour = _time_picker.getCurrentHour().intValue();
+		int target_min = _time_picker.getCurrentMinute().intValue();
+		Calendar target = new GregorianCalendar(now.get(Calendar.YEAR),
+				now.get(Calendar.MONTH), now.get(Calendar.DATE), target_hour, target_min, 0);
+		long target_millis = target.getTimeInMillis();
+		String tommorow ="";
+		long now_millis = System.currentTimeMillis();
+		if (target_millis <= now_millis) {
+			//tomorrow
+			target_millis += 24 * 60 * 60 * 1000;
+			target.setTimeInMillis(target_millis);
+			tommorow = " (" + getString(R.string.tomorrow) + ")";
+		}
+		_state = new MalarmState(target);
+		updateAlarmUI(target);
+
+		AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		PendingIntent pendingIntent = makePlayPintent(WAKEUP_ACTION, false);
+		mgr.set(AlarmManager.RTC_WAKEUP, target_millis, pendingIntent);
+
+		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+		int min = Integer.valueOf(pref.getString("sleeptime", "60"));
+		Player.playSleepMusic(this, min);
+		long sleep_time_millis = min * 60 * 1000;
+		//TODO: localize
+		String sleeptime_str = String.valueOf(min) + " min";
+		if (target_millis - now_millis >= sleep_time_millis) {
+			PendingIntent sleepIntent = makePlayPintent(SLEEP_ACTION, _PREF_USE_NATIVE_PLAYER);
+			mgr.set(AlarmManager.RTC_WAKEUP, now_millis+sleep_time_millis, sleepIntent);
+		}
+		//TODO: add alarm time as Notification
+		showMessage(this, getString(R.string.alarm_set) + tommorow + " " + sleeptime_str);
+	}
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -331,80 +427,17 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
     		Player.stopMusic();
     		break;
     	default:
-    		Log.i("malarm", "Unknown menu");
+    		Log.i(PACKAGE_NAME, "Unknown menu");
     		return false;
     	}
     	return true;
     }
-	
-	public void startAlarm() {
-		Log.i("malarm", "scheduleToPlaylist is called");
-		//TODO: hide keyboard?
-		if (_SCHEDULED) {
-			cancelAlarm();
-			if (_vibrator != null) {
-				_vibrator.cancel();
-			}
-			if (! _PREF_USE_NATIVE_PLAYER) {
-				Player.stopMusic();
-				//TODO: what's happen if now playing alarm sound?
-				showMessage(this, getString(R.string.music_stopped));
-			}
-			_SCHEDULED = false;
-			return;
-		}
-		//set timer
-		Calendar now = new GregorianCalendar();
-		int target_hour = _time_picker.getCurrentHour().intValue();
-		int target_min = _time_picker.getCurrentMinute().intValue();
-		Calendar target = new GregorianCalendar(now.get(Calendar.YEAR),
-				now.get(Calendar.MONTH), now.get(Calendar.DATE), target_hour, target_min, 0);
-		long target_millis = target.getTimeInMillis();
-		String tommorow ="";
-		long now_millis = System.currentTimeMillis();
-		if (target_millis <= now_millis) {
-			//tomorrow
-			target_millis += 24 * 60 * 60 * 1000;
-			target.setTimeInMillis(target_millis);
-			tommorow = " (" + getString(R.string.tomorrow) + ")";
-		}
-		//TODO: make function
-		_time_picker.setEnabled(false);
-		//get dow string
-		String dow_str = "";
-		int dow_int = target.get(Calendar.DAY_OF_WEEK);
-		String[] dow_name_table = getResources().getStringArray(R.array.day_of_week);
-		for (int i = 0; i < DOW_INDEX.length; i++) {
-			if (DOW_INDEX[i] == dow_int) {
-				dow_str = dow_name_table[i];
-				break;
-			}
-		}
-		_time_label.setText(String.format("%2d/%2d %02d:%02d (%s)", target.get(Calendar.MONTH)+1, target.get(Calendar.DATE), target_hour, target_min, dow_str));
-		AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-		PendingIntent pendingIntent = makePlayPintent(WAKEUP_ACTION, false);
-		mgr.set(AlarmManager.RTC_WAKEUP, target_millis, pendingIntent);
-
-		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-		int min = Integer.valueOf(pref.getString("sleeptime", "60"));
-		Player.playSleepMusic(this, min);
-		long sleep_time_millis = min * 60 * 1000;
-		//TODO: localize
-		String sleeptime_str = String.valueOf(min) + " min";
-		if (target_millis - now_millis >= sleep_time_millis) {
-			PendingIntent sleepIntent = makePlayPintent(SLEEP_ACTION, _PREF_USE_NATIVE_PLAYER);
-			mgr.set(AlarmManager.RTC_WAKEUP, now_millis+sleep_time_millis, sleepIntent);
-		}
-		//TODO: add alarm time as Notification
-		showMessage(this, getString(R.string.alarm_set) + tommorow + " " + sleeptime_str);
-		_SCHEDULED = true;
-	}
 
 	public void onClick(View v) {
 		if (v == _next_button) {
 			Player.playNext();
 		} else if (v == _sleep_wakeup_button) {
-			startAlarm();
+			setAlarm();
 		} else {
 			showMessage(v.getContext(), getString(R.string.unknown_button));
 		}
@@ -436,9 +469,9 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			// AppWidgetManager mgr = AppWidgetManager.getInstance(context);
-			Log.i("malarm", "action: " + intent.getAction());
+			Log.i(PACKAGE_NAME, "action: " + intent.getAction());
 			if (intent.getAction().equals(WAKEUP_ACTION)) {
-				Log.i("malarm", "Wakeup action");
+				Log.i(PACKAGE_NAME, "Wakeup action");
 				if (Player.isPlaying()) {
 					stopMusic();
 				}
@@ -485,7 +518,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		public static void stopMusicNativePlayer(Context context) {
 			File f = new File(Playlist.STOP_MUSIC);
 			if(! f.isFile()) {
-				Log.i("malarm", "No stop play list is found");
+				Log.i(PACKAGE_NAME, "No stop play list is found");
 				return;
 			}
 			playMusicNativePlayer(context, f);
@@ -502,13 +535,13 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		}
 
 		public static void playSleepMusic(Context context, int min) {
-			Log.i("malarm", "start sleep music and stop");
+			Log.i(PACKAGE_NAME, "start sleep music and stop");
 			File f = new File(Playlist.SLEEP_PLAYLIST_PATH);
 			if (_PREF_USE_NATIVE_PLAYER && f.isFile()) {
-				Log.i("malarm", "playSleepMusic: NativePlayer");
+				Log.i(PACKAGE_NAME, "playSleepMusic: NativePlayer");
 				playMusicNativePlayer(context, f);
 			} else {
-				Log.i("malarm", "playSleepMusic: MediaPlayer");
+				Log.i(PACKAGE_NAME, "playSleepMusic: MediaPlayer");
 				reset();
 				playMusic(SLEEP_PLAYLIST);
 			}
@@ -519,7 +552,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		 */
 		public static void playNext() {
 			_index++;
-			Log.i("malarm", "playNext is called: " + _index);
+			Log.i(PACKAGE_NAME, "playNext is called: " + _index);
 			if (Player.isPlaying()) {
 				stopMusic();
 			}
@@ -529,21 +562,21 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		public static class MusicCompletionListener implements
 			MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener {
 			public void onCompletion(MediaPlayer mp) {
-				Log.i("malarm", "onCompletion listener is called");
+				Log.i(PACKAGE_NAME, "onCompletion listener is called");
 				Player.playNext();
 			}
 
 			// This method is not called when DRM error is occured
 			public boolean onError(MediaPlayer mp, int what, int extra) {
 				// TODO: handle error
-				Log.i("malarm", "onError is called");
+				Log.i(PACKAGE_NAME, "onError is called");
 				return false;
 			}
 		}
 
 		public static void playMusic(String[] playlist) {
 			current_playlist = playlist;
-			Log.i("malarm", "startMusic");
+			Log.i(PACKAGE_NAME, "startMusic");
 			if (_player == null) {
 				_player = new MediaPlayer();
 				MusicCompletionListener l = new MusicCompletionListener();
