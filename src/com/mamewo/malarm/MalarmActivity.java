@@ -476,7 +476,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 					stopMusic();
 				}
 				AudioManager mgr = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-				//TODO: add volume to pref
+				//TODO: add volume pref
 				mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
 				mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
 				mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
