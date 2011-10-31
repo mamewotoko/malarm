@@ -1,26 +1,32 @@
+# Malarm - Good-morning with your favorite tunes
 ## What is this?
 
 This is a simple alarm application of android (version 2.3.3).
 
 ## OVERVIEW
-            sleep music (1h)                     wake-up music w/ vibration
-                                                 application starts
- Alarm set ------------------> ..... Alarm time --------------->
- (press "set/stop alarm"
-  button)
+                sleep music (1h)                     wake-up music w/ vibration
+                                                     application starts
+     Alarm set ------------------> ..... Alarm time --------------->
+     (press "set/stop alarm"
+      button)
 
  If you want to stop vibration only, please use "stop vibraiton" menu
  This application has appwidget, but it has no function for now.... very simple!
 
+## SCREENSHOT
+![Japanese screen shot](https://github.com/mamewotoko/malarm/raw/master/doc/alarm_ja.png)
+![english screen shot](https://github.com/mamewotoko/malarm/raw/master/doc/alarm_en.png)
+![Preference](https://github.com/mamewotoko/malarm/raw/master/doc/malarm_pref.png)
+
 ## HOW TO RUN:
 1. Rename Playlist_tmpl.java into Playlist.java and put it into src/com/mamewo/hello directory.
 2. prepare playlist by writing Playlist class in following way "a" or "b". Playlist_tmpl.java is a sample file.
-a) Fill Playlist.WAKEUP_PLAYLIST and Playlist.SLEEP_PLAYLIST by music
+  a) Fill Playlist.WAKEUP_PLAYLIST and Playlist.SLEEP_PLAYLIST by music
   filename in "/sdcard/music/" folder
-OR
-b) put m3u file, which lists one music filename as one line and put them as "wakeup.m3u" and
-"sleep.m3u" into "/sdcard/music/" folder.
-copy stop.m3u file in this folder into "/sdcard/music/" folder.
+  OR
+  b) put m3u file, which lists one music filename as one line and put them as "wakeup.m3u" and
+  "sleep.m3u" into "/sdcard/music/" folder.
+  copy stop.m3u file in this folder into "/sdcard/music/" folder.
 3. Build and run on your target device
 
 ## TODO (bugs?):
@@ -40,24 +46,18 @@ copy stop.m3u file in this folder into "/sdcard/music/" folder.
 - link to music store (where?)
 
 ## APPENDIX
-### BUILD FROM COMMAND LINE
+### HOW TO BUILD FROM COMMAND LINE
 1. Create local.properties file and set sdk.dir property to location where you installed android SDK
-
-sdk.dir=<path to android SDK>
-
+    sdk.dir=<path to android SDK>
 2. In project top directory execute following command
-
-ant debug
-
+    ant debug
 3. malarm-cmd.apk will be created in bin directory, if successed
 
 ### START EMULATOR AND INSTALL APK FROM COMMAND LINE
 1. 
-emulator -avd <avdname>
-
+    emulator -avd <avdname>
 2.
-adb install bin/malarm-cmd.apk
-
+    adb install bin/malarm-cmd.apk
 (build.xml and *.property files are created by android create command)
 
 ### MEMO:
@@ -67,5 +67,5 @@ After set/stop alarm button
    Play alarm music at specified time
 
 ----
-Takashi Masuyama <mamewotoko@gmail.com>
+Takashi Masuyama < mamewotoko@gmail.com >  
 http://www002.upp.so-net.ne.jp/mamewo/
