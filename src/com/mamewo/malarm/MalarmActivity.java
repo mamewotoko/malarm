@@ -577,6 +577,10 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		public static void playMusic(String[] playlist) {
 			current_playlist = playlist;
 			Log.i(PACKAGE_NAME, "startMusic");
+			if (playlist == null || playlist.length == 0) {
+				//TODO: throw Exception?
+				return;
+			}
 			if (_player == null) {
 				_player = new MediaPlayer();
 				MusicCompletionListener l = new MusicCompletionListener();
