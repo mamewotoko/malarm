@@ -69,7 +69,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	
 	private MalarmState _state = null;
 	private Button _next_button;
-	private Button _sleep_wakeup_button;
 	private TimePicker _time_picker;
 	private TextView _time_label;
 	private WebView _webview;
@@ -128,14 +127,13 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		} else {
 			_state = null;
 		}
-		_sleep_wakeup_button = (Button) findViewById(R.id.play_button);
-		_sleep_wakeup_button.setOnClickListener(this);
 		_next_button = (Button) findViewById(R.id.next_button);
 		_next_button.setOnClickListener(this);
 		_time_label = (TextView) findViewById(R.id.target_time_label);
 		_webview = (WebView)findViewById(R.id.webView1);
 //		_subwebview = new WebView(this);
 		_alarm_button = (Button)findViewById(R.id.play_button);
+		_alarm_button.setOnClickListener(this);
 		WebSettings config = _webview.getSettings();
 		//to display twitter...
 		config.setDomStorageEnabled(true);
@@ -444,9 +442,11 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
     }
 
 	public void onClick(View v) {
+		//get focus from time picker
+		v.requestFocus();
 		if (v == _next_button) {
 			Player.playNext();
-		} else if (v == _sleep_wakeup_button) {
+		} else if (v == _alarm_button) {
 			setAlarm();
 		} else {
 			showMessage(v.getContext(), getString(R.string.unknown_button));
