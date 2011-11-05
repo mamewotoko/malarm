@@ -18,7 +18,7 @@
     <string name="next">次の曲</string>
     <string name="time_to_wakeup">起きる時刻</string>
     <string name="set_now">現在時刻をセットする</string>
-    <string name="stop_vibration">バイブレーションをとめる</string>
+    <string name="stop_vibration">ぶるぶるをとめる</string>
     <string name="play_wakeup">目覚めの音楽をかける</string>
     <string name="preference_title">malarmの設定</string>
     <string name="pref_menu">設定</string>

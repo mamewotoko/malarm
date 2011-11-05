@@ -15,7 +15,8 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 public class MalarmWidgetProvider extends AppWidgetProvider {
-    public static final String HELLO_ACTION = "com.mamewo.malarm.HELLO_ACTION";
+	private static final String PACKAGE_NAME = MalarmWidgetProvider.class.getPackage().getName();
+    public static final String HELLO_ACTION = PACKAGE_NAME + ".HELLO_ACTION";
     
     @Override
     public void onReceive(Context context, Intent intent) {

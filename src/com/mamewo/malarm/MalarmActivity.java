@@ -47,7 +47,7 @@ import android.net.http.*;
 
 public class MalarmActivity extends Activity implements OnClickListener, OnSharedPreferenceChangeListener {
 	/** Called when the activity is first created. */
-	public static final String PACKAGE_NAME = MalarmActivity.class.getPackage().getName();
+	private static final String PACKAGE_NAME = MalarmActivity.class.getPackage().getName();
 	public static final String WAKEUP_ACTION = PACKAGE_NAME + ".WAKEUP_ACTION";
 	public static final String WAKEUPAPP_ACTION = PACKAGE_NAME + ".WAKEUPAPP_ACTION";
 	public static final String SLEEP_ACTION = PACKAGE_NAME + ".SLEEP_ACTION";
@@ -163,7 +163,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			}
 			@Override
 			public void onLoadResource (WebView view, String url) {
-				Log.i(PACKAGE_NAME, "loading: " + url);
+				//Log.i(PACKAGE_NAME, "loading: " + url);
 				//addhoc polling...
 				int height = view.getContentHeight();
 				if ((url.indexOf("bijint") > 0 || url.indexOf("bijo-linux") > 0) && height > 400) {
@@ -253,8 +253,15 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		_alarm_button.requestFocus();
 	}
 	
+	//Avoid finishing activity not to lost _state
+	@Override
+	public void onBackPressed() {
+		moveTaskToBack(false);
+	}
+	
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
+		Log.i("malarm", "onSaveInstanceState is called");
 		outState.putSerializable("state", _state);
 	}
 
@@ -342,8 +349,12 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				break;
 			}
 		}
-		_time_label.setText(String.format("%2d/%2d %02d:%02d (%s)", target.get(Calendar.MONTH)+1,
-										target.get(Calendar.DATE), target.get(Calendar.HOUR_OF_DAY), target.get(Calendar.MINUTE), dow_str));
+		_time_label.setText(String.format("%2d/%2d %02d:%02d (%s)",
+										target.get(Calendar.MONTH)+1,
+										target.get(Calendar.DATE),
+										target.get(Calendar.HOUR_OF_DAY),
+										target.get(Calendar.MINUTE),
+										dow_str));
 		_time_picker.setCurrentHour(target.get(Calendar.HOUR_OF_DAY));
 		_time_picker.setCurrentMinute(target.get(Calendar.MINUTE));
 		_time_picker.setEnabled(false);
@@ -362,7 +373,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				//TODO: what's happen if now playing alarm sound?
 				showMessage(this, getString(R.string.music_stopped));
 			}
-			_state = null;
 			return;
 		}
 		//set timer
