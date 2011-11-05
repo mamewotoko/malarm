@@ -254,6 +254,10 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	//Avoid finishing activity not to lost _state
 	@Override
 	public void onBackPressed() {
+		if (_webview.canGoBack() && _webview.hasFocus()) {
+			_webview.goBack();
+			return;
+		}
 		moveTaskToBack(false);
 	}
 	

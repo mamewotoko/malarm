@@ -30,9 +30,9 @@ This is a simple alarm application of android (version 2.3.3).
 3. Build and run on your target device
 
 ## TODO (bugs?):
-- add interface for Playlist
+- add interface file for Playlist
 - implement music player as Service to play long time
--- or use native player
+- switch web page by gesture (2 finger) or horizontal scroll bar?
 - editable playlist support
 - use au music player?
 - make COOL widget to set alarm
