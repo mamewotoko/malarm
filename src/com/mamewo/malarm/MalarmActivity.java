@@ -213,26 +213,28 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			}
 		});
 		
-//		InputStream is = MalarmActivity.class.getClassLoader().getResourceAsStream("app_version.properties");
-//		Log.i("malarm", "is ~ " + is);
-//		Properties prop = new Properties();
-//		try {
-//			prop.load(is);
-//			VERSION = prop.getProperty("app.version");
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		} finally {
-//			if (is != null) {
-//				try {
-//					is.close();
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		}
-//		if (VERSION == null) {
-//			VERSION = "unknown";
-//		}
+		//load version
+		InputStream is = null;
+		try {
+			is = getResources().openRawResource(R.raw.app_version);
+			Log.i("malarm", "is ~ " + is);
+			Properties prop = new Properties();
+			prop.load(is);
+			VERSION = prop.getProperty("app.version");
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (is != null) {
+				try {
+					is.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		if (VERSION == null) {
+			VERSION = "unknown";
+		}
 		//TODO: fix
 //		_webview.setWebChromeClient(new WebChromeClient() {
 //			@Override

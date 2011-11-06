@@ -31,7 +31,6 @@ or Build malarm and install it on android device
 
 ## TODO (bugs and new feature candidates):
 - implement music player as Service to play long time
-- add version screen
 - add setting of music file path and m3u playlist path
 - add help?
 - restart music after phone call ends

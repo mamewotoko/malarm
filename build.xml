@@ -36,7 +36,7 @@
 	<tstamp>
 	<format property="build.timestamp" pattern="yyyy/MM/dd-HH:mm" locale="en,UK"/>
 	</tstamp>
-	<echo message="app.version=${build.timestamp}" file="app_version.properties"/>
+	<echo message="app.version=${build.timestamp}" file="raw/app_version.properties"/>
 	</target>
     <property file="app_version.properties" />
 	
