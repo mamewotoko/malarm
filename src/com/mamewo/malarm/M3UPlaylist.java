@@ -10,12 +10,17 @@ import java.util.Vector;
  * @author Takashi Masuyama <mamewotoko@gmail.com>
  */
 
-public class M3UPlaylist extends Playlist{
+public class M3UPlaylist implements Playlist{
 	private int _nextindex = 0;
+	String _basepath;
 	private Vector<String> _playlist;
 	
 	public M3UPlaylist(String basepath, String playlistpath) {
-		super(basepath);
+		_basepath = basepath;
+		String sep = System.getProperty("file.separator");
+		if (! _basepath.endsWith(sep)) {
+			_basepath = _basepath + sep;
+		}
 		try {
 			_playlist = new Vector<String>();
 			loadPlaylist(playlistpath);
@@ -29,13 +34,18 @@ public class M3UPlaylist extends Playlist{
 	}
 	
 	@Override
+	public boolean isEmpty() {
+		return _playlist.isEmpty();
+	}
+	
+	@Override
 	public String next() {
 		if (_playlist.size() <= _nextindex) {
 			_nextindex = 0;
 		}
 		String result = _playlist.get(_nextindex);
 		_nextindex++;
-		return getBasepath() + result;
+		return _basepath + result;
 	}
 
 	@Override

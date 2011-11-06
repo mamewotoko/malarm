@@ -1,26 +1,8 @@
 package com.mamewo.malarm;
 
-public abstract class Playlist {
-	protected String _basepath;
+public interface Playlist {
 	
-	protected Playlist() {
-		//empty
-	}
-	
-	public Playlist(String basepath) {
-		_basepath = basepath;
-		if (! _basepath.endsWith("/")) {
-			_basepath = basepath + "/";
-		}
-	}
-
-	/**
-	 * 
-	 * @return path to music files
-	 */
-	public String getBasepath() {
-		return _basepath;
-	}
+	public boolean isEmpty();
 
 	/**
 	 * 

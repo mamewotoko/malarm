@@ -589,8 +589,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		public static void playMusic(Playlist playlist) {
 			current_playlist = playlist;
 			Log.i(PACKAGE_NAME, "startMusic");
-			if (playlist == null) {
-				//TODO: throw Exception?
+			if (playlist == null || playlist.isEmpty()) {
 				Log.i(PACKAGE_NAME, "playMusic: playlist is null");
 				return;
 			}
