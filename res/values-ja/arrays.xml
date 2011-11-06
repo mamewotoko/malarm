@@ -6,7 +6,6 @@
         <item>美女Linux</item>
         <item>美男時計</item>
     </string-array>
-    <!--  TODO: get URL from resource? -->
     <string-array name="preference_item_value">
         <item>http://twitter.com/</item>
         <item>http://www.bijint.com/jp/</item>
