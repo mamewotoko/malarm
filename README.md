@@ -23,7 +23,9 @@ This is a simple alarm application of android (version 2.3.3).
 2. Prepare m3u format play list for sleep (named sleep.m3u) and wakeup (named wakeup.m3u).
 m3u file contains one music filename in one line.
 3. Put playlists and stop.m4a file in /sdcard/music/ directory of android device.
-4. Build malarm
+4. Download apk file from 
+https://github.com/mamewotoko/malarm/downloads
+or Build malarm and install it on android device
 5. Run malarm on android device
 6. Enjoy!
 
