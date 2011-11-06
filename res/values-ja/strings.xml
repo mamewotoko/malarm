@@ -15,6 +15,8 @@
 
 <!--  UI -->
     <string name="set_stop_alarm">アラームON/OFF</string>
+    <string name="set_alarm">アラームをセットする</string>
+    <string name="stop_alarm">アラームをとめる</string>
     <string name="next">次の曲</string>
     <string name="time_to_wakeup">起きる時刻</string>
     <string name="set_now">現在時刻をセットする</string>

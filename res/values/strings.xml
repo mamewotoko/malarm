@@ -15,6 +15,8 @@
 
 <!--  UI -->
     <string name="set_stop_alarm">Alarm ON/OFF</string>
+    <string name="set_alarm">Set Alarm</string>
+    <string name="stop_alarm">Cancel Alarm</string>
     <string name="next">Next</string>
     <string name="time_to_wakeup">Time to Wake-up</string>
     <string name="set_now">Set current time to time picker</string>
