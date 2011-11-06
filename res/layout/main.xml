@@ -8,14 +8,14 @@
             <TimePicker android:id="@+id/timePicker1" android:layout_width="152dp" android:layout_height="wrap_content" android:inputType="number"></TimePicker>
         </LinearLayout>
         <TableLayout android:layout_height="wrap_content" android:id="@+id/tableLayout1" android:layout_width="fill_parent">
-            <TableRow android:id="@+id/tableRow1" android:layout_width="fill_parent" android:layout_height="wrap_content">
+            <TableRow android:id="@+id/tableRow1" android:layout_width="fill_parent" android:layout_height="fill_parent">
                 <TextView android:id="@+id/target_time_label" android:layout_height="fill_parent" android:text="" android:textAppearance="?android:attr/textAppearanceLarge" android:layout_width="wrap_content" android:textSize="9pt"></TextView>
             </TableRow>
-            <TableRow android:id="@+id/tableRow2" android:layout_height="match_parent" android:layout_width="wrap_content">
+            <TableRow android:id="@+id/tableRow2" android:layout_height="match_parent" android:layout_width="fill_parent">
                 <Button android:id="@+id/play_button" android:layout_height="fill_parent" android:text="@string/set_stop_alarm" android:layout_width="fill_parent"></Button>
             </TableRow>
-            <TableRow android:id="@+id/tableRow3" android:layout_width="fill_parent" android:layout_height="wrap_content">
-                <Button android:text="@string/next" android:id="@+id/next_button" android:layout_height="wrap_content" android:layout_width="fill_parent"></Button>
+            <TableRow android:id="@+id/tableRow3" android:layout_width="fill_parent" android:layout_height="fill_parent">
+                <Button android:text="@string/next" android:id="@+id/next_button" android:layout_width="fill_parent" android:layout_height="match_parent"></Button>
             </TableRow>
             <TableRow android:id="@+id/tableRow4" android:layout_width="wrap_content" android:layout_height="wrap_content">
             </TableRow>

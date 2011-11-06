@@ -1,11 +1,11 @@
-# Malarm - Good-morning with your favorite tunes
+# malarm - Good-morning with your favorite tunes
 ## What is this?
 
 This is a simple alarm application of android (version 2.3.3).
 
 ## OVERVIEW
-                sleep music (1h)                     wake-up music w/ vibration
-                                                     application starts
+                sleep music (1h)                     wake-up music w vibration
+                w sleep music                        application starts
      Alarm set ------------------> ..... Alarm time --------------->
      (press "set/stop alarm"
       button)
@@ -19,31 +19,36 @@ This is a simple alarm application of android (version 2.3.3).
 ![Preference](https://github.com/mamewotoko/malarm/raw/master/doc/malarm_pref.png)
 
 ## HOW TO RUN:
-1. Rename Playlist_tmpl.java into Playlist.java and put it into src/com/mamewo/hello directory.
-2. prepare playlist by writing Playlist class in following way "a" or "b". Playlist_tmpl.java is a sample file.
-  a) Fill Playlist.WAKEUP_PLAYLIST and Playlist.SLEEP_PLAYLIST by music
-  filename in "/sdcard/music/" folder
-  OR
-  b) put m3u file, which lists one music filename as one line and put them as "wakeup.m3u" and
-  "sleep.m3u" into "/sdcard/music/" folder.
-  copy stop.m3u file in this folder into "/sdcard/music/" folder.
-3. Build and run on your target device
+1. Put your music file into /sdcard/music directory of android device
+2. Prepare m3u format play list for sleep (named sleep.m3u) and wakeup (named wakeup.m3u).
+m3u file contains one music filename in one line.
+3. Put playlists and stop.m4a file in /sdcard/music/ directory of android device.
+4. Build malarm
+5. Run malarm on android device
+6. Enjoy!
 
-## TODO (bugs?):
-- add interface file for Playlist
+## TODO (bugs and new feature candidates):
 - implement music player as Service to play long time
+- add version screen
+- add setting of music file path and m3u playlist path
+- add help?
+- restart music after phone call ends
+- preset volume of sleep / wakeup mode
+- raise wakeup volume by timer
+- record wakeup time
 - switch web page by gesture (2 finger) or horizontal scroll bar?
-- editable playlist support
+- add UI to edit playlist
 - use au music player?
 - make COOL widget to set alarm
 - add option not to play sleep music?
-- add stop music into resource
+- add stop music into resource?
 - change vibration timing
-- preset volume of sleep / wakeup mode.
-- add license file of this source
 - fix vibration bug (onNewIntent is called after unlocking device?)
 - implement more smart scroll
 - link to music store (where?)
+
+## TESTED DEVICE
+- Xperia Acro made by Sony Ericsson
 
 ## APPENDIX
 ### HOW TO BUILD FROM COMMAND LINE
@@ -53,15 +58,15 @@ This is a simple alarm application of android (version 2.3.3).
     ant debug
 3. malarm-cmd.apk will be created in bin directory, if successed
 
-### START EMULATOR AND INSTALL APK FROM COMMAND LINE
-1. 
+### START ANDROID EMULATOR AND INSTALL APK FROM COMMAND LINE
+1. start android emulator
     emulator -avd <avdname>
-2.
+2. install application on android emulator
     adb install bin/malarm-cmd.apk
 (build.xml and *.property files are created by android create command)
 
 ### MEMO:
-Alarm application starts when user push appwidget.
+Alarm application starts when user push appwidget of malarm.
 
 ----
 Takashi Masuyama < mamewotoko@gmail.com >  

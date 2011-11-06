@@ -51,11 +51,18 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	public static final String WAKEUP_ACTION = PACKAGE_NAME + ".WAKEUP_ACTION";
 	public static final String WAKEUPAPP_ACTION = PACKAGE_NAME + ".WAKEUPAPP_ACTION";
 	public static final String SLEEP_ACTION = PACKAGE_NAME + ".SLEEP_ACTION";
+
+	//TODO: add preference
+	protected static final String MUSIC_PATH = "/sdcard/music/";
+	protected static final String WAKEUP_PLAYLIST_PATH = "/sdcard/music/wakeup.m3u";
+	protected static final String SLEEP_PLAYLIST_PATH = "/sdcard/music/sleep.m3u";
+	//copy stop.m4a file to stop native player
+	protected static final String STOP_MUSIC = "/sdcard/music/stop.m4a";
+
+	protected static Playlist WAKEUP_PLAYLIST = new M3UPlaylist(MUSIC_PATH, WAKEUP_PLAYLIST_PATH);
+	protected static Playlist SLEEP_PLAYLIST = new M3UPlaylist(MUSIC_PATH, SLEEP_PLAYLIST_PATH);
 	
 	public static class MalarmState implements Serializable {
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 1L;
 		public Calendar _target;
 		public MalarmState(Calendar target) {
@@ -464,20 +471,11 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	//TODO: separate BroadcastReceiver
 	//TODO: implement music player as Service to play long time
 	public static class Player extends BroadcastReceiver {
-		private static final String MUSIC_PATH = Playlist.MUSIC_PATH;
-		private static final String[] SLEEP_PLAYLIST = Playlist.SLEEP_PLAYLIST;
-		private static final String[] WAKEUP_PLAYLIST = Playlist.WAKEUP_PLAYLIST;
-
-		private static String[] current_playlist = SLEEP_PLAYLIST;
+		private static Playlist current_playlist = SLEEP_PLAYLIST;
 		private static MediaPlayer _player = null;
-		private static int _index = 0;
 
 		public static boolean isPlaying() {
 			return _player != null && _player.isPlaying();
-		}
-
-		public static void reset () {
-			_index = 0;
 		}
 		
 		@Override
@@ -491,6 +489,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				}
 				AudioManager mgr = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 				//TODO: add volume pref
+				mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
 				mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
 				mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
 				mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
@@ -530,7 +529,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		}
 		
 		public static void stopMusicNativePlayer(Context context) {
-			File f = new File(Playlist.STOP_MUSIC);
+			File f = new File(STOP_MUSIC);
 			if(! f.isFile()) {
 				Log.i(PACKAGE_NAME, "No stop play list is found");
 				return;
@@ -539,24 +538,24 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		}
 
 		public static void playWakeupMusic(Context context, boolean use_native) {
-			File f = new File(Playlist.WAKEUP_PLAYLIST_PATH);
+			File f = new File(WAKEUP_PLAYLIST_PATH);
 			if (use_native && f.isFile()) {
 				playMusicNativePlayer(context, f);
 			} else {
-				reset();
+				WAKEUP_PLAYLIST.reset();
 				playMusic(WAKEUP_PLAYLIST);
 			}
 		}
 
 		public static void playSleepMusic(Context context, int min) {
 			Log.i(PACKAGE_NAME, "start sleep music and stop");
-			File f = new File(Playlist.SLEEP_PLAYLIST_PATH);
+			File f = new File(SLEEP_PLAYLIST_PATH);
 			if (_PREF_USE_NATIVE_PLAYER && f.isFile()) {
 				Log.i(PACKAGE_NAME, "playSleepMusic: NativePlayer");
 				playMusicNativePlayer(context, f);
 			} else {
 				Log.i(PACKAGE_NAME, "playSleepMusic: MediaPlayer");
-				reset();
+				SLEEP_PLAYLIST.reset();
 				playMusic(SLEEP_PLAYLIST);
 			}
 		}
@@ -565,8 +564,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		 * MediaPlayer only
 		 */
 		public static void playNext() {
-			_index++;
-			Log.i(PACKAGE_NAME, "playNext is called: " + _index);
+			Log.i(PACKAGE_NAME, "playNext is called: ");
 			if (Player.isPlaying()) {
 				stopMusic();
 			}
@@ -588,11 +586,12 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			}
 		}
 
-		public static void playMusic(String[] playlist) {
+		public static void playMusic(Playlist playlist) {
 			current_playlist = playlist;
 			Log.i(PACKAGE_NAME, "startMusic");
-			if (playlist == null || playlist.length == 0) {
+			if (playlist == null) {
 				//TODO: throw Exception?
+				Log.i(PACKAGE_NAME, "playMusic: playlist is null");
 				return;
 			}
 			if (_player == null) {
@@ -605,16 +604,13 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				return;
 			}
 			String path = "";
-			for (int i = 0; i < playlist.length; i++) {
-				path = MUSIC_PATH + playlist[_index];
+			//TODO: ummm...
+			for (int i = 0; i < 100; i++) {
+				path = playlist.next();
 				File f = new File(path);
 				// ....
 				if ((!path.endsWith(".m4p")) && f.exists()) {
 					break;
-				}
-				_index++;
-				if (_index >= playlist.length) {
-					_index = 0;
 				}
 			}
 			// TODO: handle error
