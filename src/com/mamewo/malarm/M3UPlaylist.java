@@ -45,7 +45,10 @@ public class M3UPlaylist implements Playlist{
 		}
 		String result = _playlist.get(_nextindex);
 		_nextindex++;
-		return _basepath + result;
+		if (result.indexOf(System.getProperty("file.separator")) == -1) {
+			result = _basepath + result;
+		}
+		return result;
 	}
 
 	@Override
@@ -57,7 +60,9 @@ public class M3UPlaylist implements Playlist{
 		BufferedReader br = new BufferedReader(new FileReader (filename));
 		String music_filename;
 		while ((music_filename = br.readLine()) != null) {
-			_playlist.add(music_filename);
+			if (! music_filename.startsWith("#")) {
+				_playlist.add(music_filename);
+			}
 		}
 		br.close();
 	}
