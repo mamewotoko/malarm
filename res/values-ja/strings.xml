@@ -29,9 +29,13 @@
     <string name="pref_sleeptime">スリープまでの時間</string>
     <string name="enable_vibration">ON</string>
     <string name="disable_vibration">OFF</string>
-    <string name="pref_vibration">起床時バイブレーション</string>
+    <string name="pref_vibration">起床時ぶるぶる</string>
     
     <string name="use_native_player_title">Nativeの音楽プレイヤーを使う</string>
     <string name="use_internal_player">MediaPlayerを使う</string>
     <string name="use_native_player">Nativeの音楽プレイヤーを使う</string>
+    <string name="playlist_path_title">プレイリストの場所</string>
+    <string name="playlist_path_summary">プレイリストsleep.m3uとwakeup.m3uを保存したディレクトリ</string>
+    <string name="enter_path_to_playlist">プレイリストsleep.m3uとwakeup.m3uを保存したディレクトリを入力してください</string>
+    <string name="malarm_version_title">バージョン</string>
 </resources>

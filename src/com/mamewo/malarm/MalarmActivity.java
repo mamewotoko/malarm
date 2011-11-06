@@ -6,9 +6,11 @@ package com.mamewo.malarm;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Properties;
 
 import com.mamewo.malarm.R;
 
@@ -24,6 +26,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
@@ -51,16 +54,20 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	public static final String WAKEUP_ACTION = PACKAGE_NAME + ".WAKEUP_ACTION";
 	public static final String WAKEUPAPP_ACTION = PACKAGE_NAME + ".WAKEUPAPP_ACTION";
 	public static final String SLEEP_ACTION = PACKAGE_NAME + ".SLEEP_ACTION";
+	public static final String DEFAULT_PLAYLIST_PATH = "/sdcard/music/";
+	public static String VERSION = "unknown";
+	
+	protected static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
-	//TODO: add preference
-	protected static final String MUSIC_PATH = "/sdcard/music/";
-	protected static final String WAKEUP_PLAYLIST_PATH = "/sdcard/music/wakeup.m3u";
-	protected static final String SLEEP_PLAYLIST_PATH = "/sdcard/music/sleep.m3u";
+	protected static final String WAKEUP_PLAYLIST_FILENAME = "wakeup.m3u";
+	protected static final String SLEEP_PLAYLIST_FILENAME = "sleep.m3u";
 	//copy stop.m4a file to stop native player
-	protected static final String STOP_MUSIC = "/sdcard/music/stop.m4a";
+	protected static final String STOP_MUSIC_FILENAME = "stop.m4a";
 
-	protected static Playlist WAKEUP_PLAYLIST = new M3UPlaylist(MUSIC_PATH, WAKEUP_PLAYLIST_PATH);
-	protected static Playlist SLEEP_PLAYLIST = new M3UPlaylist(MUSIC_PATH, SLEEP_PLAYLIST_PATH);
+	protected static String PLAYLIST_PATH = null;
+
+	protected static Playlist WAKEUP_PLAYLIST;
+	protected static Playlist SLEEP_PLAYLIST;
 	
 	public static class MalarmState implements Serializable {
 		private static final long serialVersionUID = 1L;
@@ -120,13 +127,23 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		}
 	}
 	
+	private void loadPlaylist() {
+		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+		PLAYLIST_PATH = pref.getString("playlist_path", DEFAULT_PLAYLIST_PATH);
+		if (PLAYLIST_PATH.endsWith(FILE_SEPARATOR)) {
+			PLAYLIST_PATH = PLAYLIST_PATH + FILE_SEPARATOR;
+		}
+		WAKEUP_PLAYLIST = new M3UPlaylist(PLAYLIST_PATH, WAKEUP_PLAYLIST_FILENAME);
+		SLEEP_PLAYLIST = new M3UPlaylist(PLAYLIST_PATH, SLEEP_PLAYLIST_FILENAME);
+	}
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		Log.i(PACKAGE_NAME, "onCreate is called");
-		super.onCreate(savedInstanceState);
-		Log.i(PACKAGE_NAME, PACKAGE_NAME);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		loadPlaylist();
 		_time_picker = (TimePicker) findViewById(R.id.timePicker1);
 		_time_picker.setIs24HourView(true);
 		if (savedInstanceState != null) {
@@ -154,7 +171,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				return false;
 			}
 		});
-		
 		final Activity activity = this;
 		_webview.setWebViewClient(new WebViewClient() {
 //			@Override
@@ -196,7 +212,27 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				Log.i(PACKAGE_NAME, "onPageFinshed: " + url);
 			}
 		});
-
+		
+//		InputStream is = MalarmActivity.class.getClassLoader().getResourceAsStream("app_version.properties");
+//		Log.i("malarm", "is ~ " + is);
+//		Properties prop = new Properties();
+//		try {
+//			prop.load(is);
+//			VERSION = prop.getProperty("app.version");
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		} finally {
+//			if (is != null) {
+//				try {
+//					is.close();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		}
+//		if (VERSION == null) {
+//			VERSION = "unknown";
+//		}
 		//TODO: fix
 //		_webview.setWebChromeClient(new WebChromeClient() {
 //			@Override
@@ -282,6 +318,14 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			_PREF_USE_NATIVE_PLAYER = sharedPreferences.getBoolean(key, false);
 		} else if (key.equals("vibrate")) {
 			_PREF_VIBRATE = sharedPreferences.getBoolean(key, true);
+		} else if (key.equals("playlist_path")) {
+			String newpath = sharedPreferences.getString(key, DEFAULT_PLAYLIST_PATH);
+			if (! newpath.endsWith(FILE_SEPARATOR)) {
+				newpath = newpath + FILE_SEPARATOR;
+			}
+			if (! newpath.equals(PLAYLIST_PATH)) {
+				loadPlaylist();
+			}
 		}
 	}
 
@@ -530,7 +574,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		}
 		
 		public static void stopMusicNativePlayer(Context context) {
-			File f = new File(STOP_MUSIC);
+			File f = new File(PLAYLIST_PATH + STOP_MUSIC_FILENAME);
 			if(! f.isFile()) {
 				Log.i(PACKAGE_NAME, "No stop play list is found");
 				return;
@@ -539,7 +583,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		}
 
 		public static void playWakeupMusic(Context context, boolean use_native) {
-			File f = new File(WAKEUP_PLAYLIST_PATH);
+			File f = new File(WAKEUP_PLAYLIST_FILENAME);
 			if (use_native && f.isFile()) {
 				playMusicNativePlayer(context, f);
 			} else {
@@ -550,7 +594,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 
 		public static void playSleepMusic(Context context, int min) {
 			Log.i(PACKAGE_NAME, "start sleep music and stop");
-			File f = new File(SLEEP_PLAYLIST_PATH);
+			File f = new File(SLEEP_PLAYLIST_FILENAME);
 			if (_PREF_USE_NATIVE_PLAYER && f.isFile()) {
 				Log.i(PACKAGE_NAME, "playSleepMusic: NativePlayer");
 				playMusicNativePlayer(context, f);

@@ -34,4 +34,8 @@
     <string name="use_native_player_title">Use native player</string>
     <string name="use_internal_player">Do not use native player (use MediaPlayer)</string>
     <string name="use_native_player">Use native player</string>
+    <string name="playlist_path_title">Playlist directory</string>
+    <string name="playlist_path_summary">Playlist directory where sleep.m3u and wakeup.m3u is saved</string>
+    <string name="enter_path_to_playlist">Enter directory where sleep.m3u and wakeup.m3u is saved</string>
+    <string name="malarm_version_title">Version</string>
 </resources>

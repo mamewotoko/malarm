@@ -15,7 +15,7 @@ public class M3UPlaylist implements Playlist{
 	String _basepath;
 	private Vector<String> _playlist;
 	
-	public M3UPlaylist(String basepath, String playlistpath) {
+	public M3UPlaylist(String basepath, String playlist_filename) {
 		_basepath = basepath;
 		String sep = System.getProperty("file.separator");
 		if (! _basepath.endsWith(sep)) {
@@ -23,7 +23,7 @@ public class M3UPlaylist implements Playlist{
 		}
 		try {
 			_playlist = new Vector<String>();
-			loadPlaylist(playlistpath);
+			loadPlaylist(_basepath + playlist_filename);
 		} catch (FileNotFoundException e) {
 			//TODO: set default playlist?
 			e.printStackTrace();
