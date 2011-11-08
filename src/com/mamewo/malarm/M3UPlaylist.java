@@ -6,6 +6,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Vector;
 
+import android.util.Log;
+
 /**
  * @author Takashi Masuyama <mamewotoko@gmail.com>
  */
@@ -25,10 +27,9 @@ public class M3UPlaylist implements Playlist{
 			_playlist = new Vector<String>();
 			loadPlaylist(_basepath + playlist_filename);
 		} catch (FileNotFoundException e) {
-			//TODO: set default playlist?
-			e.printStackTrace();
+			Log.i("M3UPlaylist", "cannot find playlist " + playlist_filename);
 		} catch (IOException e) {
-			//TODO: set default playlist?
+			Log.i("M3UPlaylist", "cannot read playlist " + playlist_filename);
 			e.printStackTrace();
 		}
 	}

@@ -8,7 +8,6 @@ import com.mamewo.malarm.R;
 
 import android.os.Bundle;
 import android.preference.*;
-import android.util.Log;
 
 public class MyPreference extends PreferenceActivity {
 	@Override

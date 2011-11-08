@@ -26,7 +26,6 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
@@ -72,8 +71,11 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	public static class MalarmState implements Serializable {
 		private static final long serialVersionUID = 1L;
 		public Calendar _target;
+		public boolean _suspending;
+
 		public MalarmState(Calendar target) {
 			_target = target;
+			_suspending = false;
 		}
 	}
 	
@@ -87,7 +89,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	private TextView _time_label;
 	private WebView _webview;
 //	private WebView _subwebview;
-	private Button _alarm_button;
+	private ToggleButton _alarm_button;
 	
 	@SuppressWarnings("unused")
 	private PhoneStateListener _calllistener;
@@ -107,7 +109,8 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	};
 	
 	public class MyCallListener extends PhoneStateListener {
-		MalarmActivity _activity;
+		private MalarmActivity _activity;
+		
 		public MyCallListener(MalarmActivity context) {
 			_activity = context;
 			TelephonyManager telmgr = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -115,14 +118,18 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		}
 
 		public void onCallStateChanged (int state, String incomingNumber) {
-			//TODO: restart music when phone call is killed?
+			//TODO: save cursor and play
 			if (state == TelephonyManager.CALL_STATE_RINGING) {
+				Log.i(PACKAGE_NAME, "onCallStateChanged: RINGING");
 				//stop vibration
 				if (_vibrator != null) {
 					_vibrator.cancel();
 				}
 				//native player is OK
-				Player.stopMusic();
+				if (Player.isPlaying()) {
+					//pause
+					Player.pauseMusic();
+				}
 			}
 		}
 	}
@@ -156,7 +163,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		_time_label = (TextView) findViewById(R.id.target_time_label);
 		_webview = (WebView)findViewById(R.id.webView1);
 //		_subwebview = new WebView(this);
-		_alarm_button = (Button)findViewById(R.id.alarm_button);
+		_alarm_button = (ToggleButton)findViewById(R.id.alarm_button);
 		_alarm_button.setOnClickListener(this);
 		WebSettings config = _webview.getSettings();
 		//to display twitter...
@@ -293,7 +300,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		if (_state != null) {
 			updateAlarmUI(_state._target);
 		}
-		
+		_alarm_button.setChecked(_state != null);
 		_alarm_button.requestFocus();
 	}
 	
@@ -315,7 +322,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-		//TODO: show value when url and sleeptime is changed
 		if (key.equals("use_native_player")) {
 			_PREF_USE_NATIVE_PLAYER = sharedPreferences.getBoolean(key, false);
 		} else if (key.equals("vibrate")) {
@@ -369,8 +375,10 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	protected void onNewIntent (Intent intent) {
 		String action = intent.getAction();
 		if (action != null && action.equals(WAKEUPAPP_ACTION)) {
+			//native player cannot start until lock screen is displayed
+			Player.playWakeupMusic(this, false);
 			if (_PREF_VIBRATE && _vibrator != null) {
-				long pattern[] = { 10, 2000, 500, 1500, 1000, 2000 };
+				long pattern[] = { 10, 2000, 500, 2000, 500 };
 				_vibrator.vibrate(pattern, 1);
 			}
 		}
@@ -547,9 +555,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				i.setAction(WAKEUPAPP_ACTION);
 				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				context.startActivity(i);
-				
-				//native player cannot start until lock screen is displayed
-				Player.playWakeupMusic(context, false);
 			} else if (intent.getAction().equals(SLEEP_ACTION)) {
 				if (intent.getExtras().getBoolean(_NATIVE_PLAYER_KEY)) {
 					Player.stopMusicNativePlayer(context);
@@ -635,7 +640,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 
 		public static void playMusic(Playlist playlist) {
 			current_playlist = playlist;
-			Log.i(PACKAGE_NAME, "startMusic");
+			Log.i(PACKAGE_NAME, "playMusic");
 			if (playlist == null || playlist.isEmpty()) {
 				Log.i(PACKAGE_NAME, "playMusic: playlist is null");
 				return;
@@ -667,6 +672,27 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				_player.start();
 			} catch (IOException e) {
 				//do nothing
+			}
+		}
+		
+		public static void playMusic() {
+			Log.i(PACKAGE_NAME, "playMusic (from pause) is called");
+			if (current_playlist == null) {
+				return;
+			}
+			try {
+				_player.start();
+			} catch (Exception e) {
+				
+			}
+		}
+		
+		public static void pauseMusic() {
+			Log.i(PACKAGE_NAME, "pause music is called");
+			try {
+				_player.pause();
+			} catch (Exception e) {
+				
 			}
 		}
 	}

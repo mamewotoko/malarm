@@ -35,16 +35,14 @@ or Build malarm and install it on android device
 - add help?
 - restart music after phone call ends
 - preset volume of sleep / wakeup mode
-- raise wakeup volume by timer
+- raise wakeup volume by timer or thread
 - record wakeup time
+- fix vibration bug (onNewIntent is called after unlocking device?)
 - switch web page by gesture (2 finger) or horizontal scroll bar?
 - add UI to edit playlist
 - use au music player?
-- make COOL widget to set alarm
-- add option not to play sleep music?
+- make COOL widget to set alarm (make clock widget?)
 - add stop music into resource?
-- change vibration timing
-- fix vibration bug (onNewIntent is called after unlocking device?)
 - implement more smart scroll
 - link to music store (where?)
 
