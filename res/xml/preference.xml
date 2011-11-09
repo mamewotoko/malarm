@@ -7,4 +7,5 @@
     <CheckBoxPreference android:summaryOff="@string/disable_vibration" android:title="@string/pref_vibration" android:defaultValue="true" android:key="vibrate" android:summaryOn="@string/enable_vibration"></CheckBoxPreference>
     <EditTextPreference android:defaultValue="/sdcard/music/" android:enabled="true" android:dialogTitle="@string/playlist_path_title" android:key="playlist_path" android:dialogMessage="@string/enter_path_to_playlist" android:title="@string/playlist_path_title" android:summary="@string/playlist_path_summary"></EditTextPreference>
     <Preference android:title="@string/malarm_version_title" android:key="malarm_version" android:selectable="false"></Preference>
+    <Preference android:summary="@string/help_summary" android:title="@string/help_title" android:key="help"></Preference>
 </PreferenceScreen>

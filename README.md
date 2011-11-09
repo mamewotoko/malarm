@@ -29,10 +29,10 @@ or Build malarm and install it on android device
 5. Run malarm on android device
 6. Enjoy!
 
-## TODO (bugs and new feature candidates):
+## TODO:
 - implement music player as Service to play long time
 - add setting of music file path and m3u playlist path
-- add help?
+- write help page
 - restart music after phone call ends
 - preset volume of sleep / wakeup mode
 - raise wakeup volume by timer or thread

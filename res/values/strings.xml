@@ -38,4 +38,7 @@
     <string name="playlist_path_summary">Playlist directory where sleep.m3u and wakeup.m3u is saved</string>
     <string name="enter_path_to_playlist">Enter directory where sleep.m3u and wakeup.m3u is saved</string>
     <string name="malarm_version_title">Version</string>
+    <string name="help_url">https://github.com/mamewotoko/malarm/wiki/Help_en</string>
+    <string name="help_title">Help</string>
+    <string name="help_summary">Display how to use malarm as a web page</string>
 </resources>
