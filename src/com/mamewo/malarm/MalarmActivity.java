@@ -97,7 +97,8 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	private static boolean _PREF_USE_NATIVE_PLAYER;
 	private static boolean _PREF_VIBRATE;
 	
-	private static String _NATIVE_PLAYER_KEY = "nativeplayer";
+	private static final String _NATIVE_PLAYER_KEY = "nativeplayer";
+	private static final String _PLAYLIST_PATH_KEY = "playlist_path";
 	
 	private static final int DOW_INDEX[] = {
 		Calendar.SUNDAY, 
@@ -133,12 +134,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		}
 	}
 	
-	private void loadPlaylist() {
-		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-		PLAYLIST_PATH = pref.getString("playlist_path", DEFAULT_PLAYLIST_PATH);
-		if (PLAYLIST_PATH.endsWith(FILE_SEPARATOR)) {
-			PLAYLIST_PATH = PLAYLIST_PATH + FILE_SEPARATOR;
-		}
+	private static void loadPlaylist() {
 		WAKEUP_PLAYLIST = new M3UPlaylist(PLAYLIST_PATH, WAKEUP_PLAYLIST_FILENAME);
 		SLEEP_PLAYLIST = new M3UPlaylist(PLAYLIST_PATH, SLEEP_PLAYLIST_FILENAME);
 	}
@@ -149,6 +145,11 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        PLAYLIST_PATH = pref.getString("playlist_path", DEFAULT_PLAYLIST_PATH);
+        if (! PLAYLIST_PATH.endsWith(FILE_SEPARATOR)) {
+			PLAYLIST_PATH = PLAYLIST_PATH + FILE_SEPARATOR;
+		}
 		loadPlaylist();
 		_time_picker = (TimePicker) findViewById(R.id.timePicker1);
 		_time_picker.setIs24HourView(true);
@@ -335,6 +336,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				newpath = newpath + FILE_SEPARATOR;
 			}
 			if (! newpath.equals(PLAYLIST_PATH)) {
+				PLAYLIST_PATH = newpath;
 				loadPlaylist();
 			}
 		}
@@ -379,11 +381,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		String action = intent.getAction();
 		if (action != null && action.equals(WAKEUPAPP_ACTION)) {
 			//native player cannot start until lock screen is displayed
-			Player.playWakeupMusic(this, false);
-			if (_PREF_VIBRATE && _vibrator != null) {
-				long pattern[] = { 10, 2000, 500, 2000, 500 };
-				_vibrator.vibrate(pattern, 1);
-			}
 		}
 	}
 	
@@ -391,7 +388,8 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		Intent i = new Intent(this, Player.class);
 		i.setAction(action);
 		i.putExtra(_NATIVE_PLAYER_KEY, use_native);
-
+		i.putExtra(_PLAYLIST_PATH_KEY, PLAYLIST_PATH);
+		
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, i,
 				PendingIntent.FLAG_CANCEL_CURRENT);
 		return pendingIntent;
@@ -544,6 +542,13 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			// AppWidgetManager mgr = AppWidgetManager.getInstance(context);
 			Log.i(PACKAGE_NAME, "action: " + intent.getAction());
 			if (intent.getAction().equals(WAKEUP_ACTION)) {
+				if (PLAYLIST_PATH == null) {
+					PLAYLIST_PATH = intent.getStringExtra(_PLAYLIST_PATH_KEY);
+				}
+				if (WAKEUP_PLAYLIST == null) {
+					loadPlaylist();
+				}
+
 				Log.i(PACKAGE_NAME, "Wakeup action");
 				if (Player.isPlaying()) {
 					stopMusic();
@@ -557,9 +562,21 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
 				mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
 				mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
+
+				Player.playWakeupMusic(context, false);
+				//TODO: initialize _vibrator
+				//vibrate
+				if (_PREF_VIBRATE && _vibrator != null) {
+					long pattern[] = { 10, 2000, 500, 2000, 500 };
+					_vibrator.vibrate(pattern, 1);
+				}
+
 				Intent i = new Intent(context, MalarmActivity.class);
+				//show app
+				//TODO: add playlist path
 				i.setAction(WAKEUPAPP_ACTION);
 				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				i.putExtra("playlist_path", PLAYLIST_PATH);
 				context.startActivity(i);
 			} else if (intent.getAction().equals(SLEEP_ACTION)) {
 				if (intent.getExtras().getBoolean(_NATIVE_PLAYER_KEY)) {
