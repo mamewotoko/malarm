@@ -90,6 +90,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	private WebView _webview;
 //	private WebView _subwebview;
 	private ToggleButton _alarm_button;
+	private Button _set_now_button;
 	
 	@SuppressWarnings("unused")
 	private PhoneStateListener _calllistener;
@@ -109,10 +110,8 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	};
 	
 	public class MyCallListener extends PhoneStateListener {
-		private MalarmActivity _activity;
 		
 		public MyCallListener(MalarmActivity context) {
-			_activity = context;
 			TelephonyManager telmgr = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
 			telmgr.listen(this, LISTEN_CALL_STATE);
 		}
@@ -160,6 +159,10 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		}
 		_next_button = (Button) findViewById(R.id.next_button);
 		_next_button.setOnClickListener(this);
+
+		_set_now_button = (Button) findViewById(R.id.set_now_button);
+		_set_now_button.setOnClickListener(this);
+		
 		_time_label = (TextView) findViewById(R.id.target_time_label);
 		_webview = (WebView)findViewById(R.id.webView1);
 //		_subwebview = new WebView(this);
@@ -474,26 +477,27 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		//TODO: add alarm time as Notification
 		showMessage(this, getString(R.string.alarm_set) + tommorow + " " + sleeptime_str);
 	}
-
+	public void setNow() {
+		if (_time_picker.isEnabled()) {
+			Calendar now = new GregorianCalendar();
+			_time_picker.setCurrentHour(now.get(Calendar.HOUR_OF_DAY));
+			_time_picker.setCurrentMinute(now.get(Calendar.MINUTE));
+		}
+	}
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
     	switch(item.getItemId()) {
-    	case R.id.set_now:
-    		if (_time_picker.isEnabled()) {
-    			Calendar now = new GregorianCalendar();
-    			_time_picker.setCurrentHour(now.get(Calendar.HOUR_OF_DAY));
-    			_time_picker.setCurrentMinute(now.get(Calendar.MINUTE));
-    		}
-    		break;
+//    	case R.id.set_now:
+//    		setNow();
+//    		break;
     	case R.id.stop_vibration:
     		if (_vibrator != null) {
     			_vibrator.cancel();
     		}
     		break;
-//TODO: remove
-//    	case R.id.play_wakeup:
-//    		Player.playWakeupMusic(this, _PREF_USE_NATIVE_PLAYER);
-//    		break;
+    	case R.id.play_wakeup:
+    		Player.playWakeupMusic(this, _PREF_USE_NATIVE_PLAYER);
+    		break;
     	case R.id.pref:
     		startActivity(new Intent(this, MyPreference.class));
     		break;
@@ -514,6 +518,8 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			Player.playNext();
 		} else if (v == _alarm_button) {
 			setAlarm();
+		} else if (v == _set_now_button) {
+			setNow();
 		} else {
 			showMessage(v.getContext(), getString(R.string.unknown_button));
 		}
