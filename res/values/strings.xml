@@ -30,6 +30,7 @@
     <string name="enable_vibration">ON</string>
     <string name="disable_vibration">OFF</string>
     <string name="pref_title">Wakeup vibration</string>
+    <string name="pref_vibration">Disable vibration</string>
 
     <string name="use_native_player_title">Use native player</string>
     <string name="use_internal_player">Do not use native player (use MediaPlayer)</string>

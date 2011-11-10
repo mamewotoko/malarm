@@ -45,6 +45,7 @@ or Build malarm and install it on android device
 - add stop music into resource?
 - implement more smart scroll
 - link to music store (where?)
+- add test
 
 ## TESTED DEVICE
 - Xperia Acro made by Sony Ericsson

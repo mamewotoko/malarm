@@ -32,11 +32,12 @@
          application and should be checked into Version Control Systems. -->
     <property file="default.properties" />
 
-	<target name="-pre-compile">
-	<tstamp>
-	<format property="build.timestamp" pattern="yyyy/MM/dd-HH:mm" locale="en,UK"/>
-	</tstamp>
-	<echo message="app.version=${build.timestamp}" file="raw/app_version.properties"/>
+	<target name="-pre-build">
+		<mkdir dir="res/raw/" />
+		<tstamp>
+		<format property="build.timestamp" pattern="yyyy/MM/dd_HH:mm" locale="en,UK"/>
+		</tstamp>
+		<echo message="app.version=${build.timestamp}" file="res/raw/app_version.properties"/>
 	</target>
     <property file="app_version.properties" />
 	
