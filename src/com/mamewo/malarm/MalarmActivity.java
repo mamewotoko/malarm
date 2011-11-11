@@ -38,6 +38,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 //import android.webkit.WebView.WebViewTransport;
@@ -94,8 +95,8 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	
 	@SuppressWarnings("unused")
 	private PhoneStateListener _calllistener;
-	private static boolean _PREF_USE_NATIVE_PLAYER;
-	private static boolean _PREF_VIBRATE;
+	private static boolean PREF_USE_NATIVE_PLAYER;
+	private static boolean PREF_VIBRATE;
 	
 	private static final String _NATIVE_PLAYER_KEY = "nativeplayer";
 	private static final String _PLAYLIST_PATH_KEY = "playlist_path";
@@ -142,15 +143,21 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		Log.i(PACKAGE_NAME, "onCreate is called");
+
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-        PLAYLIST_PATH = pref.getString("playlist_path", DEFAULT_PLAYLIST_PATH);
-        if (! PLAYLIST_PATH.endsWith(FILE_SEPARATOR)) {
+
+		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+		PREF_USE_NATIVE_PLAYER = pref.getBoolean("use_native_player", false);
+		PREF_VIBRATE = pref.getBoolean("vibrate", false);
+		PLAYLIST_PATH = pref.getString("playlist_path", DEFAULT_PLAYLIST_PATH);
+		if (! PLAYLIST_PATH.endsWith(FILE_SEPARATOR)) {
 			PLAYLIST_PATH = PLAYLIST_PATH + FILE_SEPARATOR;
 		}
 		loadPlaylist();
+		_vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+
 		_time_picker = (TimePicker) findViewById(R.id.timePicker1);
 		_time_picker.setIs24HourView(true);
 		if (savedInstanceState != null) {
@@ -205,8 +212,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 					} else if (url.indexOf("bijo-linux") > 0 && height > 100) {
 						//TODO: forbid vertical scroll?
 						//TODO: open next page in same tab
-						int x = view.getLeft();
-						view.scrollTo(x, 100);
+						view.scrollTo(0, 100);
 					} else if (height > 960) {
 						view.scrollTo(0, 960);
 					}
@@ -228,7 +234,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		InputStream is = null;
 		try {
 			is = getResources().openRawResource(R.raw.app_version);
-			Log.i("malarm", "is ~ " + is);
 			Properties prop = new Properties();
 			prop.load(is);
 			VERSION = prop.getProperty("app.version");
@@ -266,18 +271,12 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	
 	@Override
 	protected void onResume() {
-		//start tokei
 		Log.i(PACKAGE_NAME, "onPause is called, start JavaScript");
 		super.onResume();
 		//WebView.onResume is hidden, why!?!?
 		_webview.getSettings().setJavaScriptEnabled(true);
 		loadWebPage(_webview);
 
-		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-		_PREF_USE_NATIVE_PLAYER = pref.getBoolean("use_native_player", false);
-		_PREF_VIBRATE = pref.getBoolean("vibrate", false);
-
-		pref.registerOnSharedPreferenceChangeListener(this);
 		if (_time_picker.isEnabled()) {
 			_time_picker.setCurrentHour(DEFAULT_HOUR);
 			_time_picker.setCurrentMinute(DEFAULT_MIN);
@@ -298,9 +297,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	protected void onStart () {
 		Log.i(PACKAGE_NAME, "onStart is called");
 		super.onStart();
-		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-		_PREF_USE_NATIVE_PLAYER = pref.getBoolean("use_native_player", false);
-		_PREF_VIBRATE = pref.getBoolean("vibrate", false);
+
 		if (_state != null) {
 			updateAlarmUI(_state._target);
 		}
@@ -327,9 +324,9 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 		if (key.equals("use_native_player")) {
-			_PREF_USE_NATIVE_PLAYER = sharedPreferences.getBoolean(key, false);
+			PREF_USE_NATIVE_PLAYER = sharedPreferences.getBoolean(key, false);
 		} else if (key.equals("vibrate")) {
-			_PREF_VIBRATE = sharedPreferences.getBoolean(key, true);
+			PREF_VIBRATE = sharedPreferences.getBoolean(key, true);
 		} else if (key.equals("playlist_path")) {
 			String newpath = sharedPreferences.getString(key, DEFAULT_PLAYLIST_PATH);
 			if (! newpath.endsWith(FILE_SEPARATOR)) {
@@ -378,9 +375,14 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
     }
 
 	protected void onNewIntent (Intent intent) {
+		System.out.println ("onNewIntent is called");
 		String action = intent.getAction();
 		if (action != null && action.equals(WAKEUPAPP_ACTION)) {
 			//native player cannot start until lock screen is displayed
+			if (PREF_VIBRATE && _vibrator != null) {
+				long pattern[] = { 10, 1500, 500, 1500, 500, 1500, 500, 1500, 500 };
+				_vibrator.vibrate(pattern, 1);
+			}
 		}
 	}
 	
@@ -433,7 +435,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			if (_vibrator != null) {
 				_vibrator.cancel();
 			}
-			if (! _PREF_USE_NATIVE_PLAYER) {
+			if (! PREF_USE_NATIVE_PLAYER) {
 				Player.stopMusic();
 				//TODO: what's happen if now playing alarm sound?
 				showMessage(this, getString(R.string.music_stopped));
@@ -469,7 +471,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		//TODO: localize
 		String sleeptime_str = String.valueOf(min) + " min";
 		if (target_millis - now_millis >= sleep_time_millis) {
-			PendingIntent sleepIntent = makePlayPintent(SLEEP_ACTION, _PREF_USE_NATIVE_PLAYER);
+			PendingIntent sleepIntent = makePlayPintent(SLEEP_ACTION, PREF_USE_NATIVE_PLAYER);
 			mgr.set(AlarmManager.RTC_WAKEUP, now_millis+sleep_time_millis, sleepIntent);
 		}
 		//TODO: add alarm time as Notification
@@ -494,7 +496,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
     		}
     		break;
     	case R.id.play_wakeup:
-    		Player.playWakeupMusic(this, _PREF_USE_NATIVE_PLAYER);
+    		Player.playWakeupMusic(this, PREF_USE_NATIVE_PLAYER);
     		break;
     	case R.id.pref:
     		startActivity(new Intent(this, MyPreference.class));
@@ -521,6 +523,9 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		} else {
 			showMessage(v.getContext(), getString(R.string.unknown_button));
 		}
+		InputMethodManager mgr = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+		mgr.hideSoftInputFromWindow(_time_picker.getWindowToken(), 0);
+				//InputMethodManager.HIDE_IMPLICIT_ONLY);
 	}
 
 	private static void showMessage(Context c, String message) {
@@ -540,7 +545,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			// AppWidgetManager mgr = AppWidgetManager.getInstance(context);
-			Log.i(PACKAGE_NAME, "action: " + intent.getAction());
+			Log.i(PACKAGE_NAME, "onReceive: action: " + intent.getAction());
 			if (intent.getAction().equals(WAKEUP_ACTION)) {
 				if (PLAYLIST_PATH == null) {
 					PLAYLIST_PATH = intent.getStringExtra(_PLAYLIST_PATH_KEY);
@@ -564,19 +569,12 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
 
 				Player.playWakeupMusic(context, false);
-				//TODO: initialize _vibrator
-				//vibrate
-				if (_PREF_VIBRATE && _vibrator != null) {
-					long pattern[] = { 10, 2000, 500, 2000, 500 };
-					_vibrator.vibrate(pattern, 1);
-				}
 
 				Intent i = new Intent(context, MalarmActivity.class);
 				//show app
 				//TODO: add playlist path
 				i.setAction(WAKEUPAPP_ACTION);
 				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				i.putExtra("playlist_path", PLAYLIST_PATH);
 				context.startActivity(i);
 			} else if (intent.getAction().equals(SLEEP_ACTION)) {
 				if (intent.getExtras().getBoolean(_NATIVE_PLAYER_KEY)) {
@@ -625,7 +623,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		public static void playSleepMusic(Context context, int min) {
 			Log.i(PACKAGE_NAME, "start sleep music and stop");
 			File f = new File(SLEEP_PLAYLIST_FILENAME);
-			if (_PREF_USE_NATIVE_PLAYER && f.isFile()) {
+			if (PREF_USE_NATIVE_PLAYER && f.isFile()) {
 				Log.i(PACKAGE_NAME, "playSleepMusic: NativePlayer");
 				playMusicNativePlayer(context, f);
 			} else {
