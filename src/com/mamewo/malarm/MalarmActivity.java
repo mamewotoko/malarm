@@ -525,7 +525,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		}
 		InputMethodManager mgr = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
 		mgr.hideSoftInputFromWindow(_time_picker.getWindowToken(), 0);
-				//InputMethodManager.HIDE_IMPLICIT_ONLY);
 	}
 
 	private static void showMessage(Context c, String message) {
