@@ -41,12 +41,16 @@ import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebView.HitTestResult;
+import android.webkit.WebView.WebViewTransport;
 //import android.webkit.WebView.WebViewTransport;
 import android.webkit.WebViewClient;
 import android.widget.*;
 import android.webkit.*;
 import android.net.Uri;
 import android.net.http.*;
+import android.graphics.Bitmap;
+import android.os.Message;
 
 public class MalarmActivity extends Activity implements OnClickListener, OnSharedPreferenceChangeListener {
 	/** Called when the activity is first created. */
@@ -181,7 +185,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		config.setDomStorageEnabled(true);
 		config.setJavaScriptEnabled(true);
 		config.setSupportZoom(true);
-//		config.setSupportMultipleWindows(true);
+		//config.setSupportMultipleWindows(true);
 		_webview.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
@@ -189,27 +193,41 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				return false;
 			}
 		});
-		final Activity activity = this;
+
+		final MalarmActivity activity = this;
 		_webview.setWebViewClient(new WebViewClient() {
-//			@Override
-//			public boolean shouldOverrideUrlLoading (WebView view, String url) {
-//				Log.i(PACKAGE_NAME, "shouldOverrideUrlLoading: " + url);
-//				return false;
-//			}
+			@Override
+			public void onPageStarted(WebView view, String url, Bitmap favicon) {
+				Log.i(PACKAGE_NAME, "onPageStart: " + url);
+			}
+			
 			@Override
 			public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
 				Toast.makeText(activity, "Oh no! " + description, Toast.LENGTH_SHORT).show();
 			}
+			
+			String previous_url = null;
 			@Override
 			public void onLoadResource (WebView view, String url) {
-				//Log.i(PACKAGE_NAME, "loading: " + url);
+//TODO: fix loop problem
+				//				Log.i(PACKAGE_NAME, "loading: " + view.getHitTestResult().getType() + ": "+ url);
+//				if (url.contains("bijo-linux") && url.endsWith("/")) {
+//					HitTestResult result = view.getHitTestResult();
+//					if (result.getType() == HitTestResult.SRC_IMAGE_ANCHOR_TYPE && previous_url != url) {
+//						view.stopLoading();
+//						previous_url = url;
+//						//TODO: should be outside?
+//						loadWebPage(view, url);
+//						return;
+//					}
+//				}
 				//addhoc polling...
 				int height = view.getContentHeight();
-				if ((url.indexOf("bijint") > 0 || url.indexOf("bijo-linux") > 0) && height > 400) {
+				if ((url.contains("bijint") || url.contains("bijo-linux")) && height > 400) {
 					//TODO: get precise position....
-					if(url.indexOf("binan") > 0 && height > 420) {
+					if(url.contains("binan") && height > 420) {
 						view.scrollTo(0, 420);
-					} else if (url.indexOf("bijo-linux") > 0 && height > 100) {
+					} else if (url.contains("bijo-linux") && height > 100) {
 						//TODO: forbid vertical scroll?
 						//TODO: open next page in same tab
 						view.scrollTo(0, 100);
@@ -256,8 +274,8 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 //			@Override
 //			public boolean onCreateWindow (WebView view, boolean dialog, boolean userGesture, Message resultMsg) {
 //				Log.i(PACKAGE_NAME, "onCreateWindow: " + dialog + " " + userGesture + " " + resultMsg.obj);
-//				((WebViewTransport)resultMsg.obj).setWebView(_subwebview);
-//				resultMsg.sendToTarget();
+//				//((WebViewTransport)resultMsg.obj).setWebView(_webview);
+//				//resultMsg.sendToTarget();
 //				return true;
 //			}
 //		});
@@ -339,16 +357,21 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		}
 	}
 
-	private void loadWebPage (WebView view) {
+	private void loadWebPage(WebView view) {
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		String url = pref.getString("url", "http://twitter.com/");
+		loadWebPage(view, url);
+	}
+	
+	private void loadWebPage(WebView view, String url) {
+		Log.i(PACKAGE_NAME, "loadWebPage: " + url);
 		WebSettings config = _webview.getSettings();
-		if (url.indexOf("bijo-linux") > 0) {
+		if (url.contains("bijo-linux")) {
 			config.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
 		} else {
 			config.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
 		}
-		if (url.indexOf("bijo-linux") > 0) {
+		if (url.contains("bijo-linux")) {
 			config.setDefaultZoom(WebSettings.ZoomDensity.FAR);
 		} else {
 			config.setDefaultZoom(WebSettings.ZoomDensity.MEDIUM);
