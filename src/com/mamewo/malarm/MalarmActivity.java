@@ -185,7 +185,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		config.setDomStorageEnabled(true);
 		config.setJavaScriptEnabled(true);
 		config.setSupportZoom(true);
-		//config.setSupportMultipleWindows(true);
 		_webview.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
@@ -194,7 +193,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			}
 		});
 
-		final MalarmActivity activity = this;
+		final Activity activity = this;
 		_webview.setWebViewClient(new WebViewClient() {
 			@Override
 			public void onPageStarted(WebView view, String url, Bitmap favicon) {
@@ -206,21 +205,21 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				Toast.makeText(activity, "Oh no! " + description, Toast.LENGTH_SHORT).show();
 			}
 			
-			String previous_url = null;
+			String previous_url = "";
 			@Override
 			public void onLoadResource (WebView view, String url) {
-//TODO: fix loop problem
-				//				Log.i(PACKAGE_NAME, "loading: " + view.getHitTestResult().getType() + ": "+ url);
-//				if (url.contains("bijo-linux") && url.endsWith("/")) {
-//					HitTestResult result = view.getHitTestResult();
-//					if (result.getType() == HitTestResult.SRC_IMAGE_ANCHOR_TYPE && previous_url != url) {
-//						view.stopLoading();
-//						previous_url = url;
-//						//TODO: should be outside?
-//						loadWebPage(view, url);
-//						return;
-//					}
-//				}
+				Log.i(PACKAGE_NAME, "loading: " + view.getHitTestResult().getType() + ": " + url);
+				if (url.contains("bijo-linux") && url.endsWith("/")) {
+					HitTestResult result = view.getHitTestResult();
+					//TODO: why same event delivered many times?
+					if (result.getType() == HitTestResult.SRC_IMAGE_ANCHOR_TYPE && ! previous_url.equals(url)) {
+						_webview.stopLoading();
+						previous_url = url;
+						//TODO: should be outside?
+						loadWebPage(_webview, url);
+						return;
+					}
+				}
 				//addhoc polling...
 				int height = view.getContentHeight();
 				if ((url.contains("bijint") || url.contains("bijo-linux")) && height > 400) {
@@ -269,16 +268,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		if (VERSION == null) {
 			VERSION = "unknown";
 		}
-		//TODO: fix
-//		_webview.setWebChromeClient(new WebChromeClient() {
-//			@Override
-//			public boolean onCreateWindow (WebView view, boolean dialog, boolean userGesture, Message resultMsg) {
-//				Log.i(PACKAGE_NAME, "onCreateWindow: " + dialog + " " + userGesture + " " + resultMsg.obj);
-//				//((WebViewTransport)resultMsg.obj).setWebView(_webview);
-//				//resultMsg.sendToTarget();
-//				return true;
-//			}
-//		});
 
 		//stop alarm when phone call
 		_calllistener = new MyCallListener(this);
