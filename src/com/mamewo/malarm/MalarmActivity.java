@@ -563,6 +563,8 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				if (Player.isPlaying()) {
 					stopMusic();
 				}
+				Player.playWakeupMusic(context, false);
+
 				AudioManager mgr = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 				//TODO: add volume pref
 				mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
@@ -572,8 +574,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
 				mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
 				mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
-
-				Player.playWakeupMusic(context, false);
 
 				Intent i = new Intent(context, MalarmActivity.class);
 				//show app
