@@ -5,6 +5,7 @@
         <item>bijin-tokei</item>
         <item>bijin-linux</item>
         <item>binan-tokei</item>
+        <item>OkuiAki.com gumi</item>
     </string-array>
     <!--  TODO: get URL from resource? -->
     <string-array name="preference_item_value">
@@ -12,6 +13,7 @@
         <item>http://www.bijint.com/jp/</item>
         <item>http://bijo-linux.com/</item>
         <item>http://www.bijint.com/binan/</item>
+        <item>http://www.okuiaki.com/mobile/login.php</item>
     </string-array>
 
     <string-array name="preference_time_key">

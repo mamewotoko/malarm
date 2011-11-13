@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, HelloActivity!</string>
-    <string name="app_name">Alarm</string>
+    <string name="app_name">malarm</string>
     <string name="stop_music">Stop Music</string>
     <string name="music_stopped">Music stopped</string>
     <string name="tomorrow">tomorrow</string>
@@ -14,7 +13,6 @@
     <string name="goodnight">Good Night</string>
 
 <!--  UI -->
-    <string name="set_stop_alarm">Alarm ON/OFF</string>
     <string name="set_alarm">Set Alarm</string>
     <string name="stop_alarm">Cancel Alarm</string>
     <string name="next">Next</string>

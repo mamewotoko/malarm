@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, HelloActivity!</string>
-    <string name="app_name">アラーム</string>
+    <string name="app_name">まらーむ</string>
     <string name="stop_music">音楽をとめる</string>
     <string name="music_stopped">音楽をとめました</string>
     <string name="tomorrow">あした</string>
@@ -14,7 +13,6 @@
     <string name="goodnight">おやすみ</string>
 
 <!--  UI -->
-    <string name="set_stop_alarm">アラームON/OFF</string>
     <string name="set_alarm">アラームをセットする</string>
     <string name="stop_alarm">アラームをとめる</string>
     <string name="next">次の曲</string>
@@ -22,7 +20,7 @@
     <string name="set_now">現在時刻をセットする</string>
     <string name="stop_vibration">ぶるぶるをとめる</string>
     <string name="play_wakeup">目覚めの音楽をかける</string>
-    <string name="preference_title">malarmの設定</string>
+    <string name="preference_title">まらーむの設定</string>
     <string name="pref_menu">設定</string>
     <string name="pref_webview_url">表示するサイト</string>
     <string name="preference_time_title">スリープまでの時間</string>

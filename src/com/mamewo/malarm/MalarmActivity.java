@@ -177,7 +177,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		
 		_time_label = (TextView) findViewById(R.id.target_time_label);
 		_webview = (WebView)findViewById(R.id.webView1);
-//		_subwebview = new WebView(this);
 		_alarm_button = (ToggleButton)findViewById(R.id.alarm_button);
 		_alarm_button.setOnClickListener(this);
 		WebSettings config = _webview.getSettings();

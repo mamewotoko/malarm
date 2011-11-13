@@ -29,9 +29,10 @@ or Build malarm and install it on android device
 5. Run malarm on android device
 6. Enjoy!
 
+You can change path to playlist and music files by "Playlist directory" preference screen
+
 ## TODO:
 - implement music player as Service to play long time
-- add setting of music file path and m3u playlist path
 - write help page
 - restart music after phone call ends
 - preset volume of sleep / wakeup mode
