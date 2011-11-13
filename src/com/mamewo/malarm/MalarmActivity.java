@@ -204,7 +204,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			String previous_url = "";
 			@Override
 			public void onLoadResource (WebView view, String url) {
-				Log.i(PACKAGE_NAME, "loading: " + view.getHitTestResult().getType() + ": " + url);
+				//Log.i(PACKAGE_NAME, "loading: " + view.getHitTestResult().getType() + ": " + url);
 				if (url.contains("bijo-linux") && url.endsWith("/")) {
 					HitTestResult result = view.getHitTestResult();
 					//TODO: why same event delivered many times?
