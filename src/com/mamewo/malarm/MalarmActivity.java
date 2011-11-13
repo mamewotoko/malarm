@@ -42,15 +42,12 @@ import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebView.HitTestResult;
-import android.webkit.WebView.WebViewTransport;
-//import android.webkit.WebView.WebViewTransport;
 import android.webkit.WebViewClient;
 import android.widget.*;
 import android.webkit.*;
 import android.net.Uri;
 import android.net.http.*;
 import android.graphics.Bitmap;
-import android.os.Message;
 
 public class MalarmActivity extends Activity implements OnClickListener, OnSharedPreferenceChangeListener {
 	/** Called when the activity is first created. */
@@ -375,9 +372,8 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		_time_picker.setCurrentMinute(DEFAULT_MIN);
 	}
 
-    private void cancelAlarm () {
-    	Log.i(PACKAGE_NAME, "cancelAlarm");
-    	//TODO: second parameter is correct?
+	private void cancelAlarm () {
+		Log.i(PACKAGE_NAME, "cancelAlarm");
 		PendingIntent p = makePlayPintent(WAKEUP_ACTION, true);
 		AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		clearAlarmUI();
@@ -440,7 +436,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
     
 	public void setAlarm() {
 		Log.i(PACKAGE_NAME, "scheduleToPlaylist is called");
-		//TODO: hide keyboard?
 		if (_state != null) {
 			cancelAlarm();
 			if (_vibrator != null) {
@@ -686,8 +681,8 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				return;
 			}
 			String path = "";
-			//TODO: ummm...
-			for (int i = 0; i < 100; i++) {
+			//skip unsupported files filtering by filename ...
+			for (int i = 0; i < 10; i++) {
 				path = playlist.next();
 				File f = new File(path);
 				// ....
