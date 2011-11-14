@@ -33,6 +33,7 @@ You can change path to playlist and music files by "Playlist directory" preferen
 
 ## TODO:
 - implement music player as Service to play long time
+- make COOL widget to set alarm (make clock widget?)
 - write help page
 - restart music after phone call ends
 - preset volume of sleep / wakeup mode
@@ -41,12 +42,10 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - fix vibration bug (onNewIntent is called after unlocking device?)
 - switch web page by gesture (2 finger) or horizontal scroll bar?
 - add UI to edit playlist
-- use au music player?
-- make COOL widget to set alarm (make clock widget?)
 - add stop music into resource?
 - implement more smart scroll
 - link to music store (where?)
-- add test
+- add more test cases
 
 ## TESTED DEVICE
 - Xperia Acro made by Sony Ericsson
