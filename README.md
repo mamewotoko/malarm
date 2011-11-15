@@ -66,6 +66,10 @@ You can change path to playlist and music files by "Playlist directory" preferen
     adb install bin/malarm-cmd.apk
 (build.xml and *.property files are created by android create command)
 
+### AUTOMATED UI TESTING
+There is a GUI automated test using Robotium
+https://github.com/mamewotoko/malarm_test
+
 ### MEMO:
 Alarm application starts when user push appwidget of malarm.
 
