@@ -442,7 +442,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				_vibrator.cancel();
 			}
 			if (! PREF_USE_NATIVE_PLAYER) {
-				Player.stopMusic();
+				Player.pauseMusic();
 				//TODO: what's happen if now playing alarm sound?
 				showMessage(this, getString(R.string.music_stopped));
 			}
@@ -508,7 +508,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
     		startActivity(new Intent(this, MyPreference.class));
     		break;
     	case R.id.stop_music:
-    		Player.stopMusic();
+    		Player.pauseMusic();
     		break;
     	default:
     		Log.i(PACKAGE_NAME, "Unknown menu");
@@ -585,7 +585,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				if (intent.getExtras().getBoolean(_NATIVE_PLAYER_KEY)) {
 					Player.stopMusicNativePlayer(context);
 				} else {
-					stopMusic();
+					Player.pauseMusic();
 				}
 				showMessage(context, context.getString(R.string.goodnight));
 			}
@@ -627,7 +627,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 
 		public static void playSleepMusic(Context context, int min) {
 			Log.i(PACKAGE_NAME, "start sleep music and stop");
-			File f = new File(SLEEP_PLAYLIST_FILENAME);
+			File f = new File(PLAYLIST_PATH + SLEEP_PLAYLIST_FILENAME);
 			if (PREF_USE_NATIVE_PLAYER && f.isFile()) {
 				Log.i(PACKAGE_NAME, "playSleepMusic: NativePlayer");
 				playMusicNativePlayer(context, f);

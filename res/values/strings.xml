@@ -17,7 +17,6 @@
     <string name="stop_alarm">Cancel Alarm</string>
     <string name="next">Next</string>
     <string name="time_to_wakeup">Time to Wake-up</string>
-    <string name="set_now">Set current time to time picker</string>
     <string name="stop_vibration">Stop vibaration</string>
     <string name="play_wakeup">Play wakeup music</string>
     <string name="preference_title">Preference of malarm</string>

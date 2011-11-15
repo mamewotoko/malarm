@@ -35,6 +35,7 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - implement music player as Service to play long time
 - make COOL widget to set alarm (make clock widget?)
 - write help page
+- fix bug when native player is used....
 - restart music after phone call ends
 - preset volume of sleep / wakeup mode
 - raise wakeup volume by timer or thread
