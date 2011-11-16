@@ -3,7 +3,7 @@
 
 This is a simple alarm application of android (version 2.3.3).
 
-## OVERVIEW
+## Overview
                 sleep music (1h)                     wake-up music w vibration
                 w sleep music                        application starts
      Alarm set ------------------> ..... Alarm time --------------->
@@ -13,12 +13,12 @@ This is a simple alarm application of android (version 2.3.3).
  If you want to stop vibration only, please use "stop vibraiton" menu
  This application has appwidget, but it has no function for now.... very simple!
 
-## SCREENSHOT
+## Screenshot
 ![Japanese screen shot](https://github.com/mamewotoko/malarm/raw/master/doc/alarm_ja.png)
 ![english screen shot](https://github.com/mamewotoko/malarm/raw/master/doc/alarm_en.png)
 ![Preference](https://github.com/mamewotoko/malarm/raw/master/doc/malarm_pref.png)
 
-## HOW TO RUN:
+## How to run
 1. Put your music file into /sdcard/music directory of android device
 2. Prepare m3u format play list for sleep (named sleep.m3u) and wakeup (named wakeup.m3u).
 m3u file contains one music filename in one line.
@@ -31,7 +31,10 @@ or Build malarm and install it on android device
 
 You can change path to playlist and music files by "Playlist directory" preference screen
 
-## TODO:
+## Tested Device
+- Xperia Acro made by Sony Ericsson
+
+## TODO
 - implement music player as Service to play long time
 - make COOL widget to set alarm (make clock widget?)
 - write help page
@@ -48,29 +51,26 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - link to music store (where?)
 - add more test cases
 
-## TESTED DEVICE
-- Xperia Acro made by Sony Ericsson
-
-## APPENDIX
-### HOW TO BUILD FROM COMMAND LINE
+## Appendix
+### How To Build From Command Line
 1. Create local.properties file and set sdk.dir property to location where you installed android SDK
     sdk.dir=<path to android SDK>
 2. In project top directory execute following command
     ant debug
 3. malarm-cmd.apk will be created in bin directory, if successed
 
-### START ANDROID EMULATOR AND INSTALL APK FROM COMMAND LINE
+### Start Android Emulator And Install APK From Command Line
 1. start android emulator
     emulator -avd <avdname>
 2. install application on android emulator
     adb install bin/malarm-cmd.apk
 (build.xml and *.property files are created by android create command)
 
-### AUTOMATED UI TESTING
+### Automated UI Testing
 There is a GUI automated test using Robotium
 https://github.com/mamewotoko/malarm_test
 
-### MEMO:
+### Memo:
 Alarm application starts when user push appwidget of malarm.
 
 ----

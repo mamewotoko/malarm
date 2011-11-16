@@ -39,4 +39,8 @@
     <string name="help_url">https://github.com/mamewotoko/malarm/wiki/Help_ja</string>
     <string name="help_title">ヘルプ</string>
     <string name="help_summary">使い方を書いたヘルプ(Webページ)を表示します</string>
+
+    <string name="git_url">https://github.com/downloads/mamewotoko/malarm/malarm.apk</string>
+    <string name="dialog_ok">閉じる</string>
+    <string name="dialog_title">まらーむダウンロードページ</string>
 </resources>

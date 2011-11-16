@@ -8,7 +8,8 @@
             <TimePicker android:id="@+id/timePicker1" android:layout_width="152dp" android:layout_height="wrap_content" android:inputType="number"></TimePicker>
         </LinearLayout>
         <LinearLayout android:layout_height="wrap_content" android:id="@+id/linearLayout3" android:layout_width="fill_parent" android:orientation="vertical">
-            <TextView android:id="@+id/target_time_label" android:layout_height="fill_parent" android:text="" android:textAppearance="?android:attr/textAppearanceLarge" android:layout_width="wrap_content" android:textSize="9pt"></TextView>
+        <!--  android:textAppearance="?android:attr/textAppearanceLarge" -->
+            <TextView android:id="@+id/target_time_label" android:layout_height="fill_parent" android:text=""  android:layout_width="wrap_content" android:textSize="9pt"></TextView>
                 <ToggleButton android:textOff="@string/set_alarm" android:textOn="@string/stop_alarm" android:id="@+id/alarm_button" android:layout_width="fill_parent" android:layout_height="wrap_content"></ToggleButton>
                 <LinearLayout android:layout_height="wrap_content" android:id="@+id/linearLayout_contbutton" android:layout_width="fill_parent">
                     <Button android:text="@string/set_now_short" android:id="@+id/set_now_button" android:layout_width="wrap_content" android:layout_height="match_parent"></Button>
