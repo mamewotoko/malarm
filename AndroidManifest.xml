@@ -27,7 +27,7 @@
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
             <meta-data android:name="android.appwidget.provider"
-                   android:resource="@xml/hellowidget_provider" />
+                   android:resource="@xml/widget" />
         </receiver>
     </application>
 </manifest>
