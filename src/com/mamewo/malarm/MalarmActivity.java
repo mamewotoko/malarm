@@ -518,8 +518,8 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
     }
 
 	public void onClick(View v) {
-		//get focus from time picker
-		v.requestFocus();
+		//to save time value edited by software keyboard
+		_time_picker.clearFocus();
 		if (v == _next_button) {
 			Player.playNext();
 		} else if (v == _alarm_button) {
