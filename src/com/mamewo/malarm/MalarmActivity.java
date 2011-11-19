@@ -450,6 +450,9 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		}
 		//set timer
 		Calendar now = new GregorianCalendar();
+
+		//remove focus from time picker to save time which is entered by software keyboard
+		_time_picker.clearFocus();
 		int target_hour = _time_picker.getCurrentHour().intValue();
 		int target_min = _time_picker.getCurrentMinute().intValue();
 		Calendar target = new GregorianCalendar(now.get(Calendar.YEAR),
@@ -519,18 +522,17 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 
 	public void onClick(View v) {
 		//to save time value edited by software keyboard
-		_time_picker.clearFocus();
 		if (v == _next_button) {
 			Player.playNext();
 		} else if (v == _alarm_button) {
+			InputMethodManager mgr = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+			mgr.hideSoftInputFromWindow(_time_picker.getWindowToken(), 0);
 			setAlarm();
 		} else if (v == _set_now_button) {
 			setNow();
 		} else {
 			showMessage(v.getContext(), getString(R.string.unknown_button));
 		}
-		InputMethodManager mgr = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-		mgr.hideSoftInputFromWindow(_time_picker.getWindowToken(), 0);
 	}
 
 	private static void showMessage(Context c, String message) {
