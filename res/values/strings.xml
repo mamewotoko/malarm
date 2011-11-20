@@ -15,7 +15,7 @@
 <!--  UI -->
     <string name="set_alarm">Set Alarm</string>
     <string name="stop_alarm">Cancel Alarm</string>
-    <string name="next">Next</string>
+    <string name="next">&gt;&gt;</string>
     <string name="time_to_wakeup">Time to Wake-up</string>
     <string name="stop_vibration">Stop vibaration</string>
     <string name="play_wakeup">Play wakeup music</string>

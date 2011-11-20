@@ -120,7 +120,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		}
 
 		public void onCallStateChanged (int state, String incomingNumber) {
-			//TODO: save cursor and play
+			//TODO: save cursor and play after phone call finish
 			if (state == TelephonyManager.CALL_STATE_RINGING) {
 				Log.i(PACKAGE_NAME, "onCallStateChanged: RINGING");
 				//stop vibration
@@ -443,7 +443,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			}
 			if (! PREF_USE_NATIVE_PLAYER) {
 				Player.pauseMusic();
-				//TODO: what's happen if now playing alarm sound?
 				showMessage(this, getString(R.string.music_stopped));
 			}
 			return;
@@ -451,7 +450,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		//set timer
 		Calendar now = new GregorianCalendar();
 
-		//remove focus from time picker to save time which is entered by software keyboard
+		//remove focus from timeticker to save time which is entered by software keyboard
 		_time_picker.clearFocus();
 		int target_hour = _time_picker.getCurrentHour().intValue();
 		int target_min = _time_picker.getCurrentMinute().intValue();
@@ -496,9 +495,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
     	switch(item.getItemId()) {
-//    	case R.id.set_now:
-//    		setNow();
-//    		break;
     	case R.id.stop_vibration:
     		if (_vibrator != null) {
     			_vibrator.cancel();
@@ -660,9 +656,10 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 
 			// This method is not called when DRM error is occured
 			public boolean onError(MediaPlayer mp, int what, int extra) {
-				// TODO: handle error
-				Log.i(PACKAGE_NAME, "onError is called");
-				return false;
+				// TODO: show error message to GUI
+				Log.i(PACKAGE_NAME, "onError is called, cannot play this media");
+				Player.playNext();
+				return true;
 			}
 		}
 
@@ -692,7 +689,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 					break;
 				}
 			}
-			// TODO: handle error
 			try {
 				_player.reset();
 				_player.setDataSource(path);

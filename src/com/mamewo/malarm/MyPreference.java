@@ -45,6 +45,7 @@ public class MyPreference extends PreferenceActivity implements OnPreferenceClic
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		//TODO: check playpath existence and show message
 		addPreferencesFromResource(R.xml.preference);
 		_version = findPreference("malarm_version");
 		_version.setSummary(MalarmActivity.VERSION);

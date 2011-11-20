@@ -26,18 +26,17 @@ public class MalarmWidgetProvider extends AppWidgetProvider {
         	Intent i = new Intent(context, MalarmActivity.class);
     		i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         	context.startActivity(i);
-        	
         }
     	super.onReceive(context, intent);
     }
     
     @Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-    	RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.hellowidget_provider);
+    	RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.appwidget);
     	Intent intent = new Intent(context, MalarmWidgetProvider.class);
     	intent.setAction(HELLO_ACTION);
     	PendingIntent pintent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        rv.setOnClickPendingIntent(R.id.hellowidget_text, pintent);
+        rv.setOnClickPendingIntent(R.id.appwidget, pintent);
 
     	appWidgetManager.updateAppWidget(appWidgetIds[0], rv);
     }

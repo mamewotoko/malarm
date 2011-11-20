@@ -1,6 +1,7 @@
 package com.mamewo.malarm;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -16,16 +17,19 @@ public class M3UPlaylist implements Playlist{
 	private int _nextindex = 0;
 	String _basepath;
 	private Vector<String> _playlist;
-	
-	public M3UPlaylist(String basepath, String playlist_filename) {
-		_basepath = basepath;
-		String sep = System.getProperty("file.separator");
-		if (! _basepath.endsWith(sep)) {
-			_basepath = _basepath + sep;
-		}
+	private static final String FILE_SEPARATOR = System.getProperty("file.separator");
+
+	/**
+	 * 
+	 * @param playlist_basepath path to directory which contains play list
+	 * @param playlist_filename filename of playlist (not absolute path)
+	 */
+	public M3UPlaylist(String playlist_basepath, String playlist_filename) {
+		_basepath = playlist_basepath;
+		String playlist_abs_path = (new File(playlist_basepath, playlist_filename)).getAbsolutePath();
 		try {
 			_playlist = new Vector<String>();
-			loadPlaylist(_basepath + playlist_filename);
+			loadPlaylist(playlist_abs_path);
 		} catch (FileNotFoundException e) {
 			Log.i("M3UPlaylist", "cannot find playlist " + playlist_filename);
 		} catch (IOException e) {
@@ -45,10 +49,11 @@ public class M3UPlaylist implements Playlist{
 			_nextindex = 0;
 		}
 		String result = _playlist.get(_nextindex);
-		_nextindex++;
-		if (result.indexOf(System.getProperty("file.separator")) == -1) {
-			result = _basepath + result;
+		//TODO: test
+		if (! (new File(result)).isAbsolute()) {
+			result = (new File(_basepath, result)).getAbsolutePath();
 		}
+		_nextindex++;
 		return result;
 	}
 
