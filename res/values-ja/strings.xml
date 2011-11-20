@@ -26,7 +26,8 @@
     <string name="pref_sleeptime">スリープまでの時間</string>
     <string name="enable_vibration">ON</string>
     <string name="disable_vibration">OFF</string>
-    <string name="pref_vibration">起床時ぶるぶる</string>
+    <string name="pref_vibration">目覚ましのぶるぶる</string>
+    <string name="wakeup_volume_pref_title">目覚ましの音量</string>
     <string name="set_now_short">なぅ!</string>
 
     <string name="use_native_player_title">Nativeの音楽プレイヤーを使う</string>

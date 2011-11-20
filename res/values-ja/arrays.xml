@@ -15,6 +15,17 @@
         <item>http://www.okuiaki.com/mobile/login.php</item>
     </string-array>
 
+    <string-array name="volume_pref_key">
+        <item>ボリュームはそのまま</item>
+        <item>ちょっとあげる</item>
+        <item>かなりあげる</item>
+    </string-array>
+    <string-array name="volume_pref_value">
+        <item>0</item>
+        <item>4</item>
+        <item>7</item>
+    </string-array>
+
     <string-array name="preference_time_key">
         <item>1 分</item>
         <item>5 分</item>

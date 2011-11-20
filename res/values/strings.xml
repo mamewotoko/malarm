@@ -28,6 +28,7 @@
     <string name="disable_vibration">OFF</string>
     <string name="pref_title">Wakeup vibration</string>
     <string name="pref_vibration">Disable vibration</string>
+    <string name="wakeup_volume_pref_title">Volume of wakeup tunes</string>
     <string name="set_now_short">Now!</string>
 
     <string name="use_native_player_title">Use native player</string>

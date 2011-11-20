@@ -98,7 +98,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	private PhoneStateListener _calllistener;
 	private static boolean PREF_USE_NATIVE_PLAYER;
 	private static boolean PREF_VIBRATE;
-	
+	private static int PREF_WAKEUP_VOLUMEUP_COUNT;
 	private static final String _NATIVE_PLAYER_KEY = "nativeplayer";
 	private static final String _PLAYLIST_PATH_KEY = "playlist_path";
 	
@@ -152,6 +152,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		PREF_USE_NATIVE_PLAYER = pref.getBoolean("use_native_player", false);
 		PREF_VIBRATE = pref.getBoolean("vibrate", false);
+		PREF_WAKEUP_VOLUMEUP_COUNT = Integer.parseInt(pref.getString("wakeup_volume", "0"));
 		PLAYLIST_PATH = pref.getString("playlist_path", DEFAULT_PLAYLIST_PATH);
 		if (! PLAYLIST_PATH.endsWith(FILE_SEPARATOR)) {
 			PLAYLIST_PATH = PLAYLIST_PATH + FILE_SEPARATOR;
@@ -324,17 +325,17 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		outState.putSerializable("state", _state);
 	}
 
+	//TODO: remove duplicated code
 	@Override
-	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+	public void onSharedPreferenceChanged(SharedPreferences pref, String key) {
 		if (key.equals("use_native_player")) {
-			PREF_USE_NATIVE_PLAYER = sharedPreferences.getBoolean(key, false);
+			PREF_USE_NATIVE_PLAYER = pref.getBoolean(key, false);
 		} else if (key.equals("vibrate")) {
-			PREF_VIBRATE = sharedPreferences.getBoolean(key, true);
+			PREF_VIBRATE = pref.getBoolean(key, true);
+		} else if (key.equals("wakeup_volume")) {
+			PREF_WAKEUP_VOLUMEUP_COUNT = Integer.parseInt(pref.getString("wakeup_volume", "0"));
 		} else if (key.equals("playlist_path")) {
-			String newpath = sharedPreferences.getString(key, DEFAULT_PLAYLIST_PATH);
-			if (! newpath.endsWith(FILE_SEPARATOR)) {
-				newpath = newpath + FILE_SEPARATOR;
-			}
+			String newpath = pref.getString(key, DEFAULT_PLAYLIST_PATH);
 			if (! newpath.equals(PLAYLIST_PATH)) {
 				PLAYLIST_PATH = newpath;
 				loadPlaylist();
@@ -564,14 +565,9 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				Player.playWakeupMusic(context, false);
 
 				AudioManager mgr = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-				//TODO: add volume pref
-				mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
-				mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
-				mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
-				mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
-				mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
-				mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
-				mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
+				for (int i = 0; i < PREF_WAKEUP_VOLUMEUP_COUNT; i++) {
+					mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
+				}
 
 				Intent i = new Intent(context, MalarmActivity.class);
 				//show app
