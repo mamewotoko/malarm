@@ -38,6 +38,7 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - implement music player as Service to play long time
 - make COOL widget to set alarm (make clock widget?)
 - write help page
+- change web page by timer
 - fix bug when native player is used....
 - restart music after phone call ends
 - preset volume of sleep / wakeup mode
@@ -51,13 +52,14 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - link to music store (where?)
 - add more test cases
 
+
 ## Appendix
 ### How To Build From Command Line
 1. Create local.properties file and set sdk.dir property to location where you installed android SDK
     sdk.dir=<path to android SDK>
 2. In project top directory execute following command
     ant debug
-3. malarm-cmd.apk will be created in bin directory, if successed
+3. malarm-debug.apk will be created in bin directory, if successed
 
 ### Start Android Emulator And Install APK From Command Line
 1. start android emulator

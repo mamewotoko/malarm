@@ -145,20 +145,13 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	public void onCreate(Bundle savedInstanceState) {
 		Log.i(PACKAGE_NAME, "onCreate is called");
 
+		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+		pref.registerOnSharedPreferenceChangeListener(this);
+		syncPreferences(pref, "ALL");
+
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-
-		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-		PREF_USE_NATIVE_PLAYER = pref.getBoolean("use_native_player", false);
-		PREF_VIBRATE = pref.getBoolean("vibrate", false);
-		PREF_WAKEUP_VOLUMEUP_COUNT = Integer.parseInt(pref.getString("wakeup_volume", "0"));
-		PLAYLIST_PATH = pref.getString("playlist_path", DEFAULT_PLAYLIST_PATH);
-		if (! PLAYLIST_PATH.endsWith(FILE_SEPARATOR)) {
-			PLAYLIST_PATH = PLAYLIST_PATH + FILE_SEPARATOR;
-		}
-		loadPlaylist();
-		_vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
 		_time_picker = (TimePicker) findViewById(R.id.timePicker1);
 		_time_picker.setIs24HourView(true);
@@ -212,7 +205,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 					if (result.getType() == HitTestResult.SRC_IMAGE_ANCHOR_TYPE && ! previous_url.equals(url)) {
 						_webview.stopLoading();
 						previous_url = url;
-						//TODO: should be outside?
 						loadWebPage(_webview, url);
 						return;
 					}
@@ -224,7 +216,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 					if(url.contains("binan") && height > 420) {
 						view.scrollTo(0, 420);
 					} else if (url.contains("bijo-linux") && height > 100) {
-						//TODO: forbid vertical scroll?
 						//TODO: open next page in same tab
 						view.scrollTo(0, 100);
 					} else if (height > 960) {
@@ -268,11 +259,16 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 
 		//stop alarm when phone call
 		_calllistener = new MyCallListener(this);
-		if (_vibrator == null) {
-			_vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-		}
+		_vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 	}
-	
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+		pref.unregisterOnSharedPreferenceChangeListener(this);
+	}
+
 	@Override
 	protected void onResume() {
 		Log.i(PACKAGE_NAME, "onPause is called, start JavaScript");
@@ -293,15 +289,12 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		super.onPause();
 		//stop tokei
 		_webview.getSettings().setJavaScriptEnabled(false);
-		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-		pref.unregisterOnSharedPreferenceChangeListener(this);
 	}
 
 	@Override
 	protected void onStart () {
 		Log.i(PACKAGE_NAME, "onStart is called");
 		super.onStart();
-
 		if (_state != null) {
 			updateAlarmUI(_state._target);
 		}
@@ -324,23 +317,31 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		Log.i("malarm", "onSaveInstanceState is called");
 		outState.putSerializable("state", _state);
 	}
-
-	//TODO: remove duplicated code
-	@Override
-	public void onSharedPreferenceChanged(SharedPreferences pref, String key) {
-		if (key.equals("use_native_player")) {
-			PREF_USE_NATIVE_PLAYER = pref.getBoolean(key, false);
-		} else if (key.equals("vibrate")) {
+	
+	public void syncPreferences(SharedPreferences pref, String key) {
+		boolean update_all = key.equals("ALL");
+		if (update_all || key.equals("use_native_player")) {
+			PREF_USE_NATIVE_PLAYER = pref.getBoolean("use_native_player", false);
+		}
+		if (update_all || key.equals("vibrate")) {
 			PREF_VIBRATE = pref.getBoolean(key, true);
-		} else if (key.equals("wakeup_volume")) {
+		}
+		if (update_all || key.equals("wakeup_volume")) {
 			PREF_WAKEUP_VOLUMEUP_COUNT = Integer.parseInt(pref.getString("wakeup_volume", "0"));
-		} else if (key.equals("playlist_path")) {
+		}
+		if (update_all || key.equals("playlist_path")) {
 			String newpath = pref.getString(key, DEFAULT_PLAYLIST_PATH);
 			if (! newpath.equals(PLAYLIST_PATH)) {
 				PLAYLIST_PATH = newpath;
 				loadPlaylist();
 			}
 		}
+	}
+
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences pref, String key) {
+		Log.i(PACKAGE_NAME, "onSharedPreferenceChanged is called: key = " + key);
+		syncPreferences(pref, key);
 	}
 
 	private void loadWebPage(WebView view) {
@@ -614,6 +615,13 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			if (use_native && f.isFile()) {
 				playMusicNativePlayer(context, f);
 			} else {
+				if(WAKEUP_PLAYLIST == null) {
+					loadPlaylist();
+					if (WAKEUP_PLAYLIST == null) {
+						Log.i(PACKAGE_NAME, "playSleepMusic: SLEEP_PLAYLIST is null");
+						return;
+					}
+				}
 				WAKEUP_PLAYLIST.reset();
 				playMusic(WAKEUP_PLAYLIST);
 			}
@@ -627,14 +635,18 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				playMusicNativePlayer(context, f);
 			} else {
 				Log.i(PACKAGE_NAME, "playSleepMusic: MediaPlayer");
+				if(SLEEP_PLAYLIST == null) {
+					loadPlaylist();
+					if (SLEEP_PLAYLIST == null) {
+						Log.i(PACKAGE_NAME, "playSleepMusic: SLEEP_PLAYLIST is null");
+						return;
+					}
+				}
 				SLEEP_PLAYLIST.reset();
 				playMusic(SLEEP_PLAYLIST);
 			}
 		}
 
-		/**
-		 * MediaPlayer only
-		 */
 		public static void playNext() {
 			Log.i(PACKAGE_NAME, "playNext is called: ");
 			if (Player.isPlaying()) {
