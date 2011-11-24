@@ -15,7 +15,7 @@
 <!--  UI -->
     <string name="set_alarm">アラームをセットする</string>
     <string name="stop_alarm">アラームをとめる</string>
-    <string name="next">&gt;&gt;</string>
+    <string name="next"> &gt;&gt; </string>
     <string name="time_to_wakeup">起きる時刻</string>
     <string name="stop_vibration">ぶるぶるをとめる</string>
     <string name="play_wakeup">目覚めの音楽をかける</string>
@@ -41,7 +41,16 @@
     <string name="help_title">ヘルプ</string>
     <string name="help_summary">使い方を書いたヘルプ(Webページ)を表示します</string>
 
-    <string name="git_url">https://github.com/downloads/mamewotoko/malarm/malarm.apk</string>
+    <string name="git_url">https://github.com/downloads/mamewotoko/malarm/</string>
     <string name="dialog_ok">閉じる</string>
     <string name="dialog_title">まらーむダウンロードページ</string>
+    
+    <string name="pref_playlist_category">プレイリスト設定</string>
+    <string name="pref_wakeup_playlist">wakeup.m3uプレイリストがあるか?</string>
+    <string name="pref_no_wakeup_playlist">ないです (作ってください)</string>
+    <string name="pref_ok_wakeup_playlist">あります</string>
+
+    <string name="pref_sleep_playlist">sleep.m3uプレイリストがあるか?</string>
+    <string name="pref_no_sleep_playlist">ないです (作ってください)</string>
+    <string name="pref_ok_sleep_playlist">あります</string>
 </resources>
