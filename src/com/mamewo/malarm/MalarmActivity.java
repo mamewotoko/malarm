@@ -60,8 +60,8 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 
 	protected static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
-	protected static final String WAKEUP_PLAYLIST_FILENAME = "wakeup.m3u";
-	protected static final String SLEEP_PLAYLIST_FILENAME = "sleep.m3u";
+	public static final String WAKEUP_PLAYLIST_FILENAME = "wakeup.m3u";
+	public static final String SLEEP_PLAYLIST_FILENAME = "sleep.m3u";
 	//copy stop.m4a file to stop native player
 	protected static final String STOP_MUSIC_FILENAME = "stop.m4a";
 

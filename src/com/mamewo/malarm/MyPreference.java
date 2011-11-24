@@ -4,18 +4,26 @@ package com.mamewo.malarm;
  * @author Takashi Masuyama <mamewotoko@gmail.com>
  */
 
+import java.io.File;
+
 import com.mamewo.malarm.R;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.*;
+import android.preference.CheckBoxPreference;
+import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
+import android.preference.PreferenceActivity;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.view.View;
 
-public class MyPreference extends PreferenceActivity implements OnPreferenceClickListener {
+public class MyPreference extends PreferenceActivity implements OnPreferenceClickListener, View.OnClickListener {
 
 	Preference _help;
 	Preference _version;
@@ -35,6 +43,9 @@ public class MyPreference extends PreferenceActivity implements OnPreferenceClic
 			dialog.setContentView(R.layout.dialog);
 			ImageView image = (ImageView) dialog.findViewById(R.id.dialog_image_view);
 			image.setImageResource(R.drawable.git_download);
+			TextView text = (TextView) dialog.findViewById(R.id.dialog_text);
+			text.setText(getString(R.string.git_url));
+			text.setOnClickListener(this);
 			dialog.setTitle(R.string.dialog_title);
 			dialog.show();
 			result = true;
@@ -52,5 +63,21 @@ public class MyPreference extends PreferenceActivity implements OnPreferenceClic
 		_version.setOnPreferenceClickListener(this);
 		_help = findPreference("help");
 		_help.setOnPreferenceClickListener(this);
+		SharedPreferences pref = getPreferences(Context.MODE_PRIVATE);
+		//get playlist path
+		String path = pref.getString("playlist_path", MalarmActivity.DEFAULT_PLAYLIST_PATH);
+
+		File wakeup_file = new File(path, MalarmActivity.WAKEUP_PLAYLIST_FILENAME);
+		CheckBoxPreference wakeup_playlist = (CheckBoxPreference) findPreference("wakeup_playlist");
+		wakeup_playlist.setChecked(wakeup_file.exists());
+		File sleep_file = new File(path, MalarmActivity.SLEEP_PLAYLIST_FILENAME);
+		CheckBoxPreference sleep_playlist = (CheckBoxPreference) findPreference("sleep_playlist");
+		sleep_playlist.setChecked(sleep_file.exists());
+	}
+
+	@Override
+	public void onClick(View v) {
+		Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.git_url)));
+		startActivity(i);
 	}
 }
