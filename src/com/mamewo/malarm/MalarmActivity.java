@@ -113,6 +113,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	};
 	
 	public class MyCallListener extends PhoneStateListener {
+		private boolean _is_playing = false;
 		
 		public MyCallListener(MalarmActivity context) {
 			TelephonyManager telmgr = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -120,18 +121,28 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		}
 
 		public void onCallStateChanged (int state, String incomingNumber) {
-			//TODO: save cursor and play after phone call finish
-			if (state == TelephonyManager.CALL_STATE_RINGING) {
+			switch (state) {
+			case TelephonyManager.CALL_STATE_RINGING:
+				//fall-through
+			case TelephonyManager.CALL_STATE_OFFHOOK:
 				Log.i(PACKAGE_NAME, "onCallStateChanged: RINGING");
-				//stop vibration
 				if (_vibrator != null) {
 					_vibrator.cancel();
 				}
-				//native player is OK
-				if (Player.isPlaying()) {
+				//native player stops automatically
+				_is_playing = Player.isPlaying();
+				if (_is_playing) {
 					//pause
 					Player.pauseMusic();
 				}
+				break;
+			case TelephonyManager.CALL_STATE_IDLE:
+				if (_is_playing) {
+					Player.playMusic();
+				}
+				break;
+			default:
+				break;
 			}
 		}
 	}
