@@ -32,7 +32,7 @@ or Build malarm and install it on android device
 You can change path to playlist and music files by "Playlist directory" preference screen
 
 ## Tested Device
-- Xperia Acro made by Sony Ericsson
+- Xperia acro made by Sony Ericsson
 
 ## TODO
 - implement music player as Service to play long time
@@ -40,7 +40,6 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - write help page
 - change web page by timer
 - fix bug when native player is used....
-- restart music after phone call ends
 - preset volume of sleep / wakeup mode
 - raise wakeup volume by timer or thread
 - record wakeup time
@@ -51,7 +50,6 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - implement more smart scroll
 - link to music store (where?)
 - add more test cases
-
 
 ## Appendix
 ### How To Build From Command Line
