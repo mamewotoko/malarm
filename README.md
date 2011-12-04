@@ -38,6 +38,7 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - implement music player as Service to play long time
 - make COOL widget to set alarm (make clock widget?)
 - write help page
+- fix crash bug when photo is long pressed
 - change web page by timer
 - fix bug when native player is used....
 - preset volume of sleep / wakeup mode
