@@ -5,6 +5,10 @@ package com.mamewo.malarm;
  */
 
 import java.io.File;
+import java.io.FileFilter;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import com.mamewo.malarm.R;
 
@@ -23,11 +27,42 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.view.View;
 
-public class MyPreference extends PreferenceActivity implements OnPreferenceClickListener, View.OnClickListener {
+public class MyPreference extends PreferenceActivity implements OnPreferenceClickListener, View.OnClickListener, FileFilter {
 
-	Preference _help;
-	Preference _version;
-	
+	private Preference _help;
+	private Preference _version;
+	private Preference _create_playlist;
+	private static String TAG = "malarm_pref";
+
+	@Override
+	public boolean accept(File pathname) {
+		String filename = pathname.getName();
+		//TODO: other formats?
+		return filename.endsWith(".mp3") || filename.endsWith(".m4a");
+	}
+
+	private void createDefaultPlaylist(File file) {
+		FileWriter fw = null;
+		
+		try {
+			fw = new FileWriter(file);
+			//find music files
+			for (File music_file : file.getParentFile().listFiles(this)) {
+				fw.append(music_file.getName() + "\n");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (fw != null) {
+				try {
+					fw.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
 	@Override
 	public boolean onPreferenceClick(Preference preference) {
 		boolean result = false;
@@ -49,6 +84,24 @@ public class MyPreference extends PreferenceActivity implements OnPreferenceClic
 			dialog.setTitle(R.string.dialog_title);
 			dialog.show();
 			result = true;
+		} else if (preference == _create_playlist) {
+			String [] playlists = { MalarmActivity.WAKEUP_PLAYLIST_FILENAME, MalarmActivity.SLEEP_PLAYLIST_FILENAME };
+			Log.i(TAG, "playlist pref is clicked");
+			for (String filename : playlists) {
+				File file = new File(MalarmActivity.PLAYLIST_PATH, filename);
+				if (file.exists()) {
+					//show confirm dialog?
+					Log.i(TAG, "playlist file exists: " + filename);
+					//TODO: localize
+					MalarmActivity.showMessage(this, filename + " already exists");
+					continue;
+				}
+				createDefaultPlaylist(file);
+				//TODO: localize
+				MalarmActivity.showMessage(this, filename + " created");
+			}
+			//TODO: refresh preference view
+			result = true;
 		}
 		return result;
 	}
@@ -63,6 +116,8 @@ public class MyPreference extends PreferenceActivity implements OnPreferenceClic
 		_version.setOnPreferenceClickListener(this);
 		_help = findPreference("help");
 		_help.setOnPreferenceClickListener(this);
+		_create_playlist = findPreference("create_playlist");
+		_create_playlist.setOnPreferenceClickListener(this);
 		SharedPreferences pref = getPreferences(Context.MODE_PRIVATE);
 		//get playlist path
 		String path = pref.getString("playlist_path", MalarmActivity.DEFAULT_PLAYLIST_PATH);
@@ -80,4 +135,5 @@ public class MyPreference extends PreferenceActivity implements OnPreferenceClic
 		Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.git_url)));
 		startActivity(i);
 	}
+
 }

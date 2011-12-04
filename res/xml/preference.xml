@@ -20,6 +20,7 @@
 	<CheckBoxPreference android:title="@string/pref_sleep_playlist"
 		android:key="sleep_playlist" android:summaryOn="@string/pref_ok_sleep_playlist"
 		android:summaryOff="@string/pref_no_sleep_playlist" android:selectable="false"></CheckBoxPreference>
+	<Preference android:key="create_playlist" android:summary="@string/pref_create_playlist_summary" android:title="@string/pref_create_playlist_title"/>
     </PreferenceCategory><Preference android:summary="@string/help_summary" android:title="@string/help_title" android:key="help" android:selectable="true"></Preference>
     <Preference android:title="@string/malarm_version_title" android:key="malarm_version" android:selectable="true"></Preference>
 </PreferenceScreen>

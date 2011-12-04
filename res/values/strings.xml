@@ -54,4 +54,7 @@
     <string name="pref_sleep_playlist">Does sleep.m3u playlist exists?</string>
     <string name="pref_no_sleep_playlist">Not exists (Please create it)</string>
     <string name="pref_ok_sleep_playlist">Exists</string>
+
+    <string name="pref_create_playlist_title">Create playlist</string>
+    <string name="pref_create_playlist_summary">Create playlist which has all files in playlist directory</string>
 </resources>

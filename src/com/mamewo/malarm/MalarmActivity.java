@@ -543,7 +543,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		}
 	}
 
-	private static void showMessage(Context c, String message) {
+	public static void showMessage(Context c, String message) {
 		Toast.makeText(c, message, Toast.LENGTH_LONG).show();
 	}
 
