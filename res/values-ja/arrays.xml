@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="preference_item_key">
+        <item>OkuiAki.com組</item>
         <item>Twitter</item>
         <item>美人時計</item>
         <item>美女Linux</item>
         <item>美男時計</item>
-        <item>OkuiAki.com組</item>
+        <item>Googleカレンダー</item>
     </string-array>
     <string-array name="preference_item_value">
+        <item>http://www.okuiaki.com/mobile/login.php</item>
         <item>http://twitter.com/</item>
         <item>http://www.bijint.com/jp/</item>
         <item>http://bijo-linux.com/</item>
         <item>http://www.bijint.com/binan/</item>
-        <item>http://www.okuiaki.com/mobile/login.php</item>
+        <item>https://www.google.com/calendar/</item>
     </string-array>
 
     <string-array name="volume_pref_key">

@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="preference_item_key">
+        <item>OkuiAki.com gumi</item>
         <item>Twitter</item>
         <item>bijin-tokei</item>
         <item>bijin-linux</item>
         <item>binan-tokei</item>
-        <item>OkuiAki.com gumi</item>
+        <item>Google Calendar</item>
     </string-array>
     <!--  TODO: get URL from resource? -->
     <string-array name="preference_item_value">
+        <item>http://www.okuiaki.com/mobile/login.php</item>
         <item>http://twitter.com/</item>
         <item>http://www.bijint.com/jp/</item>
         <item>http://bijo-linux.com/</item>
         <item>http://www.bijint.com/binan/</item>
-        <item>http://www.okuiaki.com/mobile/login.php</item>
+        <item>https://www.google.com/calendar/</item>
     </string-array>
 
     <string-array name="preference_time_key">

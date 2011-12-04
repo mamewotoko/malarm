@@ -181,6 +181,9 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		_webview = (WebView)findViewById(R.id.webView1);
 		_alarm_button = (ToggleButton)findViewById(R.id.alarm_button);
 		_alarm_button.setOnClickListener(this);
+		
+		CookieSyncManager.createInstance(this);
+		
 		WebSettings config = _webview.getSettings();
 		//to display twitter...
 		config.setDomStorageEnabled(true);
@@ -284,6 +287,8 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	protected void onResume() {
 		Log.i(PACKAGE_NAME, "onPause is called, start JavaScript");
 		super.onResume();
+
+		CookieSyncManager.getInstance().startSync();
 		//WebView.onResume is hidden, why!?!?
 		_webview.getSettings().setJavaScriptEnabled(true);
 		loadWebPage(_webview);
@@ -298,6 +303,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	protected void onPause() {
 		Log.i(PACKAGE_NAME, "onPause is called, stop JavaScript");
 		super.onPause();
+		CookieSyncManager.getInstance().stopSync();
 		//stop tokei
 		_webview.getSettings().setJavaScriptEnabled(false);
 	}
@@ -364,7 +370,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	private void loadWebPage(WebView view, String url) {
 		Log.i(PACKAGE_NAME, "loadWebPage: " + url);
 		WebSettings config = _webview.getSettings();
-		if (url.contains("bijo-linux")) {
+		if (url.contains("bijo-linux") || url.contains("google")) {
 			config.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
 		} else {
 			config.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
