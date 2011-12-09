@@ -733,7 +733,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			try {
 				_player.start();
 			} catch (Exception e) {
-
+				//do nothing
 			}
 		}
 
@@ -742,7 +742,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			try {
 				_player.pause();
 			} catch (Exception e) {
-
+				//do nothing
 			}
 		}
 	}
