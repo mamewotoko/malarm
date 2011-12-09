@@ -147,7 +147,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		}
 	}
 
-	private static void loadPlaylist() {
+	public static void loadPlaylist() {
 		WAKEUP_PLAYLIST = new M3UPlaylist(PLAYLIST_PATH, WAKEUP_PLAYLIST_FILENAME);
 		SLEEP_PLAYLIST = new M3UPlaylist(PLAYLIST_PATH, SLEEP_PLAYLIST_FILENAME);
 	}
@@ -566,8 +566,9 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			// AppWidgetManager mgr = AppWidgetManager.getInstance(context);
-			Log.i(PACKAGE_NAME, "onReceive: action: " + intent.getAction());
+			Log.i(PACKAGE_NAME, "onReceive!!: action: " + intent.getAction());
 			if (intent.getAction().equals(WAKEUP_ACTION)) {
+				//TODO: what to do if calling
 				if (PLAYLIST_PATH == null) {
 					PLAYLIST_PATH = intent.getStringExtra(_PLAYLIST_PATH_KEY);
 				}
@@ -582,10 +583,12 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				Player.playWakeupMusic(context, false);
 
 				AudioManager mgr = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-				for (int i = 0; i < PREF_WAKEUP_VOLUMEUP_COUNT; i++) {
-					mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
+				//following two methods require MODIFY_AUDIO_SETTINGS permissions...
+				if ((! mgr.isWiredHeadsetOn()) && (! mgr.isBluetoothA2dpOn())) {
+					for (int i = 0; i < PREF_WAKEUP_VOLUMEUP_COUNT; i++) {
+						mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
+					}
 				}
-
 				Intent i = new Intent(context, MalarmActivity.class);
 				//show app
 				i.setAction(WAKEUPAPP_ACTION);

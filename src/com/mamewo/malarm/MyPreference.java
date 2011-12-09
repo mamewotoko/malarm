@@ -101,6 +101,7 @@ public class MyPreference extends PreferenceActivity implements OnPreferenceClic
 				MalarmActivity.showMessage(this, filename + " created");
 			}
 			//TODO: refresh preference view
+			MalarmActivity.loadPlaylist();
 			result = true;
 		}
 		return result;
