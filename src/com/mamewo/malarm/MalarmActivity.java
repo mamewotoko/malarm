@@ -16,6 +16,8 @@ import com.mamewo.malarm.R;
 
 import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -398,6 +400,9 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		clearAlarmUI();
 		_state = null;
 		mgr.cancel(p);
+		
+		NotificationManager notify_mgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		notify_mgr.cancel(PACKAGE_NAME, 0);
 	}
 
 	protected void onNewIntent (Intent intent) {
@@ -409,6 +414,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				long pattern[] = { 10, 1500, 500, 1500, 500, 1500, 500, 1500, 500 };
 				_vibrator.vibrate(pattern, 1);
 			}
+			setNotification(getString(R.string.notify_wakeup_title), getString(R.string.notify_wakeup_text));
 		}
 	}
 
@@ -432,7 +438,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		return true;
 	}
 
-	private void updateAlarmUI (Calendar target) {
+	private String dateStr(Calendar target) {
 		String dow_str = "";
 		int dow_int = target.get(Calendar.DAY_OF_WEEK);
 		String[] dow_name_table = getResources().getStringArray(R.array.day_of_week);
@@ -442,30 +448,45 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				break;
 			}
 		}
-		_time_label.setText(String.format("%2d/%2d %02d:%02d (%s)",
+		return String.format("%2d/%2d %02d:%02d (%s)",
 				target.get(Calendar.MONTH)+1,
 				target.get(Calendar.DATE),
 				target.get(Calendar.HOUR_OF_DAY),
 				target.get(Calendar.MINUTE),
-				dow_str));
+				dow_str);
+	}
+
+	private void updateAlarmUI (Calendar target) {
+		_time_label.setText(dateStr(target));
 		_time_picker.setCurrentHour(target.get(Calendar.HOUR_OF_DAY));
 		_time_picker.setCurrentMinute(target.get(Calendar.MINUTE));
 		_time_picker.setEnabled(false);
 	}
 
-	public void setAlarm() {
-		Log.i(PACKAGE_NAME, "scheduleToPlaylist is called");
-		if (_state != null) {
-			cancelAlarm();
-			if (_vibrator != null) {
-				_vibrator.cancel();
-			}
-			if (! PREF_USE_NATIVE_PLAYER) {
-				Player.pauseMusic();
-				showMessage(this, getString(R.string.music_stopped));
-			}
-			return;
+	private void stopAlarm() {
+		cancelAlarm();
+		if (_vibrator != null) {
+			_vibrator.cancel();
 		}
+		if (! PREF_USE_NATIVE_PLAYER) {
+			Player.pauseMusic();
+			showMessage(this, getString(R.string.music_stopped));
+		}
+	}
+	
+	private void setNotification(String title, String text) {
+		Notification note = new Notification(R.drawable.img, title, System.currentTimeMillis());
+		
+		Intent ni = new Intent(this, MalarmActivity.class);
+		PendingIntent npi = PendingIntent.getActivity(this, 0, ni, 0);
+		note.setLatestEventInfo(this, title, text, npi);
+		
+		NotificationManager notify_mgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+		notify_mgr.notify(PACKAGE_NAME, 0, note);
+	}
+	
+	private void setAlarm() {
+		Log.i(PACKAGE_NAME, "scheduleToPlaylist is called");
 		//set timer
 		Calendar now = new GregorianCalendar();
 
@@ -500,8 +521,11 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			PendingIntent sleepIntent = makePlayPintent(SLEEP_ACTION, PREF_USE_NATIVE_PLAYER);
 			mgr.set(AlarmManager.RTC_WAKEUP, now_millis+sleep_time_millis, sleepIntent);
 		}
-		//TODO: add alarm time as Notification
 		showMessage(this, getString(R.string.alarm_set) + tommorow + " " + sleeptime_str);
+		String text = getString(R.string.notify_waiting_text);
+		text += " (" + dateStr(target) +")";
+		String title = getString(R.string.notify_waiting_title);
+		setNotification(title, text);
 	}
 	public void setNow() {
 		if (_time_picker.isEnabled()) {
@@ -541,7 +565,11 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		} else if (v == _alarm_button) {
 			InputMethodManager mgr = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
 			mgr.hideSoftInputFromWindow(_time_picker.getWindowToken(), 0);
-			setAlarm();
+			if (_state != null) {
+				stopAlarm();
+			} else {
+				setAlarm();
+			}
 		} else if (v == _set_now_button) {
 			setNow();
 		} else {
@@ -590,7 +618,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 					}
 				}
 				Intent i = new Intent(context, MalarmActivity.class);
-				//show app
 				i.setAction(WAKEUPAPP_ACTION);
 				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				context.startActivity(i);

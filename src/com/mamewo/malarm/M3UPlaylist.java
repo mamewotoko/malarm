@@ -17,7 +17,6 @@ public class M3UPlaylist implements Playlist{
 	private int _nextindex = 0;
 	String _basepath;
 	private Vector<String> _playlist;
-	private static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
 	/**
 	 * 

@@ -4,15 +4,13 @@
     <string name="stop_music">Stop Music</string>
     <string name="music_stopped">Music stopped</string>
     <string name="tomorrow">tomorrow</string>
-    <string name="alarm_set">Alarm set!</string>
+    <string name="alarm_set">Malarm set!</string>
     <string name="unknown_button">Unknown button!</string>
     <string name="no_bluetooth">No bluetooth device</string>
     <string name="start_bluetooth">Start bluetooth device</string>
     <string name="search_bluetooth">Search bluetooth device</string>
-    <string name="touched">Touched!</string>
     <string name="goodnight">Good Night</string>
 
-<!--  UI -->
     <string name="set_alarm">Set Alarm</string>
     <string name="stop_alarm">Cancel Alarm</string>
     <string name="next"> &gt;&gt; </string>
@@ -57,4 +55,9 @@
 
     <string name="pref_create_playlist_title">Create playlist</string>
     <string name="pref_create_playlist_summary">Create playlist which has all files in playlist directory</string>
+
+    <string name="notify_waiting_title">malarm is set</string>
+    <string name="notify_waiting_text">malarm will start</string>
+    <string name="notify_wakeup_title">Playing malarm tunes</string>
+    <string name="notify_wakeup_text">Good morning!</string>
 </resources>

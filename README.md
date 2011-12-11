@@ -40,12 +40,11 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - write help page
 - fix crash bug when photo is long pressed
 - change web page by timer
+- switch web page by gesture (2 finger) or horizontal scroll bar?
 - fix bug when native player is used....
 - preset volume of sleep / wakeup mode
-- raise wakeup volume by timer or thread
 - record wakeup time
 - fix vibration bug (onNewIntent is called after unlocking device?)
-- switch web page by gesture (2 finger) or horizontal scroll bar?
 - add UI to edit playlist
 - add stop music into resource?
 - implement more smart scroll

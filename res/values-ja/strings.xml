@@ -2,17 +2,15 @@
 <resources>
     <string name="app_name">まらーむ</string>
     <string name="stop_music">音楽をとめる</string>
-    <string name="music_stopped">音楽をとめました</string>
+    <string name="music_stopped">まらーむををとめました</string>
     <string name="tomorrow">あした</string>
-    <string name="alarm_set">アラームをセットしました</string>
+    <string name="alarm_set">まらーむをセットしました</string>
     <string name="unknown_button">知らないボタンが押されました</string>
     <string name="no_bluetooth">Bluetooth機器が見つかりません</string>
     <string name="start_bluetooth">Bluetooth機器を有効にしています</string>
     <string name="search_bluetooth">近くのBluetooth機器を探しています</string>
-    <string name="touched">さわられちゃった!</string>
     <string name="goodnight">おやすみ</string>
 
-<!--  UI -->
     <string name="set_alarm">アラームをセットする</string>
     <string name="stop_alarm">アラームをとめる</string>
     <string name="next"> &gt;&gt; </string>
@@ -56,4 +54,9 @@
 
     <string name="pref_create_playlist_title">プレイリスト作成</string>
     <string name="pref_create_playlist_summary">プレイリストを作成します</string>
+
+    <string name="notify_waiting_title">まらーむがセットされています</string>
+    <string name="notify_waiting_text">まらーむ待機中</string>
+    <string name="notify_wakeup_title">まらーむがなっています</string>
+    <string name="notify_wakeup_text">おはよう!</string>
 </resources>
