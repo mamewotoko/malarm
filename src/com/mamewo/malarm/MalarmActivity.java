@@ -40,6 +40,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.Window;
+import android.view.GestureDetector;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -56,6 +57,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	public static final String WAKEUP_ACTION = PACKAGE_NAME + ".WAKEUP_ACTION";
 	public static final String WAKEUPAPP_ACTION = PACKAGE_NAME + ".WAKEUPAPP_ACTION";
 	public static final String SLEEP_ACTION = PACKAGE_NAME + ".SLEEP_ACTION";
+	public static final String LOADWEB_ACTION = PACKAGE_NAME + ".LOADWEB_ACTION";
 	public static final String DEFAULT_PLAYLIST_PATH = "/sdcard/music/";
 	public static String VERSION = "unknown";
 
@@ -67,7 +69,13 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	protected static final String STOP_MUSIC_FILENAME = "stop.m4a";
 
 	protected static String PLAYLIST_PATH = null;
-
+	private static String[] WEB_PAGE_LIST = new String []{
+		null,
+		"https://www.google.com/calendar/",
+		"http://www.google.com/reader/",
+		"http://twitter.com",
+		"http://plus.google.com/"
+	};
 	protected static Playlist WAKEUP_PLAYLIST;
 	protected static Playlist SLEEP_PLAYLIST;
 
@@ -94,7 +102,8 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	//	private WebView _subwebview;
 	private ToggleButton _alarm_button;
 	private Button _set_now_button;
-
+	private GestureDetector _gd = null;
+	
 	@SuppressWarnings("unused")
 	private PhoneStateListener _calllistener;
 	private static boolean PREF_USE_NATIVE_PLAYER;
@@ -153,10 +162,24 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		SLEEP_PLAYLIST = new M3UPlaylist(PLAYLIST_PATH, SLEEP_PLAYLIST_FILENAME);
 	}
 
+	private class WebViewDblTapListener extends GestureDetector.SimpleOnGestureListener {
+		private int index = 0;
+		@Override
+		public boolean onDoubleTap(MotionEvent e) {
+			index++;
+			if (index >= WEB_PAGE_LIST.length) {
+				index = 0;
+			}
+			Log.i(PACKAGE_NAME, "onDoubleTap is called: " + index);
+			loadWebPage(_webview, WEB_PAGE_LIST[index]);
+			return true;
+		}
+	}
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		Log.i(PACKAGE_NAME, "onCreate is called");
-
+		
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		pref.registerOnSharedPreferenceChangeListener(this);
 		syncPreferences(pref, "ALL");
@@ -194,10 +217,11 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				_webview.requestFocus();
+				_gd.onTouchEvent(event);
 				return false;
 			}
 		});
-
+		
 		final Activity activity = this;
 		_webview.setWebViewClient(new WebViewClient() {
 			@Override
@@ -275,6 +299,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		//stop alarm when phone call
 		_calllistener = new MyCallListener(this);
 		_vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+		_gd = new GestureDetector(this, new WebViewDblTapListener());
 	}
 
 	@Override
@@ -286,7 +311,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 
 	@Override
 	protected void onResume() {
-		Log.i(PACKAGE_NAME, "onPause is called, start JavaScript");
+		Log.i(PACKAGE_NAME, "onResume is called, start JavaScript");
 		super.onResume();
 
 		CookieSyncManager.getInstance().startSync();
@@ -318,6 +343,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		}
 		_alarm_button.setChecked(_state != null);
 		_alarm_button.requestFocus();
+		
 	}
 
 	//Avoid finishing activity not to lost _state
@@ -338,6 +364,9 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 
 	public void syncPreferences(SharedPreferences pref, String key) {
 		boolean update_all = key.equals("ALL");
+		if (update_all || key.equals("url")) {
+			WEB_PAGE_LIST[0] = pref.getString("url", "http://twitter.com/");
+		}
 		if (update_all || key.equals("use_native_player")) {
 			PREF_USE_NATIVE_PLAYER = pref.getBoolean("use_native_player", false);
 		}
@@ -381,7 +410,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		} else {
 			config.setDefaultZoom(WebSettings.ZoomDensity.MEDIUM);
 		}
-		showMessage(this, "Loading...");
+		showMessage(this, "Loading... \n" + url);
 		_webview.loadUrl(url);
 	}
 
@@ -407,13 +436,19 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	protected void onNewIntent (Intent intent) {
 		System.out.println ("onNewIntent is called");
 		String action = intent.getAction();
-		if (action != null && action.equals(WAKEUPAPP_ACTION)) {
+		if (action == null) {
+			return;
+		}
+		if (action.equals(WAKEUPAPP_ACTION)) {
 			//native player cannot start until lock screen is displayed
 			if (PREF_VIBRATE && _vibrator != null) {
 				long pattern[] = { 10, 1500, 500, 1500, 500, 1500, 500, 1500, 500 };
 				_vibrator.vibrate(pattern, 1);
 			}
 			setNotification(getString(R.string.notify_wakeup_title), getString(R.string.notify_wakeup_text));
+		} else if (action.equals(LOADWEB_ACTION)) {
+			String url = intent.getStringExtra("url");
+			loadWebPage(_webview, url);
 		}
 	}
 
