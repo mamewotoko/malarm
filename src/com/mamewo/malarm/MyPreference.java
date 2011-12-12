@@ -135,5 +135,4 @@ public class MyPreference extends PreferenceActivity implements OnPreferenceClic
 		Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.git_url)));
 		startActivity(i);
 	}
-
 }

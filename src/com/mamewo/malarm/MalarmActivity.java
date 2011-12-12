@@ -52,7 +52,6 @@ import android.net.http.*;
 import android.graphics.Bitmap;
 
 public class MalarmActivity extends Activity implements OnClickListener, OnSharedPreferenceChangeListener {
-	/** Called when the activity is first created. */
 	private static final String PACKAGE_NAME = MalarmActivity.class.getPackage().getName();
 	public static final String WAKEUP_ACTION = PACKAGE_NAME + ".WAKEUP_ACTION";
 	public static final String WAKEUPAPP_ACTION = PACKAGE_NAME + ".WAKEUPAPP_ACTION";
@@ -113,7 +112,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		Calendar.FRIDAY, 
 		Calendar.SATURDAY, 
 	};
-
+	
 	public class MyCallListener extends PhoneStateListener {
 		private boolean _is_playing = false;
 
@@ -540,6 +539,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		case R.id.stop_vibration:
 			if (_vibrator != null) {
 				_vibrator.cancel();
+				showMessage(this, getString(R.string.notify_wakeup_text));
 			}
 			break;
 		case R.id.play_wakeup:
@@ -591,11 +591,16 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			return _player != null && _player.isPlaying();
 		}
 
+		/**
+		 * intent: com.mamewo.malarm.MalarmActivity.WAKEUP_ACTION
+		 * extra: playlist_path: path to playlist where wakeup.m3u exists
+		 */
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			// AppWidgetManager mgr = AppWidgetManager.getInstance(context);
 			Log.i(PACKAGE_NAME, "onReceive!!: action: " + intent.getAction());
 			if (intent.getAction().equals(WAKEUP_ACTION)) {
+				//TODO: load optional m3u file to play by request from other application
 				//TODO: what to do if calling
 				if (PLAYLIST_PATH == null) {
 					PLAYLIST_PATH = intent.getStringExtra(_PLAYLIST_PATH_KEY);
@@ -707,7 +712,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				Player.playNext();
 			}
 
-			// This method is not called when DRM error is occured
+			// This method is not called when DRM error occurs
 			public boolean onError(MediaPlayer mp, int what, int extra) {
 				//TODO: show error message to GUI
 				Log.i(PACKAGE_NAME, "onError is called, cannot play this media");

@@ -44,7 +44,6 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - fix bug when native player is used....
 - preset volume of sleep / wakeup mode
 - record wakeup time
-- fix vibration bug (onNewIntent is called after unlocking device?)
 - add UI to edit playlist
 - add stop music into resource?
 - implement more smart scroll
