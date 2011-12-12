@@ -166,7 +166,18 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		private int index = 0;
 		@Override
 		public boolean onDoubleTap(MotionEvent e) {
-			index++;
+			int x = (int)e.getX();
+			int width = _webview.getWidth();
+			if (x <= width/3) {
+				index--;
+			} else if (x > width*2/3) {
+				index++;
+			} else {
+				return false;
+			}
+			if (index < 0) {
+				index = WEB_PAGE_LIST.length - 1;
+			}
 			if (index >= WEB_PAGE_LIST.length) {
 				index = 0;
 			}

@@ -39,7 +39,7 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - make COOL widget to set alarm (make clock widget?)
 - write help page
 - fix crash bug when photo is long pressed
-- backward/forward web page by detecting double tapped position
+- fix vibrator timing
 - fix bug when native player is used....
 - preset volume of sleep / wakeup mode
 - record wakeup time
