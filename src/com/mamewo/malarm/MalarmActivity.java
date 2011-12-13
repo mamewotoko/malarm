@@ -343,6 +343,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		CookieSyncManager.getInstance().stopSync();
 		//stop tokei
 		_webview.getSettings().setJavaScriptEnabled(false);
+		_webview.stopLoading();
 	}
 
 	@Override
