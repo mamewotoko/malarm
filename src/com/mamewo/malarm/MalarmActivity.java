@@ -27,6 +27,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.telephony.PhoneStateListener;
@@ -58,7 +59,8 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	public static final String WAKEUPAPP_ACTION = PACKAGE_NAME + ".WAKEUPAPP_ACTION";
 	public static final String SLEEP_ACTION = PACKAGE_NAME + ".SLEEP_ACTION";
 	public static final String LOADWEB_ACTION = PACKAGE_NAME + ".LOADWEB_ACTION";
-	public static final String DEFAULT_PLAYLIST_PATH = "/sdcard/music/";
+	//e.g. /sdcard/music
+	public static final File DEFAULT_PLAYLIST_PATH = new File(Environment.getExternalStorageDirectory(), "music");
 	public static String VERSION = "unknown";
 
 	protected static final String FILE_SEPARATOR = System.getProperty("file.separator");
@@ -389,7 +391,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			PREF_WAKEUP_VOLUMEUP_COUNT = Integer.parseInt(pref.getString("wakeup_volume", "0"));
 		}
 		if (update_all || key.equals("playlist_path")) {
-			String newpath = pref.getString(key, DEFAULT_PLAYLIST_PATH);
+			String newpath = pref.getString(key, DEFAULT_PLAYLIST_PATH.getAbsolutePath());
 			if (! newpath.equals(PLAYLIST_PATH)) {
 				PLAYLIST_PATH = newpath;
 				loadPlaylist();

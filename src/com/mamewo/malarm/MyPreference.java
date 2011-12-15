@@ -120,7 +120,7 @@ public class MyPreference extends PreferenceActivity implements OnPreferenceClic
 		_create_playlist.setOnPreferenceClickListener(this);
 		SharedPreferences pref = getPreferences(Context.MODE_PRIVATE);
 		//get playlist path
-		String path = pref.getString("playlist_path", MalarmActivity.DEFAULT_PLAYLIST_PATH);
+		String path = pref.getString("playlist_path", MalarmActivity.DEFAULT_PLAYLIST_PATH.getAbsolutePath());
 
 		File wakeup_file = new File(path, MalarmActivity.WAKEUP_PLAYLIST_FILENAME);
 		CheckBoxPreference wakeup_playlist = (CheckBoxPreference) findPreference("wakeup_playlist");
