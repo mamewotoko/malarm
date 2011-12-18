@@ -170,12 +170,13 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		public boolean onDoubleTap(MotionEvent e) {
 			int x = (int)e.getX();
 			int width = _webview.getWidth();
+			boolean start_browser = false;
 			if (x <= width/3) {
 				index--;
 			} else if (x > width*2/3) {
 				index++;
 			} else {
-				return false;
+				start_browser = true;
 			}
 			if (index < 0) {
 				index = WEB_PAGE_LIST.length - 1;
@@ -183,8 +184,15 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			if (index >= WEB_PAGE_LIST.length) {
 				index = 0;
 			}
-			Log.i(PACKAGE_NAME, "onDoubleTap is called: " + index);
-			loadWebPage(_webview, WEB_PAGE_LIST[index]);
+			String url = WEB_PAGE_LIST[index];
+			Log.i(PACKAGE_NAME, "onDoubleTap is called: " + index + " url: " + url);
+			if (start_browser) {
+				Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				startActivity(i);
+			} else {
+				loadWebPage(_webview, url);
+			}
 			return true;
 		}
 	}
@@ -230,6 +238,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				_webview.requestFocus();
+				Log.i(PACKAGE_NAME, "onTouch: event " + event + " gd: " + _gd);
 				_gd.onTouchEvent(event);
 				return false;
 			}
@@ -673,7 +682,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				}
 				Intent i = new Intent(context, MalarmActivity.class);
 				i.setAction(WAKEUPAPP_ACTION);
-				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				context.startActivity(i);
 			} else if (intent.getAction().equals(SLEEP_ACTION)) {
 				if (intent.getExtras().getBoolean(_NATIVE_PLAYER_KEY)) {
