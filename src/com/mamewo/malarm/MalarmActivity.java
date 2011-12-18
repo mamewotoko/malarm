@@ -188,7 +188,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			Log.i(PACKAGE_NAME, "onDoubleTap is called: " + index + " url: " + url);
 			if (start_browser) {
 				Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				startActivity(i);
 			} else {
 				loadWebPage(_webview, url);
@@ -682,6 +681,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				}
 				Intent i = new Intent(context, MalarmActivity.class);
 				i.setAction(WAKEUPAPP_ACTION);
+				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				context.startActivity(i);
 			} else if (intent.getAction().equals(SLEEP_ACTION)) {
 				if (intent.getExtras().getBoolean(_NATIVE_PLAYER_KEY)) {
