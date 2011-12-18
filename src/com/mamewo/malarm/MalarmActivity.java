@@ -75,8 +75,8 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		null,
 		"https://www.google.com/calendar/",
 		"http://www.google.com/reader/",
-		"http://twitter.com",
-		"http://plus.google.com/"
+		"http://www.google.com/mail/",
+		"http://www002.upp.so-net.ne.jp/mamewo/mobile_shop.html"
 	};
 	protected static Playlist WAKEUP_PLAYLIST;
 	protected static Playlist SLEEP_PLAYLIST;
@@ -416,7 +416,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		WebSettings config = _webview.getSettings();
 		if (url.contains("bijo-linux") || url.contains("google")) {
 			config.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
-		} else {
+		} else if (! url.contains("mamewo")) {
 			config.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
 		}
 		if (url.contains("bijo-linux")) {
