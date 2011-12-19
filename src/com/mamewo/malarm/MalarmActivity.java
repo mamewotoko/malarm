@@ -11,9 +11,6 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Properties;
-
-import com.mamewo.malarm.R;
-
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -43,10 +40,7 @@ import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.GestureDetector;
 import android.view.inputmethod.InputMethodManager;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.webkit.WebView.HitTestResult;
-import android.webkit.WebViewClient;
 import android.widget.*;
 import android.webkit.*;
 import android.net.Uri;
@@ -61,7 +55,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	public static final String LOADWEB_ACTION = PACKAGE_NAME + ".LOADWEB_ACTION";
 	//e.g. /sdcard/music
 	public static final File DEFAULT_PLAYLIST_PATH = new File(Environment.getExternalStorageDirectory(), "music");
-	public static String VERSION = "unknown";
+	public static String version = "unknown";
 
 	protected static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
@@ -70,16 +64,16 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	//copy stop.m4a file to stop native player
 	protected static final String STOP_MUSIC_FILENAME = "stop.m4a";
 
-	protected static String PLAYLIST_PATH = null;
-	private static String[] WEB_PAGE_LIST = new String []{
+	protected static String playlist_path;
+	private static final String[] WEB_PAGE_LIST = new String []{
 		null,
 		"https://www.google.com/calendar/",
 		"http://www.google.com/reader/",
 		"http://www.google.com/mail/",
 		"http://www002.upp.so-net.ne.jp/mamewo/mobile_shop.html"
 	};
-	protected static Playlist WAKEUP_PLAYLIST;
-	protected static Playlist SLEEP_PLAYLIST;
+	protected static Playlist wakeup_playlist;
+	protected static Playlist sleep_playlist;
 
 	public static class MalarmState implements Serializable {
 		private static final long serialVersionUID = 1L;
@@ -92,8 +86,8 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		}
 	}
 
-	private static final Integer DEFAULT_HOUR = new Integer(7);
-	private static final Integer DEFAULT_MIN = new Integer(0);
+	private static final Integer DEFAULT_HOUR = Integer.valueOf(7);
+	private static final Integer DEFAULT_MIN = Integer.valueOf(0);
 	private static Vibrator _vibrator = null;
 
 	private MalarmState _state = null;
@@ -160,16 +154,16 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	}
 
 	public static void loadPlaylist() {
-		WAKEUP_PLAYLIST = new M3UPlaylist(PLAYLIST_PATH, WAKEUP_PLAYLIST_FILENAME);
-		SLEEP_PLAYLIST = new M3UPlaylist(PLAYLIST_PATH, SLEEP_PLAYLIST_FILENAME);
+		wakeup_playlist = new M3UPlaylist(playlist_path, WAKEUP_PLAYLIST_FILENAME);
+		sleep_playlist = new M3UPlaylist(playlist_path, SLEEP_PLAYLIST_FILENAME);
 	}
 
 	private class WebViewDblTapListener extends GestureDetector.SimpleOnGestureListener {
 		private int index = 0;
 		@Override
-		public boolean onDoubleTap(MotionEvent e) {
-			int x = (int)e.getX();
-			int width = _webview.getWidth();
+		public boolean onDoubleTap(final MotionEvent e) {
+			final int x = (int)e.getX();
+			final int width = _webview.getWidth();
 			boolean start_browser = false;
 			if (x <= width/3) {
 				index--;
@@ -184,7 +178,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			if (index >= WEB_PAGE_LIST.length) {
 				index = 0;
 			}
-			String url = WEB_PAGE_LIST[index];
+			final String url = WEB_PAGE_LIST[index];
 			Log.i(PACKAGE_NAME, "onDoubleTap is called: " + index + " url: " + url);
 			if (start_browser) {
 				Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
@@ -197,10 +191,10 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	}
 	
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(final Bundle savedInstanceState) {
 		Log.i(PACKAGE_NAME, "onCreate is called");
 		
-		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		pref.registerOnSharedPreferenceChangeListener(this);
 		syncPreferences(pref, "ALL");
 
@@ -210,10 +204,10 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 
 		_time_picker = (TimePicker) findViewById(R.id.timePicker1);
 		_time_picker.setIs24HourView(true);
-		if (savedInstanceState != null) {
-			_state = (MalarmState)savedInstanceState.get("state");
-		} else {
+		if (savedInstanceState == null) {
 			_state = null;
+		} else {
+			_state = (MalarmState)savedInstanceState.get("state");
 		}
 		_next_button = (Button) findViewById(R.id.next_button);
 		_next_button.setOnClickListener(this);
@@ -270,7 +264,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 					}
 				}
 				//addhoc polling...
-				int height = view.getContentHeight();
+				final int height = view.getContentHeight();
 				if ((url.contains("bijint") || url.contains("bijo-linux")) && height > 400) {
 					//TODO: get precise position....
 					if(url.contains("binan") && height > 420) {
@@ -299,22 +293,22 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		InputStream is = null;
 		try {
 			is = getResources().openRawResource(R.raw.app_version);
-			Properties prop = new Properties();
+			final Properties prop = new Properties();
 			prop.load(is);
-			VERSION = prop.getProperty("app.version");
+			version = prop.getProperty("app.version");
 		} catch (IOException e) {
-			e.printStackTrace();
+			Log.i(PACKAGE_NAME, "cannot get version: " + e.getMessage());
 		} finally {
 			if (is != null) {
 				try {
 					is.close();
 				} catch (IOException e) {
-					e.printStackTrace();
+					Log.i(PACKAGE_NAME, "cannot close is: " + e.getMessage());
 				}
 			}
 		}
-		if (VERSION == null) {
-			VERSION = "unknown";
+		if (version == null) {
+			version = "unknown";
 		}
 
 		//stop alarm when phone call
@@ -326,7 +320,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		pref.unregisterOnSharedPreferenceChangeListener(this);
 	}
 
@@ -385,23 +379,23 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	}
 
 	public void syncPreferences(SharedPreferences pref, String key) {
-		boolean update_all = key.equals("ALL");
-		if (update_all || key.equals("url")) {
+		boolean update_all = "ALL".equals(key);
+		if (update_all || "url".equals(key)) {
 			WEB_PAGE_LIST[0] = pref.getString("url", "http://twitter.com/");
 		}
-		if (update_all || key.equals("use_native_player")) {
+		if (update_all || "use_native_player".equals(key)) {
 			PREF_USE_NATIVE_PLAYER = pref.getBoolean("use_native_player", false);
 		}
-		if (update_all || key.equals("vibrate")) {
+		if (update_all || "vibrate".equals(key)) {
 			PREF_VIBRATE = pref.getBoolean(key, true);
 		}
-		if (update_all || key.equals("wakeup_volume")) {
+		if (update_all || "wakeup_volume".equals(key)) {
 			PREF_WAKEUP_VOLUMEUP_COUNT = Integer.parseInt(pref.getString("wakeup_volume", "0"));
 		}
 		if (update_all || key.equals("playlist_path")) {
 			String newpath = pref.getString(key, DEFAULT_PLAYLIST_PATH.getAbsolutePath());
-			if (! newpath.equals(PLAYLIST_PATH)) {
-				PLAYLIST_PATH = newpath;
+			if (! newpath.equals(playlist_path)) {
+				playlist_path = newpath;
 				loadPlaylist();
 			}
 		}
@@ -433,7 +427,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			config.setDefaultZoom(WebSettings.ZoomDensity.MEDIUM);
 		}
 		showMessage(this, "Loading... \n" + url);
-		_webview.loadUrl(url);
+		view.loadUrl(url);
 	}
 
 	private void clearAlarmUI() {
@@ -456,7 +450,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	}
 
 	protected void onNewIntent (Intent intent) {
-		System.out.println ("onNewIntent is called");
+		Log.i (PACKAGE_NAME, "onNewIntent is called");
 		String action = intent.getAction();
 		if (action == null) {
 			return;
@@ -478,7 +472,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		Intent i = new Intent(this, Player.class);
 		i.setAction(action);
 		i.putExtra(_NATIVE_PLAYER_KEY, use_native);
-		i.putExtra(_PLAYLIST_PATH_KEY, PLAYLIST_PATH);
+		i.putExtra(_PLAYLIST_PATH_KEY, playlist_path);
 
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, i,
 				PendingIntent.FLAG_CANCEL_CURRENT);
@@ -572,7 +566,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		int min = Integer.valueOf(pref.getString("sleeptime", "60"));
 		Player.playSleepMusic(this, min);
 		long sleep_time_millis = min * 60 * 1000;
-		String sleeptime_str = String.valueOf(min) + " min";
+		String sleeptime_str = min + " min";
 		if (target_millis - now_millis >= sleep_time_millis) {
 			PendingIntent sleepIntent = makePlayPintent(SLEEP_ACTION, PREF_USE_NATIVE_PLAYER);
 			mgr.set(AlarmManager.RTC_WAKEUP, now_millis+sleep_time_millis, sleepIntent);
@@ -641,7 +635,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	//TODO: separate BroadcastReceiver
 	//TODO: implement music player as Service to play long time
 	public static class Player extends BroadcastReceiver {
-		private static Playlist current_playlist = SLEEP_PLAYLIST;
+		private static Playlist current_playlist = sleep_playlist;
 		private static MediaPlayer _player = null;
 
 		public static boolean isPlaying() {
@@ -659,10 +653,10 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			if (intent.getAction().equals(WAKEUP_ACTION)) {
 				//TODO: load optional m3u file to play by request from other application
 				//TODO: what to do if calling
-				if (PLAYLIST_PATH == null) {
-					PLAYLIST_PATH = intent.getStringExtra(_PLAYLIST_PATH_KEY);
+				if (playlist_path == null) {
+					playlist_path = intent.getStringExtra(_PLAYLIST_PATH_KEY);
 				}
-				if (WAKEUP_PLAYLIST == null) {
+				if (wakeup_playlist == null) {
 					loadPlaylist();
 				}
 
@@ -709,7 +703,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		}
 
 		public static void stopMusicNativePlayer(Context context) {
-			File f = new File(PLAYLIST_PATH + STOP_MUSIC_FILENAME);
+			File f = new File(playlist_path + STOP_MUSIC_FILENAME);
 			if(! f.isFile()) {
 				Log.i(PACKAGE_NAME, "No stop play list is found");
 				return;
@@ -722,35 +716,35 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			if (use_native && f.isFile()) {
 				playMusicNativePlayer(context, f);
 			} else {
-				if(WAKEUP_PLAYLIST == null) {
+				if(wakeup_playlist == null) {
 					loadPlaylist();
-					if (WAKEUP_PLAYLIST == null) {
+					if (wakeup_playlist == null) {
 						Log.i(PACKAGE_NAME, "playSleepMusic: SLEEP_PLAYLIST is null");
 						return;
 					}
 				}
-				WAKEUP_PLAYLIST.reset();
-				playMusic(WAKEUP_PLAYLIST);
+				wakeup_playlist.reset();
+				playMusic(wakeup_playlist);
 			}
 		}
 
 		public static void playSleepMusic(Context context, int min) {
 			Log.i(PACKAGE_NAME, "start sleep music and stop");
-			File f = new File(PLAYLIST_PATH + SLEEP_PLAYLIST_FILENAME);
+			File f = new File(playlist_path + SLEEP_PLAYLIST_FILENAME);
 			if (PREF_USE_NATIVE_PLAYER && f.isFile()) {
 				Log.i(PACKAGE_NAME, "playSleepMusic: NativePlayer");
 				playMusicNativePlayer(context, f);
 			} else {
 				Log.i(PACKAGE_NAME, "playSleepMusic: MediaPlayer");
-				if(SLEEP_PLAYLIST == null) {
+				if(sleep_playlist == null) {
 					loadPlaylist();
-					if (SLEEP_PLAYLIST == null) {
+					if (sleep_playlist == null) {
 						Log.i(PACKAGE_NAME, "playSleepMusic: SLEEP_PLAYLIST is null");
 						return;
 					}
 				}
-				SLEEP_PLAYLIST.reset();
-				playMusic(SLEEP_PLAYLIST);
+				sleep_playlist.reset();
+				playMusic(sleep_playlist);
 			}
 		}
 

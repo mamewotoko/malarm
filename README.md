@@ -48,7 +48,6 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - implement more smart scroll
 - link to music store (where?)
 - add more test cases
-- use PMD and BugFinder to check source
 - build check using 2.x SDK
 
 ## Appendix

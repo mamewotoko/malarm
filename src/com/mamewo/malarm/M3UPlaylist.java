@@ -13,9 +13,9 @@ import android.util.Log;
  * @author Takashi Masuyama <mamewotoko@gmail.com>
  */
 
-public class M3UPlaylist implements Playlist{
+public class M3UPlaylist implements Playlist {
 	private int _nextindex = 0;
-	String _basepath;
+	private String _basepath;
 	private Vector<String> _playlist;
 
 	/**
@@ -23,7 +23,7 @@ public class M3UPlaylist implements Playlist{
 	 * @param playlist_basepath path to directory which contains play list
 	 * @param playlist_filename filename of playlist (not absolute path)
 	 */
-	public M3UPlaylist(String playlist_basepath, String playlist_filename) {
+	public M3UPlaylist(final String playlist_basepath, final String playlist_filename) {
 		_basepath = playlist_basepath;
 		String playlist_abs_path = (new File(playlist_basepath, playlist_filename)).getAbsolutePath();
 		try {
@@ -33,17 +33,16 @@ public class M3UPlaylist implements Playlist{
 			Log.i("M3UPlaylist", "cannot find playlist " + playlist_filename);
 		} catch (IOException e) {
 			Log.i("M3UPlaylist", "cannot read playlist " + playlist_filename);
-			e.printStackTrace();
 		}
 	}
 	
 	@Override
-	public boolean isEmpty() {
+	final public boolean isEmpty() {
 		return _playlist.isEmpty();
 	}
 	
 	@Override
-	public String next() {
+	final public String next() {
 		if (_playlist.size() <= _nextindex) {
 			_nextindex = 0;
 		}
@@ -57,15 +56,15 @@ public class M3UPlaylist implements Playlist{
 	}
 
 	@Override
-	public void reset() {
+	final public void reset() {
 		_nextindex = 0;
 	}
 
-	protected void loadPlaylist(String filename) throws FileNotFoundException, IOException {
-		BufferedReader br = new BufferedReader(new FileReader (filename));
+	final protected void loadPlaylist(final String filename) throws FileNotFoundException, IOException {
+		final BufferedReader br = new BufferedReader(new FileReader (filename));
 		String music_filename;
 		while ((music_filename = br.readLine()) != null) {
-			if (! music_filename.startsWith("#")) {
+			if (music_filename.charAt(0) != '#') {
 				_playlist.add(music_filename);
 			}
 		}

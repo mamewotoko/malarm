@@ -8,9 +8,6 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileWriter;
 import java.io.IOException;
-
-import com.mamewo.malarm.R;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -31,7 +28,7 @@ public class MyPreference extends PreferenceActivity implements OnPreferenceClic
 	private Preference _help;
 	private Preference _version;
 	private Preference _create_playlist;
-	private static String TAG = "malarm_pref";
+	private static final String TAG = "malarm_pref";
 
 	@Override
 	public boolean accept(File pathname) {
@@ -87,7 +84,7 @@ public class MyPreference extends PreferenceActivity implements OnPreferenceClic
 			String [] playlists = { MalarmActivity.WAKEUP_PLAYLIST_FILENAME, MalarmActivity.SLEEP_PLAYLIST_FILENAME };
 			Log.i(TAG, "playlist pref is clicked");
 			for (String filename : playlists) {
-				File file = new File(MalarmActivity.PLAYLIST_PATH, filename);
+				File file = new File(MalarmActivity.playlist_path, filename);
 				if (file.exists()) {
 					//show confirm dialog?
 					Log.i(TAG, "playlist file exists: " + filename);
@@ -112,7 +109,7 @@ public class MyPreference extends PreferenceActivity implements OnPreferenceClic
 		//TODO: check playpath existence and show message
 		addPreferencesFromResource(R.xml.preference);
 		_version = findPreference("malarm_version");
-		_version.setSummary(MalarmActivity.VERSION);
+		_version.setSummary(MalarmActivity.version);
 		_version.setOnPreferenceClickListener(this);
 		_help = findPreference("help");
 		_help.setOnPreferenceClickListener(this);
