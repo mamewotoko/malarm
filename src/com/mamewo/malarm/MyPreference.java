@@ -32,7 +32,7 @@ public class MyPreference extends PreferenceActivity implements OnPreferenceClic
 
 	@Override
 	public boolean accept(File pathname) {
-		String filename = pathname.getName();
+		final String filename = pathname.getName();
 		//TODO: other formats?
 		return filename.endsWith(".mp3") || filename.endsWith(".m4a");
 	}
@@ -47,13 +47,13 @@ public class MyPreference extends PreferenceActivity implements OnPreferenceClic
 				fw.append(music_file.getName() + "\n");
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			Log.i("malarm", "cannot write: " + e.getMessage());
 		} finally {
 			if (fw != null) {
 				try {
 					fw.close();
 				} catch (IOException e) {
-					e.printStackTrace();
+					Log.i("malarm", "cannot close: " + e.getMessage());
 				}
 			}
 		}
@@ -64,27 +64,27 @@ public class MyPreference extends PreferenceActivity implements OnPreferenceClic
 		boolean result = false;
 		Log.i("malarm", "onPreferenceClick is called");
 		if (preference == _help) {
-			Uri url = Uri.parse(getString(R.string.help_url));
+			final Uri url = Uri.parse(getString(R.string.help_url));
 			startActivity(new Intent(Intent.ACTION_VIEW, url));
 			result = true;
 		} else if (preference == _version) {
 			Log.i("malarm", "onPreferenceClick: version");
 			//show dialog
-			Dialog dialog = new Dialog(this);
+			final Dialog dialog = new Dialog(this);
 			dialog.setContentView(R.layout.dialog);
-			ImageView image = (ImageView) dialog.findViewById(R.id.dialog_image_view);
+			final ImageView image = (ImageView) dialog.findViewById(R.id.dialog_image_view);
 			image.setImageResource(R.drawable.git_download);
-			TextView text = (TextView) dialog.findViewById(R.id.dialog_text);
+			final TextView text = (TextView) dialog.findViewById(R.id.dialog_text);
 			text.setText(getString(R.string.git_url));
 			text.setOnClickListener(this);
 			dialog.setTitle(R.string.dialog_title);
 			dialog.show();
 			result = true;
 		} else if (preference == _create_playlist) {
-			String [] playlists = { MalarmActivity.WAKEUP_PLAYLIST_FILENAME, MalarmActivity.SLEEP_PLAYLIST_FILENAME };
+			final String [] playlists = { MalarmActivity.WAKEUP_PLAYLIST_FILENAME, MalarmActivity.SLEEP_PLAYLIST_FILENAME };
 			Log.i(TAG, "playlist pref is clicked");
 			for (String filename : playlists) {
-				File file = new File(MalarmActivity.playlist_path, filename);
+				final File file = new File(MalarmActivity.playlist_path, filename);
 				if (file.exists()) {
 					//show confirm dialog?
 					Log.i(TAG, "playlist file exists: " + filename);
@@ -115,21 +115,21 @@ public class MyPreference extends PreferenceActivity implements OnPreferenceClic
 		_help.setOnPreferenceClickListener(this);
 		_create_playlist = findPreference("create_playlist");
 		_create_playlist.setOnPreferenceClickListener(this);
-		SharedPreferences pref = getPreferences(Context.MODE_PRIVATE);
+		final SharedPreferences pref = getPreferences(Context.MODE_PRIVATE);
 		//get playlist path
-		String path = pref.getString("playlist_path", MalarmActivity.DEFAULT_PLAYLIST_PATH.getAbsolutePath());
+		final String path = pref.getString("playlist_path", MalarmActivity.DEFAULT_PLAYLIST_PATH.getAbsolutePath());
 
-		File wakeup_file = new File(path, MalarmActivity.WAKEUP_PLAYLIST_FILENAME);
-		CheckBoxPreference wakeup_playlist = (CheckBoxPreference) findPreference("wakeup_playlist");
+		final File wakeup_file = new File(path, MalarmActivity.WAKEUP_PLAYLIST_FILENAME);
+		final CheckBoxPreference wakeup_playlist = (CheckBoxPreference) findPreference("wakeup_playlist");
 		wakeup_playlist.setChecked(wakeup_file.exists());
-		File sleep_file = new File(path, MalarmActivity.SLEEP_PLAYLIST_FILENAME);
-		CheckBoxPreference sleep_playlist = (CheckBoxPreference) findPreference("sleep_playlist");
+		final File sleep_file = new File(path, MalarmActivity.SLEEP_PLAYLIST_FILENAME);
+		final CheckBoxPreference sleep_playlist = (CheckBoxPreference) findPreference("sleep_playlist");
 		sleep_playlist.setChecked(sleep_file.exists());
 	}
 
 	@Override
 	public void onClick(View v) {
-		Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.git_url)));
+		final Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.git_url)));
 		startActivity(i);
 	}
 }

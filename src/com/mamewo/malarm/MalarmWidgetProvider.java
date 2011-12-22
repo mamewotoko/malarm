@@ -4,8 +4,6 @@ package com.mamewo.malarm;
  * @author Takashi Masuyama <mamewotoko@gmail.com>
  */
 
-import com.mamewo.malarm.R;
-
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -20,10 +18,10 @@ public class MalarmWidgetProvider extends AppWidgetProvider {
     
     @Override
     public void onReceive(Context context, Intent intent) {
-    	String action = intent.getAction();
+    	final String action = intent.getAction();
     	Log.i("malarm", "action: " + action);
     	if (action.equals(HELLO_ACTION)) {
-        	Intent i = new Intent(context, MalarmActivity.class);
+        	final Intent i = new Intent(context, MalarmActivity.class);
     		i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         	context.startActivity(i);
         }
@@ -32,10 +30,10 @@ public class MalarmWidgetProvider extends AppWidgetProvider {
     
     @Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-    	RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.appwidget);
-    	Intent intent = new Intent(context, MalarmWidgetProvider.class);
+    	final RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.appwidget);
+    	final Intent intent = new Intent(context, MalarmWidgetProvider.class);
     	intent.setAction(HELLO_ACTION);
-    	PendingIntent pintent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    	final PendingIntent pintent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         rv.setOnClickPendingIntent(R.id.appwidget, pintent);
 
     	appWidgetManager.updateAppWidget(appWidgetIds[0], rv);

@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import android.util.Log;
@@ -14,20 +16,20 @@ import android.util.Log;
  */
 
 public class M3UPlaylist implements Playlist {
-	private int _nextindex = 0;
-	private String _basepath;
-	private Vector<String> _playlist;
+	private int mNextIndex = 0;
+	private final String mBasepath;
+	private List<String> mPlaylist;
 
 	/**
 	 * 
 	 * @param playlist_basepath path to directory which contains play list
 	 * @param playlist_filename filename of playlist (not absolute path)
 	 */
-	public M3UPlaylist(final String playlist_basepath, final String playlist_filename) {
-		_basepath = playlist_basepath;
-		String playlist_abs_path = (new File(playlist_basepath, playlist_filename)).getAbsolutePath();
+	public M3UPlaylist(String playlist_basepath, String playlist_filename) {
+		mBasepath = playlist_basepath;
+		final String playlist_abs_path = (new File(playlist_basepath, playlist_filename)).getAbsolutePath();
 		try {
-			_playlist = new Vector<String>();
+			mPlaylist = new ArrayList<String>();
 			loadPlaylist(playlist_abs_path);
 		} catch (FileNotFoundException e) {
 			Log.i("M3UPlaylist", "cannot find playlist " + playlist_filename);
@@ -38,26 +40,26 @@ public class M3UPlaylist implements Playlist {
 	
 	@Override
 	final public boolean isEmpty() {
-		return _playlist.isEmpty();
+		return mPlaylist.isEmpty();
 	}
 	
 	@Override
 	final public String next() {
-		if (_playlist.size() <= _nextindex) {
-			_nextindex = 0;
+		if (mPlaylist.size() <= mNextIndex) {
+			mNextIndex = 0;
 		}
-		String result = _playlist.get(_nextindex);
+		String result = mPlaylist.get(mNextIndex);
 		//TODO: test
 		if (! (new File(result)).isAbsolute()) {
-			result = (new File(_basepath, result)).getAbsolutePath();
+			result = (new File(mBasepath, result)).getAbsolutePath();
 		}
-		_nextindex++;
+		mNextIndex++;
 		return result;
 	}
 
 	@Override
 	final public void reset() {
-		_nextindex = 0;
+		mNextIndex = 0;
 	}
 
 	final protected void loadPlaylist(final String filename) throws FileNotFoundException, IOException {
@@ -65,7 +67,7 @@ public class M3UPlaylist implements Playlist {
 		String music_filename;
 		while ((music_filename = br.readLine()) != null) {
 			if (music_filename.charAt(0) != '#') {
-				_playlist.add(music_filename);
+				mPlaylist.add(music_filename);
 			}
 		}
 		br.close();
