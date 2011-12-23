@@ -1,7 +1,7 @@
 # malarm - Good-morning with your favorite tunes
 ## What is this?
 
-This is a simple alarm application of android (version 2.3.3).
+This is a simple alarm application of android (version 2.2.x - 2.3.3, 4.x).
 
 ## Overview
                 sleep music (1h)                     wake-up music w vibration
@@ -48,11 +48,13 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - preset volume of sleep / wakeup mode
 - record wakeup time
 - add UI to edit playlist
+-- or put playlist on dropbox and sync?
 - add stop music into resource?
 - implement more smart scroll
 - link to music store (where?)
 - add more test cases
 - automated build check using 2.x, 4.x SDK
+- change webview into photo view
 
 ## Appendix
 ### How To Build From Command Line
@@ -75,6 +77,7 @@ https://github.com/mamewotoko/malarm_test
 
 ### Memo:
 Alarm application starts when user push appwidget of malarm.
+Screen rotation and vibration.....
 
 ----
 Takashi Masuyama < mamewotoko@gmail.com >  
