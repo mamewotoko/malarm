@@ -32,7 +32,10 @@ or Build malarm and install it on android device
 You can change path to playlist and music files by "Playlist directory" preference screen
 
 ## Tested Device
-- Xperia acro made by Sony Ericsson
+- Xperia acro made by Sony Ericsson (Android 2.3.4)
+- Android 2.1 emulator
+-- cannot login to twitter because of SSL bug?
+- Android 4.0 emulator
 
 ## TODO
 - implement music player as Service to play long time
@@ -48,7 +51,7 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - implement more smart scroll
 - link to music store (where?)
 - add more test cases
-- build check using 2.x SDK
+- automated build check using 2.x, 4.x SDK
 
 ## Appendix
 ### How To Build From Command Line
