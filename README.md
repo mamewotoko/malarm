@@ -34,7 +34,8 @@ You can change path to playlist and music files by "Playlist directory" preferen
 ## Tested Device
 - Xperia acro made by Sony Ericsson (Android 2.3.4)
 - Android 2.1 emulator
--- cannot login to twitter because of SSL bug?
+-- cannot login to twitter because of SSL error?
+- Android 2.2 emulator
 - Android 4.0 emulator
 
 ## TODO
