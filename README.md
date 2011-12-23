@@ -40,8 +40,10 @@ You can change path to playlist and music files by "Playlist directory" preferen
 
 ## TODO
 - implement music player as Service to play long time
+- release to Android market
 - make COOL widget to set alarm (make clock widget?)
 - write help page
+- set alarm time by voice
 - fix crash bug when photo is long pressed
 - fix vibrator timing
 - fix bug when native player is used....
