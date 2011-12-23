@@ -45,7 +45,6 @@ import android.webkit.WebView.HitTestResult;
 import android.widget.*;
 import android.webkit.*;
 import android.net.Uri;
-import android.net.http.*;
 import android.graphics.Bitmap;
 
 public class MalarmActivity extends Activity implements OnClickListener, OnSharedPreferenceChangeListener {
@@ -56,9 +55,11 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	public static final String LOADWEB_ACTION = PACKAGE_NAME + ".LOADWEB_ACTION";
 	//e.g. /sdcard/music
 	public static final File DEFAULT_PLAYLIST_PATH = new File(Environment.getExternalStorageDirectory(), "music");
-
+	
 	private static final long VIB_PATTERN[] = { 10, 1500, 500, 1500, 500, 1500, 500, 1500, 500 };
 	protected static final String FILE_SEPARATOR = System.getProperty("file.separator");
+
+	protected static int DEVICE_MAX_VOLUME = -1;
 
 	public static final String WAKEUP_PLAYLIST_FILENAME = "wakeup.m3u";
 	public static final String SLEEP_PLAYLIST_FILENAME = "sleep.m3u";
@@ -80,8 +81,9 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	protected static Playlist sleep_playlist;
 	private static boolean pref_use_native_player;
 	private static boolean pref_vibrate;
-	private static int pref_wakeup_volumeup_count;
-
+	private static int pref_sleep_volume;
+	private static int pref_wakeup_volume;
+	
 	public static class MalarmState implements Serializable {
 		private static final long serialVersionUID = 1L;
 		public Calendar mTarget;
@@ -210,6 +212,11 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
+		if (DEVICE_MAX_VOLUME < 0) {
+			final AudioManager mgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+			Log.i(PACKAGE_NAME, "current volume: " + mgr.getStreamVolume(AudioManager.STREAM_MUSIC));
+		}
+		
 		mTimePicker = (TimePicker) findViewById(R.id.timePicker1);
 		mTimePicker.setIs24HourView(true);
 		if (savedInstanceState == null) {
@@ -320,14 +327,14 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	}
 
 	public void startVibrator() {
-		final Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+		final Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 		if (vibrator == null) {
 			return;
 		}
 		vibrator.vibrate(VIB_PATTERN, 1);
 	}
 	public void stopVibrator() {
-		final Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+		final Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 		if (vibrator == null) {
 			return;
 		}
@@ -397,6 +404,12 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 
 	public void syncPreferences(SharedPreferences pref, String key) {
 		final boolean update_all = "ALL".equals(key);
+		if (update_all || "sleep_volume".equals(key)) {
+			pref_sleep_volume = Integer.parseInt(pref.getString("sleep_volume", "5"));
+		}
+		if (update_all || "wakeup_volume".equals(key)) {
+			pref_wakeup_volume = Integer.parseInt(pref.getString("wakeup_volume", "5"));
+		}
 		if (update_all || "url".equals(key)) {
 			WEB_PAGE_LIST[0] = pref.getString("url", "http://twitter.com/");
 		}
@@ -405,9 +418,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		}
 		if (update_all || "vibrate".equals(key)) {
 			pref_vibrate = pref.getBoolean(key, true);
-		}
-		if (update_all || "wakeup_volume".equals(key)) {
-			pref_wakeup_volumeup_count = Integer.parseInt(pref.getString("wakeup_volume", "0"));
 		}
 		if (update_all || "playlist_path".equals(key)) {
 			final String newpath = pref.getString(key, DEFAULT_PLAYLIST_PATH.getAbsolutePath());
@@ -545,7 +555,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		final PendingIntent npi = PendingIntent.getActivity(this, 0, ni, 0);
 		note.setLatestEventInfo(this, title, text, npi);
 		
-		final NotificationManager notify_mgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+		final NotificationManager notify_mgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		notify_mgr.notify(PACKAGE_NAME, 0, note);
 	}
 	
@@ -572,14 +582,14 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		mState = new MalarmState(target);
 		updateAlarmUI(target);
 
-		AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-		PendingIntent pendingIntent = makePlayPintent(WAKEUP_ACTION, false);
+		final AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		final PendingIntent pendingIntent = makePlayPintent(WAKEUP_ACTION, false);
 		mgr.set(AlarmManager.RTC_WAKEUP, target_millis, pendingIntent);
 
-		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-		int min = Integer.valueOf(pref.getString("sleeptime", "60"));
+		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+		final int min = Integer.valueOf(pref.getString("sleeptime", "60"));
 		Player.playSleepMusic(this, min);
-		long sleep_time_millis = min * 60 * 1000;
+		final long sleep_time_millis = min * 60 * 1000;
 		String sleeptime_str = min + " min";
 		if (target_millis - now_millis >= sleep_time_millis) {
 			PendingIntent sleepIntent = makePlayPintent(SLEEP_ACTION, pref_use_native_player);
@@ -591,6 +601,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		String title = getString(R.string.notify_waiting_title);
 		setNotification(title, text);
 	}
+
 	public void setNow() {
 		if (mTimePicker.isEnabled()) {
 			Calendar now = new GregorianCalendar();
@@ -626,7 +637,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		if (v == mNextButton) {
 			Player.playNext();
 		} else if (v == mAlarmButton) {
-			InputMethodManager mgr = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+			InputMethodManager mgr = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
 			mgr.hideSoftInputFromWindow(mTimePicker.getWindowToken(), 0);
 			if (mState != null) {
 				stopAlarm();
@@ -678,13 +689,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				}
 				Player.playWakeupMusic(context, false);
 
-				AudioManager mgr = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-				//following two methods require MODIFY_AUDIO_SETTINGS permissions...
-				if ((! mgr.isWiredHeadsetOn()) && (! mgr.isBluetoothA2dpOn())) {
-					for (int i = 0; i < pref_wakeup_volumeup_count; i++) {
-						mgr.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
-					}
-				}
 				Intent i = new Intent(context, MalarmActivity.class);
 				i.setAction(WAKEUPAPP_ACTION);
 				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -725,6 +729,12 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 
 		public static void playWakeupMusic(Context context, boolean use_native) {
 			File f = new File(WAKEUP_PLAYLIST_FILENAME);
+			AudioManager mgr = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+			//following two methods require MODIFY_AUDIO_SETTINGS permissions...
+			if ((! mgr.isWiredHeadsetOn()) && (! mgr.isBluetoothA2dpOn())) {
+				mgr.setStreamVolume(AudioManager.STREAM_MUSIC, pref_wakeup_volume, 0);
+			}
+
 			if (use_native && f.isFile()) {
 				playMusicNativePlayer(context, f);
 			} else {
@@ -743,6 +753,8 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		public static void playSleepMusic(Context context, int min) {
 			Log.i(PACKAGE_NAME, "start sleep music and stop");
 			File f = new File(playlist_path + SLEEP_PLAYLIST_FILENAME);
+			AudioManager mgr = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+			mgr.setStreamVolume(AudioManager.STREAM_MUSIC, pref_sleep_volume, 0);
 			if (pref_use_native_player && f.isFile()) {
 				Log.i(PACKAGE_NAME, "playSleepMusic: NativePlayer");
 				playMusicNativePlayer(context, f);

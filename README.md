@@ -53,10 +53,10 @@ You can change path to playlist and music files by "Playlist directory" preferen
 -- or put playlist on dropbox and sync?
 - add stop music into resource?
 - implement more smart scroll
-- link to music store (where?)
 - add more test cases
 - automated build check using 2.x, 4.x SDK
 - change webview into photo view
+- localization with parameter
 
 ## Appendix
 ### How To Build From Command Line

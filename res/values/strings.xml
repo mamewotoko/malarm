@@ -60,4 +60,8 @@
     <string name="notify_waiting_text">malarm will start</string>
     <string name="notify_wakeup_title">Playing malarm tunes</string>
     <string name="notify_wakeup_text">Good morning!</string>
+    <string name="pref_sleep_volume_title">Sleep tunes volume</string>
+    <string name="pref_sleep_volume_summary">Sleep tunes volume</string>
+    <string name="pref_wakeup_volume_title">Wakeup tunes volume</string>
+    <string name="pref_wakeup_volume_summary">Wakeup tunes volume</string>
 </resources>
