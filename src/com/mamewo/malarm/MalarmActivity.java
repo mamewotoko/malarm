@@ -277,11 +277,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			}
 
 			@Override
-			public void onReceivedSslError (WebView view, SslErrorHandler handler, SslError error) {
-				Toast.makeText(activity, "SSL error " + error, Toast.LENGTH_SHORT).show();
-			}
-
-			@Override
 			public void onPageFinished(WebView view, String url) {
 				Log.i(PACKAGE_NAME, "onPageFinshed: " + url);
 			}
