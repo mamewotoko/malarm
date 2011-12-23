@@ -5,6 +5,7 @@ package com.mamewo.malarm;
  */
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -151,9 +152,18 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		}
 	}
 
+	//TODO: display toast if file is not found
 	public static void loadPlaylist() {
-		wakeup_playlist = new M3UPlaylist(playlist_path, WAKEUP_PLAYLIST_FILENAME);
-		sleep_playlist = new M3UPlaylist(playlist_path, SLEEP_PLAYLIST_FILENAME);
+		try {
+			wakeup_playlist = new M3UPlaylist(playlist_path, WAKEUP_PLAYLIST_FILENAME);
+		} catch (FileNotFoundException e) {
+			Log.i(PACKAGE_NAME, "wakeup playlist is not found: " + WAKEUP_PLAYLIST_FILENAME);
+		}
+		try {
+			sleep_playlist = new M3UPlaylist(playlist_path, SLEEP_PLAYLIST_FILENAME);
+		} catch (FileNotFoundException e) {
+			Log.i(PACKAGE_NAME, "sleep playlist is not found: " + SLEEP_PLAYLIST_FILENAME);
+		}
 	}
 
 	private class WebViewDblTapListener extends GestureDetector.SimpleOnGestureListener {

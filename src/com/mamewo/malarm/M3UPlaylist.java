@@ -25,14 +25,12 @@ public class M3UPlaylist implements Playlist {
 	 * @param playlist_basepath path to directory which contains play list
 	 * @param playlist_filename filename of playlist (not absolute path)
 	 */
-	public M3UPlaylist(String playlist_basepath, String playlist_filename) {
+	public M3UPlaylist(String playlist_basepath, String playlist_filename) throws FileNotFoundException {
 		mBasepath = playlist_basepath;
 		final String playlist_abs_path = (new File(playlist_basepath, playlist_filename)).getAbsolutePath();
 		try {
 			mPlaylist = new ArrayList<String>();
 			loadPlaylist(playlist_abs_path);
-		} catch (FileNotFoundException e) {
-			Log.i("M3UPlaylist", "cannot find playlist " + playlist_filename);
 		} catch (IOException e) {
 			Log.i("M3UPlaylist", "cannot read playlist " + playlist_filename);
 		}
