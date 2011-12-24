@@ -6,9 +6,6 @@
     <string name="tomorrow">tomorrow</string>
     <string name="alarm_set">Malarm set!</string>
     <string name="unknown_button">Unknown button!</string>
-    <string name="no_bluetooth">No bluetooth device</string>
-    <string name="start_bluetooth">Start bluetooth device</string>
-    <string name="search_bluetooth">Search bluetooth device</string>
     <string name="goodnight">Good Night</string>
 
     <string name="set_alarm">Set Alarm</string>
@@ -64,4 +61,9 @@
     <string name="pref_sleep_volume_summary">Sleep tunes volume</string>
     <string name="pref_wakeup_volume_title">Wakeup tunes volume</string>
     <string name="pref_wakeup_volume_summary">Wakeup tunes volume</string>
+    
+    <string name="minutes">minutes</string>
+    <string name="volume_category_title">Volume and vibration</string>
+    <string name="volume_format">Set volume between 0 and {0}, current volume is {1}</string>
+    <string name="file_exists_format">A file {0} already exists</string>
 </resources>

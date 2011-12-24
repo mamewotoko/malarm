@@ -1,5 +1,7 @@
 package com.mamewo.malarm;
 
+import java.text.MessageFormat;
+
 import android.content.Context;
 import android.media.AudioManager;
 import android.preference.DialogPreference;
@@ -32,10 +34,12 @@ public class VolumePreference extends DialogPreference {
 		mEditText = (EditText) view.findViewById(R.id.volume_pref_value);
 		mDialogText = (TextView) view.findViewById(R.id.volume_pref_text);
 		mEditText.setText(Integer.toString(mVolume));
-		//TODO: localize
-		AudioManager mgr = (AudioManager) view.getContext().getSystemService(Context.AUDIO_SERVICE);
-		int current_volume = mgr.getStreamVolume(AudioManager.STREAM_MUSIC);
-		mDialogText.setText("set volume 0 - " + mMaxVolume + " current: " + current_volume);
+		//TODO: add API to set string 
+		final Context context = view.getContext();
+		final AudioManager mgr = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+		final int current_volume = mgr.getStreamVolume(AudioManager.STREAM_MUSIC);
+		final MessageFormat mf = new MessageFormat(context.getString(R.string.volume_format));
+		mDialogText.setText(mf.format(new Object[] { Integer.valueOf(mMaxVolume), Integer.valueOf(current_volume)}));
 	}
 
 	@Override

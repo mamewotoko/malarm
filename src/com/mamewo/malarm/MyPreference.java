@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.MessageFormat;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -88,8 +90,8 @@ public class MyPreference extends PreferenceActivity implements OnPreferenceClic
 				if (file.exists()) {
 					//show confirm dialog?
 					Log.i(TAG, "playlist file exists: " + filename);
-					//TODO: localize
-					MalarmActivity.showMessage(this, filename + " already exists");
+					MessageFormat mf = new MessageFormat(getString(R.string.file_exists_format));
+					MalarmActivity.showMessage(this, mf.format(new Object[]{ filename }));
 					continue;
 				}
 				createDefaultPlaylist(file);

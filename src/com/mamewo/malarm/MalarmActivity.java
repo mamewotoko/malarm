@@ -590,21 +590,21 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		final int min = Integer.valueOf(pref.getString("sleeptime", "60"));
 		Player.playSleepMusic(this, min);
 		final long sleep_time_millis = min * 60 * 1000;
-		String sleeptime_str = min + " min";
+		final String sleeptime_str = min + " " + getString(R.string.minutes);
 		if (target_millis - now_millis >= sleep_time_millis) {
-			PendingIntent sleepIntent = makePlayPintent(SLEEP_ACTION, pref_use_native_player);
+			final PendingIntent sleepIntent = makePlayPintent(SLEEP_ACTION, pref_use_native_player);
 			mgr.set(AlarmManager.RTC_WAKEUP, now_millis+sleep_time_millis, sleepIntent);
 		}
 		showMessage(this, getString(R.string.alarm_set) + tommorow + " " + sleeptime_str);
 		String text = getString(R.string.notify_waiting_text);
 		text += " (" + dateStr(target) +")";
-		String title = getString(R.string.notify_waiting_title);
+		final String title = getString(R.string.notify_waiting_title);
 		setNotification(title, text);
 	}
 
 	public void setNow() {
 		if (mTimePicker.isEnabled()) {
-			Calendar now = new GregorianCalendar();
+			final Calendar now = new GregorianCalendar();
 			mTimePicker.setCurrentHour(now.get(Calendar.HOUR_OF_DAY));
 			mTimePicker.setCurrentMinute(now.get(Calendar.MINUTE));
 		}
