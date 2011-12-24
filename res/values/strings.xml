@@ -66,4 +66,7 @@
     <string name="volume_category_title">Volume and vibration</string>
     <string name="volume_format">Set volume between 0 and {0}, current volume is {1}</string>
     <string name="file_exists_format">A file {0} already exists</string>
+    <string name="pref_default_time_title">Default time of time picker</string>
+    <string name="pref_default_time_summary">Set time when you wake up</string>
+    <string name="pref_time_category_title">Time preferences</string>
 </resources>

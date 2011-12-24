@@ -83,6 +83,8 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	private static boolean pref_vibrate;
 	private static int pref_sleep_volume;
 	private static int pref_wakeup_volume;
+	private static Integer pref_default_hour = Integer.valueOf(7);
+	private static Integer pref_default_min = Integer.valueOf(0);
 	
 	public static class MalarmState implements Serializable {
 		private static final long serialVersionUID = 1L;
@@ -94,16 +96,12 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			mSuspending = false;
 		}
 	}
-	//TODO: add preference
-	private static final Integer DEFAULT_HOUR = Integer.valueOf(7);
-	private static final Integer DEFAULT_MIN = Integer.valueOf(0);
 
 	private MalarmState mState = null;
 	private Button mNextButton;
 	private TimePicker mTimePicker;
 	private TextView mTimeLabel;
 	private WebView mWebview;
-	//	private WebView _subwebview;
 	private ToggleButton mAlarmButton;
 	private Button mSetNowButton;
 	private GestureDetector mGD = null;
@@ -359,8 +357,8 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		loadWebPage(mWebview);
 
 		if (mTimePicker.isEnabled()) {
-			mTimePicker.setCurrentHour(DEFAULT_HOUR);
-			mTimePicker.setCurrentMinute(DEFAULT_MIN);
+			mTimePicker.setCurrentHour(pref_default_hour);
+			mTimePicker.setCurrentMinute(pref_default_min);
 		}
 	}
 
@@ -404,6 +402,14 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 
 	public void syncPreferences(SharedPreferences pref, String key) {
 		final boolean update_all = "ALL".equals(key);
+		if (update_all || "default_time".equals(key)) {
+			final String timestr = pref.getString("default_time", "7:00");
+			final String[] split_timestr = timestr.split(":");
+			if (split_timestr.length == 2) {
+				pref_default_hour = Integer.valueOf(split_timestr[0]);
+				pref_default_min = Integer.valueOf(split_timestr[1]);
+			}
+		}
 		if (update_all || "sleep_volume".equals(key)) {
 			pref_sleep_volume = Integer.parseInt(pref.getString("sleep_volume", "5"));
 		}
@@ -460,8 +466,8 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	private void clearAlarmUI() {
 		mTimePicker.setEnabled(true);
 		mTimeLabel.setText("");
-		mTimePicker.setCurrentHour(DEFAULT_HOUR);
-		mTimePicker.setCurrentMinute(DEFAULT_MIN);
+		mTimePicker.setCurrentHour(pref_default_hour);
+		mTimePicker.setCurrentMinute(pref_default_min);
 	}
 
 	private void cancelAlarm () {

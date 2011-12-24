@@ -61,7 +61,10 @@
     <string name="pref_wakeup_volume_title">起床時の音量</string>
     <string name="pref_wakeup_volume_summary">起床時の音量</string>
     <string name="minutes">分</string>
-    <string name="volume_category_title">音量とぶるぶる</string>
+    <string name="volume_category_title">音量とぶるぶるの設定</string>
     <string name="volume_format">0から{0}までで音量を設定してください。現在の音量は{1}です。</string>
     <string name="file_exists_format">ファイル {0} は既に存在します。</string>
+    <string name="pref_default_time_title">デフォルトの起床時刻</string>
+    <string name="pref_default_time_summary">起きる時刻を設定してください。</string>
+    <string name="pref_time_category_title">時間の設定</string>
 </resources>

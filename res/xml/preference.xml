@@ -2,8 +2,11 @@
 <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android">
     <ListPreference android:dialogTitle="@string/preference_title" android:entryValues="@array/preference_item_value" android:entries="@array/preference_item_key" android:key="url" android:title="@string/pref_webview_url" android:defaultValue="http://twitter.com/"></ListPreference>
-    <ListPreference android:entries="@array/preference_time_key" android:entryValues="@array/preference_time_value" android:dialogTitle="@string/preference_time_title" android:key="sleeptime" android:title="@string/pref_sleeptime" android:defaultValue="60"></ListPreference>
     <CheckBoxPreference android:summaryOff="@string/use_internal_player" android:title="@string/use_native_player_title" android:defaultValue="false" android:key="use_native_player" android:summaryOn="@string/use_native_player"></CheckBoxPreference>
+    <PreferenceCategory android:title="@string/pref_time_category_title" android:key="time_category">
+        <ListPreference android:entries="@array/preference_time_key" android:entryValues="@array/preference_time_value" android:dialogTitle="@string/preference_time_title" android:key="sleeptime" android:title="@string/pref_sleeptime" android:defaultValue="60"></ListPreference>
+        <com.mamewo.malarm.TimePreference android:title="@string/pref_default_time_title" android:summary="@string/pref_default_time_summary" android:key="default_time" android:defaultValue="7:00"></com.mamewo.malarm.TimePreference>
+    </PreferenceCategory>
     <PreferenceCategory android:title="@string/volume_category_title" android:key="volume_category">
         <CheckBoxPreference android:summaryOff="@string/disable_vibration" android:title="@string/pref_vibration" android:defaultValue="true" android:key="vibrate" android:summaryOn="@string/enable_vibration"></CheckBoxPreference>
         <com.mamewo.malarm.VolumePreference android:title="@string/pref_sleep_volume_title" android:summary="@string/pref_sleep_volume_summary" android:key="sleep_volume" android:defaultValue="5"></com.mamewo.malarm.VolumePreference>

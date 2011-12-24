@@ -6,7 +6,6 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -22,10 +21,6 @@ public class VolumePreference extends DialogPreference {
 		AudioManager mgr = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 		mMaxVolume = mgr.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
 		setDialogLayoutResource(R.layout.volume_preference);
-	}
-	
-	public VolumePreference(Context context) {
-		this(context, null);
 	}
 
 	@Override
@@ -55,10 +50,8 @@ public class VolumePreference extends DialogPreference {
 	private void setVolume(int v) {
 		int value = v;
 		if (value > mMaxVolume) {
-			Log.i("malarm", "too large value: " + value);
 			value = mMaxVolume;
 		} else if (value < 0) {
-			Log.i("malarm", "negative value: " + value);
 			value = 0;
 		}
 		if (callChangeListener(value)) {
@@ -70,7 +63,7 @@ public class VolumePreference extends DialogPreference {
 
 	@Override
 	protected void onSetInitialValue(boolean restoreValue, Object defaultValue) {
-		int volume = 3;
+		int volume;
 		if (restoreValue) {
 			volume = Integer.parseInt(getPersistedString(Integer.toString(mVolume)));
 		} else {
