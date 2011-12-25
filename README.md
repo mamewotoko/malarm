@@ -43,12 +43,11 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - release to Android market
 - make COOL widget to set alarm (make clock widget?)
 - write help page
-- display web loading icon
 - fix crash bug when photo is long pressed
 - fix vibrator timing
 - fix bug when native player is used....
-- preset volume of sleep / wakeup mode
 - record wakeup time
+- implement more sophisticated web page preference
 - add UI to edit playlist
 -- or put playlist on dropbox and sync?
 - add stop music into resource?

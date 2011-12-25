@@ -117,6 +117,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	private GestureDetector mGD;
 	private boolean mSetDefaultTime;
 	private Intent mVoiceIntent;
+	private ProgressBar mLoadingIcon;
 	
 	private PhoneStateListener mCallListener;
 
@@ -219,6 +220,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		
 		mTimePicker = (TimePicker) findViewById(R.id.timePicker1);
 		mTimePicker.setIs24HourView(true);
+		mLoadingIcon = (ProgressBar) findViewById(R.id.loading_icon);
 		final PackageManager pm = getPackageManager();
 		final List<ResolveInfo> activities = pm.queryIntentActivities(new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
 		if (activities.isEmpty()) {
@@ -270,6 +272,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			@Override
 			public void onPageStarted(WebView view, String url, Bitmap favicon) {
 				Log.i(PACKAGE_NAME, "onPageStart: " + url);
+				mLoadingIcon.setVisibility(View.VISIBLE);
 			}
 
 			@Override
@@ -308,6 +311,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			@Override
 			public void onPageFinished(WebView view, String url) {
 				Log.i(PACKAGE_NAME, "onPageFinshed: " + url);
+				mLoadingIcon.setVisibility(View.INVISIBLE);
 			}
 		});
 
