@@ -5,7 +5,6 @@
     <string name="music_stopped">まらーむををとめました</string>
     <string name="tomorrow">あした</string>
     <string name="alarm_set">まらーむをセットしました</string>
-    <string name="unknown_button">知らないボタンが押されました</string>
     <string name="goodnight">おやすみ</string>
 
     <string name="set_alarm">アラームをセットする</string>
@@ -71,4 +70,5 @@
     <string name="voice_dialog">アラームの時刻か時間を教えてください\n例: 15時20分(24時間制のみ), 1時間後</string>
     <string name="voice_success_format">アラーム時間を「{0}」として設定しました</string>
     <string name="voice_fail">時間として認識出来ませんでした</string>
+    <string name="stop_loading">読み込みを中止しました</string>
 </resources>

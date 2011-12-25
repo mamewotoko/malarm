@@ -2,7 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:weightSum="1" android:orientation="vertical">
+    android:orientation="vertical"
+    android:weightSum="1" >
+
     <LinearLayout android:layout_height="wrap_content" android:id="@+id/linearLayout1" android:layout_width="fill_parent">
         <LinearLayout android:id="@+id/linearLayout2" android:orientation="vertical" android:layout_width="158dp" android:layout_height="wrap_content">
             <TimePicker android:id="@+id/timePicker1" android:layout_width="152dp" android:layout_height="wrap_content" android:inputType="number"></TimePicker>
@@ -15,8 +17,6 @@
             android:gravity="right"
             android:orientation="vertical" >
 
-        <!--  android:textAppearance="?android:attr/textAppearanceLarge" -->
-
             <LinearLayout
                 android:id="@+id/linearLayout4"
                 android:layout_width="wrap_content"
@@ -26,8 +26,8 @@
             <ProgressBar
                 android:id="@+id/loading_icon"
                 style="?android:attr/progressBarStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_width="25dp"
+                android:layout_height="fill_parent" />
                 
             </LinearLayout>
                 <ToggleButton android:textOff="@string/set_alarm" android:textOn="@string/stop_alarm" android:id="@+id/alarm_button" android:layout_width="fill_parent" android:layout_height="wrap_content"></ToggleButton>

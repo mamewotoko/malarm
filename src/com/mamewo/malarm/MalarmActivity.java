@@ -51,6 +51,7 @@ import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.GestureDetector;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView.HitTestResult;
 import android.widget.*;
@@ -211,8 +212,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		pref.registerOnSharedPreferenceChangeListener(this);
 		syncPreferences(pref, "ALL");
-
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		
@@ -220,7 +219,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		
 		mTimePicker = (TimePicker) findViewById(R.id.timePicker1);
 		mTimePicker.setIs24HourView(true);
-		mLoadingIcon = (ProgressBar) findViewById(R.id.loading_icon);
 		final PackageManager pm = getPackageManager();
 		final List<ResolveInfo> activities = pm.queryIntentActivities(new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
 		if (activities.isEmpty()) {
@@ -239,6 +237,9 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		} else {
 			mState = (MalarmState)savedInstanceState.get("state");
 		}
+		mLoadingIcon = (ProgressBar) findViewById(R.id.loading_icon);
+		mLoadingIcon.setOnLongClickListener(this);
+		
 		mNextButton = (Button) findViewById(R.id.next_button);
 		mNextButton.setOnClickListener(this);
 
@@ -679,8 +680,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			}
 		} else if (v == mSetNowButton) {
 			setNow();
-		} else {
-			showMessage(v.getContext(), getString(R.string.unknown_button));
 		}
 	}
 
@@ -690,6 +689,11 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 
 	@Override
 	public boolean onLongClick(View view) {
+		if (view == mLoadingIcon) {
+			mWebview.stopLoading();
+			showMessage(this, getString(R.string.stop_loading));
+			return true;
+		}
 		if (view != mTimePicker || mVoiceIntent == null || ! view.isEnabled()) {
 			return false;
 		}

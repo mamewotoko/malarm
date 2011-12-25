@@ -5,7 +5,6 @@
     <string name="music_stopped">Music stopped</string>
     <string name="tomorrow">tomorrow</string>
     <string name="alarm_set">Malarm set!</string>
-    <string name="unknown_button">Unknown button!</string>
     <string name="goodnight">Good Night</string>
 
     <string name="set_alarm">Set Alarm</string>
@@ -73,4 +72,5 @@
     <string name="voice_dialog">Tell me alarm time\n(support Japanese only...)</string>
     <string name="voice_success_format">Set alarm time as "{0}"</string>
     <string name="voice_fail">Recognition as time failed</string>
+    <string name="stop_loading">Loading aborted</string>
 </resources>
