@@ -2,6 +2,7 @@ package com.mamewo.malarm;
 
 /**
  * @author Takashi Masuyama <mamewotoko@gmail.com>
+ * http://www002.upp.so-net.ne.jp/mamewo/
  */
 
 import java.io.File;
@@ -56,7 +57,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	//e.g. /sdcard/music
 	public static final File DEFAULT_PLAYLIST_PATH = new File(Environment.getExternalStorageDirectory(), "music");
 	
-	private static final long VIB_PATTERN[] = { 10, 1500, 500, 1500, 500, 1500, 500, 1500, 500 };
+	private static final long VIBRATE_PATTERN[] = { 10, 1500, 500, 1500, 500, 1500, 500, 1500, 500 };
 	protected static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
 	protected static int DEVICE_MAX_VOLUME = -1;
@@ -329,7 +330,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		if (vibrator == null) {
 			return;
 		}
-		vibrator.vibrate(VIB_PATTERN, 1);
+		vibrator.vibrate(VIBRATE_PATTERN, 1);
 	}
 	public void stopVibrator() {
 		final Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -560,7 +561,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		final Intent ni = new Intent(this, MalarmActivity.class);
 		final PendingIntent npi = PendingIntent.getActivity(this, 0, ni, 0);
 		note.setLatestEventInfo(this, title, text, npi);
-		
 		final NotificationManager notify_mgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		notify_mgr.notify(PACKAGE_NAME, 0, note);
 	}
