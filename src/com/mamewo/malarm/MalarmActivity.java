@@ -174,9 +174,10 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			final int x = (int)e.getX();
 			final int width = mWebview.getWidth();
 			boolean start_browser = false;
-			if (x <= width/3) {
+			final int side_width = width/3;
+			if (x <= side_width) {
 				index--;
-			} else if (x > width*2/3) {
+			} else if (x > width - side_width) {
 				index++;
 			} else {
 				start_browser = true;
@@ -187,12 +188,12 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			if (index >= WEB_PAGE_LIST.length) {
 				index = 0;
 			}
-			final String url = WEB_PAGE_LIST[index];
-			Log.i(PACKAGE_NAME, "onDoubleTap is called: " + index + " url: " + url);
 			if (start_browser) {
+				final String url = mWebview.getUrl();
 				final Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
 				startActivity(i);
 			} else {
+				final String url = WEB_PAGE_LIST[index];
 				loadWebPage(mWebview, url);
 			}
 			return true;
