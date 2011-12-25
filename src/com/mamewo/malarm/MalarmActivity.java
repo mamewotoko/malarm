@@ -10,9 +10,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -23,12 +28,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
+import android.speech.RecognizerIntent;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -38,6 +46,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.GestureDetector;
@@ -48,7 +57,7 @@ import android.webkit.*;
 import android.net.Uri;
 import android.graphics.Bitmap;
 
-public class MalarmActivity extends Activity implements OnClickListener, OnSharedPreferenceChangeListener {
+public class MalarmActivity extends Activity implements OnClickListener, OnSharedPreferenceChangeListener, OnLongClickListener {
 	private static final String PACKAGE_NAME = MalarmActivity.class.getPackage().getName();
 	public static final String WAKEUP_ACTION = PACKAGE_NAME + ".WAKEUP_ACTION";
 	public static final String WAKEUPAPP_ACTION = PACKAGE_NAME + ".WAKEUPAPP_ACTION";
@@ -58,9 +67,8 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	public static final File DEFAULT_PLAYLIST_PATH = new File(Environment.getExternalStorageDirectory(), "music");
 	
 	private static final long VIBRATE_PATTERN[] = { 10, 1500, 500, 1500, 500, 1500, 500, 1500, 500 };
+	private static final int VOICE_RECOGNITION_REQUEST_CODE = 2121;
 	protected static final String FILE_SEPARATOR = System.getProperty("file.separator");
-
-	protected static int DEVICE_MAX_VOLUME = -1;
 
 	public static final String WAKEUP_PLAYLIST_FILENAME = "wakeup.m3u";
 	public static final String SLEEP_PLAYLIST_FILENAME = "sleep.m3u";
@@ -105,7 +113,8 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	private WebView mWebview;
 	private ToggleButton mAlarmButton;
 	private Button mSetNowButton;
-	private GestureDetector mGD = null;
+	private GestureDetector mGD;
+	private boolean mSetDefaultTime;
 	
 	private PhoneStateListener mCallListener;
 
@@ -203,14 +212,19 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-
-		if (DEVICE_MAX_VOLUME < 0) {
-			final AudioManager mgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-			Log.i(PACKAGE_NAME, "current volume: " + mgr.getStreamVolume(AudioManager.STREAM_MUSIC));
-		}
+		
+		mSetDefaultTime = true;
 		
 		mTimePicker = (TimePicker) findViewById(R.id.timePicker1);
 		mTimePicker.setIs24HourView(true);
+		final PackageManager pm = getPackageManager();
+		final List<ResolveInfo> activities = pm.queryIntentActivities(new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
+		if (! activities.isEmpty()) {
+			//add listener
+			mTimePicker.setLongClickable(true);
+			mTimePicker.setOnLongClickListener(this);
+		}
+
 		if (savedInstanceState == null) {
 			mState = new MalarmState();
 		} else {
@@ -325,6 +339,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		}
 		vibrator.vibrate(VIBRATE_PATTERN, 1);
 	}
+	
 	public void stopVibrator() {
 		final Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 		if (vibrator == null) {
@@ -351,8 +366,12 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		loadWebPage(mWebview);
 
 		if (mTimePicker.isEnabled()) {
-			mTimePicker.setCurrentHour(pref_default_hour);
-			mTimePicker.setCurrentMinute(pref_default_min);
+			if (mSetDefaultTime) {
+				mTimePicker.setCurrentHour(pref_default_hour);
+				mTimePicker.setCurrentMinute(pref_default_min);
+			} else {
+				mSetDefaultTime = true;
+			}
 		}
 	}
 
@@ -612,6 +631,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			mTimePicker.setCurrentMinute(now.get(Calendar.MINUTE));
 		}
 	}
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch(item.getItemId()) {
@@ -656,6 +676,80 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 
 	public static void showMessage(Context c, String message) {
 		Toast.makeText(c, message, Toast.LENGTH_LONG).show();
+	}
+
+	@Override
+	public boolean onLongClick(View view) {
+		if (view != mTimePicker || ! mTimePicker.isEnabled()) {
+			return false;
+		}
+		final Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+		vibrator.vibrate(200);
+		//CF. ApiDemo VoiceRecognition
+		Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+		//TODO: localize
+		intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say alarm time");
+		startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
+		return true;
+	}
+
+	//TODO: support english???
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
+			final Pattern p = Pattern.compile("(\\d+)時((\\d+)分|半)?");
+			final Pattern p2 = Pattern.compile("(\\d+)(時間|分)後");
+			
+			//filter and list candidate
+			ArrayList<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+			boolean is_matched = false;
+			for (String speach : matches) {
+				Matcher m = p.matcher(speach);
+				if (m.matches()) {
+					is_matched = true;
+					int hour = Integer.valueOf(m.group(1)) % 24;
+					int minute;
+					String min_part = m.group(2);
+					if (min_part == null) {
+						minute = 0;
+					} else if ("半".equals(min_part)) {
+						minute = 30;
+					} else {
+						minute = Integer.valueOf(m.group(3)) % 60;
+					}
+					mTimePicker.setCurrentHour(hour);
+					mTimePicker.setCurrentMinute(minute);
+					mSetDefaultTime = false;
+					break;
+				} else {
+					Matcher m2 = p2.matcher(speach);
+					if (m2.matches()) {
+						is_matched = true;
+						long after_millis;
+						long int_data = Integer.valueOf(m2.group(1));
+						String unit = m2.group(2);
+						if ("時間".equals(unit)) {
+							after_millis = 60 * 60 * 1000 * int_data;
+						} else {
+							after_millis = 60 * 1000 * int_data;
+						}
+						final Calendar cal = new GregorianCalendar();
+						cal.setTimeInMillis(System.currentTimeMillis() + after_millis);
+						mTimePicker.setCurrentHour(cal.get(Calendar.HOUR_OF_DAY));
+						mTimePicker.setCurrentMinute(cal.get(Calendar.MINUTE));
+						mSetDefaultTime = false;
+						//localize
+						showMessage(this, "Set " + speach);
+						break;
+					}
+				}
+			}
+			if (! is_matched) {
+				//TODO: localize
+				showMessage(this, "Not matched: " + matches.size() + " entries ");
+			}
+		}
 	}
 
 	//TODO: separate BroadcastReceiver

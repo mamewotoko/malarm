@@ -43,7 +43,7 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - release to Android market
 - make COOL widget to set alarm (make clock widget?)
 - write help page
-- set alarm time by voice
+- display web loading icon
 - fix crash bug when photo is long pressed
 - fix vibrator timing
 - fix bug when native player is used....
@@ -77,9 +77,10 @@ There is a GUI automated test using Robotium
 https://github.com/mamewotoko/malarm_test
 
 ### Memo:
-Alarm application starts when user push appwidget of malarm.
-Screen rotation and vibration.....
-
+- Alarm application starts when user push appwidget of malarm.
+- Screen rotation and vibration.....
+- Voice typing: voiceimeutils.jar is available from the following web page
+http://android-developers.blogspot.com/2011/12/add-voice-typing-to-your-ime.html
 ----
 Takashi Masuyama < mamewotoko@gmail.com >  
 http://www002.upp.so-net.ne.jp/mamewo/
