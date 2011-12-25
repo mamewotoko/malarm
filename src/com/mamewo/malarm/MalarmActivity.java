@@ -115,6 +115,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	private Button mSetNowButton;
 	private GestureDetector mGD;
 	private boolean mSetDefaultTime;
+	private Intent mVoiceIntent;
 	
 	private PhoneStateListener mCallListener;
 
@@ -219,10 +220,16 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		mTimePicker.setIs24HourView(true);
 		final PackageManager pm = getPackageManager();
 		final List<ResolveInfo> activities = pm.queryIntentActivities(new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
-		if (! activities.isEmpty()) {
+		if (activities.isEmpty()) {
+			mVoiceIntent = null;
+		} else {
 			//add listener
 			mTimePicker.setLongClickable(true);
 			mTimePicker.setOnLongClickListener(this);
+			mVoiceIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+			mVoiceIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+			//TODO: localize
+			mVoiceIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say alarm time");
 		}
 
 		if (savedInstanceState == null) {
@@ -287,7 +294,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				//addhoc polling...
 				final int height = view.getContentHeight();
 				if ((url.contains("bijint") || url.contains("bijo-linux")) && height > 400) {
-					//TODO: get precise position....
 					if(url.contains("binan") && height > 420) {
 						view.scrollTo(0, 420);
 					} else if (url.contains("bijo-linux") && height > 100) {
@@ -460,7 +466,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			mState.mWebIndex = 0;
 		}
 		final String url = WEB_PAGE_LIST[mState.mWebIndex];
-		loadWebPage(mWebview, url);
+		loadWebPage(view, url);
 	}
 
 	private void loadWebPage(WebView view, String url) {
@@ -680,17 +686,12 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 
 	@Override
 	public boolean onLongClick(View view) {
-		if (view != mTimePicker || ! mTimePicker.isEnabled()) {
+		if (view != mTimePicker || mVoiceIntent == null || ! view.isEnabled()) {
 			return false;
 		}
 		final Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 		vibrator.vibrate(200);
-		//CF. ApiDemo VoiceRecognition
-		Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-		//TODO: localize
-		intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say alarm time");
-		startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
+		startActivityForResult(mVoiceIntent, VOICE_RECOGNITION_REQUEST_CODE);
 		return true;
 	}
 
@@ -699,9 +700,9 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
 			final Pattern p = Pattern.compile("(\\d+)時((\\d+)分|半)?");
-			final Pattern p2 = Pattern.compile("(\\d+)(時間|分)後");
+			final Pattern p2 = Pattern.compile("((\\d+)時間)?((\\d+)分|半)?.*");
 			
-			//filter and list candidate
+			//TODO: filter and list candidate
 			ArrayList<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 			boolean is_matched = false;
 			for (String speach : matches) {
@@ -725,14 +726,23 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				} else {
 					Matcher m2 = p2.matcher(speach);
 					if (m2.matches()) {
+						final String hour_part = m2.group(2);
+						final String min_part = m2.group(3);
+						if (hour_part == null && min_part == null) {
+							continue;
+						}
 						is_matched = true;
-						long after_millis;
-						long int_data = Integer.valueOf(m2.group(1));
-						String unit = m2.group(2);
-						if ("時間".equals(unit)) {
-							after_millis = 60 * 60 * 1000 * int_data;
-						} else {
-							after_millis = 60 * 1000 * int_data;
+						long after_millis = 0;
+						if (hour_part != null) {
+							after_millis += 60 * 60 * 1000 * Integer.valueOf(hour_part);
+						}
+						if (min_part != null){
+							if ("半".equals(min_part)) {
+								after_millis += 60 * 1000 * 30;
+							} else {
+								long int_data = Integer.valueOf(m2.group(4));
+								after_millis += 60 * 1000 * int_data;
+							}
 						}
 						final Calendar cal = new GregorianCalendar();
 						cal.setTimeInMillis(System.currentTimeMillis() + after_millis);
