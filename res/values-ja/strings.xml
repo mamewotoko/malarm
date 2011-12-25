@@ -67,4 +67,8 @@
     <string name="pref_default_time_title">デフォルトの起床時刻</string>
     <string name="pref_default_time_summary">起きる時刻を設定してください。</string>
     <string name="pref_time_category_title">時間の設定</string>
+    
+    <string name="voice_dialog">アラームの時刻か時間を教えてください\n例: 15時20分(24時間制のみ), 1時間後</string>
+    <string name="voice_success_format">アラーム時間を「{0}」として設定しました</string>
+    <string name="voice_fail">時間として認識出来ませんでした</string>
 </resources>

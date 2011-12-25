@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -228,8 +229,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			mTimePicker.setOnLongClickListener(this);
 			mVoiceIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 			mVoiceIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-			//TODO: localize
-			mVoiceIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say alarm time");
+			mVoiceIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.voice_dialog));
 		}
 
 		if (savedInstanceState == null) {
@@ -749,15 +749,14 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 						mTimePicker.setCurrentHour(cal.get(Calendar.HOUR_OF_DAY));
 						mTimePicker.setCurrentMinute(cal.get(Calendar.MINUTE));
 						mSetDefaultTime = false;
-						//localize
-						showMessage(this, "Set " + speach);
+						MessageFormat mf = new MessageFormat(getString(R.string.voice_success_format));
+						showMessage(this, mf.format(new Object[]{ speach }));
 						break;
 					}
 				}
 			}
 			if (! is_matched) {
-				//TODO: localize
-				showMessage(this, "Not matched: " + matches.size() + " entries ");
+				showMessage(this, getString(R.string.voice_fail));
 			}
 		}
 	}
