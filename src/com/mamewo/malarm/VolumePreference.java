@@ -16,6 +16,7 @@ public class VolumePreference extends DialogPreference {
 	private EditText mEditText;
 	private TextView mDialogText;
 	
+	//TODO: add +/- button
 	public VolumePreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		AudioManager mgr = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
