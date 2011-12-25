@@ -89,16 +89,16 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	
 	public static class MalarmState implements Serializable {
 		private static final long serialVersionUID = 1L;
-		public Calendar mTarget;
-		public boolean mSuspending;
-
-		public MalarmState(Calendar target) {
-			mTarget = target;
-			mSuspending = false;
+		public Calendar mTargetTime;
+		public int mWebIndex;
+		
+		public MalarmState() {
+			mWebIndex = 0;
+			mTargetTime = null;
 		}
 	}
 
-	private MalarmState mState = null;
+	private MalarmState mState;
 	private Button mNextButton;
 	private TimePicker mTimePicker;
 	private TextView mTimeLabel;
@@ -168,7 +168,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	}
 
 	private class WebViewDblTapListener extends GestureDetector.SimpleOnGestureListener {
-		private int index = 0;
 		@Override
 		public boolean onDoubleTap(MotionEvent e) {
 			final int x = (int)e.getX();
@@ -176,25 +175,18 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			boolean start_browser = false;
 			final int side_width = width/3;
 			if (x <= side_width) {
-				index--;
+				mState.mWebIndex--;
 			} else if (x > width - side_width) {
-				index++;
+				mState.mWebIndex++;
 			} else {
 				start_browser = true;
-			}
-			if (index < 0) {
-				index = WEB_PAGE_LIST.length - 1;
-			}
-			if (index >= WEB_PAGE_LIST.length) {
-				index = 0;
 			}
 			if (start_browser) {
 				final String url = mWebview.getUrl();
 				final Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
 				startActivity(i);
 			} else {
-				final String url = WEB_PAGE_LIST[index];
-				loadWebPage(mWebview, url);
+				loadWebPage(mWebview);
 			}
 			return true;
 		}
@@ -220,7 +212,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		mTimePicker = (TimePicker) findViewById(R.id.timePicker1);
 		mTimePicker.setIs24HourView(true);
 		if (savedInstanceState == null) {
-			mState = null;
+			mState = new MalarmState();
 		} else {
 			mState = (MalarmState)savedInstanceState.get("state");
 		}
@@ -378,12 +370,11 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	protected void onStart () {
 		Log.i(PACKAGE_NAME, "onStart is called");
 		super.onStart();
-		if (mState != null) {
-			updateAlarmUI(mState.mTarget);
+		if (mState.mTargetTime != null) {
+			updateAlarmUI(mState.mTargetTime);
 		}
-		mAlarmButton.setChecked(mState != null);
+		mAlarmButton.setChecked(mState.mTargetTime != null);
 		mAlarmButton.requestFocus();
-		
 	}
 
 	//Avoid finishing activity not to lost _state
@@ -443,9 +434,14 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	}
 
 	private void loadWebPage(WebView view) {
-		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-		final String url = pref.getString("url", "http://twitter.com/");
-		loadWebPage(view, url);
+		if (mState.mWebIndex < 0) {
+			mState.mWebIndex = WEB_PAGE_LIST.length - 1;
+		}
+		if (mState.mWebIndex >= WEB_PAGE_LIST.length) {
+			mState.mWebIndex = 0;
+		}
+		final String url = WEB_PAGE_LIST[mState.mWebIndex];
+		loadWebPage(mWebview, url);
 	}
 
 	private void loadWebPage(WebView view, String url) {
@@ -477,7 +473,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		final PendingIntent p = makePlayPintent(WAKEUP_ACTION, true);
 		final AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		clearAlarmUI();
-		mState = null;
+		mState.mTargetTime = null;
 		mgr.cancel(p);
 		
 		final NotificationManager notify_mgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -586,7 +582,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			target.setTimeInMillis(target_millis);
 			tommorow = " (" + getString(R.string.tomorrow) + ")";
 		}
-		mState = new MalarmState(target);
+		mState.mTargetTime = target;
 		updateAlarmUI(target);
 
 		final AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
@@ -646,7 +642,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		} else if (v == mAlarmButton) {
 			InputMethodManager mgr = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
 			mgr.hideSoftInputFromWindow(mTimePicker.getWindowToken(), 0);
-			if (mState != null) {
+			if (mState.mTargetTime != null) {
 				stopAlarm();
 			} else {
 				setAlarm();
