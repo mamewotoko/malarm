@@ -78,8 +78,6 @@ https://github.com/mamewotoko/malarm_test
 ### Memo:
 - Alarm application starts when user push appwidget of malarm.
 - Screen rotation and vibration.....
-- Voice typing: voiceimeutils.jar is available from the following web page
-http://android-developers.blogspot.com/2011/12/add-voice-typing-to-your-ime.html
 ----
 Takashi Masuyama < mamewotoko@gmail.com >  
 http://www002.upp.so-net.ne.jp/mamewo/
