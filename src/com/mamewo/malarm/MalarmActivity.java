@@ -666,7 +666,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			Player.playWakeupMusic(this, pref_use_native_player);
 			break;
 		case R.id.pref:
-			startActivity(new Intent(this, MyPreference.class));
+			startActivity(new Intent(this, MalarmPreference.class));
 			break;
 		case R.id.stop_music:
 			Player.pauseMusic();

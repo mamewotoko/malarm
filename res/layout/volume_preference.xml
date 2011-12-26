@@ -10,14 +10,35 @@
         android:layout_height="wrap_content"
         android:text="TextView" />
 
-    <EditText
-        android:id="@+id/volume_pref_value"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:inputType="number"
-        android:singleLine="true" >
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
 
-        <requestFocus />
-    </EditText>
+        <Button
+            android:id="@+id/volume_minus_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:text="@string/volume_minus" />
+
+        <EditText
+            android:id="@+id/volume_pref_value"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:inputType="number"
+            android:singleLine="true" />
+
+        <Button
+            android:id="@+id/volume_plus_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:text="@string/volume_plus" />
+
+    </LinearLayout>
 
 </LinearLayout>

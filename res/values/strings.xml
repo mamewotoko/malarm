@@ -73,4 +73,6 @@
     <string name="voice_success_format">Set alarm time as "{0}"</string>
     <string name="voice_fail">Recognition as time failed</string>
     <string name="stop_loading">Loading aborted</string>
+    <string name="volume_minus"> - </string>
+    <string name="volume_plus"> + </string>
 </resources>

@@ -22,7 +22,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.mamewo.malarm.MyPreference"
+        <activity android:name=".MalarmPreference"
                   android:label="@string/app_name">
         </activity>
         <receiver android:name="MalarmActivity$Player"

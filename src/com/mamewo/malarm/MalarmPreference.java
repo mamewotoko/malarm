@@ -25,7 +25,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.view.View;
 
-public class MyPreference extends PreferenceActivity implements OnPreferenceClickListener, View.OnClickListener, FileFilter {
+public class MalarmPreference extends PreferenceActivity implements OnPreferenceClickListener, View.OnClickListener, FileFilter {
 
 	private Preference _help;
 	private Preference _version;
