@@ -35,6 +35,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.PowerManager;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
@@ -78,9 +79,10 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	protected static final String STOP_MUSIC_FILENAME = "stop.m4a";
 	private static final String NATIVE_PLAYER_KEY = "nativeplayer";
 	private static final String PLAYLIST_PATH_KEY = "playlist_path";
+	private static final String VOLUME_KEY = "volume";
 	public static String version = "unknown";
 
-	protected static String playlist_path;
+	protected static String pref_playlist_path;
 	private static final String[] WEB_PAGE_LIST = new String []{
 		null,
 		"https://www.google.com/calendar/",
@@ -94,8 +96,8 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	private static boolean pref_vibrate;
 	private static int pref_sleep_volume;
 	private static int pref_wakeup_volume;
-	private static Integer pref_default_hour = Integer.valueOf(7);
-	private static Integer pref_default_min = Integer.valueOf(0);
+	private static Integer pref_default_hour;
+	private static Integer pref_default_min;
 	
 	public static class MalarmState implements Serializable {
 		private static final long serialVersionUID = 1L;
@@ -169,12 +171,12 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	//TODO: display toast if file is not found
 	public static void loadPlaylist() {
 		try {
-			wakeup_playlist = new M3UPlaylist(playlist_path, WAKEUP_PLAYLIST_FILENAME);
+			wakeup_playlist = new M3UPlaylist(pref_playlist_path, WAKEUP_PLAYLIST_FILENAME);
 		} catch (FileNotFoundException e) {
 			Log.i(PACKAGE_NAME, "wakeup playlist is not found: " + WAKEUP_PLAYLIST_FILENAME);
 		}
 		try {
-			sleep_playlist = new M3UPlaylist(playlist_path, SLEEP_PLAYLIST_FILENAME);
+			sleep_playlist = new M3UPlaylist(pref_playlist_path, SLEEP_PLAYLIST_FILENAME);
 		} catch (FileNotFoundException e) {
 			Log.i(PACKAGE_NAME, "sleep playlist is not found: " + SLEEP_PLAYLIST_FILENAME);
 		}
@@ -213,8 +215,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		pref.registerOnSharedPreferenceChangeListener(this);
 		syncPreferences(pref, "ALL");
 		super.onCreate(savedInstanceState);
-		getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-				| WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 		setContentView(R.layout.main);
 		
 		mSetDefaultTime = true;
@@ -272,6 +272,8 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		
 		final Activity activity = this;
 		mWebview.setWebViewClient(new WebViewClient() {
+			String previous_url = "";
+
 			@Override
 			public void onPageStarted(WebView view, String url, Bitmap favicon) {
 				Log.i(PACKAGE_NAME, "onPageStart: " + url);
@@ -283,10 +285,9 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				Toast.makeText(activity, "Oh no! " + description, Toast.LENGTH_SHORT).show();
 			}
 
-			String previous_url = "";
 			@Override
 			public void onLoadResource (WebView view, String url) {
-				//Log.i(PACKAGE_NAME, "loading: " + view.getHitTestResult().getType() + ": " + url);
+				//to load web page linked from small image link into root pane of webview
 				if (url.contains("bijo-linux") && url.endsWith("/")) {
 					final HitTestResult result = view.getHitTestResult();
 					//TODO: why same event delivered many times?
@@ -303,7 +304,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 					if(url.contains("binan") && height > 420) {
 						view.scrollTo(0, 420);
 					} else if (url.contains("bijo-linux") && height > 100) {
-						//TODO: open next page in same tab
 						view.scrollTo(0, 100);
 					} else if (height > 960) {
 						view.scrollTo(0, 960);
@@ -452,8 +452,8 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		}
 		if (update_all || "playlist_path".equals(key)) {
 			final String newpath = pref.getString(key, DEFAULT_PLAYLIST_PATH.getAbsolutePath());
-			if (! newpath.equals(playlist_path)) {
-				playlist_path = newpath;
+			if (! newpath.equals(pref_playlist_path)) {
+				pref_playlist_path = newpath;
 				loadPlaylist();
 			}
 		}
@@ -512,6 +512,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		notify_mgr.cancel(PACKAGE_NAME, 0);
 	}
 
+	//TODO: this method is not called until home button is pressed
 	protected void onNewIntent (Intent intent) {
 		Log.i (PACKAGE_NAME, "onNewIntent is called");
 		final String action = intent.getAction();
@@ -520,16 +521,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		}
 		if (action.equals(WAKEUPAPP_ACTION)) {
 			//native player cannot start until lock screen is displayed
-			if (Player.isPlaying()) {
-				Player.stopMusic();
-			}
-			AudioManager mgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-			//following two methods require MODIFY_AUDIO_SETTINGS permissions...
-			if ((! mgr.isWiredHeadsetOn()) && (! mgr.isBluetoothA2dpOn())) {
-				Log.i(PACKAGE_NAME, "playWakeupMusic: set volume: " + pref_wakeup_volume);
-				mgr.setStreamVolume(AudioManager.STREAM_MUSIC, pref_wakeup_volume, 0);
-			}
-			Player.playWakeupMusic(this, false);
 			if (pref_vibrate) {
 				startVibrator();
 			}
@@ -540,12 +531,14 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		}
 	}
 
+	//TODO: fix action
 	private PendingIntent makePlayPintent(String action, boolean use_native) {
 		final Intent i = new Intent(this, Player.class);
 		i.setAction(action);
 		i.putExtra(NATIVE_PLAYER_KEY, use_native);
-		i.putExtra(PLAYLIST_PATH_KEY, playlist_path);
-
+		i.putExtra(PLAYLIST_PATH_KEY, pref_playlist_path);
+		i.putExtra(VOLUME_KEY, pref_wakeup_volume);
+		
 		final PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, i,
 				PendingIntent.FLAG_CANCEL_CURRENT);
 		return pendingIntent;
@@ -781,8 +774,13 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		}
 	}
 
-	//TODO: separate BroadcastReceiver
+	@Override
+	public void onLowMemory () {
+		showMessage(this, getString(R.string.low_memory));
+	}
+	
 	//TODO: implement music player as Service to play long time
+	//Player now extends BrowdcastReceiver because to stop music this class should be loaded
 	public static class Player extends BroadcastReceiver {
 		private static Playlist current_playlist = sleep_playlist;
 		private static MediaPlayer mPlayer = null;
@@ -802,13 +800,29 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			if (intent.getAction().equals(WAKEUP_ACTION)) {
 				//TODO: load optional m3u file to play by request from other application
 				//TODO: what to do if calling
-				if (playlist_path == null) {
-					playlist_path = intent.getStringExtra(PLAYLIST_PATH_KEY);
+				//initialize player...
+				if (Player.isPlaying()) {
+					Player.stopMusic();
 				}
+				if (pref_playlist_path == null) {
+					pref_playlist_path = intent.getStringExtra(PLAYLIST_PATH_KEY);
+				}
+				AudioManager mgr = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+				//following two methods require MODIFY_AUDIO_SETTINGS permissions...
+				//TODO: add preference to permit volume up when external speaker is connected
+				int wakeup_volume = 5;
+				if ((! mgr.isWiredHeadsetOn()) && (! mgr.isBluetoothA2dpOn())) {
+					wakeup_volume = intent.getIntExtra(VOLUME_KEY, 5);
+					Log.i(PACKAGE_NAME, "playWakeupMusic: set volume: " + pref_wakeup_volume);
+				}
+				mgr.setStreamVolume(AudioManager.STREAM_MUSIC, wakeup_volume, 0);
+				playWakeupMusic(context, false);
+				
 				Intent i = new Intent(context, MalarmActivity.class);
 				i.setAction(WAKEUPAPP_ACTION);
 				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				context.startActivity(i);
+				//but this activity is not executed...(sleep before delivered?)
 			} else if (intent.getAction().equals(SLEEP_ACTION)) {
 				if (intent.getExtras().getBoolean(NATIVE_PLAYER_KEY)) {
 					Player.stopMusicNativePlayer(context);
@@ -835,7 +849,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		}
 
 		public static void stopMusicNativePlayer(Context context) {
-			File f = new File(playlist_path + STOP_MUSIC_FILENAME);
+			File f = new File(pref_playlist_path + STOP_MUSIC_FILENAME);
 			if(! f.isFile()) {
 				Log.i(PACKAGE_NAME, "No stop play list is found");
 				return;
@@ -863,7 +877,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 
 		public static void playSleepMusic(Context context, int min) {
 			Log.i(PACKAGE_NAME, "start sleep music and stop");
-			File f = new File(playlist_path + SLEEP_PLAYLIST_FILENAME);
+			File f = new File(pref_playlist_path + SLEEP_PLAYLIST_FILENAME);
 			AudioManager mgr = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 			mgr.setStreamVolume(AudioManager.STREAM_MUSIC, pref_sleep_volume, 0);
 			if (pref_use_native_player && f.isFile()) {

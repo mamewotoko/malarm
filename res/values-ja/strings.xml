@@ -73,4 +73,5 @@
     <string name="stop_loading">読み込みを中止しました</string>
     <string name="volume_minus"> - </string>
     <string name="volume_plus"> + </string>
+    <string name="low_memory">メモリが少ないので止まるかも?</string>
 </resources>
