@@ -213,6 +213,8 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		pref.registerOnSharedPreferenceChangeListener(this);
 		syncPreferences(pref, "ALL");
 		super.onCreate(savedInstanceState);
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+				| WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 		setContentView(R.layout.main);
 		
 		mSetDefaultTime = true;
@@ -518,6 +520,16 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		}
 		if (action.equals(WAKEUPAPP_ACTION)) {
 			//native player cannot start until lock screen is displayed
+			if (Player.isPlaying()) {
+				Player.stopMusic();
+			}
+			AudioManager mgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+			//following two methods require MODIFY_AUDIO_SETTINGS permissions...
+			if ((! mgr.isWiredHeadsetOn()) && (! mgr.isBluetoothA2dpOn())) {
+				Log.i(PACKAGE_NAME, "playWakeupMusic: set volume: " + pref_wakeup_volume);
+				mgr.setStreamVolume(AudioManager.STREAM_MUSIC, pref_wakeup_volume, 0);
+			}
+			Player.playWakeupMusic(this, false);
 			if (pref_vibrate) {
 				startVibrator();
 			}
@@ -793,16 +805,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				if (playlist_path == null) {
 					playlist_path = intent.getStringExtra(PLAYLIST_PATH_KEY);
 				}
-				if (wakeup_playlist == null) {
-					loadPlaylist();
-				}
-
-				Log.i(PACKAGE_NAME, "Wakeup action");
-				if (Player.isPlaying()) {
-					stopMusic();
-				}
-				Player.playWakeupMusic(context, false);
-
 				Intent i = new Intent(context, MalarmActivity.class);
 				i.setAction(WAKEUPAPP_ACTION);
 				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -843,11 +845,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 
 		public static void playWakeupMusic(Context context, boolean use_native) {
 			File f = new File(WAKEUP_PLAYLIST_FILENAME);
-			AudioManager mgr = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-			//following two methods require MODIFY_AUDIO_SETTINGS permissions...
-			if ((! mgr.isWiredHeadsetOn()) && (! mgr.isBluetoothA2dpOn())) {
-				mgr.setStreamVolume(AudioManager.STREAM_MUSIC, pref_wakeup_volume, 0);
-			}
 
 			if (use_native && f.isFile()) {
 				playMusicNativePlayer(context, f);

@@ -44,13 +44,12 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - make COOL widget to set alarm (make clock widget?)
 - write help page
 - fix crash bug when photo is long pressed
-- fix vibrator timing
 - fix bug when native player is used....
 - record wakeup time
 - implement more sophisticated web page preference
 - add UI to edit playlist
 -- or put playlist on dropbox and sync?
-- add stop music into resource?
+- add stop.m4a into resource?
 - implement more smart scroll
 - add more test cases
 - automated build check using 2.x, 4.x SDK
