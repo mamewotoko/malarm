@@ -57,7 +57,7 @@ import android.webkit.*;
 import android.net.Uri;
 import android.graphics.Bitmap;
 
-public class MalarmActivity extends Activity implements OnClickListener, OnSharedPreferenceChangeListener, OnLongClickListener {
+public final class MalarmActivity extends Activity implements OnClickListener, OnSharedPreferenceChangeListener, OnLongClickListener {
 	private static final String PACKAGE_NAME = MalarmActivity.class.getPackage().getName();
 	public static final String WAKEUP_ACTION = PACKAGE_NAME + ".WAKEUP_ACTION";
 	public static final String WAKEUPAPP_ACTION = PACKAGE_NAME + ".WAKEUPAPP_ACTION";
@@ -87,8 +87,8 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		"http://www.google.com/mail/",
 		"http://www002.upp.so-net.ne.jp/mamewo/mobile_shop.html"
 	};
-	protected static Playlist wakeup_playlist;
-	protected static Playlist sleep_playlist;
+	protected static M3UPlaylist wakeup_playlist;
+	protected static M3UPlaylist sleep_playlist;
 	private static boolean pref_use_native_player;
 	private static boolean pref_vibrate;
 	private static int pref_sleep_volume;
@@ -96,7 +96,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 	private static Integer pref_default_hour;
 	private static Integer pref_default_min;
 	
-	public static class MalarmState implements Serializable {
+	public final static class MalarmState implements Serializable {
 		private static final long serialVersionUID = 1L;
 		public Calendar mTargetTime;
 		public int mWebIndex;
@@ -131,7 +131,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		Calendar.SATURDAY, 
 	};
 	
-	public class MyCallListener extends PhoneStateListener {
+	public final class MyCallListener extends PhoneStateListener {
 		private boolean mIsPlaying = false;
 
 		public MyCallListener(MalarmActivity context) {
@@ -150,7 +150,6 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				//native player stops automatically
 				mIsPlaying = Player.isPlaying();
 				if (mIsPlaying) {
-					//pause
 					Player.pauseMusic();
 				}
 				break;
@@ -424,6 +423,8 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		outState.putSerializable("state", mState);
 	}
 
+	//escape preference value into static value
+	//TODO: improve design
 	public void syncPreferences(SharedPreferences pref, String key) {
 		final boolean update_all = "ALL".equals(key);
 		if (update_all || "default_time".equals(key)) {
@@ -605,7 +606,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 		mTimePicker.clearFocus();
 		final int target_hour = mTimePicker.getCurrentHour().intValue();
 		final int target_min = mTimePicker.getCurrentMinute().intValue();
-		Calendar target = new GregorianCalendar(now.get(Calendar.YEAR),
+		final Calendar target = new GregorianCalendar(now.get(Calendar.YEAR),
 				now.get(Calendar.MONTH), now.get(Calendar.DATE), target_hour, target_min, 0);
 		long target_millis = target.getTimeInMillis();
 		String tommorow ="";
@@ -625,7 +626,10 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 
 		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		final int min = Integer.valueOf(pref.getString("sleeptime", "60"));
-		Player.playSleepMusic(this, min);
+		if (Player.isPlaying()) {
+			Player.pauseMusic();
+		}
+		Player.playSleepMusic(this);
 		final long sleep_time_millis = min * 60 * 1000;
 		final String sleeptime_str = min + " " + getString(R.string.minutes);
 		if (target_millis - now_millis >= sleep_time_millis) {
@@ -655,6 +659,9 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			showMessage(this, getString(R.string.notify_wakeup_text));
 			break;
 		case R.id.play_wakeup:
+			if (Player.isPlaying()) {
+				Player.pauseMusic();
+			}
 			Player.playWakeupMusic(this, pref_use_native_player);
 			break;
 		case R.id.pref:
@@ -801,7 +808,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 				//TODO: what to do if calling
 				//initialize player...
 				if (Player.isPlaying()) {
-					Player.stopMusic();
+					Player.pauseMusic();
 				}
 				if (pref_playlist_path == null) {
 					pref_playlist_path = intent.getStringExtra(PLAYLIST_PATH_KEY);
@@ -874,7 +881,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
 			}
 		}
 
-		public static void playSleepMusic(Context context, int min) {
+		public static void playSleepMusic(Context context) {
 			Log.i(PACKAGE_NAME, "start sleep music and stop");
 			File f = new File(pref_playlist_path + SLEEP_PLAYLIST_FILENAME);
 			AudioManager mgr = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);

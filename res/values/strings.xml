@@ -4,13 +4,12 @@
     <string name="stop_music">Stop Music</string>
     <string name="music_stopped">Music stopped</string>
     <string name="tomorrow">tomorrow</string>
-    <string name="alarm_set">Malarm set!</string>
+    <string name="alarm_set">malarm set!</string>
     <string name="goodnight">Good Night</string>
 
     <string name="set_alarm">Set Alarm</string>
     <string name="stop_alarm">Cancel Alarm</string>
     <string name="next"> &gt;&gt; </string>
-    <string name="time_to_wakeup">Time to Wake-up</string>
     <string name="stop_vibration">Stop vibaration</string>
     <string name="play_wakeup">Play wakeup music</string>
     <string name="preference_title">Preference of malarm</string>
@@ -38,7 +37,7 @@
     
     <string name="git_url">https://github.com/downloads/mamewotoko/malarm/</string>
     <string name="dialog_ok">Close</string>
-    <string name="dialog_title">Malarm download page</string>
+    <string name="dialog_title">malarm download page</string>
     
     <string name="pref_playlist_category">Playlist preferences</string>
     <string name="pref_wakeup_playlist">Does wakeup.m3u playlist exists?</string>
@@ -76,4 +75,9 @@
     <string name="volume_minus"> - </string>
     <string name="volume_plus"> + </string>
     <string name="low_memory">low memory occur, malarm will be stopped</string>
+    <string name="pref_sleep_playlist_title">View sleep playlist</string>
+    <string name="pref_wakeup_playlist_title">View wakeup playlist</string>
+    <string name="sleep_playlist_viewer_title">malarm: Sleep playlist (sleep.m3u)</string>
+    <string name="wakeup_playlist_viewer_title">malarm: Wakeup playlist (wakeup.m3u)</string>
+    <string name="pref_about_title">About malarm</string>
 </resources>

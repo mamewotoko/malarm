@@ -10,9 +10,8 @@
     <string name="set_alarm">アラームをセットする</string>
     <string name="stop_alarm">アラームをとめる</string>
     <string name="next"> &gt;&gt; </string>
-    <string name="time_to_wakeup">起きる時刻</string>
     <string name="stop_vibration">ぶるぶるをとめる</string>
-    <string name="play_wakeup">目覚めの音楽をかける</string>
+    <string name="play_wakeup">おはようの音楽を再生</string>
     <string name="preference_title">まらーむの設定</string>
     <string name="pref_menu">設定</string>
     <string name="pref_webview_url">表示するサイト</string>
@@ -55,15 +54,15 @@
     <string name="notify_waiting_text">まらーむ待機中</string>
     <string name="notify_wakeup_title">まらーむがなっています</string>
     <string name="notify_wakeup_text">おはよう!</string>
-    <string name="pref_sleep_volume_title">スリープ時の音量</string>
-    <string name="pref_sleep_volume_summary">スリープ時の音量</string>
-    <string name="pref_wakeup_volume_title">起床時の音量</string>
-    <string name="pref_wakeup_volume_summary">起床時の音量</string>
+    <string name="pref_sleep_volume_title">おやすみ時の音量</string>
+    <string name="pref_sleep_volume_summary">おやすみ時の音量</string>
+    <string name="pref_wakeup_volume_title">おはよう時の音量</string>
+    <string name="pref_wakeup_volume_summary">おはよう時の音量</string>
     <string name="minutes">分</string>
     <string name="volume_category_title">音量とぶるぶるの設定</string>
     <string name="volume_format">0から{0}までで音量を設定してください。現在の音量は{1}です。</string>
     <string name="file_exists_format">ファイル {0} は既に存在します。</string>
-    <string name="pref_default_time_title">デフォルトの起床時刻</string>
+    <string name="pref_default_time_title">デフォルトのおはよう時刻</string>
     <string name="pref_default_time_summary">起きる時刻を設定してください。</string>
     <string name="pref_time_category_title">時間の設定</string>
     
@@ -74,4 +73,10 @@
     <string name="volume_minus"> - </string>
     <string name="volume_plus"> + </string>
     <string name="low_memory">メモリが少ないので止まるかも?</string>
+    <string name="pref_sleep_playlist_title">sleep.m3uを見る</string>
+    <string name="pref_wakeup_playlist_title">wakeup.m3uを見る</string>
+        
+    <string name="sleep_playlist_viewer_title">まらーむ: おやすみプレイリスト(sleep.m3u)</string>
+    <string name="wakeup_playlist_viewer_title">まらーむ: おはようプレイリスト(wakeup.m3u)</string>
+    <string name="pref_about_title">まらーむについて</string>
 </resources>

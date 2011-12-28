@@ -30,8 +30,10 @@ public class MalarmPreference extends PreferenceActivity implements OnPreference
 	private Preference _help;
 	private Preference _version;
 	private Preference _create_playlist;
+	private Preference _sleep_playlist_viewer;
+	private Preference _wakeup_playlist_viewer;
 	private static final String TAG = "malarm_pref";
-
+	
 	@Override
 	public boolean accept(File pathname) {
 		final String filename = pathname.getName();
@@ -98,8 +100,14 @@ public class MalarmPreference extends PreferenceActivity implements OnPreference
 				//TODO: localize
 				MalarmActivity.showMessage(this, filename + " created");
 			}
-			//TODO: refresh preference view
-			MalarmActivity.loadPlaylist();
+			result = true;
+		} else if (preference == _sleep_playlist_viewer || preference == _wakeup_playlist_viewer) {
+			//TODO: improve UI
+			Log.i(TAG, "View Sleep Playlist");
+			final Intent i = new Intent(this, PlaylistViewer.class);
+			//TODO: define key as constant
+			i.putExtra("playlist", preference == _sleep_playlist_viewer ? "sleep" : "wakeup");
+			startActivity(i);
 			result = true;
 		}
 		return result;
@@ -117,6 +125,11 @@ public class MalarmPreference extends PreferenceActivity implements OnPreference
 		_help.setOnPreferenceClickListener(this);
 		_create_playlist = findPreference("create_playlist");
 		_create_playlist.setOnPreferenceClickListener(this);
+		_sleep_playlist_viewer = findPreference("sleep_playlist_viewer");
+		_sleep_playlist_viewer.setOnPreferenceClickListener(this);
+		_wakeup_playlist_viewer = findPreference("wakeup_playlist_viewer");
+		_wakeup_playlist_viewer.setOnPreferenceClickListener(this);
+
 		final SharedPreferences pref = getPreferences(Context.MODE_PRIVATE);
 		//get playlist path
 		final String path = pref.getString("playlist_path", MalarmActivity.DEFAULT_PLAYLIST_PATH.getAbsolutePath());

@@ -2,15 +2,17 @@ package com.mamewo.malarm;
 
 public interface Playlist {
 	
-	public boolean isEmpty();
+	boolean isEmpty();
+	int size();
 
 	/**
 	 * 
 	 * @return iterator which refers wakeup playlist, which has filename relative to base path
 	 */
-	public abstract String next();
+	String next();
 	/**
 	 * reset position
 	 */
-	public abstract void reset();
+	void reset();
+	
 }

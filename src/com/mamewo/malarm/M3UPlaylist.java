@@ -7,7 +7,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import android.util.Log;
 
@@ -15,11 +14,13 @@ import android.util.Log;
  * @author Takashi Masuyama <mamewotoko@gmail.com>
  */
 
-public class M3UPlaylist implements Playlist {
+//TODO: change to proper interface
+public final class M3UPlaylist implements Playlist {
 	private int mNextIndex = 0;
 	private final String mBasepath;
 	private List<String> mPlaylist;
-
+	static private final String[] DUMMY = new String[] {};
+	
 	/**
 	 * 
 	 * @param playlist_basepath path to directory which contains play list
@@ -37,12 +38,17 @@ public class M3UPlaylist implements Playlist {
 	}
 	
 	@Override
-	final public boolean isEmpty() {
+	public boolean isEmpty() {
 		return mPlaylist.isEmpty();
 	}
 	
 	@Override
-	final public String next() {
+	public int size() {
+		return mPlaylist.size();
+	}
+	
+	@Override
+	public String next() {
 		if (mPlaylist.size() <= mNextIndex) {
 			mNextIndex = 0;
 		}
@@ -56,11 +62,15 @@ public class M3UPlaylist implements Playlist {
 	}
 
 	@Override
-	final public void reset() {
+	public void reset() {
 		mNextIndex = 0;
 	}
+	
+	public List<String> toList() {
+		return mPlaylist;
+	}
 
-	final protected void loadPlaylist(final String filename) throws FileNotFoundException, IOException {
+	protected void loadPlaylist(final String filename) throws FileNotFoundException, IOException {
 		final BufferedReader br = new BufferedReader(new FileReader (filename));
 		String music_filename;
 		while ((music_filename = br.readLine()) != null) {
