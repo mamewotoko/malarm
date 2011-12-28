@@ -31,7 +31,7 @@ public final class M3UPlaylist implements Playlist {
 		final String playlist_abs_path = (new File(playlist_basepath, playlist_filename)).getAbsolutePath();
 		try {
 			mPlaylist = new ArrayList<String>();
-			loadPlaylist(playlist_abs_path);
+			load(playlist_abs_path);
 		} catch (IOException e) {
 			Log.i("M3UPlaylist", "cannot read playlist " + playlist_filename);
 		}
@@ -70,7 +70,7 @@ public final class M3UPlaylist implements Playlist {
 		return mPlaylist;
 	}
 
-	protected void loadPlaylist(final String filename) throws FileNotFoundException, IOException {
+	protected void load(final String filename) throws FileNotFoundException, IOException {
 		final BufferedReader br = new BufferedReader(new FileReader (filename));
 		String music_filename;
 		while ((music_filename = br.readLine()) != null) {
