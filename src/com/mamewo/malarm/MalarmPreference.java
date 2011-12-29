@@ -98,7 +98,8 @@ public class MalarmPreference extends PreferenceActivity implements OnPreference
 				}
 				createDefaultPlaylist(file);
 				//TODO: localize
-				MalarmActivity.showMessage(this, filename + " created");
+				MessageFormat mf = new MessageFormat(getString(R.string.playlist_created_format));
+				MalarmActivity.showMessage(this, mf.format(new Object[] { filename }));
 			}
 			result = true;
 		} else if (preference == _sleep_playlist_viewer || preference == _wakeup_playlist_viewer) {

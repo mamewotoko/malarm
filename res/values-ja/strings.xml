@@ -7,11 +7,11 @@
     <string name="alarm_set">まらーむをセットしました</string>
     <string name="goodnight">おやすみ</string>
 
-    <string name="set_alarm">アラームをセットする</string>
-    <string name="stop_alarm">アラームをとめる</string>
+    <string name="set_alarm">まらーむをセットする</string>
+    <string name="stop_alarm">まらーむをとめる</string>
     <string name="next"> &gt;&gt; </string>
     <string name="stop_vibration">ぶるぶるをとめる</string>
-    <string name="play_wakeup">おはようの音楽を再生</string>
+    <string name="play_wakeup">まらーむの音楽を再生</string>
     <string name="preference_title">まらーむの設定</string>
     <string name="pref_menu">設定</string>
     <string name="pref_webview_url">表示するサイト</string>
@@ -19,8 +19,8 @@
     <string name="pref_sleeptime">スリープまでの時間</string>
     <string name="enable_vibration">ON</string>
     <string name="disable_vibration">OFF</string>
-    <string name="pref_vibration">目覚ましのぶるぶる</string>
-    <string name="wakeup_volume_pref_title">目覚ましの音量</string>
+    <string name="pref_vibration">まらーむのぶるぶる</string>
+    <string name="wakeup_volume_pref_title">まらーむの音量</string>
     <string name="set_now_short">なぅ!</string>
 
     <string name="use_native_player_title">Nativeの音楽プレイヤーを使う</string>
@@ -28,11 +28,11 @@
     <string name="use_native_player">Nativeの音楽プレイヤーを使う</string>
     <string name="playlist_path_title">プレイリストの場所</string>
     <string name="playlist_path_summary">プレイリストsleep.m3uとwakeup.m3uを保存したディレクトリ</string>
-    <string name="enter_path_to_playlist">プレイリストsleep.m3uとwakeup.m3uを保存したディレクトリを入力してください</string>
+    <string name="enter_path_to_playlist">プレイリストsleep.m3uとwakeup.m3uを保存したディレクトリを入力してください。</string>
     <string name="malarm_version_title">バージョン</string>
     <string name="help_url">https://github.com/mamewotoko/malarm/wiki/Help_ja</string>
     <string name="help_title">ヘルプ</string>
-    <string name="help_summary">使い方を書いたヘルプ(Webページ)を表示します</string>
+    <string name="help_summary">使い方を書いたヘルプ(Webページ)を表示します。</string>
 
     <string name="git_url">https://github.com/downloads/mamewotoko/malarm/</string>
     <string name="dialog_ok">閉じる</string>
@@ -40,19 +40,19 @@
     
     <string name="pref_playlist_category">プレイリスト設定</string>
     <string name="pref_wakeup_playlist">wakeup.m3uプレイリストがあるか?</string>
-    <string name="pref_no_wakeup_playlist">ないです (作ってください)</string>
-    <string name="pref_ok_wakeup_playlist">あります</string>
+    <string name="pref_no_wakeup_playlist">ないです。 (作ってください)</string>
+    <string name="pref_ok_wakeup_playlist">あります。</string>
 
     <string name="pref_sleep_playlist">sleep.m3uプレイリストがあるか?</string>
-    <string name="pref_no_sleep_playlist">ないです (作ってください)</string>
+    <string name="pref_no_sleep_playlist">ないです。 (作ってください)</string>
     <string name="pref_ok_sleep_playlist">あります</string>
 
     <string name="pref_create_playlist_title">プレイリスト作成</string>
-    <string name="pref_create_playlist_summary">プレイリストを作成します</string>
+    <string name="pref_create_playlist_summary">プレイリストを作成します。</string>
 
-    <string name="notify_waiting_title">まらーむがセットされています</string>
+    <string name="notify_waiting_title">まらーむがセットされています。</string>
     <string name="notify_waiting_text">まらーむ待機中</string>
-    <string name="notify_wakeup_title">まらーむがなっています</string>
+    <string name="notify_wakeup_title">まらーむがなっています。</string>
     <string name="notify_wakeup_text">おはよう!</string>
     <string name="pref_sleep_volume_title">おやすみ時の音量</string>
     <string name="pref_sleep_volume_summary">おやすみ時の音量</string>
@@ -62,6 +62,7 @@
     <string name="volume_category_title">音量とぶるぶるの設定</string>
     <string name="volume_format">0から{0}までで音量を設定してください。現在の音量は{1}です。</string>
     <string name="file_exists_format">ファイル {0} は既に存在します。</string>
+    <string name="playlist_created_format">プレイリスト {0} を作成しました。</string>
     <string name="pref_default_time_title">デフォルトのおはよう時刻</string>
     <string name="pref_default_time_summary">起きる時刻を設定してください。</string>
     <string name="pref_time_category_title">時間の設定</string>
