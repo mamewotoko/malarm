@@ -40,11 +40,11 @@
     <string name="dialog_title">malarm download page</string>
     
     <string name="pref_playlist_category">Playlist preferences</string>
-    <string name="pref_wakeup_playlist">Does wakeup.m3u playlist exists?</string>
+    <string name="pref_wakeup_playlist">wakeup.m3u playlist</string>
     <string name="pref_no_wakeup_playlist">Not exists (Please create it)</string>
     <string name="pref_ok_wakeup_playlist">Exists</string>
 
-    <string name="pref_sleep_playlist">Does sleep.m3u playlist exists?</string>
+    <string name="pref_sleep_playlist">sleep.m3u playlist</string>
     <string name="pref_no_sleep_playlist">Not exists (Please create it)</string>
     <string name="pref_ok_sleep_playlist">Exists</string>
 
@@ -77,8 +77,6 @@
     <string name="volume_minus"> - </string>
     <string name="volume_plus"> + </string>
     <string name="low_memory">low memory occur, malarm will be stopped</string>
-    <string name="pref_sleep_playlist_title">View sleep playlist</string>
-    <string name="pref_wakeup_playlist_title">View wakeup playlist</string>
     <string name="sleep_playlist_viewer_title">malarm: Sleep playlist (sleep.m3u)</string>
     <string name="wakeup_playlist_viewer_title">malarm: Wakeup playlist (wakeup.m3u)</string>
     <string name="pref_about_title">About malarm</string>

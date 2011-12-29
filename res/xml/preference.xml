@@ -20,14 +20,11 @@
 		android:enabled="true" android:dialogTitle="@string/playlist_path_title"
 		android:key="playlist_path" android:dialogMessage="@string/enter_path_to_playlist"
 		android:title="@string/playlist_path_title" android:summary="@string/playlist_path_summary"></EditTextPreference>
-	<CheckBoxPreference android:title="@string/pref_wakeup_playlist"
-		android:key="wakeup_playlist" android:selectable="false"
+	<CheckBoxPreference android:title="@string/pref_sleep_playlist" android:key="sleep_playlist" android:summaryOn="@string/pref_ok_sleep_playlist" android:summaryOff="@string/pref_no_sleep_playlist" android:selectable="true" android:disableDependentsState="true"></CheckBoxPreference><CheckBoxPreference android:title="@string/pref_wakeup_playlist"
+		android:key="wakeup_playlist" android:selectable="true"
 		android:summaryOn="@string/pref_ok_wakeup_playlist"
-		android:summaryOff="@string/pref_no_wakeup_playlist"></CheckBoxPreference>
-	<Preference android:key="wakeup_playlist_viewer" android:title="@string/pref_wakeup_playlist_title" /><CheckBoxPreference android:title="@string/pref_sleep_playlist"
-		android:key="sleep_playlist" android:summaryOn="@string/pref_ok_sleep_playlist"
-		android:summaryOff="@string/pref_no_sleep_playlist" android:selectable="false"></CheckBoxPreference>
-	<Preference android:title="@string/pref_sleep_playlist_title" android:key="sleep_playlist_viewer" android:selectable="true"></Preference><Preference android:key="create_playlist" android:summary="@string/pref_create_playlist_summary" android:title="@string/pref_create_playlist_title"/>
+		android:summaryOff="@string/pref_no_wakeup_playlist" android:disableDependentsState="true"></CheckBoxPreference>
+	<Preference android:key="create_playlist" android:summary="@string/pref_create_playlist_summary" android:title="@string/pref_create_playlist_title"/>
 	
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_about_title" android:key="about"></PreferenceCategory><Preference android:summary="@string/help_summary" android:title="@string/help_title" android:key="help" android:selectable="true"></Preference>

@@ -39,13 +39,13 @@
     <string name="dialog_title">まらーむダウンロードページ</string>
     
     <string name="pref_playlist_category">プレイリスト設定</string>
-    <string name="pref_wakeup_playlist">wakeup.m3uプレイリストがあるか?</string>
+    <string name="pref_wakeup_playlist">wakeup.m3uプレイリスト</string>
     <string name="pref_no_wakeup_playlist">ないです。 (作ってください)</string>
     <string name="pref_ok_wakeup_playlist">あります。</string>
 
-    <string name="pref_sleep_playlist">sleep.m3uプレイリストがあるか?</string>
+    <string name="pref_sleep_playlist">sleep.m3uプレイリスト</string>
     <string name="pref_no_sleep_playlist">ないです。 (作ってください)</string>
-    <string name="pref_ok_sleep_playlist">あります</string>
+    <string name="pref_ok_sleep_playlist">あります。</string>
 
     <string name="pref_create_playlist_title">プレイリスト作成</string>
     <string name="pref_create_playlist_summary">プレイリストを作成します。</string>
@@ -74,8 +74,6 @@
     <string name="volume_minus"> - </string>
     <string name="volume_plus"> + </string>
     <string name="low_memory">メモリが少ないので止まるかも?</string>
-    <string name="pref_sleep_playlist_title">sleep.m3uを見る</string>
-    <string name="pref_wakeup_playlist_title">wakeup.m3uを見る</string>
         
     <string name="sleep_playlist_viewer_title">まらーむ: おやすみプレイリスト(sleep.m3u)</string>
     <string name="wakeup_playlist_viewer_title">まらーむ: おはようプレイリスト(wakeup.m3u)</string>

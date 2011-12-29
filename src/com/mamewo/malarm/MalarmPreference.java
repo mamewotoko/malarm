@@ -30,8 +30,8 @@ public class MalarmPreference extends PreferenceActivity implements OnPreference
 	private Preference _help;
 	private Preference _version;
 	private Preference _create_playlist;
-	private Preference _sleep_playlist_viewer;
-	private Preference _wakeup_playlist_viewer;
+	private CheckBoxPreference _sleep_playlist;
+	private CheckBoxPreference _wakeup_playlist;
 	private static final String TAG = "malarm";
 	
 	@Override
@@ -102,12 +102,11 @@ public class MalarmPreference extends PreferenceActivity implements OnPreference
 				MalarmActivity.showMessage(this, mf.format(new Object[] { filename }));
 			}
 			result = true;
-		} else if (preference == _sleep_playlist_viewer || preference == _wakeup_playlist_viewer) {
-			//TODO: improve UI
-			Log.i(TAG, "View Sleep Playlist");
+		} else if (preference == _sleep_playlist || preference == _wakeup_playlist) {
+			Log.i(TAG, "View Sleep Playlist from check");
 			final Intent i = new Intent(this, PlaylistViewer.class);
 			//TODO: define key as constant
-			i.putExtra("playlist", preference == _sleep_playlist_viewer ? "sleep" : "wakeup");
+			i.putExtra("playlist", preference == _sleep_playlist ? "sleep" : "wakeup");
 			startActivity(i);
 			result = true;
 		}
@@ -126,23 +125,28 @@ public class MalarmPreference extends PreferenceActivity implements OnPreference
 		_help.setOnPreferenceClickListener(this);
 		_create_playlist = findPreference("create_playlist");
 		_create_playlist.setOnPreferenceClickListener(this);
-		_sleep_playlist_viewer = findPreference("sleep_playlist_viewer");
-		_sleep_playlist_viewer.setOnPreferenceClickListener(this);
-		_wakeup_playlist_viewer = findPreference("wakeup_playlist_viewer");
-		_wakeup_playlist_viewer.setOnPreferenceClickListener(this);
+		_sleep_playlist = (CheckBoxPreference) findPreference("sleep_playlist");
+		_sleep_playlist.setOnPreferenceClickListener(this);
+		_wakeup_playlist = (CheckBoxPreference) findPreference("wakeup_playlist");
+		_wakeup_playlist.setOnPreferenceClickListener(this);
+	}
 
+	@Override
+	public void onStart() {
+		super.onStart();
 		final SharedPreferences pref = getPreferences(Context.MODE_PRIVATE);
 		//get playlist path
 		final String path = pref.getString("playlist_path", MalarmActivity.DEFAULT_PLAYLIST_PATH.getAbsolutePath());
 
-		final File wakeup_file = new File(path, MalarmActivity.WAKEUP_PLAYLIST_FILENAME);
-		final CheckBoxPreference wakeup_playlist = (CheckBoxPreference) findPreference("wakeup_playlist");
-		wakeup_playlist.setChecked(wakeup_file.exists());
+		//TODO: move check code to Playlist class
 		final File sleep_file = new File(path, MalarmActivity.SLEEP_PLAYLIST_FILENAME);
-		final CheckBoxPreference sleep_playlist = (CheckBoxPreference) findPreference("sleep_playlist");
-		sleep_playlist.setChecked(sleep_file.exists());
-	}
+		_sleep_playlist.setChecked(sleep_file.exists());
 
+		//TODO: move check code to Playlist class
+		final File wakeup_file = new File(path, MalarmActivity.WAKEUP_PLAYLIST_FILENAME);
+		_wakeup_playlist.setChecked(wakeup_file.exists());
+	}
+	
 	@Override
 	public void onClick(View v) {
 		final Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.git_url)));

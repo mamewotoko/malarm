@@ -43,7 +43,7 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - release to Android market
 - make COOL widget to set alarm (make clock widget?)
 - write help page
-- fix crash bug when photo is long pressed
+- fix crash bug when photo of bijo-linux is long pressed
 - fix vibrator timing
 - fix bug when native player is used....
 - record wakeup time
@@ -55,6 +55,7 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - add more test cases
 - automated build check using 2.x, 4.x SDK
 - change webview into photo view
+- add source of malarm_test into this repository
 
 ## Appendix
 ### How To Build From Command Line
