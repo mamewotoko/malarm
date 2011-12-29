@@ -15,12 +15,13 @@ import android.widget.RemoteViews;
 public class MalarmWidgetProvider extends AppWidgetProvider {
 	private static final String PACKAGE_NAME = MalarmWidgetProvider.class.getPackage().getName();
 	public static final String HELLO_ACTION = PACKAGE_NAME + ".HELLO_ACTION";
-
+	private static String TAG = "malarm";
+	
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		final String action = intent.getAction();
-		Log.i("malarm", "action: " + action);
-		if (action.equals(HELLO_ACTION)) {
+		Log.i(TAG, "action: " + action);
+		if (HELLO_ACTION.equals(action)) {
 			final Intent i = new Intent(context, MalarmActivity.class);
 			i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			context.startActivity(i);

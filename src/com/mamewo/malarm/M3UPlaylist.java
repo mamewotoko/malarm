@@ -16,10 +16,10 @@ import android.util.Log;
 
 //TODO: change to proper interface
 public final class M3UPlaylist implements Playlist {
+	private static final String TAG = "malarm";
 	private int mNextIndex = 0;
 	private final String mBasepath;
 	private List<String> mPlaylist;
-	static private final String[] DUMMY = new String[] {};
 	
 	/**
 	 * 
@@ -33,7 +33,7 @@ public final class M3UPlaylist implements Playlist {
 			mPlaylist = new ArrayList<String>();
 			load(playlist_abs_path);
 		} catch (IOException e) {
-			Log.i("M3UPlaylist", "cannot read playlist " + playlist_filename);
+			Log.i(TAG, "cannot read playlist " + playlist_filename);
 		}
 	}
 	

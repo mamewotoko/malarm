@@ -32,7 +32,7 @@ public class MalarmPreference extends PreferenceActivity implements OnPreference
 	private Preference _create_playlist;
 	private Preference _sleep_playlist_viewer;
 	private Preference _wakeup_playlist_viewer;
-	private static final String TAG = "malarm_pref";
+	private static final String TAG = "malarm";
 	
 	@Override
 	public boolean accept(File pathname) {
@@ -51,13 +51,13 @@ public class MalarmPreference extends PreferenceActivity implements OnPreference
 				fw.append(music_file.getName() + "\n");
 			}
 		} catch (IOException e) {
-			Log.i("malarm", "cannot write: " + e.getMessage());
+			Log.i(TAG, "cannot write: " + e.getMessage());
 		} finally {
 			if (fw != null) {
 				try {
 					fw.close();
 				} catch (IOException e) {
-					Log.i("malarm", "cannot close: " + e.getMessage());
+					Log.i(TAG, "cannot close: " + e.getMessage());
 				}
 			}
 		}
@@ -72,7 +72,7 @@ public class MalarmPreference extends PreferenceActivity implements OnPreference
 			startActivity(new Intent(Intent.ACTION_VIEW, url));
 			result = true;
 		} else if (preference == _version) {
-			Log.i("malarm", "onPreferenceClick: version");
+			Log.i(TAG, "onPreferenceClick: version");
 			//show dialog
 			final Dialog dialog = new Dialog(this);
 			dialog.setContentView(R.layout.dialog);
