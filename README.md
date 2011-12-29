@@ -51,7 +51,7 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - add UI to edit playlist
 -- or put playlist on dropbox and sync?
 - add stop.m4a into resource?
-- implement more smart scroll
+- improve web scroll logic
 - add more test cases
 - automated build check using 2.x, 4.x SDK
 - change webview into photo view
