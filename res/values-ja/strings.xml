@@ -46,7 +46,8 @@
     <string name="pref_sleep_playlist">sleep.m3uプレイリスト</string>
     <string name="pref_no_sleep_playlist">ないです。 (作ってください)</string>
     <string name="pref_ok_sleep_playlist">あります。</string>
-
+    <string name="pref_playlist_does_not_exist">プレイリストがありません。</string>
+    
     <string name="pref_create_playlist_title">プレイリスト作成</string>
     <string name="pref_create_playlist_summary">プレイリストを作成します。</string>
 

@@ -51,6 +51,7 @@
     <string name="pref_create_playlist_title">Create playlist</string>
     <string name="pref_create_playlist_summary">Create playlist which has all files in playlist directory</string>
 
+    <string name="pref_playlist_does_not_exist">Playlist does not exist</string>
     <string name="notify_waiting_title">malarm is set</string>
     <string name="notify_waiting_text">malarm will start</string>
     <string name="notify_wakeup_title">Playing malarm tunes</string>

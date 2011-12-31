@@ -104,10 +104,32 @@ public class MalarmPreference extends PreferenceActivity implements OnPreference
 			result = true;
 		} else if (preference == _sleep_playlist || preference == _wakeup_playlist) {
 			Log.i(TAG, "View Sleep Playlist from check");
-			final Intent i = new Intent(this, PlaylistViewer.class);
-			//TODO: define key as constant
-			i.putExtra("playlist", preference == _sleep_playlist ? "sleep" : "wakeup");
-			startActivity(i);
+			//TODO: move check code to Playlist class
+			String pref_key;
+			String playlist_filename;
+
+			if (preference == _sleep_playlist) {
+				pref_key = "sleep";
+				playlist_filename = MalarmActivity.SLEEP_PLAYLIST_FILENAME;
+			} else {
+				pref_key = "wakeup";
+				playlist_filename = MalarmActivity.WAKEUP_PLAYLIST_FILENAME;
+			}
+			final SharedPreferences pref = getPreferences(Context.MODE_PRIVATE);
+			//get playlist path
+			final String path = pref.getString("playlist_path", MalarmActivity.DEFAULT_PLAYLIST_PATH.getAbsolutePath());
+
+			//TODO: add dependency from playlist path
+			if (! (new File(path, playlist_filename)).exists()) {
+				//TODO: localize
+				MalarmActivity.showMessage(this, getString(R.string.pref_playlist_does_not_exist));
+				((CheckBoxPreference) preference).setChecked(false);
+			} else {
+				final Intent i = new Intent(this, PlaylistViewer.class);
+				//TODO: define key as constant
+				i.putExtra("playlist", pref_key);
+				startActivity(i);
+			}
 			result = true;
 		}
 		return result;
