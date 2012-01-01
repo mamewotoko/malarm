@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
-  xmlns:android="http://schemas.android.com/apk/res/android">
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:mamewo="http://schemas.android.com/apk/res/mamewo">
+<!-- 
     <ListPreference android:dialogTitle="@string/preference_title" android:entryValues="@array/preference_item_value" android:entries="@array/preference_item_key" android:key="url" android:title="@string/pref_webview_url" android:defaultValue="http://twitter.com/"></ListPreference>
+ -->
+    <com.mamewo.malarm.MultiListPreference separator="|" android:key="url_list" android:defaultValue="http://twitter.com/"
+        android:title="@string/pref_webview_url" android:dialogTitle="@string/pref_webview_url" android:entries="@array/pref_url_list_key" android:entryValues="@array/pref_url_list_value" />
     <CheckBoxPreference android:summaryOff="@string/use_internal_player" android:title="@string/use_native_player_title" android:defaultValue="false" android:key="use_native_player" android:summaryOn="@string/use_native_player"></CheckBoxPreference>
     <PreferenceCategory android:title="@string/pref_time_category_title" android:key="time_category">
         <ListPreference android:entries="@array/preference_time_key" android:entryValues="@array/preference_time_value" android:dialogTitle="@string/preference_time_title" android:key="sleeptime" android:title="@string/pref_sleeptime" android:defaultValue="60"></ListPreference>

@@ -47,7 +47,6 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - fix vibrator timing
 - fix bug when native player is used....
 - record wakeup time
-- implement more sophisticated web page preference
 - add UI to edit playlist
 -- or put playlist on dropbox and sync?
 - add stop.m4a into resource?
@@ -77,6 +76,8 @@ There is a GUI automated test using Robotium
 https://github.com/mamewotoko/malarm_test
 
 ### Memo:
+- MultiListPreference is based on the following web page
+http://blog.350nice.com/wp/archives/240
 - Alarm application starts when user push appwidget of malarm.
 - Screen rotation and vibration.....
 ----

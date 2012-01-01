@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="preference_item_key">
-        <item>OkuiAki.com gumi</item>
+    <string-array name="pref_url_list_key">
+        <item>bijin-linux</item>
         <item>Twitter</item>
         <item>bijin-tokei</item>
-        <item>bijin-linux</item>
         <item>binan-tokei</item>
+        <item>GMail</item>
         <item>Google Calendar</item>
+        <item>Google Reader</item>
+        <item>OkuiAki.com gumi</item>
     </string-array>
-    <!--  TODO: get URL from resource? -->
-    <string-array name="preference_item_value">
-        <item>http://www.okuiaki.com/mobile/login.php</item>
+
+    <string-array name="pref_url_list_value">
+        <item>http://bijo-linux.com/</item>
         <item>http://twitter.com/</item>
         <item>http://www.bijint.com/jp/</item>
-        <item>http://bijo-linux.com/</item>
         <item>http://www.bijint.com/binan/</item>
+        <item>http://www.google.com/mail/</item>
         <item>https://www.google.com/calendar/</item>
+        <item>http://www.google.com/reader/</item>
+        <item>http://www.okuiaki.com/mobile/login.php</item>
     </string-array>
 
     <string-array name="preference_time_key">
@@ -37,17 +41,6 @@
         <item>60</item>
         <item>75</item>
         <item>90</item>
-    </string-array>
-
-    <string-array name="volume_pref_key">
-        <item>Do not change volume</item>
-        <item>Middle volume</item>
-        <item>Large volume</item>
-    </string-array>
-    <string-array name="volume_pref_value">
-        <item>0</item>
-        <item>4</item>
-        <item>7</item>
     </string-array>
 
     <string-array name="day_of_week">

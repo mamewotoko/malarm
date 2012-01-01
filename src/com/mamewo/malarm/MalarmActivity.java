@@ -64,6 +64,7 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 	public static final String SLEEP_ACTION = PACKAGE_NAME + ".SLEEP_ACTION";
 	public static final String LOADWEB_ACTION = PACKAGE_NAME + ".LOADWEB_ACTION";
 	private static final String TAG = "malarm";
+	private static final String MYURL = "http://www002.upp.so-net.ne.jp/mamewo/mobile_shop.html";
 	//e.g. /sdcard/music
 	public static final File DEFAULT_PLAYLIST_PATH = new File(Environment.getExternalStorageDirectory(), "music");
 	
@@ -81,11 +82,8 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 	public static String version = "unknown";
 
 	protected static String pref_playlist_path;
-	private static final String[] WEB_PAGE_LIST = new String []{
-		null,
-		"https://www.google.com/calendar/",
-		"http://www.google.com/reader/",
-		"http://www.google.com/mail/",
+
+	private static String[] WEB_PAGE_LIST = new String []{
 		"http://www002.upp.so-net.ne.jp/mamewo/mobile_shop.html"
 	};
 	protected static M3UPlaylist wakeup_playlist;
@@ -442,8 +440,10 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 		if (update_all || "wakeup_volume".equals(key)) {
 			pref_wakeup_volume = Integer.parseInt(pref.getString("wakeup_volume", "5"));
 		}
-		if (update_all || "url".equals(key)) {
-			WEB_PAGE_LIST[0] = pref.getString("url", "http://twitter.com/");
+		if (update_all || "url_list".equals(key)) {
+			String liststr = pref.getString("url_list", "http://twitter.com/");
+			liststr += MultiListPreference.SEPARATOR + MYURL;
+			WEB_PAGE_LIST = liststr.split(MultiListPreference.SEPARATOR);
 		}
 		if (update_all || "use_native_player".equals(key)) {
 			pref_use_native_player = pref.getBoolean("use_native_player", false);
