@@ -21,11 +21,13 @@ import java.util.regex.Pattern;
 
 import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -80,6 +82,8 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 	private static final String PLAYLIST_PATH_KEY = "playlist_path";
 	private static final String VOLUME_KEY = "volume";
 	public static String version = "unknown";
+	private static final Pattern TIME_PATTERN = Pattern.compile("(\\d+)時((\\d+)分|半)?");
+	private static final Pattern AFTER_TIME_PATTERN = Pattern.compile("((\\d+)時間)?((\\d+)分|半)?.*");
 
 	protected static String pref_playlist_path;
 
@@ -218,18 +222,10 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 		
 		mTimePicker = (TimePicker) findViewById(R.id.timePicker1);
 		mTimePicker.setIs24HourView(true);
-		final PackageManager pm = getPackageManager();
-		final List<ResolveInfo> activities = pm.queryIntentActivities(new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
-		if (activities.isEmpty()) {
-			mVoiceIntent = null;
-		} else {
-			//add listener
-			mTimePicker.setLongClickable(true);
-			mTimePicker.setOnLongClickListener(this);
-			mVoiceIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-			mVoiceIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-			mVoiceIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.voice_dialog));
-		}
+
+		mTimePicker.setLongClickable(true);
+		mTimePicker.setOnLongClickListener(this);
+
 
 		if (savedInstanceState == null) {
 			mState = new MalarmState();
@@ -714,29 +710,71 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 			showMessage(this, getString(R.string.stop_loading));
 			return true;
 		}
-		if (view != mTimePicker || mVoiceIntent == null || ! view.isEnabled()) {
+		if (view != mTimePicker || ! view.isEnabled()) {
 			return false;
 		}
+		if (mVoiceIntent == null) {
+			//to reduce task of onCreate method
+			final PackageManager pm = getPackageManager();
+			final List<ResolveInfo> activities = pm.queryIntentActivities(new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
+			if (activities.isEmpty()) {
+				mTimePicker.setOnLongClickListener(null);
+				return false;
+			} else {
+				mVoiceIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+				mVoiceIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+				mVoiceIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.voice_dialog));
+			}
+		}
+
+		mWebview.stopLoading();
 		final Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-		vibrator.vibrate(200);
+		vibrator.vibrate(150);
 		startActivityForResult(mVoiceIntent, VOICE_RECOGNITION_REQUEST_CODE);
 		return true;
 	}
 
+	private static class TimePickerTime {
+		public final int mHour;
+		public final int mMin;
+		public final String mSpeach;
+		
+		public TimePickerTime(int hour, int min, String speach) {
+			mHour = hour;
+			mMin = min;
+			mSpeach = speach;
+		}
+	}
+
+	private class ClickListener implements DialogInterface.OnClickListener {
+		private ArrayList<TimePickerTime> mTimeList;
+
+		public ClickListener(ArrayList<TimePickerTime> time) {
+			mTimeList = time;
+		}
+		@Override
+		public void onClick(DialogInterface dialog, int which) {
+			setTimePickerTime(mTimeList.get(which));
+		}
+	}
+	
+	private void setTimePickerTime(TimePickerTime time) {
+		mSetDefaultTime = false;
+		mTimePicker.setCurrentHour(time.mHour);
+		mTimePicker.setCurrentMinute(time.mMin);
+		MessageFormat mf = new MessageFormat(getString(R.string.voice_success_format));
+		showMessage(this, mf.format(new Object[]{ time.mSpeach }));
+	}
+	
 	//TODO: support english???
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
-			final Pattern p = Pattern.compile("(\\d+)時((\\d+)分|半)?");
-			final Pattern p2 = Pattern.compile("((\\d+)時間)?((\\d+)分|半)?.*");
-			
-			//TODO: filter and list candidate
 			ArrayList<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-			boolean is_matched = false;
+			ArrayList<TimePickerTime> result = new ArrayList<TimePickerTime>();
 			for (String speach : matches) {
-				Matcher m = p.matcher(speach);
+				Matcher m = TIME_PATTERN.matcher(speach);
 				if (m.matches()) {
-					is_matched = true;
 					int hour = Integer.valueOf(m.group(1)) % 24;
 					int minute;
 					String min_part = m.group(2);
@@ -747,19 +785,15 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 					} else {
 						minute = Integer.valueOf(m.group(3)) % 60;
 					}
-					mTimePicker.setCurrentHour(hour);
-					mTimePicker.setCurrentMinute(minute);
-					mSetDefaultTime = false;
-					break;
+					result.add(new TimePickerTime(hour, minute, speach));
 				} else {
-					Matcher m2 = p2.matcher(speach);
+					Matcher m2 = AFTER_TIME_PATTERN.matcher(speach);
 					if (m2.matches()) {
 						final String hour_part = m2.group(2);
 						final String min_part = m2.group(3);
 						if (hour_part == null && min_part == null) {
 							continue;
 						}
-						is_matched = true;
 						long after_millis = 0;
 						if (hour_part != null) {
 							after_millis += 60 * 60 * 1000 * Integer.valueOf(hour_part);
@@ -774,17 +808,26 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 						}
 						final Calendar cal = new GregorianCalendar();
 						cal.setTimeInMillis(System.currentTimeMillis() + after_millis);
-						mTimePicker.setCurrentHour(cal.get(Calendar.HOUR_OF_DAY));
-						mTimePicker.setCurrentMinute(cal.get(Calendar.MINUTE));
-						mSetDefaultTime = false;
-						MessageFormat mf = new MessageFormat(getString(R.string.voice_success_format));
-						showMessage(this, mf.format(new Object[]{ speach }));
-						break;
+						result.add(new TimePickerTime(cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), speach));
 					}
 				}
 			}
-			if (! is_matched) {
+			if (result.isEmpty()) {
 				showMessage(this, getString(R.string.voice_fail));
+			} else if (result.size() == 1) {
+				setTimePickerTime(result.get(0));
+			} else {
+				String [] speach_array = new String[result.size()];
+				for (int i = 0; i < result.size(); i++) {
+					TimePickerTime time = result.get(i);
+					speach_array[i] = time.mSpeach + String.format(" (%02d:%02d)", time.mHour, time.mMin);
+				}
+				//select from list dialog
+				new AlertDialog.Builder(this)
+				.setTitle(R.string.select_time_from_list)
+				.setItems(speach_array, new ClickListener(result))
+				.create()
+				.show();
 			}
 		}
 	}

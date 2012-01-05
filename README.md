@@ -55,6 +55,7 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - automated build check using 2.x, 4.x SDK
 - change webview into photo view
 - add source of malarm_test into this repository
+- use multiple choice dialog to implement site preference
 
 ## Appendix
 ### How To Build From Command Line
