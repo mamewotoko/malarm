@@ -1,0 +1,178 @@
+diff --git a/res/values-ja/strings.xml b/res/values-ja/strings.xml
+index cc35683..5c72e43 100644
+--- a/res/values-ja/strings.xml
++++ b/res/values-ja/strings.xml
+@@ -59,4 +59,9 @@
+     <string name="notify_waiting_text">まらーむ待機中</string>
+     <string name="notify_wakeup_title">まらーむがなっています</string>
+     <string name="notify_wakeup_text">おはよう!</string>
++
++    <string name="pref_rotate_on">自動更新する</string>
++    <string name="pref_rotate_off">自動更新しない</string>
++    <string name="pref_rotate_title">Webページの自動更新</string>
++    <string name="pref_rotate_summary">webページの自動更新 (googleカレンダーなど)</string>
+ </resources>
+diff --git a/res/values/strings.xml b/res/values/strings.xml
+index 0425c17..a3b140f 100644
+--- a/res/values/strings.xml
++++ b/res/values/strings.xml
+@@ -60,4 +60,9 @@
+     <string name="notify_waiting_text">malarm will start</string>
+     <string name="notify_wakeup_title">Playing malarm tunes</string>
+     <string name="notify_wakeup_text">Good morning!</string>
++    
++    <string name="pref_rotate_on">rotate</string>
++    <string name="pref_rotate_off">rotate</string>
++    <string name="pref_rotate_title">Rotate web page</string>
++    <string name="pref_rotate_summary">Rotate web page (google calendar etc...)</string>
+ </resources>
+diff --git a/res/xml/preference.xml b/res/xml/preference.xml
+index 4d367e8..55a9821 100644
+--- a/res/xml/preference.xml
++++ b/res/xml/preference.xml
+@@ -23,4 +23,5 @@
+ 	<Preference android:key="create_playlist" android:summary="@string/pref_create_playlist_summary" android:title="@string/pref_create_playlist_title"/>
+     </PreferenceCategory><Preference android:summary="@string/help_summary" android:title="@string/help_title" android:key="help" android:selectable="true"></Preference>
+     <Preference android:title="@string/malarm_version_title" android:key="malarm_version" android:selectable="true"></Preference>
++    <CheckBoxPreference android:summary="@string/pref_rotate_title" android:key="rotate" android:summaryOn="@string/pref_rotate_on" android:summaryOff="@string/pref_rotate_off" android:defaultValue="false" android:title="@string/pref_rotate_title"/>
+ </PreferenceScreen>
+diff --git a/src/com/mamewo/malarm/MalarmActivity.java b/src/com/mamewo/malarm/MalarmActivity.java
+index 7226f90..22b5b73 100644
+--- a/src/com/mamewo/malarm/MalarmActivity.java
++++ b/src/com/mamewo/malarm/MalarmActivity.java
+@@ -11,6 +11,8 @@ import java.io.Serializable;
+ import java.util.Calendar;
+ import java.util.GregorianCalendar;
+ import java.util.Properties;
++import java.util.Timer;
++import java.util.TimerTask;
+ 
+ import com.mamewo.malarm.R;
+ 
+@@ -56,6 +58,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
+ 	public static final String WAKEUP_ACTION = PACKAGE_NAME + ".WAKEUP_ACTION";
+ 	public static final String WAKEUPAPP_ACTION = PACKAGE_NAME + ".WAKEUPAPP_ACTION";
+ 	public static final String SLEEP_ACTION = PACKAGE_NAME + ".SLEEP_ACTION";
++	public static final String LOADWEB_ACTION = PACKAGE_NAME + ".LOADWEB_ACTION";
+ 	public static final String DEFAULT_PLAYLIST_PATH = "/sdcard/music/";
+ 	public static String VERSION = "unknown";
+ 
+@@ -67,7 +70,12 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
+ 	protected static final String STOP_MUSIC_FILENAME = "stop.m4a";
+ 
+ 	protected static String PLAYLIST_PATH = null;
+-
++	private static String[] WEB_PAGE_LIST = new String []{
++		null,
++		"https://www.google.com/calendar/",
++		"http://www.google.com/reader/"
++	};
++	private Timer _update_timer;
+ 	protected static Playlist WAKEUP_PLAYLIST;
+ 	protected static Playlist SLEEP_PLAYLIST;
+ 
+@@ -156,7 +164,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
+ 	@Override
+ 	public void onCreate(Bundle savedInstanceState) {
+ 		Log.i(PACKAGE_NAME, "onCreate is called");
+-
++		
+ 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+ 		pref.registerOnSharedPreferenceChangeListener(this);
+ 		syncPreferences(pref, "ALL");
+@@ -277,6 +285,41 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
+ 		_vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+ 	}
+ 
++	private void startUpdateTask() {
++		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
++		if (pref.getBoolean("rotate", false)) {
++			String url = pref.getString("url", "http://twitter.com/");
++			WEB_PAGE_LIST[0] = url;
++			if (_update_timer == null) {
++				_update_timer = new Timer("update web");
++			}
++			TimerTask task = new TimerTask() {
++				private int index = 0;
++				@Override
++				public void run() {
++					Context context = _webview.getContext();
++					Intent i = new Intent(context, MalarmActivity.class);
++					i.setAction(LOADWEB_ACTION);
++					i.putExtra("url", WEB_PAGE_LIST[index]);
++					i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
++					context.startActivity(i);
++					//loadWebPage(_webview, WEB_PAGE_LIST[index]);
++					index++;
++					if (index >= WEB_PAGE_LIST.length) {
++						index = 0;
++					}
++				}
++			};
++			_update_timer.schedule(task, 1000, 5000);
++		}
++	}
++	
++	private void stopUpdateTask() {
++		if (_update_timer != null) {
++			_update_timer.cancel();
++		}
++	}
++	
+ 	@Override
+ 	public void onDestroy() {
+ 		super.onDestroy();
+@@ -286,7 +329,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
+ 
+ 	@Override
+ 	protected void onResume() {
+-		Log.i(PACKAGE_NAME, "onPause is called, start JavaScript");
++		Log.i(PACKAGE_NAME, "onResume is called, start JavaScript");
+ 		super.onResume();
+ 
+ 		CookieSyncManager.getInstance().startSync();
+@@ -298,6 +341,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
+ 			_time_picker.setCurrentHour(DEFAULT_HOUR);
+ 			_time_picker.setCurrentMinute(DEFAULT_MIN);
+ 		}
++		//startUpdateTask();
+ 	}
+ 
+ 	@Override
+@@ -307,6 +351,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
+ 		CookieSyncManager.getInstance().stopSync();
+ 		//stop tokei
+ 		_webview.getSettings().setJavaScriptEnabled(false);
++		//stopUpdateTask();
+ 	}
+ 
+ 	@Override
+@@ -318,6 +363,7 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
+ 		}
+ 		_alarm_button.setChecked(_state != null);
+ 		_alarm_button.requestFocus();
++		
+ 	}
+ 
+ 	//Avoid finishing activity not to lost _state
+@@ -407,13 +453,19 @@ public class MalarmActivity extends Activity implements OnClickListener, OnShare
+ 	protected void onNewIntent (Intent intent) {
+ 		System.out.println ("onNewIntent is called");
+ 		String action = intent.getAction();
+-		if (action != null && action.equals(WAKEUPAPP_ACTION)) {
++		if (action == null) {
++			return;
++		}
++		if (action.equals(WAKEUPAPP_ACTION)) {
+ 			//native player cannot start until lock screen is displayed
+ 			if (PREF_VIBRATE && _vibrator != null) {
+ 				long pattern[] = { 10, 1500, 500, 1500, 500, 1500, 500, 1500, 500 };
+ 				_vibrator.vibrate(pattern, 1);
+ 			}
+ 			setNotification(getString(R.string.notify_wakeup_title), getString(R.string.notify_wakeup_text));
++		} else if (action.equals(LOADWEB_ACTION)) {
++			String url = intent.getStringExtra("url");
++			loadWebPage(_webview, url);
+ 		}
+ 	}
+ 
