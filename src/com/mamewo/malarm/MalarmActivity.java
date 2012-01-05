@@ -86,8 +86,8 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 	private static String[] WEB_PAGE_LIST = new String []{
 		"http://www002.upp.so-net.ne.jp/mamewo/mobile_shop.html"
 	};
-	protected static M3UPlaylist wakeup_playlist;
-	protected static M3UPlaylist sleep_playlist;
+	public static M3UPlaylist wakeup_playlist;
+	public static M3UPlaylist sleep_playlist;
 	private static boolean pref_use_native_player;
 	private static boolean pref_vibrate;
 	private static int pref_sleep_volume;
