@@ -40,9 +40,10 @@ You can change path to playlist and music files by "Playlist directory" preferen
 
 ## TODO
 - implement music player as Service to play long time
+- display listbox when multiple candidates are offered by voice recognition engine
 - release to Android market
 - make COOL widget to set alarm (make clock widget?)
-- write help page
+- write help page using git pages
 - fix crash bug when photo of bijo-linux is long pressed
 - fix vibrator timing
 - fix bug when native player is used....
@@ -50,7 +51,6 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - add UI to edit playlist
 -- or put playlist on dropbox and sync?
 - add stop.m4a into resource?
-- improve web scroll logic
 - add more test cases
 - automated build check using 2.x, 4.x SDK
 - change webview into photo view
