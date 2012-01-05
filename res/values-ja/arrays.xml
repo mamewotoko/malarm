@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="pref_url_list_key">
+        <item>美女Linux</item>
+        <item>Twitter</item>
+        <item>美人時計</item>
+        <item>美男時計</item>
+        <item>GMail</item>
+        <item>Googleカレンダー</item>
+        <item>Googleリーダー</item>
+        <item>OkuiAki.com組</item>
+    </string-array>
+
+    <string-array name="pref_url_list_value">
+        <item>http://bijo-linux.com/</item>
+        <item>http://twitter.com/</item>
+        <item>http://www.bijint.com/jp/</item>
+        <item>http://www.bijint.com/binan/</item>
+        <item>http://www.google.com/mail/</item>
+        <item>https://www.google.com/calendar/</item>
+        <item>http://www.google.com/reader/</item>
+        <item>http://www.okuiaki.com/mobile/login.php</item>
+    </string-array>
+
+    <string-array name="preference_time_key">
+        <item>1 分</item>
+        <item>5 分</item>
+        <item>15 分</item>
+        <item>30 分</item>
+        <item>45 分</item>
+        <item>60 分</item>
+        <item>75 分</item>
+        <item>90 分</item>
+    </string-array>
+    <string-array name="preference_time_value">
+        <item>1</item>
+        <item>5</item>
+        <item>15</item>
+        <item>30</item>
+        <item>45</item>
+        <item>60</item>
+        <item>75</item>
+        <item>90</item>
+    </string-array>
+    <string-array name="day_of_week">
+        <item>日</item>
+        <item>月</item>
+        <item>火</item>
+        <item>水</item>
+        <item>木</item>
+        <item>金</item>
+        <item>土</item>
+    </string-array>
+</resources>

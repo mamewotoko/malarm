@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="pref_url_list_key">
+        <item>bijin-linux</item>
+        <item>Twitter</item>
+        <item>bijin-tokei</item>
+        <item>binan-tokei</item>
+        <item>GMail</item>
+        <item>Google Calendar</item>
+        <item>Google Reader</item>
+        <item>OkuiAki.com gumi</item>
+    </string-array>
+
+    <string-array name="pref_url_list_value">
+        <item>http://bijo-linux.com/</item>
+        <item>http://twitter.com/</item>
+        <item>http://www.bijint.com/jp/</item>
+        <item>http://www.bijint.com/binan/</item>
+        <item>http://www.google.com/mail/</item>
+        <item>https://www.google.com/calendar/</item>
+        <item>http://www.google.com/reader/</item>
+        <item>http://www.okuiaki.com/mobile/login.php</item>
+    </string-array>
+
+    <string-array name="preference_time_key">
+        <item>1 min</item>
+        <item>5 min</item>
+        <item>15 min</item>
+        <item>30 min</item>
+        <item>45 min</item>
+        <item>60 min</item>
+        <item>75 min</item>
+        <item>90 min</item>
+    </string-array>
+    <string-array name="preference_time_value">
+        <item>1</item>
+        <item>5</item>
+        <item>15</item>
+        <item>30</item>
+        <item>45</item>
+        <item>60</item>
+        <item>75</item>
+        <item>90</item>
+    </string-array>
+
+    <string-array name="day_of_week">
+        <item>Sun</item>
+        <item>Mon</item>
+        <item>Tue</item>
+        <item>Wed</item>
+        <item>Thr</item>
+        <item>Fri</item>
+        <item>Sat</item>
+    </string-array>
+    
+</resources>
