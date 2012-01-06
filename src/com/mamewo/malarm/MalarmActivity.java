@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
@@ -226,7 +225,6 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 		mTimePicker.setLongClickable(true);
 		mTimePicker.setOnLongClickListener(this);
 
-
 		if (savedInstanceState == null) {
 			mState = new MalarmState();
 		} else {
@@ -240,12 +238,14 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 
 		mSetNowButton = (Button) findViewById(R.id.set_now_button);
 		mSetNowButton.setOnClickListener(this);
-
+		
 		mTimeLabel = (TextView) findViewById(R.id.target_time_label);
 		mWebview = (WebView)findViewById(R.id.webView1);
 		mAlarmButton = (ToggleButton)findViewById(R.id.alarm_button);
 		mAlarmButton.setOnClickListener(this);
-		
+		mAlarmButton.setLongClickable(true);
+		mAlarmButton.setOnLongClickListener(this);
+
 		CookieSyncManager.createInstance(this);
 		
 		final WebSettings config = mWebview.getSettings();
@@ -398,8 +398,6 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 		if (mState.mTargetTime != null) {
 			updateAlarmUI(mState.mTargetTime);
 		}
-		mAlarmButton.setChecked(mState.mTargetTime != null);
-		mAlarmButton.requestFocus();
 	}
 
 	//Avoid finishing activity not to lost _state
@@ -581,6 +579,7 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 		mTimePicker.setCurrentHour(target.get(Calendar.HOUR_OF_DAY));
 		mTimePicker.setCurrentMinute(target.get(Calendar.MINUTE));
 		mTimePicker.setEnabled(false);
+		mAlarmButton.setChecked(mState.mTargetTime != null);
 	}
 
 	private void stopAlarm() {
@@ -602,7 +601,27 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 		notify_mgr.notify(PACKAGE_NAME, 0, note);
 	}
 	
-	private void setAlarm() {
+	private void playSleepMusic(long target_millis) {
+		final long now_millis = System.currentTimeMillis();
+		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+		final int min = Integer.valueOf(pref.getString("sleeptime", "60"));
+		if (Player.isPlaying()) {
+			Player.pauseMusic();
+		}
+		Player.playSleepMusic(this);
+		final long sleep_time_millis = min * 60 * 1000;
+		if (target_millis - now_millis >= sleep_time_millis) {
+			final PendingIntent sleepIntent = makePlayPintent(SLEEP_ACTION, pref_use_native_player);
+			final AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+			mgr.set(AlarmManager.RTC_WAKEUP, now_millis+sleep_time_millis, sleepIntent);
+		}
+	}
+	
+	/**
+	 * 
+	 * @return target time in epoch time (miliseconds)
+	 */
+	private long setAlarm() {
 		Log.i(TAG, "scheduleToPlaylist is called");
 		//set timer
 		final Calendar now = new GregorianCalendar();
@@ -629,23 +648,13 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 		final PendingIntent pendingIntent = makePlayPintent(WAKEUP_ACTION, false);
 		mgr.set(AlarmManager.RTC_WAKEUP, target_millis, pendingIntent);
 
-		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-		final int min = Integer.valueOf(pref.getString("sleeptime", "60"));
-		if (Player.isPlaying()) {
-			Player.pauseMusic();
-		}
-		Player.playSleepMusic(this);
-		final long sleep_time_millis = min * 60 * 1000;
-		final String sleeptime_str = min + " " + getString(R.string.minutes);
-		if (target_millis - now_millis >= sleep_time_millis) {
-			final PendingIntent sleepIntent = makePlayPintent(SLEEP_ACTION, pref_use_native_player);
-			mgr.set(AlarmManager.RTC_WAKEUP, now_millis+sleep_time_millis, sleepIntent);
-		}
-		showMessage(this, getString(R.string.alarm_set) + tommorow + " " + sleeptime_str);
+		showMessage(this, getString(R.string.alarm_set) + tommorow);
 		String text = getString(R.string.notify_waiting_text);
 		text += " (" + dateStr(target) +")";
 		final String title = getString(R.string.notify_waiting_title);
 		setNotification(title, text);
+		//umm.. 
+		return target_millis;
 	}
 
 	public void setNow() {
@@ -692,7 +701,7 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 			if (mState.mTargetTime != null) {
 				stopAlarm();
 			} else {
-				setAlarm();
+				playSleepMusic(setAlarm());
 			}
 		} else if (v == mSetNowButton) {
 			setNow();
@@ -703,11 +712,37 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 		Toast.makeText(c, message, Toast.LENGTH_LONG).show();
 	}
 
+	private void shortVibrate() {
+		final Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+		if (vibrator != null) {
+			vibrator.vibrate(150);
+		}
+	}
+	
 	@Override
 	public boolean onLongClick(View view) {
 		if (view == mLoadingIcon) {
+			shortVibrate();
 			mWebview.stopLoading();
 			showMessage(this, getString(R.string.stop_loading));
+			return true;
+		}
+		if (view == mAlarmButton) {
+			if (mAlarmButton.isChecked()) {
+				return false;
+			}
+			shortVibrate();
+			final long target_millis = setAlarm();
+			new AlertDialog.Builder(this)
+			.setTitle(R.string.ask_play_sleep_tune)
+			.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
+					playSleepMusic(target_millis);
+				}
+			})
+			.setNegativeButton(R.string.no, null)
+			.create()
+			.show();
 			return true;
 		}
 		if (view != mTimePicker || ! view.isEnabled()) {
@@ -726,10 +761,8 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 				mVoiceIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.voice_dialog));
 			}
 		}
-
+		shortVibrate();
 		mWebview.stopLoading();
-		final Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-		vibrator.vibrate(150);
 		startActivityForResult(mVoiceIntent, VOICE_RECOGNITION_REQUEST_CODE);
 		return true;
 	}
@@ -873,7 +906,7 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 					wakeup_volume = intent.getIntExtra(VOLUME_KEY, 5);
 					Log.i(TAG, "playWakeupMusic: set volume: " + pref_wakeup_volume);
 				}
-				mgr.setStreamVolume(AudioManager.STREAM_MUSIC, wakeup_volume, 0);
+				mgr.setStreamVolume(AudioManager.STREAM_MUSIC, wakeup_volume, AudioManager.FLAG_SHOW_UI);
 				playWakeupMusic(context, false);
 				
 				Intent i = new Intent(context, MalarmActivity.class);
@@ -937,7 +970,7 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 			Log.i(TAG, "start sleep music and stop");
 			File f = new File(pref_playlist_path + SLEEP_PLAYLIST_FILENAME);
 			AudioManager mgr = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-			mgr.setStreamVolume(AudioManager.STREAM_MUSIC, pref_sleep_volume, 0);
+			mgr.setStreamVolume(AudioManager.STREAM_MUSIC, pref_sleep_volume, AudioManager.FLAG_SHOW_UI);
 			if (pref_use_native_player && f.isFile()) {
 				Log.i(TAG, "playSleepMusic: NativePlayer");
 				playMusicNativePlayer(context, f);
