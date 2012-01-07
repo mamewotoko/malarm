@@ -15,7 +15,7 @@ This is a simple alarm application of android (version 2.2.x - 2.3.3, 4.x).
 
 ## Screenshot
 ![Japanese screen shot](https://github.com/mamewotoko/malarm/raw/master/doc/alarm_ja.png)
-![english screen shot](https://github.com/mamewotoko/malarm/raw/master/doc/alarm_en.png)
+![English screen shot](https://github.com/mamewotoko/malarm/raw/master/doc/alarm_en.png)
 ![Preference](https://github.com/mamewotoko/malarm/raw/master/doc/malarm_pref.png)
 
 ## How to run

@@ -69,7 +69,6 @@ public class MalarmPreference extends PreferenceActivity implements OnPreference
 	@Override
 	public boolean onPreferenceClick(Preference preference) {
 		boolean result = false;
-		Log.i("malarm", "onPreferenceClick is called");
 		if (preference == _help) {
 			final Uri url = Uri.parse(getString(R.string.help_url));
 			startActivity(new Intent(Intent.ACTION_VIEW, url));

@@ -204,7 +204,6 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		Log.i(TAG, "onCreate is called");
 		super.onCreate(savedInstanceState);
 		
 		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -359,7 +358,6 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 
 	@Override
 	protected void onPause() {
-		Log.i(TAG, "onPause is called, stop JavaScript");
 		super.onPause();
 		CookieSyncManager.getInstance().stopSync();
 		//stop tokei
@@ -369,7 +367,6 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 
 	@Override
 	protected void onStart () {
-		Log.i(TAG, "onStart is called");
 		super.onStart();
 		if (mState.mTargetTime != null) {
 			updateAlarmUI(mState.mTargetTime);
@@ -451,7 +448,6 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 	}
 
 	private void adjustWebviewSetting(String url) {
-		Log.i(TAG, "adjustWebviewSettting is called");
 		final WebSettings config = mWebview.getSettings();
 		if (url.contains("bijo-linux") || url.contains("google")) {
 			config.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
@@ -466,7 +462,6 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 	}
 	
 	private void loadWebPage(String url) {
-		Log.i(TAG, "loadWebPage: " + url);
 		showMessage(this, "Loading... \n" + url);
 		adjustWebviewSetting(url);
 		mWebview.loadUrl(url);
@@ -480,7 +475,6 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 	}
 
 	private void cancelAlarm () {
-		Log.i(TAG, "cancelAlarm");
 		final PendingIntent p = makePlayPintent(WAKEUP_ACTION, true);
 		final AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		clearAlarmUI();
