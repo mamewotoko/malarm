@@ -8,14 +8,12 @@ package com.mamewo.malarm;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import android.app.Activity;
@@ -59,7 +57,7 @@ import android.net.Uri;
 import android.graphics.Bitmap;
 
 public final class MalarmActivity extends Activity implements OnClickListener, OnSharedPreferenceChangeListener, OnLongClickListener {
-	private static final String PACKAGE_NAME = MalarmActivity.class.getPackage().getName();
+	public static final String PACKAGE_NAME = MalarmActivity.class.getPackage().getName();
 	public static final String WAKEUP_ACTION = PACKAGE_NAME + ".WAKEUP_ACTION";
 	public static final String WAKEUPAPP_ACTION = PACKAGE_NAME + ".WAKEUPAPP_ACTION";
 	public static final String SLEEP_ACTION = PACKAGE_NAME + ".SLEEP_ACTION";
@@ -80,7 +78,6 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 	private static final String NATIVE_PLAYER_KEY = "nativeplayer";
 	private static final String PLAYLIST_PATH_KEY = "playlist_path";
 	private static final String VOLUME_KEY = "volume";
-	public static String version = "unknown";
 	private static final Pattern TIME_PATTERN = Pattern.compile("(\\d+)時((\\d+)分|半)?");
 	private static final Pattern AFTER_TIME_PATTERN = Pattern.compile("((\\d+)時間)?((\\d+)分|半)?.*");
 
@@ -311,28 +308,6 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 			}
 		});
 
-		//load version
-		InputStream is = null;
-		try {
-			is = getResources().openRawResource(R.raw.app_version);
-			final Properties prop = new Properties();
-			prop.load(is);
-			version = prop.getProperty("app.version");
-		} catch (IOException e) {
-			Log.i(TAG, "cannot get version: " + e.getMessage());
-		} finally {
-			if (is != null) {
-				try {
-					is.close();
-				} catch (IOException e) {
-					Log.i(TAG, "cannot close is: " + e.getMessage());
-				}
-			}
-		}
-		if (version == null) {
-			version = "unknown";
-		}
-
 		//stop alarm when phone call
 		mCallListener = new MyCallListener(this);
 		mGD = new GestureDetector(this, new WebViewDblTapListener());
@@ -366,6 +341,7 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 		Log.i(TAG, "onResume is called, start JavaScript");
 		super.onResume();
 
+		mAlarmButton.requestFocus();
 		CookieSyncManager.getInstance().startSync();
 		//WebView.onResume is hidden, why!?!?
 		mWebview.getSettings().setJavaScriptEnabled(true);

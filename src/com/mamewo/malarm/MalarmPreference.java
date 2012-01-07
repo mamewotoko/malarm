@@ -14,6 +14,9 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -141,7 +144,13 @@ public class MalarmPreference extends PreferenceActivity implements OnPreference
 		//TODO: check playpath existence and show message
 		addPreferencesFromResource(R.xml.preference);
 		_version = findPreference("malarm_version");
-		_version.setSummary(MalarmActivity.version);
+		PackageInfo pi;
+		try {
+			pi = getPackageManager().getPackageInfo(MalarmActivity.PACKAGE_NAME, 0);
+			_version.setSummary(pi.versionName);
+		} catch (NameNotFoundException e) {
+			_version.setSummary("unknown");
+		}
 		_version.setOnPreferenceClickListener(this);
 		_help = findPreference("help");
 		_help.setOnPreferenceClickListener(this);

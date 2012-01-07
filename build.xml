@@ -45,6 +45,7 @@
             unless="sdk.dir"
     />
 
+	<!--
     <property file="default.properties" />
         <target name="-pre-build">
                 <mkdir dir="res/raw/" />
@@ -54,6 +55,7 @@
                 <echo message="app.version=${build.timestamp}" file="res/raw/app_version.properties"/>
         </target>
     <property file="app_version.properties" />
+    -->
 
 <!-- extension targets. Uncomment the ones where you want to do custom work
      in between standard targets -->
