@@ -7,7 +7,7 @@
  -->
     <com.mamewo.malarm.MultiListPreference separator="|" android:key="url_list" android:defaultValue="http://twitter.com/"
         android:title="@string/pref_webview_url" android:dialogTitle="@string/pref_webview_url" android:entries="@array/pref_url_list_key" android:entryValues="@array/pref_url_list_value" />
-    <CheckBoxPreference android:summaryOff="@string/use_internal_player" android:title="@string/use_native_player_title" android:defaultValue="false" android:key="use_native_player" android:summaryOn="@string/use_native_player"></CheckBoxPreference>
+    <CheckBoxPreference android:summaryOff="@string/use_internal_player" android:title="@string/use_native_player_title" android:defaultValue="false" android:key="use_native_player" android:summaryOn="@string/use_native_player" android:enabled="false" android:selectable="false"></CheckBoxPreference>
     <PreferenceCategory android:title="@string/pref_time_category_title" android:key="time_category">
         <ListPreference android:entries="@array/preference_time_key" android:entryValues="@array/preference_time_value" android:dialogTitle="@string/preference_time_title" android:key="sleeptime" android:title="@string/pref_sleeptime" android:defaultValue="60"></ListPreference>
         <com.mamewo.malarm.TimePreference android:title="@string/pref_default_time_title" android:summary="@string/pref_default_time_summary" android:key="default_time" android:defaultValue="7:00"></com.mamewo.malarm.TimePreference>
