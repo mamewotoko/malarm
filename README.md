@@ -4,11 +4,11 @@
 This is a simple alarm application of android (version 2.2.x - 2.3.3, 4.x).
 
 ## Overview
-                sleep music (1h)                     wake-up music w vibration
-                w sleep music                        application starts
+                sleep tunes (1h)                   wake-up tunes w vibration
+                                                   application starts
      Alarm set ------------------> ..... Alarm time --------------->
-     (press "set/stop alarm"
-      button)
+     press "set alarm" button                      display google calendar/Gmail etc..
+     
 
  If you want to stop vibration only, please use "stop vibraiton" menu
  This application has appwidget, but it has no function for now.... very simple!
@@ -41,7 +41,6 @@ You can change path to playlist and music files by "Playlist directory" preferen
 ## TODO
 - implement music player as Service to play long time
 - display listbox when multiple candidates are offered by voice recognition engine
-- release to Android market
 - make COOL widget to set alarm (make clock widget?)
 - write help page using git pages
 - fix crash bug when photo of bijo-linux is long pressed
@@ -81,6 +80,8 @@ https://github.com/mamewotoko/malarm_test
 http://blog.350nice.com/wp/archives/240
 - Alarm application starts when user push appwidget of malarm.
 - Screen rotation and vibration.....
+- Android Market
+https://market.android.com/details?id=com.mamewo.malarm
 ----
 Takashi Masuyama < mamewotoko@gmail.com >  
 http://www002.upp.so-net.ne.jp/mamewo/
