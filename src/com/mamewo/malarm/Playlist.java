@@ -1,5 +1,6 @@
 package com.mamewo.malarm;
 
+//TODO: fix interface
 public interface Playlist {
 	
 	boolean isEmpty();

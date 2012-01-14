@@ -1,9 +1,11 @@
 package com.mamewo.malarm;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +21,8 @@ public final class M3UPlaylist implements Playlist {
 	private static final String TAG = "malarm";
 	private int mNextIndex = 0;
 	private final String mBasepath;
-	private List<String> mPlaylist;
+	private final String mPlaylistFilename;
+	private ArrayList<String> mPlaylist;
 	
 	/**
 	 * 
@@ -28,6 +31,7 @@ public final class M3UPlaylist implements Playlist {
 	 */
 	public M3UPlaylist(String playlist_basepath, String playlist_filename) throws FileNotFoundException {
 		mBasepath = playlist_basepath;
+		mPlaylistFilename = playlist_filename;
 		final String playlist_abs_path = (new File(playlist_basepath, playlist_filename)).getAbsolutePath();
 		try {
 			mPlaylist = new ArrayList<String>();
@@ -37,15 +41,6 @@ public final class M3UPlaylist implements Playlist {
 		}
 	}
 	
-	@Override
-	public boolean isEmpty() {
-		return mPlaylist.isEmpty();
-	}
-	
-	@Override
-	public int size() {
-		return mPlaylist.size();
-	}
 	
 	@Override
 	public String next() {
@@ -67,7 +62,7 @@ public final class M3UPlaylist implements Playlist {
 	}
 	
 	public List<String> toList() {
-		return mPlaylist;
+		return (List<String>)mPlaylist.clone();
 	}
 
 	protected void load(final String filename) throws FileNotFoundException, IOException {
@@ -79,5 +74,40 @@ public final class M3UPlaylist implements Playlist {
 			}
 		}
 		br.close();
+	}
+	
+	@Override
+	public boolean isEmpty() {
+		return mPlaylist.isEmpty();
+	}
+	
+	@Override
+	public int size() {
+		return mPlaylist.size();
+	}
+
+	public void remove(int pos) {
+		mPlaylist.remove(pos);
+	}
+	
+	public void insert(int pos, String path) {
+		mPlaylist.add(pos, path);
+	}
+	
+	public void save() throws IOException {
+		File playlist = new File(mBasepath, mPlaylistFilename);
+		if (playlist.exists()) {
+			if (! playlist.renameTo(new File(mBasepath, "_" + mPlaylistFilename))) {
+				//TODO: localize
+				Log.i(TAG, "rename failed");
+				return;
+			}
+		}
+		Log.i(TAG, "after rename: " + playlist.getAbsolutePath());
+		BufferedWriter bw = new BufferedWriter(new FileWriter(playlist));
+		for (String filename : mPlaylist) {
+			bw.append(filename + "\n");
+		}
+		bw.close();
 	}
 }

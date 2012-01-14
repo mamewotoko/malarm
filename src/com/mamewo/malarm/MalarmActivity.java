@@ -517,10 +517,8 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 		return pendingIntent;
 	}
 
-	//add menu to cancel alarm
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate our menu which can gather user input for switching camera
 		final MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.alarm_menu, menu);
 		return true;

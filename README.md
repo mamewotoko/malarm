@@ -42,19 +42,22 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - implement music player as Service to play long time
 - display listbox when multiple candidates are offered by voice recognition engine
 - make COOL widget to set alarm (make clock widget?)
-- write help page using git pages
+- complete help page using git pages
 - fix crash bug when photo of bijo-linux is long pressed
 - fix vibrator timing
 - fix bug when native player is used....
 - record wakeup time
-- add UI to edit playlist
--- or put playlist on dropbox and sync?
+- improve UI to edit playlist
+- dropbox integration?
 - add stop.m4a into resource?
 - add more test cases
 - automated build check using 2.x, 4.x SDK
 - change webview into photo view
 - add source of malarm_test into this repository
 - use multiple choice dialog to implement site preference
+- Volume preference is 0 initially (but 5 is used as default value)
+- conditional playlist
+-- sunday, holiday playlist etc...
 
 ## Appendix
 ### How To Build From Command Line

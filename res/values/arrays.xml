@@ -52,5 +52,10 @@
         <item>Fri</item>
         <item>Sat</item>
     </string-array>
-    
+
+    <string-array name="tune_operation">
+        <item>Up</item>
+        <item>Down</item>
+        <item>Delete</item>
+    </string-array>
 </resources>

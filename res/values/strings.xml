@@ -85,4 +85,6 @@
     <string name="ask_play_sleep_tune">Do you listen sleep tunes?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="cancel">Cancel</string>
+    <string name="save_playlist">Save</string>
 </resources>
