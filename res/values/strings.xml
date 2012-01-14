@@ -35,7 +35,7 @@
     <string name="help_title">Help</string>
     <string name="help_summary">Display how to use malarm as a web page</string>
     
-    <string name="git_url">https://github.com/downloads/mamewotoko/malarm/</string>
+    <string name="git_url">https://github.com/mamewotoko/malarm/</string>
     <string name="dialog_ok">Close</string>
     <string name="dialog_title">malarm download page</string>
     
