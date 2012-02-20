@@ -40,7 +40,7 @@ You can change path to playlist and music files by "Playlist directory" preferen
 
 ## TODO
 - implement music player as Service to play long time
-- display listbox when multiple candidates are offered by voice recognition engine
+- remove duplicate time when time is specified by voice
 - make COOL widget to set alarm (make clock widget?)
 - complete help page using git pages
 - fix crash bug when photo of bijo-linux is long pressed
@@ -85,6 +85,7 @@ http://blog.350nice.com/wp/archives/240
 - Screen rotation and vibration.....
 - Android Market
 https://market.android.com/details?id=com.mamewo.malarm
+
 ----
 Takashi Masuyama < mamewotoko@gmail.com >  
 http://www002.upp.so-net.ne.jp/mamewo/
