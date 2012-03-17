@@ -276,24 +276,13 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 
 			@Override
 			public void onLoadResource (WebView view, String url) {
-				//to load web page linked from small image link into root pane of webview
-//				if (url.contains("bijo-linux") && url.endsWith("/")) {
-//					final HitTestResult result = view.getHitTestResult();
-//					//TODO: why same event delivered many times?
-//					if (result.getType() == HitTestResult.SRC_IMAGE_ANCHOR_TYPE && ! previous_url.equals(url)) {
-//						mWebview.stopLoading();
-//						previous_url = url;
-//						loadWebPage(url);
-//						return;
-//					}
-//				}
 				//addhoc polling...
 				final int height = view.getContentHeight();
 				if ((url.contains("bijint") || url.contains("bijo-linux")) && height > 400) {
 					if(url.contains("binan") && height > 420) {
 						view.scrollTo(0, 420);
 					} else if (url.contains("bijo-linux") && height > 100) {
-						view.scrollTo(310, 600);
+						view.scrollTo(310, 700);
 					} else if (height > 960) {
 						view.scrollTo(0, 960);
 					}
