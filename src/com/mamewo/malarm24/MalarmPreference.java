@@ -1,4 +1,4 @@
-package com.mamewo.malarm;
+package com.mamewo.malarm24;
 
 /**
  * @author Takashi Masuyama <mamewotoko@gmail.com>

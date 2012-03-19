@@ -1,4 +1,4 @@
-package com.mamewo.malarm;
+package com.mamewo.malarm24;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

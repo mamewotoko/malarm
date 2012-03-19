@@ -1,4 +1,4 @@
-package com.mamewo.malarm;
+package com.mamewo.malarm24;
 
 import java.io.IOException;
 
@@ -15,7 +15,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 
 public final class PlaylistViewer extends ListActivity {

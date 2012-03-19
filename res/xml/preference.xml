@@ -5,7 +5,7 @@
 <!-- 
     <ListPreference android:dialogTitle="@string/preference_title" android:entryValues="@array/preference_item_value" android:entries="@array/preference_item_key" android:key="url" android:title="@string/pref_webview_url" android:defaultValue="http://twitter.com/"></ListPreference>
  -->
-    <com.mamewo.malarm.MultiListPreference separator="|" android:key="url_list" android:defaultValue="http://twitter.com/"
+    <com.mamewo.malarm24.MultiListPreference separator="|" android:key="url_list" android:defaultValue="http://twitter.com/"
         android:title="@string/pref_webview_url" android:dialogTitle="@string/pref_webview_url" android:entries="@array/pref_url_list_key" android:entryValues="@array/pref_url_list_value" />
     <PreferenceCategory android:title="@string/pref_playlist_category" android:key="playlist_category">
     <EditTextPreference android:defaultValue="/sdcard/music/"
@@ -21,12 +21,12 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_time_category_title" android:key="time_category">
         <ListPreference android:entries="@array/preference_time_key" android:entryValues="@array/preference_time_value" android:dialogTitle="@string/preference_time_title" android:key="sleeptime" android:title="@string/pref_sleeptime" android:defaultValue="60"></ListPreference>
-        <com.mamewo.malarm.TimePreference android:title="@string/pref_default_time_title" android:summary="@string/pref_default_time_summary" android:key="default_time" android:defaultValue="7:00"></com.mamewo.malarm.TimePreference>
+        <com.mamewo.malarm24.TimePreference android:title="@string/pref_default_time_title" android:summary="@string/pref_default_time_summary" android:key="default_time" android:defaultValue="7:00" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/volume_category_title" android:key="volume_category">
         <CheckBoxPreference android:summaryOff="@string/disable_vibration" android:title="@string/pref_vibration" android:defaultValue="true" android:key="vibrate" android:summaryOn="@string/enable_vibration"></CheckBoxPreference>
-        <com.mamewo.malarm.VolumePreference android:title="@string/pref_sleep_volume_title" android:summary="@string/pref_sleep_volume_summary" android:key="sleep_volume" android:defaultValue="5"></com.mamewo.malarm.VolumePreference>
-        <com.mamewo.malarm.VolumePreference android:title="@string/pref_wakeup_volume_title" android:summary="@string/pref_wakeup_volume_summary" android:key="wakeup_volume" android:defaultValue="5"></com.mamewo.malarm.VolumePreference>
+        <com.mamewo.malarm24.VolumePreference android:title="@string/pref_sleep_volume_title" android:summary="@string/pref_sleep_volume_summary" android:key="sleep_volume" android:defaultValue="5" />
+        <com.mamewo.malarm24.VolumePreference android:title="@string/pref_wakeup_volume_title" android:summary="@string/pref_wakeup_volume_summary" android:key="wakeup_volume" android:defaultValue="5" />
     </PreferenceCategory>
 <!--  
         <ListPreference android:title="@string/wakeup_volume_pref_title" android:entryValues="@array/volume_pref_value" android:entries="@array/volume_pref_key" android:defaultValue="0" android:key="wakeup_volume" android:dialogTitle="@string/wakeup_volume_pref_title"></ListPreference>
@@ -36,7 +36,4 @@
     <Preference android:summary="@string/help_summary" android:title="@string/help_title" android:key="help" android:selectable="true"></Preference>
     <Preference android:title="@string/malarm_version_title" android:key="malarm_version" android:selectable="true"></Preference>
     </PreferenceCategory>
-    
-    
-    
 </PreferenceScreen>

@@ -1,4 +1,4 @@
-package com.mamewo.malarm;
+package com.mamewo.malarm24;
 
 /**
  * @author Takashi Masuyama <mamewotoko@gmail.com>
@@ -16,6 +16,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
@@ -50,7 +51,6 @@ import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.GestureDetector;
 import android.view.inputmethod.InputMethodManager;
-import android.webkit.WebView.HitTestResult;
 import android.widget.*;
 import android.webkit.*;
 import android.net.Uri;
