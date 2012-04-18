@@ -18,7 +18,10 @@ This is a simple alarm application of android (version 2.2.x - 2.3.3, 4.x).
 ![English screen shot](https://github.com/mamewotoko/malarm/raw/master/doc/alarm_en.png)
 ![Preference](https://github.com/mamewotoko/malarm/raw/master/doc/malarm_pref.png)
 
-## How to run
+## Google Play
+https://play.google.com/store/apps/details?id=com.mamewo.malarm24
+
+## How to build & run
 1. Put your music file into /sdcard/music directory of android device
 2. Prepare m3u format play list for sleep (named sleep.m3u) and wakeup (named wakeup.m3u).
 m3u file contains one music filename in one line.
