@@ -80,7 +80,7 @@ public class MalarmPreference extends PreferenceActivity implements OnPreference
 			final Dialog dialog = new Dialog(this);
 			dialog.setContentView(R.layout.dialog);
 			final ImageView image = (ImageView) dialog.findViewById(R.id.dialog_image_view);
-			image.setImageResource(R.drawable.git_download);
+			image.setImageResource(R.drawable.download);
 			final TextView text = (TextView) dialog.findViewById(R.id.dialog_text);
 			text.setText(getString(R.string.git_url));
 			text.setOnClickListener(this);
