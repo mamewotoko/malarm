@@ -41,14 +41,14 @@ You can change path to playlist and music files by "Playlist directory" preferen
 ## TODO
 - implement music player as Service to play long time
 - remove duplicate time when time is specified by voice
+- conditional playlist
+-- sunday, holiday playlist etc...
 - make COOL widget to set alarm (make clock widget?)
 - complete help page using git pages
-- fix crash bug when photo of bijo-linux is long pressed
 - fix vibrator timing
 - fix bug when native player is used....
 - record wakeup time
 - improve UI to edit playlist
-- dropbox integration?
 - add stop.m4a into resource?
 - add more test cases
 - automated build check using 2.x, 4.x SDK
@@ -56,8 +56,9 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - add source of malarm_test into this repository
 - use multiple choice dialog to implement site preference
 - Volume preference is 0 initially (but 5 is used as default value)
-- conditional playlist
--- sunday, holiday playlist etc...
+- Design for tablets
+    scale of web contents
+- Actionbar
 
 ## Appendix
 ### How To Build From Command Line
@@ -85,6 +86,7 @@ http://blog.350nice.com/wp/archives/240
 - Screen rotation and vibration.....
 - Android Market
 https://market.android.com/details?id=com.mamewo.malarm
+- Dropsync is a useful Android app!
 
 ----
 Takashi Masuyama < mamewotoko@gmail.com >  
