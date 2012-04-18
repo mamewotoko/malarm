@@ -65,7 +65,7 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 	private static final String TAG = "malarm";
 	private static final String MYURL = "http://www002.upp.so-net.ne.jp/mamewo/mobile_shop.html";
 	//e.g. /sdcard/music
-	public static final File DEFAULT_PLAYLIST_PATH = new File(Environment.getExternalStorageDirectory(), "music");
+	public static final File DEFAULT_PLAYLIST_PATH = new File(Environment.getExternalStorageDirectory(), Environment.DIRECTORY_MUSIC);
 	
 	private static final long VIBRATE_PATTERN[] = { 10, 1500, 500, 1500, 500, 1500, 500, 1500, 500 };
 	private static final int VOICE_RECOGNITION_REQUEST_CODE = 2121;
