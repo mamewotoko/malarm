@@ -277,12 +277,13 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 			@Override
 			public void onLoadResource (WebView view, String url) {
 				//addhoc polling...
+				//TODO: move to resource
 				final int height = view.getContentHeight();
 				if ((url.contains("bijint") || url.contains("bijo-linux")) && height > 400) {
 					if(url.contains("binan") && height > 420) {
 						view.scrollTo(0, 420);
 					} else if (url.contains("bijo-linux") && height > 100) {
-						view.scrollTo(310, 700);
+						view.scrollTo(310, 770);
 					} else if (height > 960) {
 						view.scrollTo(0, 960);
 					}
@@ -436,6 +437,7 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 		loadWebPage(url);
 	}
 
+	//TODO: move to resource
 	private void adjustWebviewSetting(String url) {
 		final WebSettings config = mWebview.getSettings();
 		if (url.contains("bijo-linux") || url.contains("google")) {
