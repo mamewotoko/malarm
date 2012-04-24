@@ -285,7 +285,7 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 					} else if (url.contains("bijo-linux") && height > 100) {
 						view.scrollTo(310, 770);
 					} else if (height > 960) {
-						view.scrollTo(0, 960);
+						view.scrollTo(0, 980);
 					}
 				}
 			}
@@ -294,6 +294,9 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 			public void onPageFinished(WebView view, String url) {
 				Log.i(TAG, "onPageFinshed: " + url);
 				mLoadingIcon.setVisibility(View.INVISIBLE);
+				if(url.contains("yahoo") && url.contains("weather")) {
+					view.scrollTo(0, 200);
+				}
 			}
 		});
 
@@ -440,9 +443,9 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 	//TODO: move to resource
 	private void adjustWebviewSetting(String url) {
 		final WebSettings config = mWebview.getSettings();
-		if (url.contains("bijo-linux") || url.contains("google")) {
+		if (url.contains("bijo-linux") || url.contains("google") || url.contains("yahoo") || url.contains("so-net")) {
 			config.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
-		} else if (! url.contains("mamewo")) {
+		} else {
 			config.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
 		}
 		if (url.contains("bijo-linux")) {
