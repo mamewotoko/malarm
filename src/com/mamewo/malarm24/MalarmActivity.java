@@ -94,20 +94,10 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 	private static int pref_wakeup_volume;
 	private static Integer pref_default_hour;
 	private static Integer pref_default_min;
-	
-	public final static class MalarmState implements Serializable {
-		private static final long serialVersionUID = 1L;
-		public Calendar mTargetTime;
-		public int mWebIndex;
-		
-		public MalarmState() {
-			mWebIndex = 0;
-			mTargetTime = null;
-		}
-	}
 
 	private MalarmState mState;
-	private Button mNextButton;
+	private ImageButton mVoiceButton;
+	private ImageButton mNextButton;
 	private TimePicker mTimePicker;
 	private TextView mTimeLabel;
 	private WebView mWebview;
@@ -117,7 +107,7 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 	private boolean mSetDefaultTime;
 	private Intent mVoiceIntent;
 	private ProgressBar mLoadingIcon;
-	
+
 	private PhoneStateListener mCallListener;
 
 	private static final int DOW_INDEX[] = {
@@ -129,6 +119,17 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 		Calendar.FRIDAY, 
 		Calendar.SATURDAY, 
 	};
+
+	public final static class MalarmState implements Serializable {
+		private static final long serialVersionUID = 1L;
+		public Calendar mTargetTime;
+		public int mWebIndex;
+		
+		public MalarmState() {
+			mWebIndex = 0;
+			mTargetTime = null;
+		}
+	}
 	
 	public final class MyCallListener extends PhoneStateListener {
 		private boolean mIsPlaying = false;
@@ -209,17 +210,12 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		pref.registerOnSharedPreferenceChangeListener(this);
 		syncPreferences(pref, "ALL");
-//		 getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-//				| WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 		setContentView(R.layout.main);
 		
 		mSetDefaultTime = true;
 		
 		mTimePicker = (TimePicker) findViewById(R.id.timePicker1);
 		mTimePicker.setIs24HourView(true);
-
-		mTimePicker.setLongClickable(true);
-		mTimePicker.setOnLongClickListener(this);
 
 		if (savedInstanceState == null) {
 			mState = new MalarmState();
@@ -229,7 +225,10 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 		mLoadingIcon = (ProgressBar) findViewById(R.id.loading_icon);
 		mLoadingIcon.setOnLongClickListener(this);
 		
-		mNextButton = (Button) findViewById(R.id.next_button);
+		mVoiceButton = (ImageButton) findViewById(R.id.set_by_voice);
+		mVoiceButton.setOnClickListener(this);
+		
+		mNextButton = (ImageButton) findViewById(R.id.next_button);
 		mNextButton.setOnClickListener(this);
 
 		mSetNowButton = (Button) findViewById(R.id.set_now_button);
@@ -283,7 +282,7 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 					if(url.contains("binan") && height > 420) {
 						view.scrollTo(0, 420);
 					} else if (url.contains("bijo-linux") && height > 100) {
-						view.scrollTo(310, 770);
+						view.scrollTo(310, 750);
 					} else if (height > 960) {
 						view.scrollTo(0, 980);
 					}
@@ -294,8 +293,8 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 			public void onPageFinished(WebView view, String url) {
 				Log.i(TAG, "onPageFinshed: " + url);
 				mLoadingIcon.setVisibility(View.INVISIBLE);
-				if(url.contains("yahoo") && url.contains("weather")) {
-					view.scrollTo(0, 200);
+				if(url.contains("weather.yahoo")) {
+					view.scrollTo(0, 180);
 				}
 			}
 		});
@@ -657,6 +656,8 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 		//to save time value edited by software keyboard
 		if (v == mNextButton) {
 			Player.playNext();
+		} else if (v == mVoiceButton) {
+			setTimeByVoice();
 		} else if (v == mAlarmButton) {
 			InputMethodManager mgr = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
 			mgr.hideSoftInputFromWindow(mTimePicker.getWindowToken(), 0);
@@ -670,6 +671,25 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 		}
 	}
 
+	private void setTimeByVoice() {
+		if (! mTimePicker.isEnabled()) {
+			return;
+		}
+		if (mVoiceIntent == null) {
+			//to reduce task of onCreate method
+			final PackageManager pm = getPackageManager();
+			final List<ResolveInfo> activities = pm.queryIntentActivities(new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
+			if (activities.isEmpty()) {
+				return;
+			}
+			mVoiceIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+			mVoiceIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+			mVoiceIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.voice_dialog));
+		}
+		mWebview.stopLoading();
+		startActivityForResult(mVoiceIntent, VOICE_RECOGNITION_REQUEST_CODE);
+	}
+	
 	public static void showMessage(Context c, String message) {
 		Toast.makeText(c, message, Toast.LENGTH_LONG).show();
 	}
@@ -707,26 +727,7 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 			.show();
 			return true;
 		}
-		if (view != mTimePicker || ! view.isEnabled()) {
-			return false;
-		}
-		if (mVoiceIntent == null) {
-			//to reduce task of onCreate method
-			final PackageManager pm = getPackageManager();
-			final List<ResolveInfo> activities = pm.queryIntentActivities(new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
-			if (activities.isEmpty()) {
-				mTimePicker.setOnLongClickListener(null);
-				return false;
-			} else {
-				mVoiceIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-				mVoiceIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-				mVoiceIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.voice_dialog));
-			}
-		}
-		shortVibrate();
-		mWebview.stopLoading();
-		startActivityForResult(mVoiceIntent, VOICE_RECOGNITION_REQUEST_CODE);
-		return true;
+		return false;
 	}
 
 	private static class TimePickerTime {

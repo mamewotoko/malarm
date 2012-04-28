@@ -43,14 +43,20 @@
                         android:layout_height="wrap_content"
                         android:text="@string/set_now_short" >
                     </Button>
-
-                    <Button
+                    <ImageButton
+                        android:id="@+id/set_by_voice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@android:drawable/ic_btn_speak_now"
+                        android:tint="#fff"
+                      >
+                    </ImageButton>
+                    <ImageButton
                         android:id="@+id/next_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/next" >
-                    </Button>
-
+                        android:src="@android:drawable/ic_media_next" >
+                    </ImageButton>
                 </LinearLayout>
 
         </LinearLayout>
