@@ -107,7 +107,8 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 	private boolean mSetDefaultTime;
 	private Intent mVoiceIntent;
 	private ProgressBar mLoadingIcon;
-
+	private boolean mStartingVoiceActivity;
+	
 	private PhoneStateListener mCallListener;
 
 	private static final int DOW_INDEX[] = {
@@ -227,6 +228,7 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 		
 		mVoiceButton = (ImageButton) findViewById(R.id.set_by_voice);
 		mVoiceButton.setOnClickListener(this);
+		mStartingVoiceActivity = false;
 		
 		mNextButton = (ImageButton) findViewById(R.id.next_button);
 		mNextButton.setOnClickListener(this);
@@ -331,6 +333,7 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 	protected void onResume() {
 		Log.i(TAG, "onResume is called, start JavaScript");
 		super.onResume();
+		mStartingVoiceActivity = false;
 
 		mAlarmButton.requestFocus();
 		CookieSyncManager.getInstance().startSync();
@@ -672,11 +675,12 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 	}
 
 	private void setTimeByVoice() {
-		if (! mTimePicker.isEnabled()) {
+		if (! mTimePicker.isEnabled() || mStartingVoiceActivity) {
 			return;
 		}
 		if (mVoiceIntent == null) {
 			//to reduce task of onCreate method
+			showMessage(this, getString(R.string.init_voice));
 			final PackageManager pm = getPackageManager();
 			final List<ResolveInfo> activities = pm.queryIntentActivities(new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
 			if (activities.isEmpty()) {
@@ -686,6 +690,7 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 			mVoiceIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
 			mVoiceIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.voice_dialog));
 		}
+		mStartingVoiceActivity = true;
 		mWebview.stopLoading();
 		startActivityForResult(mVoiceIntent, VOICE_RECOGNITION_REQUEST_CODE);
 	}

@@ -9,7 +9,6 @@
 
     <string name="set_alarm">Set Alarm</string>
     <string name="stop_alarm">Cancel Alarm</string>
-    <string name="next"> &gt;&gt; </string>
     <string name="stop_vibration">Stop vibaration</string>
     <string name="play_wakeup">Play wakeup music</string>
     <string name="preference_title">Preference of malarm</string>
@@ -87,4 +86,8 @@
     <string name="no">No</string>
     <string name="cancel">Cancel</string>
     <string name="save_playlist">Save</string>
+    
+    <string name="init_voice">Initializing voice recognizer</string>
+    <string name="voice_button_desc">Set time by voice</string>
+    <string name="next_button_desc">Play next tune</string>
 </resources>

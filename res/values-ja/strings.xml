@@ -9,7 +9,6 @@
 
     <string name="set_alarm">まらーむをセットする</string>
     <string name="stop_alarm">まらーむをとめる</string>
-    <string name="next"> &gt;&gt; </string>
     <string name="stop_vibration">ぶるぶるをとめる</string>
     <string name="play_wakeup">まらーむの音楽を再生</string>
     <string name="preference_title">まらーむの設定</string>
@@ -85,4 +84,8 @@
     <string name="no">いいえ</string>
     <string name="cancel">キャンセル</string>
     <string name="save_playlist">保存</string>
+
+    <string name="init_voice">音声認識初期化中</string>
+    <string name="voice_button_desc">声で時刻を設定する</string>
+    <string name="next_button_desc">次の曲を再生する</string>
 </resources>
