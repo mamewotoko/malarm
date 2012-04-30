@@ -18,6 +18,9 @@ This is a simple alarm application of android (version 2.2.x - 2.3.3, 4.x).
 ![English screen shot](https://github.com/mamewotoko/malarm/raw/master/doc/alarm_en.png)
 ![Preference](https://github.com/mamewotoko/malarm/raw/master/doc/malarm_pref.png)
 
+## Japanese manual
+http://mamewotoko.github.com/malarm/doc/
+
 ## Google Play
 https://play.google.com/store/apps/details?id=com.mamewo.malarm24
 
@@ -50,12 +53,10 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - conditional playlist
 -- sunday, holiday playlist etc...
 - make COOL widget to set alarm (make clock widget?)
-- complete help page using git pages
 - fix vibrator timing
 - fix bug when native player is used....
 - record wakeup time
 - improve UI to edit playlist
-- add stop.m4a into resource?
 - add more test cases
 - automated build check using 2.x, 4.x SDK
 - change webview into photo view
@@ -64,7 +65,7 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - Volume preference is 0 initially (but 5 is used as default value)
 - Design for tablets
     scale of web contents
-- Actionbar
+- use Actionbar ?
 
 ## Appendix
 ### How To Build From Command Line
