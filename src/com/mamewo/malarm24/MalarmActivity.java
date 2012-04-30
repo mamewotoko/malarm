@@ -56,7 +56,10 @@ import android.webkit.*;
 import android.net.Uri;
 import android.graphics.Bitmap;
 
-public final class MalarmActivity extends Activity implements OnClickListener, OnSharedPreferenceChangeListener, OnLongClickListener {
+public final class MalarmActivity
+	extends Activity
+	implements OnClickListener, OnSharedPreferenceChangeListener, OnLongClickListener
+{
 	public static final String PACKAGE_NAME = MalarmActivity.class.getPackage().getName();
 	public static final String WAKEUP_ACTION = PACKAGE_NAME + ".WAKEUP_ACTION";
 	public static final String WAKEUPAPP_ACTION = PACKAGE_NAME + ".WAKEUPAPP_ACTION";
@@ -83,9 +86,7 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 
 	protected static String pref_playlist_path;
 
-	private static String[] WEB_PAGE_LIST = new String []{
-		"http://www002.upp.so-net.ne.jp/mamewo/mobile_shop.html"
-	};
+	private static String[] WEB_PAGE_LIST = new String []{ MYURL };
 	public static M3UPlaylist wakeupPlaylist;
 	public static M3UPlaylist sleepPlaylist;
 	private static boolean pref_use_native_player;
@@ -94,8 +95,8 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 	private static int pref_wakeup_volume;
 	private static Integer pref_default_hour;
 	private static Integer pref_default_min;
+	private static MalarmState mState;
 
-	private MalarmState mState;
 	private ImageButton mVoiceButton;
 	private ImageButton mNextButton;
 	private TimePicker mTimePicker;
@@ -108,7 +109,8 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 	private Intent mVoiceIntent;
 	private ProgressBar mLoadingIcon;
 	private boolean mStartingVoiceActivity;
-	private TextView mPlaylistName;
+	private TextView mPlaylistLabel;
+	private TextView mSleepTimeLabel;
 	
 	private PhoneStateListener mCallListener;
 
@@ -126,10 +128,12 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 		private static final long serialVersionUID = 1L;
 		public Calendar mTargetTime;
 		public int mWebIndex;
+		public int mSleepMin;
 		
 		public MalarmState() {
 			mWebIndex = 0;
 			mTargetTime = null;
+			mSleepMin = 0;
 		}
 	}
 	
@@ -156,9 +160,7 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 				}
 				break;
 			case TelephonyManager.CALL_STATE_IDLE:
-				if (mIsPlaying) {
-					Player.playMusic();
-				}
+				//TODO: play music
 				break;
 			default:
 				break;
@@ -180,7 +182,9 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 		}
 	}
 
-	private class WebViewDblTapListener extends GestureDetector.SimpleOnGestureListener {
+	private class WebViewDblTapListener 
+		extends GestureDetector.SimpleOnGestureListener
+	{
 		@Override
 		public boolean onDoubleTap(MotionEvent e) {
 			final int x = (int)e.getX();
@@ -227,8 +231,8 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 		mLoadingIcon = (ProgressBar) findViewById(R.id.loading_icon);
 		mLoadingIcon.setOnLongClickListener(this);
 		
-		mPlaylistName = (TextView) findViewById(R.id.playlist_name_view);
-		//TODO: add long click listner
+		mPlaylistLabel = (TextView) findViewById(R.id.playlist_name_view);
+		mPlaylistLabel.setOnLongClickListener(this);
 		
 		mVoiceButton = (ImageButton) findViewById(R.id.set_by_voice);
 		mVoiceButton.setOnClickListener(this);
@@ -241,6 +245,8 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 		mSetNowButton.setOnClickListener(this);
 		
 		mTimeLabel = (TextView) findViewById(R.id.target_time_label);
+		mSleepTimeLabel = (TextView) findViewById(R.id.sleep_time_label);
+		
 		mWebview = (WebView)findViewById(R.id.webView1);
 		mAlarmButton = (ToggleButton)findViewById(R.id.alarm_button);
 		mAlarmButton.setOnClickListener(this);
@@ -344,17 +350,7 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 		mAlarmButton.requestFocus();
 		//WebView.onResume is hidden, why!?!?
 		mWebview.getSettings().setJavaScriptEnabled(true);
-
-		if (null != mState.mTargetTime) {
-			updateAlarmUI(mState.mTargetTime);
-		} else {
-			if (mSetDefaultTime) {
-				mTimePicker.setCurrentHour(pref_default_hour);
-				mTimePicker.setCurrentMinute(pref_default_min);
-			} else {
-				mSetDefaultTime = true;
-			}
-		}
+		updateUI();
 	}
 
 	@Override
@@ -414,7 +410,10 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 		}
 		if (update_all || "url_list".equals(key)) {
 			String liststr = pref.getString("url_list", "http://twitter.com/");
-			liststr += MultiListPreference.SEPARATOR + MYURL;
+			if(!liststr.isEmpty()){
+				liststr += MultiListPreference.SEPARATOR;
+			}
+			liststr += MYURL;
 			WEB_PAGE_LIST = liststr.split(MultiListPreference.SEPARATOR);
 		}
 		if (update_all || "use_native_player".equals(key)) {
@@ -477,18 +476,12 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 		mWebview.loadUrl(url);
 	}
 
-	private void clearAlarmUI() {
-		mTimePicker.setEnabled(true);
-		mTimeLabel.setText("");
-		mTimePicker.setCurrentHour(pref_default_hour);
-		mTimePicker.setCurrentMinute(pref_default_min);
-	}
-
 	private void cancelAlarm () {
 		final PendingIntent p = makePlayPintent(WAKEUP_ACTION, true);
 		final AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-		clearAlarmUI();
 		mState.mTargetTime = null;
+		mState.mSleepMin = 0;
+		updateUI();
 		mgr.cancel(p);
 		
 		final NotificationManager notify_mgr = 
@@ -553,12 +546,31 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 				dow_str);
 	}
 
-	private void updateAlarmUI (Calendar target) {
-		mTimeLabel.setText(dateStr(target));
-		mTimePicker.setCurrentHour(target.get(Calendar.HOUR_OF_DAY));
-		mTimePicker.setCurrentMinute(target.get(Calendar.MINUTE));
-		mTimePicker.setEnabled(false);
+	private void updateUI () {
+		Calendar target = mState.mTargetTime;
+		if(null != target) {
+			mTimeLabel.setText(dateStr(target));
+			mTimePicker.setCurrentHour(target.get(Calendar.HOUR_OF_DAY));
+			mTimePicker.setCurrentMinute(target.get(Calendar.MINUTE));
+			mTimePicker.setEnabled(false);
+		} else {
+			mTimePicker.setEnabled(true);
+			mTimeLabel.setText("");
+			if (mSetDefaultTime) {
+				mTimePicker.setCurrentHour(pref_default_hour);
+				mTimePicker.setCurrentMinute(pref_default_min);
+			} else {
+				mSetDefaultTime = true;
+			}
+		}
+		int sleepMin = mState.mSleepMin;
+		if(sleepMin > 0) {
+			mSleepTimeLabel.setText(sleepMin + " min");
+		} else {
+			mSleepTimeLabel.setText("");
+		}
 		mAlarmButton.setChecked(mState.mTargetTime != null);
+		mPlaylistLabel.setText(Player.getCurrentPlaylistName());
 	}
 
 	private void stopAlarm() {
@@ -571,28 +583,32 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 	}
 	
 	private void setNotification(String title, String text) {
-		final Notification note = new Notification(R.drawable.img, title, System.currentTimeMillis());
+		final Notification note =
+				new Notification(R.drawable.img, title, System.currentTimeMillis());
 		
 		final Intent ni = new Intent(this, MalarmActivity.class);
 		final PendingIntent npi = PendingIntent.getActivity(this, 0, ni, 0);
 		note.setLatestEventInfo(this, title, text, npi);
-		final NotificationManager notify_mgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		final NotificationManager notify_mgr =
+				(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		notify_mgr.notify(PACKAGE_NAME, 0, note);
 	}
 	
-	private void playSleepMusic(long target_millis) {
-		final long now_millis = System.currentTimeMillis();
+	private void playSleepMusic(long targetMillis) {
+		final long nowMillis = System.currentTimeMillis();
 		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		final int min = Integer.valueOf(pref.getString("sleeptime", "60"));
 		if (Player.isPlaying()) {
 			Player.pauseMusic();
 		}
 		Player.playSleepMusic(this);
-		final long sleep_time_millis = min * 60 * 1000;
-		if (target_millis - now_millis >= sleep_time_millis) {
+		final long sleepTimeMillis = min * 60 * 1000;
+		if (targetMillis - nowMillis >= sleepTimeMillis) {
+			mState.mSleepMin = min;
 			final PendingIntent sleepIntent = makePlayPintent(SLEEP_ACTION, pref_use_native_player);
 			final AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-			mgr.set(AlarmManager.RTC_WAKEUP, now_millis+sleep_time_millis, sleepIntent);
+			mgr.set(AlarmManager.RTC_WAKEUP, nowMillis + sleepTimeMillis, sleepIntent);
+			updateUI();
 		}
 	}
 	
@@ -600,7 +616,7 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 	 * 
 	 * @return target time in epoch time (miliseconds)
 	 */
-	private long setAlarm() {
+	private void setAlarm() {
 		Log.i(TAG, "scheduleToPlaylist is called");
 		//set timer
 		final Calendar now = new GregorianCalendar();
@@ -611,29 +627,27 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 		final int target_min = mTimePicker.getCurrentMinute().intValue();
 		final Calendar target = new GregorianCalendar(now.get(Calendar.YEAR),
 				now.get(Calendar.MONTH), now.get(Calendar.DATE), target_hour, target_min, 0);
-		long target_millis = target.getTimeInMillis();
+		long targetMillis = target.getTimeInMillis();
 		String tommorow ="";
-		final long now_millis = System.currentTimeMillis();
-		if (target_millis <= now_millis) {
+		final long nowMillis = System.currentTimeMillis();
+		if (targetMillis <= nowMillis) {
 			//tomorrow
-			target_millis += 24 * 60 * 60 * 1000;
-			target.setTimeInMillis(target_millis);
+			targetMillis += 24 * 60 * 60 * 1000;
+			target.setTimeInMillis(targetMillis);
 			tommorow = " (" + getString(R.string.tomorrow) + ")";
 		}
 		mState.mTargetTime = target;
-		updateAlarmUI(target);
 
 		final AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		final PendingIntent pendingIntent = makePlayPintent(WAKEUP_ACTION, false);
-		mgr.set(AlarmManager.RTC_WAKEUP, target_millis, pendingIntent);
+		mgr.set(AlarmManager.RTC_WAKEUP, targetMillis, pendingIntent);
 
 		showMessage(this, getString(R.string.alarm_set) + tommorow);
 		String text = getString(R.string.notify_waiting_text);
 		text += " (" + dateStr(target) +")";
 		final String title = getString(R.string.notify_waiting_title);
+		//umm...
 		setNotification(title, text);
-		//umm.. 
-		return target_millis;
 	}
 
 	public void setNow() {
@@ -653,9 +667,9 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 			break;
 		case R.id.play_wakeup:
 			if (Player.isPlaying()) {
-				Player.pauseMusic();
+				break;
 			}
-			Player.playWakeupMusic(this, pref_use_native_player);
+			Player.playMusic();
 			break;
 		case R.id.pref:
 			startActivity(new Intent(this, MalarmPreference.class));
@@ -682,7 +696,9 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 			if (mState.mTargetTime != null) {
 				stopAlarm();
 			} else {
-				playSleepMusic(setAlarm());
+				setAlarm();
+				playSleepMusic(mState.mTargetTime.getTimeInMillis());
+				updateUI();
 			}
 		} else if (v == mSetNowButton) {
 			setNow();
@@ -734,17 +750,33 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 				return false;
 			}
 			shortVibrate();
-			final long target_millis = setAlarm();
+			setAlarm();
 			new AlertDialog.Builder(this)
 			.setTitle(R.string.ask_play_sleep_tune)
 			.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+				@Override
 				public void onClick(DialogInterface dialog, int whichButton) {
-					playSleepMusic(target_millis);
+					playSleepMusic(mState.mTargetTime.getTimeInMillis());
+					updateUI();
 				}
 			})
-			.setNegativeButton(R.string.no, null)
+			.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface arg0, int arg1) {
+					updateUI();
+				}
+			})
 			.create()
 			.show();
+			return true;
+		}
+		if (view == mPlaylistLabel) {
+			if (Player.isPlaying()) {
+				return false;
+			}
+			shortVibrate();
+			Player.switchPlaylist();
+			updateUI();
 			return true;
 		}
 		return false;
@@ -870,6 +902,17 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 			return currentPlaylist.getName();
 		}
 		
+		public static void switchPlaylist() {
+			if(isPlaying()) {
+				return;
+			}
+			if(currentPlaylist == sleepPlaylist) {
+				currentPlaylist = wakeupPlaylist;
+			} else {
+				currentPlaylist = sleepPlaylist;
+			}
+		}
+		
 		/**
 		 * intent: com.mamewo.malarm.MalarmActivity.WAKEUP_ACTION
 		 * extra: playlist_path: path to playlist where wakeup.m3u exists
@@ -909,6 +952,9 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 					Player.stopMusicNativePlayer(context);
 				} else {
 					Player.pauseMusic();
+				}
+				if(mState != null) {
+					mState.mSleepMin = 0;
 				}
 				showMessage(context, context.getString(R.string.goodnight));
 			}
@@ -1001,11 +1047,15 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 				return true;
 			}
 		}
-
+		
 		public static void playMusic(Playlist playlist) {
 			currentPlaylist = playlist;
+			playMusic();
+		}
+
+		public static void playMusic() {
 			Log.i(TAG, "playMusic");
-			if (playlist == null || playlist.isEmpty()) {
+			if (currentPlaylist == null || currentPlaylist.isEmpty()) {
 				Log.i(TAG, "playMusic: playlist is null");
 				return;
 			}
@@ -1021,7 +1071,7 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 			String path = "";
 			//skip unsupported files filtering by filename ...
 			for (int i = 0; i < 10; i++) {
-				path = playlist.next();
+				path = currentPlaylist.next();
 				File f = new File(path);
 				// ....
 				if ((!path.endsWith(".m4p")) && f.exists()) {
@@ -1034,18 +1084,6 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 				mPlayer.prepare();
 				mPlayer.start();
 			} catch (IOException e) {
-				//do nothing
-			}
-		}
-
-		public static void playMusic() {
-			Log.i(TAG, "playMusic (from pause) is called");
-			if (currentPlaylist == null) {
-				return;
-			}
-			try {
-				mPlayer.start();
-			} catch (Exception e) {
 				//do nothing
 			}
 		}

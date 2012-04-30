@@ -21,16 +21,32 @@
                 android:id="@+id/linearLayout4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
+                <LinearLayout
+                    android:id="@+id/linearLayout41"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
 
-            <TextView android:id="@+id/target_time_label" android:layout_height="wrap_content" android:text=""  android:layout_width="wrap_content" android:textSize="9pt"></TextView>
+                    <TextView
+                        android:id="@+id/target_time_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textAppearance="?android:attr/textAppearanceSmall" />
+                    <TextView
+                        android:id="@+id/sleep_time_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textAppearance="?android:attr/textAppearanceSmall" />
+                </LinearLayout>
 
-            <ProgressBar
-                android:id="@+id/loading_icon"
-                style="?android:attr/progressBarStyleSmall"
-                android:layout_width="25dp"
-                android:layout_height="fill_parent" />
-                
-            </LinearLayout>
+                <ProgressBar
+                    android:id="@+id/loading_icon"
+                    style="?android:attr/progressBarStyleSmall"
+                    android:layout_width="38dp"
+                    android:layout_height="fill_parent" />
+</LinearLayout>
 
                 <ToggleButton
                     android:id="@+id/alarm_button"
@@ -65,6 +81,7 @@
                         android:layout_height="wrap_content"
                         android:src="@android:drawable/ic_media_next"
                         android:contentDescription="@string/next_button_desc"
+                        android:tint="#fff"
                          />
 
                 </LinearLayout>
@@ -73,6 +90,7 @@
                 android:id="@+id/playlist_name_view"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:gravity="top"
                 android:text=" "
                 android:textAppearance="?android:attr/textAppearanceSmall" />
         </LinearLayout>

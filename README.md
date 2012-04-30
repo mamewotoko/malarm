@@ -43,7 +43,8 @@ You can change path to playlist and music files by "Playlist directory" preferen
 
 ## TODO
 - implement music player as Service to play long time
-- remove duplicate time when time is specified by voice
+- add UI to clear browser history
+- remove duplicate time from list which is specified by voice
 - conditional playlist
 -- sunday, holiday playlist etc...
 - make COOL widget to set alarm (make clock widget?)
