@@ -86,8 +86,8 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 	private static String[] WEB_PAGE_LIST = new String []{
 		"http://www002.upp.so-net.ne.jp/mamewo/mobile_shop.html"
 	};
-	public static M3UPlaylist wakeup_playlist;
-	public static M3UPlaylist sleep_playlist;
+	public static M3UPlaylist wakeupPlaylist;
+	public static M3UPlaylist sleepPlaylist;
 	private static boolean pref_use_native_player;
 	private static boolean pref_vibrate;
 	private static int pref_sleep_volume;
@@ -108,6 +108,7 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 	private Intent mVoiceIntent;
 	private ProgressBar mLoadingIcon;
 	private boolean mStartingVoiceActivity;
+	private TextView mPlaylistName;
 	
 	private PhoneStateListener mCallListener;
 
@@ -168,12 +169,12 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 	//TODO: display toast if file is not found
 	public static void loadPlaylist() {
 		try {
-			wakeup_playlist = new M3UPlaylist(pref_playlist_path, WAKEUP_PLAYLIST_FILENAME);
+			wakeupPlaylist = new M3UPlaylist(pref_playlist_path, WAKEUP_PLAYLIST_FILENAME);
 		} catch (FileNotFoundException e) {
 			Log.i(TAG, "wakeup playlist is not found: " + WAKEUP_PLAYLIST_FILENAME);
 		}
 		try {
-			sleep_playlist = new M3UPlaylist(pref_playlist_path, SLEEP_PLAYLIST_FILENAME);
+			sleepPlaylist = new M3UPlaylist(pref_playlist_path, SLEEP_PLAYLIST_FILENAME);
 		} catch (FileNotFoundException e) {
 			Log.i(TAG, "sleep playlist is not found: " + SLEEP_PLAYLIST_FILENAME);
 		}
@@ -226,6 +227,9 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 		mLoadingIcon = (ProgressBar) findViewById(R.id.loading_icon);
 		mLoadingIcon.setOnLongClickListener(this);
 		
+		mPlaylistName = (TextView) findViewById(R.id.playlist_name_view);
+		//TODO: add long click listner
+		
 		mVoiceButton = (ImageButton) findViewById(R.id.set_by_voice);
 		mVoiceButton.setOnClickListener(this);
 		mStartingVoiceActivity = false;
@@ -262,8 +266,6 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 		
 		final Activity activity = this;
 		mWebview.setWebViewClient(new WebViewClient() {
-			String previous_url = "";
-
 			@Override
 			public void onPageStarted(WebView view, String url, Bitmap favicon) {
 				Log.i(TAG, "onPageStart: " + url);
@@ -280,11 +282,12 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 				//addhoc polling...
 				//TODO: move to resource
 				final int height = view.getContentHeight();
-				if ((url.contains("bijint") || url.contains("bijo-linux")) && height > 400) {
+				if ((url.contains("bijint") ||
+						url.contains("bijo-linux")) && height > 400) {
 					if(url.contains("binan") && height > 420) {
 						view.scrollTo(0, 420);
 					} else if (url.contains("bijo-linux") && height > 100) {
-						view.scrollTo(310, 750);
+						view.scrollTo(310, 740);
 					} else if (height > 960) {
 						view.scrollTo(0, 980);
 					}
@@ -307,7 +310,8 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 	}
 
 	public void startVibrator() {
-		final Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+		final Vibrator vibrator = 
+				(Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 		if (vibrator == null) {
 			return;
 		}
@@ -315,7 +319,8 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 	}
 	
 	public void stopVibrator() {
-		final Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+		final Vibrator vibrator =
+				(Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 		if (vibrator == null) {
 			return;
 		}
@@ -325,7 +330,8 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+		final SharedPreferences pref = 
+				PreferenceManager.getDefaultSharedPreferences(this);
 		pref.unregisterOnSharedPreferenceChangeListener(this);
 	}
 
@@ -334,14 +340,14 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 		Log.i(TAG, "onResume is called, start JavaScript");
 		super.onResume();
 		mStartingVoiceActivity = false;
-
+		
 		mAlarmButton.requestFocus();
-		CookieSyncManager.getInstance().startSync();
 		//WebView.onResume is hidden, why!?!?
 		mWebview.getSettings().setJavaScriptEnabled(true);
-		loadWebPage();
 
-		if (mTimePicker.isEnabled()) {
+		if (null != mState.mTargetTime) {
+			updateAlarmUI(mState.mTargetTime);
+		} else {
 			if (mSetDefaultTime) {
 				mTimePicker.setCurrentHour(pref_default_hour);
 				mTimePicker.setCurrentMinute(pref_default_min);
@@ -354,7 +360,6 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 	@Override
 	protected void onPause() {
 		super.onPause();
-		CookieSyncManager.getInstance().stopSync();
 		//stop tokei
 		mWebview.getSettings().setJavaScriptEnabled(false);
 		mWebview.stopLoading();
@@ -363,9 +368,14 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 	@Override
 	protected void onStart () {
 		super.onStart();
-		if (mState.mTargetTime != null) {
-			updateAlarmUI(mState.mTargetTime);
-		}
+		CookieSyncManager.getInstance().startSync();
+		loadWebPage();
+	}
+	
+	@Override
+	protected void onStop(){
+		CookieSyncManager.getInstance().stopSync();
+		super.onStop();
 	}
 
 	//Avoid finishing activity not to lost _state
@@ -414,7 +424,8 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 			pref_vibrate = pref.getBoolean(key, true);
 		}
 		if (update_all || "playlist_path".equals(key)) {
-			final String newpath = pref.getString(key, DEFAULT_PLAYLIST_PATH.getAbsolutePath());
+			final String newpath = 
+					pref.getString(key, DEFAULT_PLAYLIST_PATH.getAbsolutePath());
 			if (! newpath.equals(pref_playlist_path)) {
 				pref_playlist_path = newpath;
 				loadPlaylist();
@@ -445,7 +456,10 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 	//TODO: move to resource
 	private void adjustWebviewSetting(String url) {
 		final WebSettings config = mWebview.getSettings();
-		if (url.contains("bijo-linux") || url.contains("google") || url.contains("yahoo") || url.contains("so-net")) {
+		if (url.contains("bijo-linux") || 
+			url.contains("google") ||
+			url.contains("yahoo") ||
+			url.contains("so-net")) {
 			config.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
 		} else {
 			config.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
@@ -477,7 +491,8 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 		mState.mTargetTime = null;
 		mgr.cancel(p);
 		
-		final NotificationManager notify_mgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		final NotificationManager notify_mgr = 
+				(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		notify_mgr.cancel(PACKAGE_NAME, 0);
 	}
 
@@ -841,13 +856,20 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 	//TODO: implement music player as Service to play long time
 	//Player now extends BrowdcastReceiver because to stop music this class should be loaded
 	public static class Player extends BroadcastReceiver {
-		private static Playlist current_playlist = sleep_playlist;
+		private static Playlist currentPlaylist = sleepPlaylist;
 		private static MediaPlayer mPlayer = null;
 
 		public static boolean isPlaying() {
 			return mPlayer != null && mPlayer.isPlaying();
 		}
 
+		public static String getCurrentPlaylistName() {
+			if(null == currentPlaylist){
+				return "None";
+			}
+			return currentPlaylist.getName();
+		}
+		
 		/**
 		 * intent: com.mamewo.malarm.MalarmActivity.WAKEUP_ACTION
 		 * extra: playlist_path: path to playlist where wakeup.m3u exists
@@ -922,15 +944,15 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 			if (use_native && f.isFile()) {
 				playMusicNativePlayer(context, f);
 			} else {
-				if(wakeup_playlist == null) {
+				if(wakeupPlaylist == null) {
 					loadPlaylist();
-					if (wakeup_playlist == null) {
+					if (wakeupPlaylist == null) {
 						Log.i(TAG, "playSleepMusic: SLEEP_PLAYLIST is null");
 						return;
 					}
 				}
-				wakeup_playlist.reset();
-				playMusic(wakeup_playlist);
+				wakeupPlaylist.reset();
+				playMusic(wakeupPlaylist);
 			}
 		}
 
@@ -944,15 +966,15 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 				playMusicNativePlayer(context, f);
 			} else {
 				Log.i(TAG, "playSleepMusic: MediaPlayer");
-				if(sleep_playlist == null) {
+				if(sleepPlaylist == null) {
 					loadPlaylist();
-					if (sleep_playlist == null) {
+					if (sleepPlaylist == null) {
 						Log.i(TAG, "playSleepMusic: SLEEP_PLAYLIST is null");
 						return;
 					}
 				}
-				sleep_playlist.reset();
-				playMusic(sleep_playlist);
+				sleepPlaylist.reset();
+				playMusic(sleepPlaylist);
 			}
 		}
 
@@ -961,7 +983,7 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 			if (Player.isPlaying()) {
 				stopMusic();
 			}
-			playMusic(current_playlist);
+			playMusic(currentPlaylist);
 		}
 
 		public static class MusicCompletionListener implements
@@ -981,7 +1003,7 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 		}
 
 		public static void playMusic(Playlist playlist) {
-			current_playlist = playlist;
+			currentPlaylist = playlist;
 			Log.i(TAG, "playMusic");
 			if (playlist == null || playlist.isEmpty()) {
 				Log.i(TAG, "playMusic: playlist is null");
@@ -1018,7 +1040,7 @@ public final class MalarmActivity extends Activity implements OnClickListener, O
 
 		public static void playMusic() {
 			Log.i(TAG, "playMusic (from pause) is called");
-			if (current_playlist == null) {
+			if (currentPlaylist == null) {
 				return;
 			}
 			try {

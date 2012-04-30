@@ -1,19 +1,19 @@
 package com.mamewo.malarm24;
 
-//TODO: fix interface
 public interface Playlist {
 	
-	boolean isEmpty();
-	int size();
+	public boolean isEmpty();
+	public int size();
+
+	public String getName();
 
 	/**
 	 * 
 	 * @return iterator which refers wakeup playlist, which has filename relative to base path
 	 */
-	String next();
+	public String next();
 	/**
 	 * reset position
 	 */
-	void reset();
-	
+	public void reset();
 }

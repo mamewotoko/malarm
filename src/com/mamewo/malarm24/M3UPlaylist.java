@@ -61,6 +61,10 @@ public final class M3UPlaylist implements Playlist {
 		mNextIndex = 0;
 	}
 	
+	public String getName() {
+		return mPlaylistFilename;
+	}
+	
 	public List<String> toList() {
 		return (List<String>)mPlaylist.clone();
 	}

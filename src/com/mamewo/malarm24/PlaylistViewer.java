@@ -44,10 +44,10 @@ public final class PlaylistViewer extends ListActivity {
 		final String which = i.getStringExtra("playlist");
 		int title_id = 0;
 		if ("sleep".equals(which)) {
-			mPlaylist = MalarmActivity.sleep_playlist;
+			mPlaylist = MalarmActivity.sleepPlaylist;
 			title_id = R.string.sleep_playlist_viewer_title;
 		} else {
-			mPlaylist = MalarmActivity.wakeup_playlist;
+			mPlaylist = MalarmActivity.wakeupPlaylist;
 			title_id = R.string.wakeup_playlist_viewer_title;
 		}
 		mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mPlaylist.toList());
