@@ -715,6 +715,8 @@ public final class MalarmActivity
 			break;
 		case R.id.stop_music:
 			Player.pauseMusic();
+			cancelSleepTimer();
+			updateUI();
 			break;
 		default:
 			Log.i(TAG, "Unknown menu");
