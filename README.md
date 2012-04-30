@@ -48,21 +48,25 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - implement music player as Service to play long time
 - add UI to clear browser history
 - refactor class design, activity, player and playlist
-- fix UI update bug
+- fix UI update bug when sleep timer expires (broadcast -> activity)
 - remove duplicate time from list which is specified by voice
 - conditional playlist
 -- sunday, holiday playlist etc...
 - make COOL widget to set alarm (make clock widget?)
-- fix vibrator timing
-- fix bug when native player is used....
 - record wakeup time
 - improve UI to edit playlist
 - add more test cases
+-- label is update when music is stopped or alarm is canceled
+-- check alarm
+-- check default config value
+- fix vibrator timing
+- fix bug when native player is used....
 - automated build check using 2.x, 4.x SDK
 - change webview into photo view
 - add source of malarm_test into this repository
 - use multiple choice dialog to implement site preference
 - Volume preference is 0 initially (but 5 is used as default value)
+- horizontal design
 - Design for tablets
     scale of web contents
 - use Actionbar ?
