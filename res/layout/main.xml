@@ -41,8 +41,8 @@
                         android:id="@+id/set_now_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/set_now_short" >
-                    </Button>
+                        android:text="@string/set_now_short" 
+                      />
                     <ImageButton
                         android:id="@+id/set_by_voice"
                         android:layout_width="wrap_content"
