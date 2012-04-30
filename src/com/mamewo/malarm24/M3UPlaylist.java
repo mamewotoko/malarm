@@ -17,7 +17,9 @@ import android.util.Log;
  */
 
 //TODO: change to proper interface
-public final class M3UPlaylist implements Playlist {
+public final class M3UPlaylist
+	implements Playlist
+{
 	private static final String TAG = "malarm";
 	private int mNextIndex = 0;
 	private final String mBasepath;
@@ -29,14 +31,17 @@ public final class M3UPlaylist implements Playlist {
 	 * @param playlist_basepath path to directory which contains play list
 	 * @param playlist_filename filename of playlist (not absolute path)
 	 */
-	public M3UPlaylist(String playlist_basepath, String playlist_filename) throws FileNotFoundException {
+	public M3UPlaylist(String playlist_basepath, String playlist_filename)
+			throws FileNotFoundException {
 		mBasepath = playlist_basepath;
 		mPlaylistFilename = playlist_filename;
-		final String playlist_abs_path = (new File(playlist_basepath, playlist_filename)).getAbsolutePath();
+		final String playlist_abs_path =
+				(new File(playlist_basepath, playlist_filename)).getAbsolutePath();
 		try {
 			mPlaylist = new ArrayList<String>();
 			load(playlist_abs_path);
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			Log.i(TAG, "cannot read playlist " + playlist_filename);
 		}
 	}
@@ -69,7 +74,8 @@ public final class M3UPlaylist implements Playlist {
 		return (List<String>)mPlaylist.clone();
 	}
 
-	protected void load(final String filename) throws FileNotFoundException, IOException {
+	protected void load(final String filename)
+			throws FileNotFoundException, IOException {
 		final BufferedReader br = new BufferedReader(new FileReader (filename));
 		String music_filename;
 		while ((music_filename = br.readLine()) != null) {
@@ -98,7 +104,8 @@ public final class M3UPlaylist implements Playlist {
 		mPlaylist.add(pos, path);
 	}
 	
-	public void save() throws IOException {
+	public void save()
+			throws IOException {
 		File playlist = new File(mBasepath, mPlaylistFilename);
 		if (playlist.exists()) {
 			if (! playlist.renameTo(new File(mBasepath, "_" + mPlaylistFilename))) {

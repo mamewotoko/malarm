@@ -91,7 +91,7 @@ public class MalarmPreference extends PreferenceActivity implements OnPreference
 			final String [] playlists = { MalarmActivity.WAKEUP_PLAYLIST_FILENAME, MalarmActivity.SLEEP_PLAYLIST_FILENAME };
 			Log.i(TAG, "playlist pref is clicked");
 			for (String filename : playlists) {
-				final File file = new File(MalarmActivity.pref_playlist_path, filename);
+				final File file = new File(MalarmActivity.prefPlaylistPath, filename);
 				if (file.exists()) {
 					//show confirm dialog?
 					Log.i(TAG, "playlist file exists: " + filename);
