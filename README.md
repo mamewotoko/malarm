@@ -18,8 +18,12 @@ This is a simple alarm application of android (version 2.2.x - 2.3.3, 4.x).
 ![English screen shot](https://github.com/mamewotoko/malarm/raw/master/doc/alarm_en.png)
 ![Preference](https://github.com/mamewotoko/malarm/raw/master/doc/malarm_pref.png)
 
-## Japanese manual
-http://mamewotoko.github.com/malarm/doc/
+## Help page
+Japanese:
+http://mamewotoko.github.com/malarm/doc/index.html
+
+English:
+http://mamewotoko.github.com/malarm/doc/index_en.html
 
 ## Google Play
 https://play.google.com/store/apps/details?id=com.mamewo.malarm24
@@ -94,9 +98,6 @@ https://github.com/mamewotoko/malarm_test
 - MultiListPreference is based on the following web page
 http://blog.350nice.com/wp/archives/240
 - Alarm application starts when user push appwidget of malarm.
-- Screen rotation and vibration.....
-- Android Market
-https://market.android.com/details?id=com.mamewo.malarm
 - Dropsync is a useful Android app!
 
 ----
