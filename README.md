@@ -10,8 +10,7 @@ This is a simple alarm application of android (version 2.2.x - 2.3.3, 4.x).
      press "set alarm" button                      display google calendar/Gmail etc..
      
 
- If you want to stop vibration only, please use "stop vibraiton" menu
- This application has appwidget, but it has no function for now.... very simple!
+ If you want to stop vibration only, please use "stop vibration" menu
 
 ## Screenshot
 ![Japanese screen shot](https://github.com/mamewotoko/malarm/raw/master/doc/alarm_ja.png)
