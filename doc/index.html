@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja"><head>
    <meta charset="utf-8" />
-<!-- Location: http://www002.upp.so-net.ne.jp/mamewo/indeivex.html # -->
+   <title>まらーむの使いかた</title>
    <meta name="Author" content="Takashi Masuyama" />
    <meta name="viewport" content="width=device-width" />
 		<script type='text/javascript' src='assets/javascript/prettify.js'></script>
@@ -9,10 +9,6 @@
 		<link rel='stylesheet' type='text/css' href='assets/css/skeleton/stylesheets/skeleton.css' />
 		<link rel='stylesheet' type='text/css' href='assets/css/prettify.css' />
 		<link rel='stylesheet' type='text/css' href='assets/css/style.css' />
-<!--
-   <link rel="stylesheet" href="style.css" type="text/css" />
--->
-   <title>まらーむの使いかた</title>
 </head>
 <body onload='prettyPrint()'>
 
@@ -21,7 +17,9 @@
 <!-- hhmts start -->
 Last modified: Wed May  6 10:55:46 JST 2009
 <!-- hhmts end -->
-</p></div>
+</p>
+<p><a href="index_en.html">English</a></p>
+</div>
 
 <h2>何?</h2>
 <p><img src="https://github.com/mamewotoko/malarm/raw/master/res/drawable/img.png" alt="app icon" />
@@ -42,6 +40,7 @@ Last modified: Wed May  6 10:55:46 JST 2009
  #EXTINF:205,心のファンファーレ - 奥井亜紀
  02 心のファンファーレ.m4a
 </code></pre>
+#で始まる行は無視されます。
 
 <h3>SDメモリのファイル構成例:</h3>
 <pre><code>music
@@ -63,19 +62,24 @@ Last modified: Wed May  6 10:55:46 JST 2009
 </ol>
 
 <h2>アラームの解除方法</h2>
-<p>メイン画面の「まらーむをとめる」ボタンを押します。
-</p>
+<p>メイン画面の「まらーむをとめる」ボタンを押します。</p>
+
 <h2>ヒント</h2>
 <ol>
-<li>メニューから設定を選び、「プレイリストを作成」を選択するとSDメモリのmusicディレクトリにある音楽ファイル全てを
-含むプレイリスト(sleep.m3u, wakeup.m3u)が作成されます。
+<li>メニューから設定を選び、「プレイリストを作成」を選択するとSDメモリの"music"ディレクトリにある音楽ファイル全てを
+含むプレイリスト(sleep.m3u, wakeup.m3u)が作成されます。</li>
+<li>M3UプレイリストはiTunesで作成できます。ただし、音楽ファイルのパスの修正と(Macの場合)ファイル名の濁点、半濁点に関する修正が必要になるでしょう。</li>
 <li>マイクボタンを押すと声（日本語）でタイムピッカーの時刻を指定できます。</li>
 <li>「なぅ！」ボタンを押すとタイムピッカーが現在時刻にセットされます。</li>
 <li>メイン画面の下にあるウェブページは、右端、左端をダブルタップすると別のページに切り替わります。</li>
+<!--
+ばーじょん毎にかく
+<li>「まらーむをセットする」ボタンを長押しするとおやすみの音楽(sleep.m3u)を流すかどうかを選択できます。</li>
+-->
 </ol>
 <hr />
 <address><p>
-<img src="../res/drawable/img.png" width="32" height="32" alt="icon" /> 作者: 増山隆 <a href="mailto:mamewotoko@gmail.com">mamewotoko@gmail.com</a>
+<img src="../res/drawable/img.png" width="32" height="32" alt="icon" /> Authro: Takashi Masuyama <a href="mailto:mamewotoko@gmail.com">mamewotoko@gmail.com</a>
 </p></address>
 </div>
 </body></html>
