@@ -40,12 +40,14 @@ import android.speech.RecognizerIntent;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnKeyListener;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.GestureDetector;
@@ -57,7 +59,7 @@ import android.graphics.Bitmap;
 
 public final class MalarmActivity
 	extends Activity
-	implements OnClickListener, OnSharedPreferenceChangeListener, OnLongClickListener
+	implements OnClickListener, OnSharedPreferenceChangeListener, OnLongClickListener, OnKeyListener
 {
 	public static final String PACKAGE_NAME = MalarmActivity.class.getPackage().getName();
 	public static final String WAKEUP_ACTION = PACKAGE_NAME + ".WAKEUP_ACTION";
@@ -219,9 +221,8 @@ public final class MalarmActivity
 		pref.registerOnSharedPreferenceChangeListener(this);
 		syncPreferences(pref, "ALL");
 		setContentView(R.layout.main);
-		
 		mSetDefaultTime = true;
-		
+				
 		mTimePicker = (TimePicker) findViewById(R.id.timePicker1);
 		mTimePicker.setIs24HourView(true);
 
@@ -256,9 +257,13 @@ public final class MalarmActivity
 		mAlarmButton.setOnClickListener(this);
 		mAlarmButton.setLongClickable(true);
 		mAlarmButton.setOnLongClickListener(this);
+		//umm...
+		mAlarmButton.setOnKeyListener(this);
 
 		CookieSyncManager.createInstance(this);
 		
+		//umm...
+		mWebview.setOnKeyListener(this);
 		final WebSettings config = mWebview.getSettings();
 		//to display twitter...
 		config.setDomStorageEnabled(true);
@@ -268,13 +273,13 @@ public final class MalarmActivity
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				mWebview.requestFocus();
-				Log.i(TAG, "onTouch: event " + event + " gd: " + mGD);
 				mGD.onTouchEvent(event);
 				return false;
 			}
 		});
 		
 		final Activity activity = this;
+		mWebview.setWebChromeClient(new WebChromeClient());
 		mWebview.setWebViewClient(new WebViewClient() {
 			@Override
 			public void onPageStarted(WebView view, String url, Bitmap favicon) {
@@ -470,7 +475,7 @@ public final class MalarmActivity
 		else {
 			config.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
 		}
-		if (url.contains("bijo-linux")) {
+		if (url.contains("bijo-linux") || url.contains("bijin-tokei")) {
 			config.setDefaultZoom(WebSettings.ZoomDensity.FAR);
 		}
 		else {
@@ -748,6 +753,23 @@ public final class MalarmActivity
 		else if (v == mSetNowButton) {
 			setNow();
 		}
+	}
+
+	@Override
+	public boolean onKey(View view, int keyCode, KeyEvent event) {
+		Log.i(TAG, "onKey: view " + view.getClass());
+		if(event.getAction() == KeyEvent.ACTION_UP) {
+			int index = mState.mWebIndex;
+			boolean handled = false;
+			if((KeyEvent.KEYCODE_0 <= keyCode) &&
+				(keyCode <= KeyEvent.KEYCODE_9)) {
+				mState.mWebIndex = (keyCode - KeyEvent.KEYCODE_0) % WEB_PAGE_LIST.length;
+				loadWebPage();
+				handled = true;
+			}
+			return handled;
+		}
+		return false;
 	}
 
 	private void setTimeByVoice() {

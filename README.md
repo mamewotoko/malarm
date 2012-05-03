@@ -53,6 +53,8 @@ You can change path to playlist and music files by "Playlist directory" preferen
 ## TODO
 - implement music player as Service to play long time
 - add UI to clear browser history
+- support small screen (which screen? QVGA?)
+-- hide time picker after malarm is set
 - refactor class design, activity, player and playlist
 - fix UI update bug when sleep timer expires (broadcast -> activity)
 - remove duplicate time from list which is specified by voice
