@@ -27,6 +27,9 @@ http://mamewotoko.github.com/malarm/doc/index_en.html
 ## Google Play
 https://play.google.com/store/apps/details?id=com.mamewo.malarm24
 
+## Github
+https://github.com/mamewotoko/malarm
+
 ## How to build & run
 1. Put your music file into /sdcard/music directory of android device
 2. Prepare m3u format play list for sleep (named sleep.m3u) and wakeup (named wakeup.m3u).
@@ -65,10 +68,10 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - fix vibrator timing
 - fix bug when native player is used....
 - automated build check using 2.x, 4.x SDK
-- change webview into photo view
+- change webview into photo view, movie player...
 - add source of malarm_test into this repository
-- use multiple choice dialog to implement site preference
 - Volume preference is 0 initially (but 5 is used as default value)
+- support podcast
 - horizontal design
 - Design for tablets
     scale of web contents
