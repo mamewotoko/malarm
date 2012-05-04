@@ -95,11 +95,8 @@ public class MalarmPreference
 			//show dialog
 			final Dialog dialog = new Dialog(this);
 			dialog.setContentView(R.layout.dialog);
-			final ImageView image = (ImageView) dialog.findViewById(R.id.dialog_image_view);
-			image.setImageResource(R.drawable.download);
-			final TextView text = (TextView) dialog.findViewById(R.id.dialog_text);
-			text.setText(getString(R.string.git_url));
-			text.setOnClickListener(this);
+			final View logo = dialog.findViewById(R.id.dialog_logo);
+			logo.setOnClickListener(this);
 			dialog.setTitle(R.string.dialog_title);
 			dialog.show();
 			result = true;
