@@ -3,8 +3,8 @@
     xmlns:mamewo="http://schemas.android.com/apk/res/mamewo" >
 
     <com.mamewo.malarm24.MultiListPreference
-        separator="|"
-        android:defaultValue="http://twitter.com/"
+        separator="!"
+        android:defaultValue="http://bijo-linux.com/!http://twitter.com/!http://www.bijint.com/jp/!http://www.google.com/mail/!https://www.google.com/calendar/!http://www.okuiaki.com/mobile/login.php"
         android:dialogTitle="@string/pref_webview_url"
         android:entries="@array/pref_url_list_key"
         android:entryValues="@array/pref_url_list_value"

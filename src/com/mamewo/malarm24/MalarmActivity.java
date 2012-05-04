@@ -406,7 +406,7 @@ public final class MalarmActivity
 	public void syncPreferences(SharedPreferences pref, String key) {
 		final boolean update_all = "ALL".equals(key);
 		if (update_all || "default_time".equals(key)) {
-			final String timestr = pref.getString("default_time", "7:00");
+			final String timestr = pref.getString("default_time", MalarmPreference.DEFAULT_WAKEUP_TIME);
 			final String[] split_timestr = timestr.split(":");
 			if (split_timestr.length == 2) {
 				pref_default_hour = Integer.valueOf(split_timestr[0]);
@@ -414,13 +414,15 @@ public final class MalarmActivity
 			}
 		}
 		if (update_all || "sleep_volume".equals(key)) {
-			pref_sleep_volume = Integer.parseInt(pref.getString("sleep_volume", "5"));
+			pref_sleep_volume = 
+					Integer.parseInt(pref.getString("sleep_volume", MalarmPreference.DEFAULT_SLEEP_VOLUME));
 		}
 		if (update_all || "wakeup_volume".equals(key)) {
-			pref_wakeup_volume = Integer.parseInt(pref.getString("wakeup_volume", "5"));
+			pref_wakeup_volume =
+					Integer.parseInt(pref.getString("wakeup_volume", MalarmPreference.DEFAULT_WAKEUP_VOLUME));
 		}
 		if (update_all || "url_list".equals(key)) {
-			String liststr = pref.getString("url_list", "http://twitter.com/");
+			String liststr = pref.getString("url_list", MalarmPreference.DEFAULT_WEB_LIST);
 			if(!liststr.isEmpty()){
 				liststr += MultiListPreference.SEPARATOR;
 			}
@@ -431,7 +433,7 @@ public final class MalarmActivity
 			pref_use_native_player = pref.getBoolean("use_native_player", false);
 		}
 		if (update_all || "vibrate".equals(key)) {
-			pref_vibrate = pref.getBoolean(key, true);
+			pref_vibrate = pref.getBoolean(key, MalarmPreference.DEFAULT_VIBRATION);
 		}
 		if (update_all || "playlist_path".equals(key)) {
 			final String newpath = 
@@ -647,7 +649,7 @@ public final class MalarmActivity
 		if(mState.mTargetTime != null) {
 			target = mState.mTargetTime.getTimeInMillis();
 		}
-		final int min = Integer.valueOf(pref.getString("sleeptime", "60"));
+		final int min = Integer.valueOf(pref.getString("sleeptime", MalarmPreference.DEFAULT_SLEEPTIME));
 		final long sleepTimeMillis = min * 60 * 1000;
 		if (target == 0 || target - nowMillis >= sleepTimeMillis) {
 			mState.mSleepMin = min;

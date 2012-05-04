@@ -71,7 +71,7 @@ public class MultiListPreference extends ListPreference {
 	}
 
 	public String[] parseStoredValue(CharSequence val) {
-		if ("".equals(val)) {
+		if (null == val || "".equals(val)) {
 			return null;
 		} else {
 			return ((String)val).split(SEPARATOR);
@@ -80,6 +80,8 @@ public class MultiListPreference extends ListPreference {
 
 	private void restoreCheckedEntries() {
 		CharSequence[] entryValues = getEntryValues();
+
+		Log.i("malrm", "value: " + getValue());
 
 		// Explode the string read in sharedpreferences
 		String[] vals = parseStoredValue(getValue());

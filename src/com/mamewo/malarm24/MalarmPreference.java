@@ -38,7 +38,17 @@ public class MalarmPreference
 	private CheckBoxPreference sleepPlaylist_;
 	private CheckBoxPreference wakeupPlaylist_;
 	private static final String TAG = "malarm";
-	
+
+	//move to property file?
+	public static final boolean DEFAULT_VIBRATION = true;
+	public static final String DEFAULT_SLEEPTIME = "60";
+	public static final String DEFAULT_WAKEUP_TIME = "7:00";
+	public static final String DEFAULT_SLEEP_VOLUME = "5";
+	public static final String DEFAULT_WAKEUP_VOLUME = "5";
+	public static final String DEFAULT_WEB_LIST = 
+		"http://bijo-linux.com/!http://twitter.com/!http://www.bijint.com/jp/!http://www.google.com/mail/"
+		+ "!https://www.google.com/calendar/!http://www.okuiaki.com/mobile/login.php";
+
 	@Override
 	public boolean accept(File pathname) {
 		final String filename = pathname.getName();
