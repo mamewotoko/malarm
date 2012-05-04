@@ -52,16 +52,16 @@ You can change path to playlist and music files by "Playlist directory" preferen
 
 ## TODO
 - implement music player as Service to play long time
-- add UI to clear browser history
 - support small screen (which screen? QVGA?)
 -- hide time picker after malarm is set
 - refactor class design, activity, player and playlist
 - fix UI update bug when sleep timer expires (broadcast -> activity)
 - remove duplicate time from list which is specified by voice
 - conditional playlist
--- sunday, holiday playlist etc...
+-- Sunday, holiday playlist etc...
 - make COOL widget to set alarm (make clock widget?)
 - record wakeup time
+- support shuffle?
 - improve UI to edit playlist
 - add more test cases
 -- label is update when music is stopped or alarm is canceled
@@ -72,6 +72,7 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - automated build check using 2.x, 4.x SDK
 - change webview into photo view, movie player...
 - add source of malarm_test into this repository
+- refactor code to clear browser history
 - Volume preference is 0 initially (but 5 is used as default value)
 - support podcast
 - horizontal design

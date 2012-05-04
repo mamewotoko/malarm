@@ -20,7 +20,6 @@
     <string name="disable_vibration">OFF</string>
     <string name="pref_title">Wakeup vibration</string>
     <string name="pref_vibration">Wakeup vibration</string>
-    <string name="wakeup_volume_pref_title">Volume of wakeup tunes</string>
     <string name="set_now_short">Now!</string>
 
     <string name="use_native_player_title">Use native player</string>
@@ -56,9 +55,12 @@
     <string name="notify_wakeup_title">Playing malarm tunes</string>
     <string name="notify_wakeup_text">Good morning!</string>
     <string name="pref_sleep_volume_title">Sleep tunes volume</string>
-    <string name="pref_sleep_volume_summary">Sleep tunes volume</string>
+    <string name="pref_sleep_volume_summary"></string>
     <string name="pref_wakeup_volume_title">Wakeup tunes volume</string>
-    <string name="pref_wakeup_volume_summary">Wakeup tunes volume</string>
+    <string name="pref_wakeup_volume_summary"></string>
+    <string name="other_category_title">others</string>
+    <string name="pref_clear_webview_cache_title">Clear cache and history of Webview</string>
+    <string name="pref_clear_webview_cache_summary">This clears cache and history of malarm web view. One of browser is not cleared.</string>
     
     <string name="minutes">minutes</string>
     <string name="volume_category_title">Volume and vibration</string>
@@ -70,7 +72,7 @@
     <string name="pref_default_time_summary">Set time when you wake up</string>
     <string name="pref_time_category_title">Time preferences</string>
     
-    <string name="voice_dialog">Tell me alarm time\n(support Japanese only...)</string>
+    <string name="voice_dialog">Tell me alarm time\n(support Japanese only)</string>
     <string name="voice_success_format">Set alarm time as "{0}"</string>
     <string name="voice_fail">Recognition as time failed</string>
     <string name="stop_loading">Loading aborted</string>
@@ -90,4 +92,5 @@
     <string name="init_voice">Initializing voice recognizer</string>
     <string name="voice_button_desc">Set time by voice</string>
     <string name="next_button_desc">Play next tune</string>
+    <string name="webview_cache_cleared">Webview cache is cleared</string>
 </resources>

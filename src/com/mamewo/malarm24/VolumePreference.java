@@ -12,7 +12,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class VolumePreference extends DialogPreference implements OnClickListener {
+public class VolumePreference
+	extends DialogPreference
+	implements OnClickListener
+{
 	private int mMaxVolume;
 	private int mVolume = 0;
 	private EditText mEditText;

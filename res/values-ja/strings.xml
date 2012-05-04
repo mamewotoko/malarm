@@ -7,7 +7,7 @@
     <string name="alarm_set">まらーむをセットしました</string>
     <string name="goodnight">おやすみ</string>
 
-    <string name="set_alarm">まらーむをセットする</string>
+    <string name="set_alarm">まらーむをセット</string>
     <string name="stop_alarm">まらーむをとめる</string>
     <string name="stop_vibration">ぶるぶるをとめる</string>
     <string name="play_wakeup">再生</string>
@@ -18,8 +18,7 @@
     <string name="pref_sleeptime">スリープまでの時間</string>
     <string name="enable_vibration">ON</string>
     <string name="disable_vibration">OFF</string>
-    <string name="pref_vibration">まらーむのぶるぶる</string>
-    <string name="wakeup_volume_pref_title">まらーむの音量</string>
+    <string name="pref_vibration">おはようのぶるぶる</string>
     <string name="set_now_short">なぅ!</string>
 
     <string name="use_native_player_title">Nativeの音楽プレイヤーを使う</string>
@@ -31,7 +30,7 @@
     <string name="malarm_version_title">バージョン</string>
     <string name="help_url">http://mamewotoko.github.com/malarm/doc/index.html</string>
     <string name="help_title">ヘルプ</string>
-    <string name="help_summary">使い方を書いたヘルプ(Webページ)を表示します。</string>
+    <string name="help_summary">使い方を書いたヘルプ(Webページ)を表示します。ネットワークに接続しますので、接続料金がかかることがあります。</string>
 
     <string name="git_url">https://github.com/mamewotoko/malarm/</string>
     <string name="dialog_ok">閉じる</string>
@@ -54,10 +53,14 @@
     <string name="notify_waiting_text">まらーむ待機中</string>
     <string name="notify_wakeup_title">まらーむがなっています。</string>
     <string name="notify_wakeup_text">おはよう!</string>
-    <string name="pref_sleep_volume_title">おやすみ時の音量</string>
-    <string name="pref_sleep_volume_summary">おやすみ時の音量</string>
-    <string name="pref_wakeup_volume_title">おはよう時の音量</string>
-    <string name="pref_wakeup_volume_summary">おはよう時の音量</string>
+    <string name="pref_sleep_volume_title">おやすみの音量</string>
+    <string name="pref_sleep_volume_summary"></string>
+    <string name="pref_wakeup_volume_title">おはようの音量</string>
+    <string name="pref_wakeup_volume_summary"></string>
+    <string name="other_category_title">その他</string>
+    <string name="pref_clear_webview_cache_title">Webviewの履歴消去</string>
+    <string name="pref_clear_webview_cache_summary">Webviewの履歴を消去します。</string>
+    
     <string name="minutes">分</string>
     <string name="volume_category_title">音量とぶるぶるの設定</string>
     <string name="volume_format">0から{0}までで音量を設定してください。現在の音量は{1}です。</string>
@@ -88,4 +91,5 @@
     <string name="init_voice">音声認識初期化中</string>
     <string name="voice_button_desc">声で時刻を設定する</string>
     <string name="next_button_desc">次の曲を再生する</string>
+    <string name="webview_cache_cleared">Webviewの履歴が削除しました。</string>
 </resources>

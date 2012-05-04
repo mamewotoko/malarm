@@ -1,39 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:mamewo="http://schemas.android.com/apk/res/mamewo">
-<!-- 
-    <ListPreference android:dialogTitle="@string/preference_title" android:entryValues="@array/preference_item_value" android:entries="@array/preference_item_key" android:key="url" android:title="@string/pref_webview_url" android:defaultValue="http://twitter.com/"></ListPreference>
- -->
-    <com.mamewo.malarm24.MultiListPreference separator="|" android:key="url_list" android:defaultValue="http://twitter.com/"
-        android:title="@string/pref_webview_url" android:dialogTitle="@string/pref_webview_url" android:entries="@array/pref_url_list_key" android:entryValues="@array/pref_url_list_value" />
-    <PreferenceCategory android:title="@string/pref_playlist_category" android:key="playlist_category">
-    <EditTextPreference android:defaultValue="/sdcard/music/"
-        android:enabled="true" android:dialogTitle="@string/playlist_path_title"
-        android:key="playlist_path" android:dialogMessage="@string/enter_path_to_playlist"
-        android:title="@string/playlist_path_title" android:summary="@string/playlist_path_summary"></EditTextPreference>
-    <CheckBoxPreference android:title="@string/pref_sleep_playlist" android:key="sleep_playlist" android:summaryOn="@string/pref_ok_sleep_playlist" android:summaryOff="@string/pref_no_sleep_playlist" android:selectable="true" android:disableDependentsState="true"></CheckBoxPreference><CheckBoxPreference android:title="@string/pref_wakeup_playlist"
-        android:key="wakeup_playlist" android:selectable="true"
-        android:summaryOn="@string/pref_ok_wakeup_playlist"
-        android:summaryOff="@string/pref_no_wakeup_playlist" android:disableDependentsState="true"></CheckBoxPreference>
-    <Preference android:key="create_playlist" android:summary="@string/pref_create_playlist_summary" android:title="@string/pref_create_playlist_title"/>
-    
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:mamewo="http://schemas.android.com/apk/res/mamewo" >
+
+    <com.mamewo.malarm24.MultiListPreference
+        separator="|"
+        android:defaultValue="http://twitter.com/"
+        android:dialogTitle="@string/pref_webview_url"
+        android:entries="@array/pref_url_list_key"
+        android:entryValues="@array/pref_url_list_value"
+        android:key="url_list"
+        android:title="@string/pref_webview_url" />
+
+    <PreferenceCategory
+        android:key="playlist_category"
+        android:title="@string/pref_playlist_category" >
+        <EditTextPreference
+            android:defaultValue="/sdcard/music/"
+            android:dialogMessage="@string/enter_path_to_playlist"
+            android:dialogTitle="@string/playlist_path_title"
+            android:enabled="true"
+            android:key="playlist_path"
+            android:summary="@string/playlist_path_summary"
+            android:title="@string/playlist_path_title" />
+
+        <CheckBoxPreference
+            android:disableDependentsState="true"
+            android:key="sleep_playlist"
+            android:selectable="true"
+            android:summaryOff="@string/pref_no_sleep_playlist"
+            android:summaryOn="@string/pref_ok_sleep_playlist"
+            android:title="@string/pref_sleep_playlist" />
+        <CheckBoxPreference
+            android:disableDependentsState="true"
+            android:key="wakeup_playlist"
+            android:selectable="true"
+            android:summaryOff="@string/pref_no_wakeup_playlist"
+            android:summaryOn="@string/pref_ok_wakeup_playlist"
+            android:title="@string/pref_wakeup_playlist" />
+
+        <Preference
+            android:key="create_playlist"
+            android:summary="@string/pref_create_playlist_summary"
+            android:title="@string/pref_create_playlist_title" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/pref_time_category_title" android:key="time_category">
-        <ListPreference android:entries="@array/preference_time_key" android:entryValues="@array/preference_time_value" android:dialogTitle="@string/preference_time_title" android:key="sleeptime" android:title="@string/pref_sleeptime" android:defaultValue="60"></ListPreference>
-        <com.mamewo.malarm24.TimePreference android:title="@string/pref_default_time_title" android:summary="@string/pref_default_time_summary" android:key="default_time" android:defaultValue="7:00" />
+    <PreferenceCategory
+        android:key="time_category"
+        android:title="@string/pref_time_category_title" >
+        <ListPreference
+            android:defaultValue="60"
+            android:dialogTitle="@string/preference_time_title"
+            android:entries="@array/preference_time_key"
+            android:entryValues="@array/preference_time_value"
+            android:key="sleeptime"
+            android:title="@string/pref_sleeptime" >
+        </ListPreference>
+
+        <com.mamewo.malarm24.TimePreference
+            android:defaultValue="7:00"
+            android:key="default_time"
+            android:summary="@string/pref_default_time_summary"
+            android:title="@string/pref_default_time_title" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/volume_category_title" android:key="volume_category">
-        <CheckBoxPreference android:summaryOff="@string/disable_vibration" android:title="@string/pref_vibration" android:defaultValue="true" android:key="vibrate" android:summaryOn="@string/enable_vibration"></CheckBoxPreference>
-        <com.mamewo.malarm24.VolumePreference android:title="@string/pref_sleep_volume_title" android:summary="@string/pref_sleep_volume_summary" android:key="sleep_volume" android:defaultValue="5" />
-        <com.mamewo.malarm24.VolumePreference android:title="@string/pref_wakeup_volume_title" android:summary="@string/pref_wakeup_volume_summary" android:key="wakeup_volume" android:defaultValue="5" />
+    <PreferenceCategory
+        android:key="volume_category"
+        android:title="@string/volume_category_title" >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="vibrate"
+            android:summaryOff="@string/disable_vibration"
+            android:summaryOn="@string/enable_vibration"
+            android:title="@string/pref_vibration" >
+        </CheckBoxPreference>
+
+        <com.mamewo.malarm24.VolumePreference
+            android:defaultValue="5"
+            android:key="sleep_volume"
+            android:summary="@string/pref_sleep_volume_summary"
+            android:title="@string/pref_sleep_volume_title" />
+        <com.mamewo.malarm24.VolumePreference
+            android:defaultValue="5"
+            android:key="wakeup_volume"
+            android:summary="@string/pref_wakeup_volume_summary"
+            android:title="@string/pref_wakeup_volume_title" />
     </PreferenceCategory>
-<!--  
-        <ListPreference android:title="@string/wakeup_volume_pref_title" android:entryValues="@array/volume_pref_value" android:entries="@array/volume_pref_key" android:defaultValue="0" android:key="wakeup_volume" android:dialogTitle="@string/wakeup_volume_pref_title"></ListPreference>
--->
-    <PreferenceCategory android:title="@string/pref_about_title" android:key="about">
-    <CheckBoxPreference android:summaryOff="@string/use_internal_player" android:title="@string/use_native_player_title" android:defaultValue="false" android:key="use_native_player" android:summaryOn="@string/use_native_player" android:enabled="false" android:selectable="false"></CheckBoxPreference>
-    <Preference android:summary="@string/help_summary" android:title="@string/help_title" android:key="help" android:selectable="true"></Preference>
-    <Preference android:title="@string/malarm_version_title" android:key="malarm_version" android:selectable="true"></Preference>
+    <PreferenceCategory
+        android:key="other_category"
+        android:title="@string/other_category_title" >
+        <Preference
+            android:key="clear_webview_cache"
+            android:summary="@string/pref_clear_webview_cache_summary"
+            android:title="@string/pref_clear_webview_cache_title" android:selectable="true"
+            android:defaultValue="false"
+            android:persistent="true"
+            />
     </PreferenceCategory>
+    <PreferenceCategory
+        android:key="about"
+        android:title="@string/pref_about_title" >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:enabled="false"
+            android:key="use_native_player"
+            android:selectable="false"
+            android:summaryOff="@string/use_internal_player"
+            android:summaryOn="@string/use_native_player"
+            android:title="@string/use_native_player_title" />
+        <Preference
+            android:key="help"
+            android:selectable="true"
+            android:summary="@string/help_summary"
+            android:title="@string/help_title" />
+        <Preference
+            android:key="malarm_version"
+            android:selectable="true"
+            android:title="@string/malarm_version_title" />
+    </PreferenceCategory>
+
 </PreferenceScreen>

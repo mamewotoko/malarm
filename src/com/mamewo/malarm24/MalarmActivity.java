@@ -264,11 +264,11 @@ public final class MalarmActivity
 		
 		//umm...
 		mWebview.setOnKeyListener(this);
-		final WebSettings config = mWebview.getSettings();
+		final WebSettings webSettings = mWebview.getSettings();
 		//to display twitter...
-		config.setDomStorageEnabled(true);
-		config.setJavaScriptEnabled(true);
-		config.setSupportZoom(true);
+		webSettings.setDomStorageEnabled(true);
+		webSettings.setJavaScriptEnabled(true);
+		webSettings.setSupportZoom(true);
 		mWebview.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
@@ -440,6 +440,16 @@ public final class MalarmActivity
 				prefPlaylistPath = newpath;
 				loadPlaylist();
 			}
+		}
+		Log.i(TAG, "syncPref: key " + key);
+		if("clear_webview_cache".equals(key)){
+			mWebview.clearCache(true);
+			mWebview.clearHistory();
+			mWebview.clearFormData();
+			CookieManager mgr = CookieManager.getInstance();
+			mgr.removeAllCookie();
+			//TODO: localize
+			showMessage(this, getString(R.string.webview_cache_cleared));
 		}
 	}
 
@@ -716,6 +726,7 @@ public final class MalarmActivity
 			Player.playMusic();
 			break;
 		case R.id.pref:
+			//TODO: use startActivityForResult
 			startActivity(new Intent(this, MalarmPreference.class));
 			break;
 		case R.id.stop_music:
