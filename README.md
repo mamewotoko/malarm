@@ -73,7 +73,6 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - change webview into photo view, movie player...
 - add source of malarm_test into this repository
 - refactor code to clear browser history
-- Volume preference is 0 initially (but 5 is used as default value)
 - support podcast
 - horizontal design
 - Design for tablets
