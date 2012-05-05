@@ -44,7 +44,9 @@ or Build malarm and install it on android device
 You can change path to playlist and music files by "Playlist directory" preference screen
 
 ## Tested Device
-- Xperia acro made by Sony Ericsson (Android 2.3.4)
+- Xperia acro
+-- Android 2.3.4
+-- 480x854 (WVGA+) screen
 - Android 2.1 emulator
 -- cannot login to twitter because of SSL error?
 - Android 2.2 emulator
