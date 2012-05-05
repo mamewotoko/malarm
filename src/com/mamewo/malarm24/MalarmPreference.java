@@ -16,6 +16,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -44,6 +45,7 @@ public class MalarmPreference
 	private static final String TAG = "malarm";
 
 	//move to property file?
+	//TODO: use XML file to set default value
 	public static final boolean DEFAULT_VIBRATION = true;
 	public static final String DEFAULT_SLEEPTIME = "60";
 	public static final String DEFAULT_WAKEUP_TIME = "7:00";
@@ -122,14 +124,14 @@ public class MalarmPreference
 				if (file.exists()) {
 					//show confirm dialog?
 					Log.i(TAG, "playlist file exists: " + filename);
-					MessageFormat mf = new MessageFormat(getString(R.string.file_exists_format));
-					MalarmActivity.showMessage(this, mf.format(new Object[]{ filename }));
+					String msg = MessageFormat.format(getString(R.string.file_exists_format), filename);
+					MalarmActivity.showMessage(this, msg);
 					continue;
 				}
 				createDefaultPlaylist(file);
 				//TODO: localize
-				MessageFormat mf = new MessageFormat(getString(R.string.playlist_created_format));
-				MalarmActivity.showMessage(this, mf.format(new Object[] { filename }));
+				String msg = MessageFormat.format(getString(R.string.playlist_created_format), filename);
+				MalarmActivity.showMessage(this, msg);
 			}
 			result = true;
 		}
@@ -253,30 +255,36 @@ public class MalarmPreference
 	}
 	
 	public void updateSummary(SharedPreferences pref, String key) {
-		Log.i(TAG, "updateSummary: key: " + key);
 		final boolean update_all = "ALL".equals(key);
 		if (update_all || "default_time".equals(key)) {
 			final String timestr = pref.getString("default_time", MalarmPreference.DEFAULT_WAKEUP_TIME);
-			//TODO: add min
-			MessageFormat mf = new MessageFormat(getString(R.string.unit_min));
-			//showMessage(this, mf.format(new Object[]{ time.mSpeach }));
-			wakeupTime_.setSummary(timestr);
+			String[] hourminStr = timestr.split(":");
+			String hour = hourminStr[0];
+			String min = hourminStr[1];
+			if(min.length() == 1) {
+				min = "0" + min;
+			}
+			wakeupTime_.setSummary(hour + ":" + min);
 		}
 		if (update_all || "sleeptime".equals(key)) {
 			final String sleepTime = pref.getString("sleeptime", MalarmPreference.DEFAULT_SLEEPTIME);
-			//TODO: add min
-			sleepTime_.setSummary(sleepTime);
+			String summary = MessageFormat.format(getString(R.string.unit_min), sleepTime);
+			sleepTime_.setSummary(summary);
 		}
 		if (update_all || "sleep_volume".equals(key)) {
 			String sleepVolume = 
 					pref.getString("sleep_volume", MalarmPreference.DEFAULT_SLEEP_VOLUME);
+			final AudioManager mgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+			final int maxVolume = mgr.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
 			//TODO: show max volume
-			sleepVolume_.setSummary(sleepVolume);
+			sleepVolume_.setSummary(String.format("%s / %d", sleepVolume, maxVolume));
 		}
 		if (update_all || "wakeup_volume".equals(key)) {
 			String wakeupVolume =
 					pref.getString("wakeup_volume", MalarmPreference.DEFAULT_WAKEUP_VOLUME);
-			wakeupVolume_.setSummary(wakeupVolume);
+			final AudioManager mgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+			final int maxVolume = mgr.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+			wakeupVolume_.setSummary(String.format("%s / %d", wakeupVolume, maxVolume));
 		}
 		//url_list has no summary
 	}
