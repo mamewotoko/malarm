@@ -18,6 +18,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
@@ -47,6 +48,9 @@ public class MalarmPreference
 	public static final String DEFAULT_WEB_LIST = 
 		"http://bijo-linux.com/!http://twitter.com/!http://www.bijint.com/jp/!http://www.google.com/mail/"
 		+ "!https://www.google.com/calendar/!http://www.okuiaki.com/mobile/login.php";
+	//e.g. /sdcard/music
+	public static final File DEFAULT_PLAYLIST_PATH =
+			new File(Environment.getExternalStorageDirectory(), Environment.DIRECTORY_MUSIC);
 
 	@Override
 	public boolean accept(File pathname) {
@@ -137,7 +141,7 @@ public class MalarmPreference
 			final SharedPreferences pref = getPreferences(Context.MODE_PRIVATE);
 			//get playlist path
 			final String path = 
-					pref.getString("playlist_path", MalarmActivity.DEFAULT_PLAYLIST_PATH.getAbsolutePath());
+					pref.getString("playlist_path", DEFAULT_PLAYLIST_PATH.getAbsolutePath());
 
 			//TODO: add dependency from playlist path
 			if (! (new File(path, playlist_filename)).exists()) {
@@ -199,7 +203,7 @@ public class MalarmPreference
 		final SharedPreferences pref = getPreferences(Context.MODE_PRIVATE);
 		//get playlist path
 		final String path = 
-				pref.getString("playlist_path", MalarmActivity.DEFAULT_PLAYLIST_PATH.getAbsolutePath());
+				pref.getString("playlist_path", DEFAULT_PLAYLIST_PATH.getAbsolutePath());
 
 		//TODO: move check code to Playlist class
 		final File sleepFile = new File(path, MalarmActivity.SLEEP_PLAYLIST_FILENAME);
