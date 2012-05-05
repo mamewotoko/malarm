@@ -26,23 +26,25 @@
 
     <string-array name="preference_time_key">
         <item>1 分</item>
+        <item>3 分</item>
         <item>5 分</item>
         <item>15 分</item>
         <item>30 分</item>
         <item>45 分</item>
         <item>60 分</item>
-        <item>75 分</item>
         <item>90 分</item>
+        <item>120 分</item>
     </string-array>
     <string-array name="preference_time_value">
         <item>1</item>
+        <item>3</item>
         <item>5</item>
         <item>15</item>
         <item>30</item>
         <item>45</item>
         <item>60</item>
-        <item>75</item>
         <item>90</item>
+        <item>120</item>
     </string-array>
     <string-array name="day_of_week">
         <item>日</item>

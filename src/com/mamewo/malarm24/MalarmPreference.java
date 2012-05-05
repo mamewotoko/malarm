@@ -23,8 +23,6 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.util.Log;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.view.View;
 
 public class MalarmPreference
@@ -45,6 +43,7 @@ public class MalarmPreference
 	public static final String DEFAULT_WAKEUP_TIME = "7:00";
 	public static final String DEFAULT_SLEEP_VOLUME = "5";
 	public static final String DEFAULT_WAKEUP_VOLUME = "5";
+	//TODO: manage default value in one file
 	public static final String DEFAULT_WEB_LIST = 
 		"http://bijo-linux.com/!http://twitter.com/!http://www.bijint.com/jp/!http://www.google.com/mail/"
 		+ "!https://www.google.com/calendar/!http://www.okuiaki.com/mobile/login.php";
@@ -213,7 +212,8 @@ public class MalarmPreference
 	
 	@Override
 	public void onClick(View v) {
-		final Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.git_url)));
+		final Intent i = 
+				new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.git_url)));
 		startActivity(i);
 	}
 }

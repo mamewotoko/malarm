@@ -70,6 +70,11 @@ public class MultiListPreference extends ListPreference {
 		});
 	}
 
+	@Override
+	protected Object onGetDefaultValue(TypedArray a, int index) {
+		return a.getString(index);
+	}
+
 	public String[] parseStoredValue(CharSequence val) {
 		if (null == val || "".equals(val)) {
 			return null;

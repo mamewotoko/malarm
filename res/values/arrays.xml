@@ -24,24 +24,26 @@
 
     <string-array name="preference_time_key">
         <item>1 min</item>
+        <item>3 min</item>
         <item>5 min</item>
         <item>15 min</item>
         <item>30 min</item>
         <item>45 min</item>
         <item>60 min</item>
-        <item>75 min</item>
         <item>90 min</item>
-    </string-array>
+        <item>120 min</item>
+        </string-array>
     <string-array name="preference_time_value">
         <item>1</item>
+        <item>3</item>
         <item>5</item>
         <item>15</item>
         <item>30</item>
         <item>45</item>
         <item>60</item>
-        <item>75</item>
         <item>90</item>
-    </string-array>
+        <item>120</item>
+        </string-array>
 
     <string-array name="day_of_week">
         <item>Sun</item>

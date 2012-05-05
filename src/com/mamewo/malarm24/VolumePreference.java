@@ -3,9 +3,11 @@ package com.mamewo.malarm24;
 import java.text.MessageFormat;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.media.AudioManager;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -58,6 +60,11 @@ public class VolumePreference
 		}
 	}
 	
+	@Override
+	protected Object onGetDefaultValue(TypedArray a, int index) {
+		return a.getString(index);
+	}
+	
 	private void setVolume(int v) {
 		int value = v;
 		if (value > mMaxVolume) {
@@ -75,9 +82,11 @@ public class VolumePreference
 	@Override
 	protected void onSetInitialValue(boolean restoreValue, Object defaultValue) {
 		int volume;
+		
 		if (restoreValue) {
 			volume = Integer.parseInt(getPersistedString(Integer.toString(mVolume)));
-		} else {
+		}
+		else {
 			volume = Integer.parseInt((String) defaultValue);
 		}
 		setVolume(volume);
@@ -88,17 +97,20 @@ public class VolumePreference
 		int volume_value = 0;
 		try {
 			volume_value = Integer.valueOf(mEditText.getText().toString());
-		} catch (NumberFormatException e) {
+		}
+		catch (NumberFormatException e) {
 			//do nothing
 		}
 		if (view == mMinusButton) {
 			volume_value--;
-		} else if (view == mPlusButton) {
+		}
+		else if (view == mPlusButton) {
 			volume_value++;
 		}
 		if (volume_value < 0) {
 			volume_value = 0;
-		} else if (volume_value > mMaxVolume) {
+		}
+		else if (volume_value > mMaxVolume) {
 			volume_value = mMaxVolume;
 		}
 		mEditText.setText(Integer.toString(volume_value));

@@ -52,8 +52,7 @@
             android:entries="@array/preference_time_key"
             android:entryValues="@array/preference_time_value"
             android:key="sleeptime"
-            android:title="@string/pref_sleeptime" >
-        </ListPreference>
+            android:title="@string/pref_sleeptime" />
 
         <com.mamewo.malarm24.TimePreference
             android:defaultValue="7:00"
