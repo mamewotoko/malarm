@@ -6,7 +6,9 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TimePicker;
 
-public class TimePreference extends DialogPreference {
+public class TimePreference
+	extends DialogPreference
+{
 	private TimePicker mTimePicker;
 	private String mTime = "7:00";
 	

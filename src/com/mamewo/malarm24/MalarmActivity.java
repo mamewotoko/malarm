@@ -33,7 +33,6 @@ import android.content.pm.ResolveInfo;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
@@ -68,8 +67,6 @@ public final class MalarmActivity
 	public static final String LOADWEB_ACTION = PACKAGE_NAME + ".LOADWEB_ACTION";
 	private static final String TAG = "malarm";
 	private static final String MYURL = "http://www002.upp.so-net.ne.jp/mamewo/mobile_shop.html";
-	//e.g. /sdcard/music
-	public static final File DEFAULT_PLAYLIST_PATH = new File(Environment.getExternalStorageDirectory(), Environment.DIRECTORY_MUSIC);
 	
 	private static final long VIBRATE_PATTERN[] = { 10, 1500, 500, 1500, 500, 1500, 500, 1500, 500 };
 	private static final int VOICE_RECOGNITION_REQUEST_CODE = 2121;
@@ -437,7 +434,7 @@ public final class MalarmActivity
 		}
 		if (update_all || "playlist_path".equals(key)) {
 			final String newpath = 
-					pref.getString(key, DEFAULT_PLAYLIST_PATH.getAbsolutePath());
+					pref.getString(key, MalarmPreference.DEFAULT_PLAYLIST_PATH.getAbsolutePath());
 			if (! newpath.equals(prefPlaylistPath)) {
 				prefPlaylistPath = newpath;
 				loadPlaylist();
@@ -450,14 +447,12 @@ public final class MalarmActivity
 			mWebview.clearFormData();
 			CookieManager mgr = CookieManager.getInstance();
 			mgr.removeAllCookie();
-			//TODO: localize
 			showMessage(this, getString(R.string.webview_cache_cleared));
 		}
 	}
 
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences pref, String key) {
-		Log.i(TAG, "onSharedPreferenceChanged is called: key = " + key);
 		syncPreferences(pref, key);
 	}
 
@@ -540,7 +535,8 @@ public final class MalarmActivity
 			if (pref_vibrate) {
 				startVibrator();
 			}
-			setNotification(getString(R.string.notify_wakeup_title), getString(R.string.notify_wakeup_text));
+			setNotification(getString(R.string.notify_wakeup_title),
+							getString(R.string.notify_wakeup_text));
 		}
 		else if (action.equals(LOADWEB_ACTION)) {
 			final String url = intent.getStringExtra("url");
@@ -770,7 +766,6 @@ public final class MalarmActivity
 
 	@Override
 	public boolean onKey(View view, int keyCode, KeyEvent event) {
-		Log.i(TAG, "onKey: view " + view.getClass());
 		if(event.getAction() == KeyEvent.ACTION_UP) {
 			int index = mState.mWebIndex;
 			boolean handled = false;

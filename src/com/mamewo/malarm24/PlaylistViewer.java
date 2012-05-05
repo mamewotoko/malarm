@@ -17,7 +17,9 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-public final class PlaylistViewer extends ListActivity {
+public final class PlaylistViewer
+	extends ListActivity
+{
 	private ListView mListView;
 	private ArrayAdapter<String> mAdapter;
 	private M3UPlaylist mPlaylist;
@@ -46,7 +48,8 @@ public final class PlaylistViewer extends ListActivity {
 		if ("sleep".equals(which)) {
 			mPlaylist = MalarmActivity.sleepPlaylist;
 			title_id = R.string.sleep_playlist_viewer_title;
-		} else {
+		}
+		else {
 			mPlaylist = MalarmActivity.wakeupPlaylist;
 			title_id = R.string.wakeup_playlist_viewer_title;
 		}
@@ -79,7 +82,8 @@ public final class PlaylistViewer extends ListActivity {
 
 							mPlaylist.remove(pos);
 							mPlaylist.insert(pos-1, title);
-						} else if (which == DOWN_INDEX) {
+						}
+						else if (which == DOWN_INDEX) {
 							if (pos == mAdapter.getCount()-1) {
 								//TODO: disable item
 								return;
@@ -89,7 +93,8 @@ public final class PlaylistViewer extends ListActivity {
 
 							mPlaylist.remove(pos);
 							mPlaylist.insert(pos+1, title);
-						} else if (which == DELETE_INDEX) {
+						}
+						else if (which == DELETE_INDEX) {
 							mAdapter.remove(mPlaylist.toList().get(pos));
 							mPlaylist.remove(pos);
 						}

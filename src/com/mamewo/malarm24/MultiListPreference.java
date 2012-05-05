@@ -29,7 +29,9 @@ import android.preference.ListPreference;
 import android.util.AttributeSet;
 import android.util.Log;
 
-public class MultiListPreference extends ListPreference {
+public class MultiListPreference
+	extends ListPreference
+{
 	public static final String SEPARATOR = "!";
 	private static final String LOG_TAG = "ListPreferenceMultiSelect";
 	private boolean[] mClickedDialogEntryIndices;
@@ -78,7 +80,8 @@ public class MultiListPreference extends ListPreference {
 	public String[] parseStoredValue(CharSequence val) {
 		if (null == val || "".equals(val)) {
 			return null;
-		} else {
+		}
+		else {
 			return ((String)val).split(SEPARATOR);
 		}
 	}

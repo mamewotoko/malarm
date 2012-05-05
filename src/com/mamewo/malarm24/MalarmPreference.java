@@ -9,7 +9,6 @@ import java.io.FileFilter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.MessageFormat;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;

@@ -1,7 +1,7 @@
 package com.mamewo.malarm24;
 
-public interface Playlist {
-	
+public interface Playlist
+{
 	public boolean isEmpty();
 	public int size();
 

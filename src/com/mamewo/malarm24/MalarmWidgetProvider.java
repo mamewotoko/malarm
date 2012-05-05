@@ -12,10 +12,12 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.RemoteViews;
 
-public class MalarmWidgetProvider extends AppWidgetProvider {
+public class MalarmWidgetProvider
+	extends AppWidgetProvider
+{
 	private static final String PACKAGE_NAME = MalarmWidgetProvider.class.getPackage().getName();
 	public static final String HELLO_ACTION = PACKAGE_NAME + ".HELLO_ACTION";
-	private static String TAG = "malarm";
+	private static final String TAG = "malarm";
 	
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -34,7 +36,8 @@ public class MalarmWidgetProvider extends AppWidgetProvider {
 		final RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.appwidget);
 		final Intent intent = new Intent(context, MalarmWidgetProvider.class);
 		intent.setAction(HELLO_ACTION);
-		final PendingIntent pintent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+		final PendingIntent pintent =
+				PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 		rv.setOnClickPendingIntent(R.id.appwidget, pintent);
 
 		appWidgetManager.updateAppWidget(appWidgetIds[0], rv);
