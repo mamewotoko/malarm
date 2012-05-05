@@ -93,4 +93,5 @@
     <string name="voice_button_desc">Set time by voice</string>
     <string name="next_button_desc">Play next tune</string>
     <string name="webview_cache_cleared">Webview cache is cleared</string>
+    <string name="unit_min">{0} min</string>
 </resources>

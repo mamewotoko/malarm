@@ -13,6 +13,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
@@ -20,6 +21,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.util.Log;
@@ -27,11 +29,15 @@ import android.view.View;
 
 public class MalarmPreference
 	extends PreferenceActivity
-	implements OnPreferenceClickListener, View.OnClickListener, FileFilter
+	implements OnPreferenceClickListener, View.OnClickListener, FileFilter, OnSharedPreferenceChangeListener
 {
 	private Preference help_;
 	private Preference version_;
 	private Preference createPlaylist_;
+	private Preference sleepTime_;
+	private Preference wakeupTime_;
+	private Preference sleepVolume_;
+	private Preference wakeupVolume_;
 	private Preference clearWebviewCache_;
 	private CheckBoxPreference sleepPlaylist_;
 	private CheckBoxPreference wakeupPlaylist_;
@@ -51,6 +57,10 @@ public class MalarmPreference
 	public static final File DEFAULT_PLAYLIST_PATH =
 			new File(Environment.getExternalStorageDirectory(), Environment.DIRECTORY_MUSIC);
 
+	private SharedPreferences getPrefs() {
+		return PreferenceManager.getDefaultSharedPreferences(this);
+	}
+	
 	@Override
 	public boolean accept(File pathname) {
 		final String filename = pathname.getName();
@@ -61,7 +71,6 @@ public class MalarmPreference
 
 	private void createDefaultPlaylist(File file) {
 		FileWriter fw = null;
-		
 		try {
 			fw = new FileWriter(file);
 			//find music files
@@ -133,11 +142,12 @@ public class MalarmPreference
 			if (preference == sleepPlaylist_) {
 				pref_key = "sleep";
 				playlist_filename = MalarmActivity.SLEEP_PLAYLIST_FILENAME;
-			} else {
+			}
+			else {
 				pref_key = "wakeup";
 				playlist_filename = MalarmActivity.WAKEUP_PLAYLIST_FILENAME;
 			}
-			final SharedPreferences pref = getPreferences(Context.MODE_PRIVATE);
+			final SharedPreferences pref = getPrefs();
 			//get playlist path
 			final String path = 
 					pref.getString("playlist_path", DEFAULT_PLAYLIST_PATH.getAbsolutePath());
@@ -188,18 +198,33 @@ public class MalarmPreference
 		help_.setOnPreferenceClickListener(this);
 		createPlaylist_ = findPreference("create_playlist");
 		createPlaylist_.setOnPreferenceClickListener(this);
+		sleepTime_ = findPreference("sleeptime");
+		wakeupTime_ = findPreference("default_time");
+		wakeupVolume_ = findPreference("wakeup_volume");
+		sleepVolume_ = findPreference("sleep_volume");
 		sleepPlaylist_ = (CheckBoxPreference) findPreference("sleep_playlist");
 		sleepPlaylist_.setOnPreferenceClickListener(this);
 		wakeupPlaylist_ = (CheckBoxPreference) findPreference("wakeup_playlist");
 		wakeupPlaylist_.setOnPreferenceClickListener(this);
+		
 		clearWebviewCache_ = findPreference("clear_webview_cache");
 		clearWebviewCache_.setOnPreferenceClickListener(this);
+
+		final SharedPreferences pref = getPrefs();
+		pref.registerOnSharedPreferenceChangeListener(this);
 	}
 
 	@Override
+	public void onDestroy() {
+		final SharedPreferences pref = getPrefs();
+		pref.unregisterOnSharedPreferenceChangeListener(this);
+		super.onDestroy();
+	}
+	
+	@Override
 	public void onStart() {
 		super.onStart();
-		final SharedPreferences pref = getPreferences(Context.MODE_PRIVATE);
+		final SharedPreferences pref = getPrefs();
 		//get playlist path
 		final String path = 
 				pref.getString("playlist_path", DEFAULT_PLAYLIST_PATH.getAbsolutePath());
@@ -218,5 +243,46 @@ public class MalarmPreference
 		final Intent i = 
 				new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.git_url)));
 		startActivity(i);
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+		updateSummary(pref, "ALL");
+	}
+	
+	public void updateSummary(SharedPreferences pref, String key) {
+		Log.i(TAG, "updateSummary: key: " + key);
+		final boolean update_all = "ALL".equals(key);
+		if (update_all || "default_time".equals(key)) {
+			final String timestr = pref.getString("default_time", MalarmPreference.DEFAULT_WAKEUP_TIME);
+			//TODO: add min
+			MessageFormat mf = new MessageFormat(getString(R.string.unit_min));
+			//showMessage(this, mf.format(new Object[]{ time.mSpeach }));
+			wakeupTime_.setSummary(timestr);
+		}
+		if (update_all || "sleeptime".equals(key)) {
+			final String sleepTime = pref.getString("sleeptime", MalarmPreference.DEFAULT_SLEEPTIME);
+			//TODO: add min
+			sleepTime_.setSummary(sleepTime);
+		}
+		if (update_all || "sleep_volume".equals(key)) {
+			String sleepVolume = 
+					pref.getString("sleep_volume", MalarmPreference.DEFAULT_SLEEP_VOLUME);
+			//TODO: show max volume
+			sleepVolume_.setSummary(sleepVolume);
+		}
+		if (update_all || "wakeup_volume".equals(key)) {
+			String wakeupVolume =
+					pref.getString("wakeup_volume", MalarmPreference.DEFAULT_WAKEUP_VOLUME);
+			wakeupVolume_.setSummary(wakeupVolume);
+		}
+		//url_list has no summary
+	}
+
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences pref, String key) {
+		updateSummary(pref, key);
 	}
 }

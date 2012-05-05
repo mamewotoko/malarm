@@ -92,4 +92,5 @@
     <string name="voice_button_desc">声で時刻を設定する</string>
     <string name="next_button_desc">次の曲を再生する</string>
     <string name="webview_cache_cleared">Webviewの履歴が削除しました。</string>
+    <string name="unit_min">{0}分</string>
 </resources>

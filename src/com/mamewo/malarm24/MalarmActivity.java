@@ -603,7 +603,8 @@ public final class MalarmActivity
 		}
 		int sleepMin = mState.mSleepMin;
 		if(sleepMin > 0) {
-			mSleepTimeLabel.setText(sleepMin + " min");
+			mSleepTimeLabel.setText(MessageFormat.format(getString(R.string.unit_min), 
+								Integer.valueOf(sleepMin)));
 		}
 		else {
 			mSleepTimeLabel.setText("");
@@ -896,8 +897,8 @@ public final class MalarmActivity
 		mSetDefaultTime = false;
 		mTimePicker.setCurrentHour(time.mHour);
 		mTimePicker.setCurrentMinute(time.mMin);
-		MessageFormat mf = new MessageFormat(getString(R.string.voice_success_format));
-		showMessage(this, mf.format(new Object[]{ time.mSpeach }));
+		String msg = MessageFormat.format(getString(R.string.voice_success_format), time.mSpeach);
+		showMessage(this, msg);
 	}
 	
 	//TODO: support english???
