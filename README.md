@@ -55,6 +55,7 @@ You can change path to playlist and music files by "Playlist directory" preferen
 ## TODO
 - implement music player as Service to play long time
 - support small screen (which screen? QVGA?)
+-- http://developer.android.com/resources/dashboard/screens.html
 -- hide time picker after malarm is set
 - refactor class design, activity, player and playlist
 - fix UI update bug when sleep timer expires (broadcast -> activity)
