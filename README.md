@@ -58,6 +58,7 @@ You can change path to playlist and music files by "Playlist directory" preferen
 -- http://developer.android.com/resources/dashboard/screens.html
 -- hide time picker after malarm is set
 - refactor class design, activity, player and playlist
+- show notification while playing music
 - fix UI update bug when sleep timer expires (broadcast -> activity)
 - remove duplicate time from list which is specified by voice
 - conditional playlist
@@ -96,6 +97,9 @@ You can change path to playlist and music files by "Playlist directory" preferen
 2. install application on android emulator
     adb install bin/malarm-cmd.apk
 (build.xml and *.property files are created by android create command)
+
+or install app using ant
+    ant installd
 
 ### Automated UI Testing
 There is a GUI automated test using Robotium
