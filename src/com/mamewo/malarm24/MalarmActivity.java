@@ -170,12 +170,14 @@ public final class MalarmActivity
 	public static void loadPlaylist() {
 		try {
 			wakeupPlaylist = new M3UPlaylist(prefPlaylistPath, WAKEUP_PLAYLIST_FILENAME);
-		} catch (FileNotFoundException e) {
+		}
+		catch (FileNotFoundException e) {
 			Log.i(TAG, "wakeup playlist is not found: " + WAKEUP_PLAYLIST_FILENAME);
 		}
 		try {
 			sleepPlaylist = new M3UPlaylist(prefPlaylistPath, SLEEP_PLAYLIST_FILENAME);
-		} catch (FileNotFoundException e) {
+		}
+		catch (FileNotFoundException e) {
 			Log.i(TAG, "sleep playlist is not found: " + SLEEP_PLAYLIST_FILENAME);
 		}
 	}
