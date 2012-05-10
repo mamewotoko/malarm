@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="152dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="0dp" >
+
+        <LinearLayout
+            android:id="@+id/linearLayout4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            >
+
+            <LinearLayout
+                android:id="@+id/linearLayout41"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/target_time_label"
+                    android:layout_width="114dp"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                <TextView
+                    android:id="@+id/sleep_time_label"
+                    android:layout_width="114dp"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/loading_icon"
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="38dp"
+                android:layout_height="fill_parent"
+                 />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="152dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="2dp"
+            android:orientation="vertical" >
+
+            <TimePicker
+                android:id="@+id/timePicker1"
+                android:layout_width="152dp"
+                android:layout_height="wrap_content"
+                android:inputType="number" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout3"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:orientation="vertical" >
+
+            <ToggleButton
+                android:id="@+id/alarm_button"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:textOff="@string/set_alarm"
+                android:textOn="@string/stop_alarm" />
+
+            <LinearLayout
+                android:id="@+id/linearLayout_contbutton"
+                android:layout_width="fill_parent"
+                android:layout_height="42dp" >
+
+                <Button
+                    android:id="@+id/set_now_button"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="50"
+                    android:paddingLeft="0dp"
+                    android:text="@string/set_now_short" />
+
+                <ImageButton
+                    android:id="@+id/set_by_voice"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="25"
+                    android:contentDescription="@string/voice_button_desc"
+                    android:src="@android:drawable/ic_btn_speak_now"
+                    android:tint="#fff" />
+
+                <ImageButton
+                    android:id="@+id/next_button"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="25"
+                    android:contentDescription="@string/next_button_desc"
+                    android:src="@android:drawable/ic_media_next"
+                    android:tint="#fff" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/playlist_name_view"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="0dp"
+            android:paddingTop="0dp"
+            android:text=" "
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+    </LinearLayout>
+
+    <WebView
+        android:id="@+id/webView1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true" >
+    </WebView>
+
+</LinearLayout>

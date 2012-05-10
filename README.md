@@ -54,9 +54,11 @@ You can change path to playlist and music files by "Playlist directory" preferen
 
 ## TODO
 - implement music player as Service to play long time
+- Design for tablets
 - support HVGA, WVGA, WVGA+ resolution
 -- http://developer.android.com/resources/dashboard/screens.html
 -- hide time picker after malarm is set (or count down?)
+-- scale of web contents
 - use Compatibility Test Suite
 -- http://source.android.com/compatibility/cts-intro.html
 - refactor class design, activity, player and playlist
@@ -70,6 +72,7 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - support shuffle?
 - improve UI to edit playlist
 - add more test cases
+-- double touch of webview
 -- label is update when music is stopped or alarm is canceled
 -- check alarm
 -- check default config value
@@ -80,9 +83,6 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - add source of malarm_test into this repository
 - refactor code to clear browser history
 - support podcast
-- horizontal design
-- Design for tablets
-    scale of web contents
 - use Actionbar ?
 
 ## Appendix
