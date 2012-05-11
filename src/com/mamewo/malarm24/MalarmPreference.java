@@ -175,6 +175,7 @@ public class MalarmPreference
 			Log.i(TAG, "clear pref is clicked: " + prefKey + " " + " hasKey " + pref.contains(prefKey));
 			final SharedPreferences.Editor editor = preference.getEditor();
 			editor.putBoolean(prefKey, !pref.getBoolean(prefKey, false));
+			//compatibility: apply is not available in 7
 			editor.apply();
 			result = true;
 		}

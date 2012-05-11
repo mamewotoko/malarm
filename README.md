@@ -57,10 +57,9 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - Design for tablets
 - support HVGA, WVGA, WVGA+ resolution
 -- http://developer.android.com/resources/dashboard/screens.html
--- hide time picker after malarm is set (or count down?)
+-- hide time picker after malarm is set? (or count down?)
 -- scale of web contents
-- use Compatibility Test Suite
--- http://source.android.com/compatibility/cts-intro.html
+- add mode to display alert dialog if device is not charged when alarm is set
 - refactor class design, activity, player and playlist
 - show notification while playing music
 - fix UI update bug when sleep timer expires (broadcast -> activity)
@@ -73,7 +72,7 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - improve UI to edit playlist
 - add more test cases
 -- double touch of webview
--- label is update when music is stopped or alarm is canceled
+-- label text is updated when music is stopped or alarm is canceled
 -- check alarm
 -- check default config value
 - fix vibrator timing
