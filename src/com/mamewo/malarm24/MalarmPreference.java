@@ -57,7 +57,7 @@ public class MalarmPreference
 		+ "!https://www.google.com/calendar/!http://www.okuiaki.com/mobile/login.php";
 	//e.g. /sdcard/music
 	public static final File DEFAULT_PLAYLIST_PATH =
-			new File(Environment.getExternalStorageDirectory(), Environment.DIRECTORY_MUSIC);
+			new File(Environment.getExternalStorageDirectory(), "music");
 
 	private SharedPreferences getPrefs() {
 		return PreferenceManager.getDefaultSharedPreferences(this);
@@ -176,7 +176,7 @@ public class MalarmPreference
 			final SharedPreferences.Editor editor = preference.getEditor();
 			editor.putBoolean(prefKey, !pref.getBoolean(prefKey, false));
 			//compatibility: apply is not available in 7
-			editor.apply();
+			editor.commit();
 			result = true;
 		}
 		return result;
