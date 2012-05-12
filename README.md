@@ -45,11 +45,10 @@ You can change path to playlist and music files by "Playlist directory" preferen
 
 ## Tested Device
 - Xperia acro
--- Android 2.3.4
+-- Android 2.3.4 (API level 10)
 -- 480x854 (WVGA+) screen
-- Android 2.1 emulator
--- cannot login to twitter because of SSL error?
-- Android 2.2 emulator
+- Android 2.1 emulator (API level 7)
+- Android 2.2 emulator (API level 8)
 - Android 4.0 emulator
 
 ## TODO
@@ -75,6 +74,7 @@ You can change path to playlist and music files by "Playlist directory" preferen
 -- label text is updated when music is stopped or alarm is canceled
 -- check alarm
 -- check default config value
+-- test landscape mode
 - fix vibrator timing
 - fix bug when native player is used....
 - automated build check using 2.x, 4.x SDK
