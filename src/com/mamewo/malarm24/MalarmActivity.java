@@ -188,6 +188,8 @@ public final class MalarmActivity
 		@Override
 		public boolean onDoubleTap(MotionEvent e) {
 			final int x = (int)e.getX();
+			final int y = (int)e.getY();
+			Log.i(TAG, "onDoubleTap: " + x + ", " + y);
 			final int width = mWebview.getWidth();
 			boolean start_browser = false;
 			final int side_width = width/3;
@@ -743,9 +745,11 @@ public final class MalarmActivity
 	}
 
 	public void onClick(View v) {
-		//to save time value edited by software keyboard
 		if (v == mNextButton) {
-			Player.playNext();
+			if(Player.isPlaying()) {
+				Player.playNext();
+			}
+			// otherwise confirm and play music?
 		}
 		else if (v == mVoiceButton) {
 			setTimeByVoice();
