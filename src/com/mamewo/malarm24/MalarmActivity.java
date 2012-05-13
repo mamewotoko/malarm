@@ -58,7 +58,8 @@ import android.graphics.Bitmap;
 
 public final class MalarmActivity
 	extends Activity
-	implements OnClickListener, OnSharedPreferenceChangeListener, OnLongClickListener, OnKeyListener
+	implements OnClickListener, OnSharedPreferenceChangeListener,
+			OnLongClickListener, OnKeyListener
 {
 	public static final String PACKAGE_NAME = MalarmActivity.class.getPackage().getName();
 	public static final String WAKEUP_ACTION = PACKAGE_NAME + ".WAKEUP_ACTION";
@@ -527,6 +528,8 @@ public final class MalarmActivity
 		mState.mSleepMin = 0;
 	}
 
+	//onResume is called after this method is called
+	//TODO: call setNewIntent and handle in onResume?
 	//TODO: this method is not called until home button is pressed
 	protected void onNewIntent (Intent intent) {
 		Log.i (TAG, "onNewIntent is called");
@@ -536,6 +539,9 @@ public final class MalarmActivity
 		}
 		if (action.equals(WAKEUPAPP_ACTION)) {
 			//native player cannot start until lock screen is displayed
+			if(mState.mSleepMin > 0) {
+				mState.mSleepMin = 0;
+			}
 			if (pref_vibrate) {
 				startVibrator();
 			}
@@ -644,7 +650,8 @@ public final class MalarmActivity
 	}
 	
 	private void setSleepTimer() {
-		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+		final SharedPreferences pref =
+				PreferenceManager.getDefaultSharedPreferences(this);
 		final long nowMillis = System.currentTimeMillis();
 		long target = 0;
 		if(mState.mTargetTime != null) {
@@ -652,10 +659,12 @@ public final class MalarmActivity
 		}
 		final int min = Integer.valueOf(pref.getString("sleeptime", MalarmPreference.DEFAULT_SLEEPTIME));
 		final long sleepTimeMillis = min * 60 * 1000;
+		mState.mSleepMin = min;
 		if (target == 0 || target - nowMillis >= sleepTimeMillis) {
-			mState.mSleepMin = min;
-			final PendingIntent sleepIntent = makePlayPintent(SLEEP_ACTION, pref_use_native_player);
-			final AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+			final PendingIntent sleepIntent = 
+					makePlayPintent(SLEEP_ACTION, pref_use_native_player);
+			final AlarmManager mgr = 
+					(AlarmManager) getSystemService(Context.ALARM_SERVICE);
 			mgr.set(AlarmManager.RTC_WAKEUP, nowMillis + sleepTimeMillis, sleepIntent);
 			updateUI();
 		}
@@ -1059,7 +1068,7 @@ public final class MalarmActivity
 					Player.pauseMusic();
 				}
 				if(mState != null) {
-					//TODO: BUG: call updateUI
+					//TODO: BUG: update sleep label
 					mState.mSleepMin = 0;
 				}
 				showMessage(context, context.getString(R.string.goodnight));

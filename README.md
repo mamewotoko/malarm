@@ -66,23 +66,21 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - conditional playlist
 -- Sunday, holiday playlist etc...
 - make COOL widget to set alarm (make clock widget?)
-- record wakeup time
-- support shuffle?
 - improve UI to edit playlist
 - add more test cases
 -- double touch of webview
 -- label text is updated when music is stopped or alarm is canceled
--- check alarm
 -- check default config value
 -- test landscape mode
 - fix vibrator timing
 - fix bug when native player is used....
-- automated build check using 2.x, 4.x SDK
 - change webview into photo view, movie player...
 - add source of malarm_test into this repository
 - refactor code to clear browser history
 - support podcast
 - use Actionbar ?
+- record wakeup time?
+- support shuffle?
 
 ## Appendix
 ### How To Build From Command Line
