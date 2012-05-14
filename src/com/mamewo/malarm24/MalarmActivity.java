@@ -416,12 +416,12 @@ public final class MalarmActivity
 			}
 		}
 		if (update_all || "sleep_volume".equals(key)) {
-			pref_sleep_volume = 
-					Integer.parseInt(pref.getString("sleep_volume", MalarmPreference.DEFAULT_SLEEP_VOLUME));
+			pref_sleep_volume =
+					Integer.valueOf(pref.getString("sleep_volume", MalarmPreference.DEFAULT_SLEEP_VOLUME));
 		}
 		if (update_all || "wakeup_volume".equals(key)) {
 			pref_wakeup_volume =
-					Integer.parseInt(pref.getString("wakeup_volume", MalarmPreference.DEFAULT_WAKEUP_VOLUME));
+					Integer.valueOf(pref.getString("wakeup_volume", MalarmPreference.DEFAULT_WAKEUP_VOLUME));
 		}
 		if (update_all || "url_list".equals(key)) {
 			String liststr = pref.getString("url_list", MalarmPreference.DEFAULT_WEB_LIST);

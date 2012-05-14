@@ -49,8 +49,8 @@ public class MalarmPreference
 	public static final boolean DEFAULT_VIBRATION = true;
 	public static final String DEFAULT_SLEEPTIME = "60";
 	public static final String DEFAULT_WAKEUP_TIME = "7:00";
-	public static final String DEFAULT_SLEEP_VOLUME = "5";
-	public static final String DEFAULT_WAKEUP_VOLUME = "5";
+	public static final String DEFAULT_SLEEP_VOLUME = "3";
+	public static final String DEFAULT_WAKEUP_VOLUME = "7";
 	//TODO: manage default value in one file
 	public static final String DEFAULT_WEB_LIST = 
 		"http://bijo-linux.com/!http://twitter.com/!http://www.bijint.com/jp/!http://www.google.com/mail/"
@@ -251,8 +251,23 @@ public class MalarmPreference
 	@Override
 	public void onResume() {
 		super.onResume();
-		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+		final SharedPreferences pref = getPrefs();
 		updateSummary(pref, "ALL");
+	}
+
+	private void setVolumeSummary(SharedPreferences pref, String key, Preference prefUI, String defaultVolumeStr) {
+		int volume =
+				Integer.valueOf(pref.getString(key, defaultVolumeStr));
+		final AudioManager mgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		final int maxVolume = mgr.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+		final StringBuilder sb = new StringBuilder();
+		for(int i = 0; i < volume; i++){
+			sb.append("|");
+		}
+		for(int i = 0; i < maxVolume - volume; i++){
+			sb.append(".");
+		}
+		prefUI.setSummary(String.format("%s (%s/%d)", sb.toString(), volume, maxVolume));
 	}
 	
 	public void updateSummary(SharedPreferences pref, String key) {
@@ -273,19 +288,10 @@ public class MalarmPreference
 			sleepTime_.setSummary(summary);
 		}
 		if (update_all || "sleep_volume".equals(key)) {
-			String sleepVolume = 
-					pref.getString("sleep_volume", MalarmPreference.DEFAULT_SLEEP_VOLUME);
-			final AudioManager mgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-			final int maxVolume = mgr.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-			//TODO: show max volume
-			sleepVolume_.setSummary(String.format("%s / %d", sleepVolume, maxVolume));
+			setVolumeSummary(pref, "sleep_volume", sleepVolume_, DEFAULT_SLEEP_VOLUME);
 		}
 		if (update_all || "wakeup_volume".equals(key)) {
-			String wakeupVolume =
-					pref.getString("wakeup_volume", MalarmPreference.DEFAULT_WAKEUP_VOLUME);
-			final AudioManager mgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-			final int maxVolume = mgr.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-			wakeupVolume_.setSummary(String.format("%s / %d", wakeupVolume, maxVolume));
+			setVolumeSummary(pref, "wakeup_volume", wakeupVolume_, DEFAULT_WAKEUP_VOLUME);
 		}
 		//url_list has no summary
 	}

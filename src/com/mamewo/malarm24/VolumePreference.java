@@ -75,7 +75,6 @@ public class VolumePreference
 		if (callChangeListener(value)) {
 			mVolume = value;
 			persistString(Integer.toString(value));
-			//TODO: notify?
 		}
 	}
 

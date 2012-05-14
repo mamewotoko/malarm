@@ -74,12 +74,10 @@
         <com.mamewo.malarm24.VolumePreference
             android:defaultValue="5"
             android:key="sleep_volume"
-            android:summary="@string/pref_sleep_volume_summary"
             android:title="@string/pref_sleep_volume_title" />
         <com.mamewo.malarm24.VolumePreference
             android:defaultValue="5"
             android:key="wakeup_volume"
-            android:summary="@string/pref_wakeup_volume_summary"
             android:title="@string/pref_wakeup_volume_title" />
     </PreferenceCategory>
     <PreferenceCategory
