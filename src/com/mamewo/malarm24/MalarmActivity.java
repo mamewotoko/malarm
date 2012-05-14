@@ -13,7 +13,10 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import android.app.Activity;
@@ -896,15 +899,17 @@ public final class MalarmActivity
 		}
 	}
 
-	private class ClickListener implements DialogInterface.OnClickListener {
-		private ArrayList<TimePickerTime> mTimeList;
+	private class ClickListener
+		implements DialogInterface.OnClickListener
+	{
+		private TimePickerTime[] mTimeList;
 
-		public ClickListener(ArrayList<TimePickerTime> time) {
+		public ClickListener(TimePickerTime[] time) {
 			mTimeList = time;
 		}
 		@Override
 		public void onClick(DialogInterface dialog, int which) {
-			setTimePickerTime(mTimeList.get(which));
+			setTimePickerTime(mTimeList[which]);
 		}
 	}
 	
@@ -921,9 +926,10 @@ public final class MalarmActivity
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == SPEECH_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
 			ArrayList<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-			ArrayList<TimePickerTime> result = new ArrayList<TimePickerTime>();
-			for (String speach : matches) {
-				Matcher m = TIME_PATTERN.matcher(speach);
+			//ArrayList<TimePickerTime> result = new ArrayList<TimePickerTime>();
+			Map<String, TimePickerTime> result = new HashMap<String, TimePickerTime>();
+			for (String speech : matches) {
+				Matcher m = TIME_PATTERN.matcher(speech);
 				if (m.matches()) {
 					int hour = Integer.valueOf(m.group(1)) % 24;
 					int minute;
@@ -937,10 +943,13 @@ public final class MalarmActivity
 					else {
 						minute = Integer.valueOf(m.group(3)) % 60;
 					}
-					result.add(new TimePickerTime(hour, minute, speach));
+					String key = hour + ":" + minute;
+					if(! result.containsKey(key)){
+						result.put(key, new TimePickerTime(hour, minute, speech));
+					}
 				}
 				else {
-					Matcher m2 = AFTER_TIME_PATTERN.matcher(speach);
+					Matcher m2 = AFTER_TIME_PATTERN.matcher(speech);
 					if (m2.matches()) {
 						final String hour_part = m2.group(2);
 						final String min_part = m2.group(3);
@@ -962,8 +971,12 @@ public final class MalarmActivity
 						}
 						final Calendar cal = new GregorianCalendar();
 						cal.setTimeInMillis(System.currentTimeMillis() + after_millis);
-						result.add(new TimePickerTime(cal.get(Calendar.HOUR_OF_DAY),
-								   cal.get(Calendar.MINUTE), speach));
+						int hour = cal.get(Calendar.HOUR_OF_DAY);
+						int min = cal.get(Calendar.MINUTE);
+						String key = hour + ":" + min;
+						if(!result.containsKey(key)){
+							result.put(key, new TimePickerTime(hour, min, speech));
+						}
 					}
 				}
 			}
@@ -971,18 +984,19 @@ public final class MalarmActivity
 				showMessage(this, getString(R.string.voice_fail));
 			}
 			else if (result.size() == 1) {
-				setTimePickerTime(result.get(0));
+				setTimePickerTime(result.values().iterator().next());
 			}
 			else {
-				String [] speach_array = new String[result.size()];
-				for (int i = 0; i < result.size(); i++) {
-					TimePickerTime time = result.get(i);
-					speach_array[i] = time.mSpeach + String.format(" (%02d:%02d)", time.mHour, time.mMin);
+				String [] speechArray = new String[result.size()];
+				Iterator<TimePickerTime> iter = result.values().iterator();
+				for(int i = 0; i < result.size(); i++){
+					TimePickerTime time = iter.next();
+					speechArray[i] = time.mSpeach + String.format(" (%02d:%02d)", time.mHour, time.mMin);
 				}
 				//select from list dialog
 				new AlertDialog.Builder(this)
 				.setTitle(R.string.select_time_from_list)
-				.setItems(speach_array, new ClickListener(result))
+				.setItems(speechArray, new ClickListener(result.values().toArray(new TimePickerTime[0])))
 				.create()
 				.show();
 			}

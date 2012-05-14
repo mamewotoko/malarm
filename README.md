@@ -53,6 +53,7 @@ You can change path to playlist and music files by "Playlist directory" preferen
 
 ## TODO
 - implement music player as Service to play long time
+- change webview into photo view, movie player...
 - Design for tablets
 - support HVGA, WVGA, WVGA+ resolution
 -- http://developer.android.com/resources/dashboard/screens.html
@@ -60,28 +61,25 @@ You can change path to playlist and music files by "Playlist directory" preferen
 -- scale of web contents
 - localize: French, Chinese
 - add mode to display alert dialog if device is not charged when alarm is set
+- improve UI to edit playlist
 - refactor class design, activity, player and playlist
 - show notification while playing music
 - fix UI update bug when sleep timer expires (broadcast -> activity)
-- remove duplicate time from list which is specified by voice
 - conditional playlist
 -- Sunday, holiday playlist etc...
 - make COOL widget to set alarm (make clock widget?)
-- improve UI to edit playlist
 - add more test cases
 -- double touch of webview
 -- label text is updated when music is stopped or alarm is canceled
 -- check default config value
--- test landscape mode
 - fix vibrator timing
-- fix bug when native player is used....
-- change webview into photo view, movie player...
 - add source of malarm_test into this repository
 - refactor code to clear browser history
 - support podcast
 - use Actionbar ?
 - record wakeup time?
 - support shuffle?
+- fix bug when native player is used....
 
 ## Appendix
 ### How To Build From Command Line
