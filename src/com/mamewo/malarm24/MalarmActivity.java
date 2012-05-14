@@ -70,7 +70,7 @@ public final class MalarmActivity
 	private static final String MYURL = "http://www002.upp.so-net.ne.jp/mamewo/mobile_shop.html";
 	
 	private static final long VIBRATE_PATTERN[] = { 10, 1500, 500, 1500, 500, 1500, 500, 1500, 500 };
-	private static final int VOICE_RECOGNITION_REQUEST_CODE = 2121;
+	private static final int SPEECH_RECOGNITION_REQUEST_CODE = 2121;
 	protected static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
 	public static final String WAKEUP_PLAYLIST_FILENAME = "wakeup.m3u";
@@ -96,7 +96,7 @@ public final class MalarmActivity
 	private static Integer pref_default_min;
 	private static MalarmState mState;
 
-	private ImageButton mVoiceButton;
+	private ImageButton mSpeechButton;
 	private ImageButton mNextButton;
 	private TimePicker mTimePicker;
 	private TextView mTimeLabel;
@@ -105,9 +105,9 @@ public final class MalarmActivity
 	private Button mSetNowButton;
 	private GestureDetector mGD;
 	private boolean mSetDefaultTime;
-	private Intent mVoiceIntent;
+	private Intent mSpeechIntent;
 	private ProgressBar mLoadingIcon;
-	private boolean mStartingVoiceActivity;
+	private boolean mStartingSpeechActivity;
 	private TextView mPlaylistLabel;
 	private TextView mSleepTimeLabel;
 	
@@ -240,9 +240,9 @@ public final class MalarmActivity
 		mPlaylistLabel = (TextView) findViewById(R.id.playlist_name_view);
 		mPlaylistLabel.setOnLongClickListener(this);
 		
-		mVoiceButton = (ImageButton) findViewById(R.id.set_by_voice);
-		mVoiceButton.setOnClickListener(this);
-		mStartingVoiceActivity = false;
+		mSpeechButton = (ImageButton) findViewById(R.id.set_by_voice);
+		mSpeechButton.setOnClickListener(this);
+		mStartingSpeechActivity = false;
 		
 		mNextButton = (ImageButton) findViewById(R.id.next_button);
 		mNextButton.setOnClickListener(this);
@@ -358,7 +358,7 @@ public final class MalarmActivity
 	protected void onResume() {
 		Log.i(TAG, "onResume is called, start JavaScript");
 		super.onResume();
-		mStartingVoiceActivity = false;
+		mStartingSpeechActivity = false;
 		
 		mAlarmButton.requestFocus();
 		//WebView.onResume is hidden, why!?!?
@@ -760,8 +760,8 @@ public final class MalarmActivity
 			}
 			// otherwise confirm and play music?
 		}
-		else if (v == mVoiceButton) {
-			setTimeByVoice();
+		else if (v == mSpeechButton) {
+			setTimeBySpeech();
 		}
 		else if (v == mAlarmButton) {
 			InputMethodManager mgr = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -796,11 +796,11 @@ public final class MalarmActivity
 		return false;
 	}
 
-	private void setTimeByVoice() {
-		if (! mTimePicker.isEnabled() || mStartingVoiceActivity) {
+	private void setTimeBySpeech() {
+		if (! mTimePicker.isEnabled() || mStartingSpeechActivity) {
 			return;
 		}
-		if (mVoiceIntent == null) {
+		if (mSpeechIntent == null) {
 			//to reduce task of onCreate method
 			showMessage(this, getString(R.string.init_voice));
 			final PackageManager pm = getPackageManager();
@@ -808,13 +808,13 @@ public final class MalarmActivity
 			if (activities.isEmpty()) {
 				return;
 			}
-			mVoiceIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-			mVoiceIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-			mVoiceIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.voice_dialog));
+			mSpeechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+			mSpeechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+			mSpeechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.voice_dialog));
 		}
-		mStartingVoiceActivity = true;
+		mStartingSpeechActivity = true;
 		mWebview.stopLoading();
-		startActivityForResult(mVoiceIntent, VOICE_RECOGNITION_REQUEST_CODE);
+		startActivityForResult(mSpeechIntent, SPEECH_RECOGNITION_REQUEST_CODE);
 	}
 	
 	public static void showMessage(Context c, String message) {
@@ -919,7 +919,7 @@ public final class MalarmActivity
 	//TODO: support english???
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
+		if (requestCode == SPEECH_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
 			ArrayList<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 			ArrayList<TimePickerTime> result = new ArrayList<TimePickerTime>();
 			for (String speach : matches) {
