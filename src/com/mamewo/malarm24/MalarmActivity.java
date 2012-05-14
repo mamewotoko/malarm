@@ -878,7 +878,7 @@ public final class MalarmActivity
 			cancelSleepTimer();
 			setSleepTimer();
 			updateUI();
-			//TODO: toast
+			showMessage(this, getString(R.string.play_with_sleep_timer));
 			return true;
 		}
 		return false;

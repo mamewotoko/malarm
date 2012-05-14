@@ -58,6 +58,7 @@ You can change path to playlist and music files by "Playlist directory" preferen
 -- http://developer.android.com/resources/dashboard/screens.html
 -- hide time picker after malarm is set? (or count down?)
 -- scale of web contents
+- localize: French, Chinese
 - add mode to display alert dialog if device is not charged when alarm is set
 - refactor class design, activity, player and playlist
 - show notification while playing music
