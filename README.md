@@ -83,6 +83,7 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - refactor code to clear browser history
 - support podcast
 - use Actionbar ?
+- use for_7 branch of malarm_test
 
 ## Appendix
 ### How To Build From Command Line

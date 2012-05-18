@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:mamewo="http://schemas.android.com/apk/res/mamewo" >
 
-    <com.mamewo.malarm24.MultiListPreference
+    <com.mamewo.malarm78.MultiListPreference
         separator="!"
         android:defaultValue="http://bijo-linux.com/!http://twitter.com/!http://www.bijint.com/jp/!http://www.google.com/mail/!https://www.google.com/calendar/!http://www.okuiaki.com/mobile/login.php"
         android:dialogTitle="@string/pref_webview_url"
@@ -54,7 +54,7 @@
             android:key="sleeptime"
             android:title="@string/pref_sleeptime" />
 
-        <com.mamewo.malarm24.TimePreference
+        <com.mamewo.malarm78.TimePreference
             android:defaultValue="7:00"
             android:key="default_time"
             android:summary="@string/pref_default_time_summary"
@@ -71,12 +71,12 @@
             android:title="@string/pref_vibration" >
         </CheckBoxPreference>
 
-        <com.mamewo.malarm24.VolumePreference
+        <com.mamewo.malarm78.VolumePreference
             android:defaultValue="5"
             android:key="sleep_volume"
             android:summary="@string/pref_sleep_volume_summary"
             android:title="@string/pref_sleep_volume_title" />
-        <com.mamewo.malarm24.VolumePreference
+        <com.mamewo.malarm78.VolumePreference
             android:defaultValue="5"
             android:key="wakeup_volume"
             android:summary="@string/pref_wakeup_volume_summary"
