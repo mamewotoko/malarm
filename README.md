@@ -13,6 +13,7 @@ This is a simple alarm application of android (version 2.2.x - 2.3.3, 4.x).
  If you want to stop vibration only, please use "stop vibration" menu
 
 ## Screenshot
+old UI ...
 ![Japanese screen shot](https://github.com/mamewotoko/malarm/raw/master/doc/alarm_ja.png)
 ![English screen shot](https://github.com/mamewotoko/malarm/raw/master/doc/alarm_en.png)
 ![Preference](https://github.com/mamewotoko/malarm/raw/master/doc/malarm_pref.png)
@@ -54,7 +55,8 @@ You can change path to playlist and music files by "Playlist directory" preferen
 ## TODO
 - implement music player as Service to play long time
 - change webview into photo view, movie player...
-- Design for tablets
+- add UI to play ringtone on VolumePreference to check volume
+- support podcast
 - support HVGA, WVGA, WVGA+ resolution
 -- http://developer.android.com/resources/dashboard/screens.html
 -- hide time picker after malarm is set? (or count down?)
@@ -75,7 +77,7 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - fix vibrator timing
 - add source of malarm_test into this repository
 - refactor code to clear browser history
-- support podcast
+- Design for tablets
 - use Actionbar ?
 - record wakeup time?
 - support shuffle?
