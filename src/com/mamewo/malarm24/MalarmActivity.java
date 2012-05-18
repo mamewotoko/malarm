@@ -428,7 +428,7 @@ public final class MalarmActivity
 		}
 		if (update_all || "url_list".equals(key)) {
 			String liststr = pref.getString("url_list", MalarmPreference.DEFAULT_WEB_LIST);
-			if(0 == liststr.length()){
+			if(0 < liststr.length()){
 				liststr += MultiListPreference.SEPARATOR;
 			}
 			liststr += MYURL;
