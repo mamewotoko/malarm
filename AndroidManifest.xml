@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="com.mamewo.malarm24"
-      android:versionCode="3"
-      android:versionName="0.8.1">
+      package="com.mamewo.malarm78"
+      android:versionCode="5"
+      android:versionName="0.8.7">
       <!-- 7 = 2.1 -->
     <uses-sdk android:minSdkVersion="7"
-              android:targetSdkVersion="10" />
+              android:targetSdkVersion="8" android:maxSdkVersion="8"/>
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
@@ -23,10 +23,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".PlaylistViewer" />
-        <activity android:name="com.mamewo.malarm24.MalarmPreference" />
+        <activity android:name="com.mamewo.malarm78.MalarmPreference" />
         <receiver android:name="MalarmActivity$Player"
                   android:permission="android.permission.VIBRATE" />
-        <receiver android:name="com.mamewo.malarm24.MalarmWidgetProvider" >
+        <receiver android:name="com.mamewo.malarm78.MalarmWidgetProvider" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
