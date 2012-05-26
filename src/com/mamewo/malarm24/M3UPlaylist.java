@@ -21,66 +21,67 @@ public final class M3UPlaylist
 	implements Playlist
 {
 	private static final String TAG = "malarm";
-	private int mNextIndex = 0;
-	private final String mBasepath;
-	private final String mPlaylistFilename;
-	private ArrayList<String> mPlaylist;
+	private int nextIndex_ = 0;
+	private final String basepath_;
+	private final String playlistFilename_;
+	private ArrayList<String> playlist_;
 	
 	/**
 	 * 
-	 * @param playlist_basepath path to directory which contains play list
-	 * @param playlist_filename filename of playlist (not absolute path)
+	 * @param basepath path to directory which contains play list
+	 * @param playlistFilename filename of playlist (not absolute path)
 	 */
-	public M3UPlaylist(String playlist_basepath, String playlist_filename)
+	public M3UPlaylist(String basepath, String playlistFilename)
 			throws FileNotFoundException {
-		mBasepath = playlist_basepath;
-		mPlaylistFilename = playlist_filename;
+		basepath_ = basepath;
+		playlistFilename_ = playlistFilename;
 		final String playlist_abs_path =
-				(new File(playlist_basepath, playlist_filename)).getAbsolutePath();
+				(new File(basepath, playlistFilename)).getAbsolutePath();
 		try {
-			mPlaylist = new ArrayList<String>();
+			playlist_ = new ArrayList<String>();
 			load(playlist_abs_path);
 		}
 		catch (IOException e) {
-			Log.i(TAG, "cannot read playlist " + playlist_filename);
+			Log.i(TAG, "cannot read playlist " + playlistFilename);
 		}
 	}
 	
 	
 	@Override
 	public String next() {
-		if (mPlaylist.size() <= mNextIndex) {
-			mNextIndex = 0;
+		if (playlist_.size() <= nextIndex_) {
+			nextIndex_ = 0;
 		}
-		String result = mPlaylist.get(mNextIndex);
+		String result = playlist_.get(nextIndex_);
 		//TODO: test
 		if (! (new File(result)).isAbsolute()) {
-			result = (new File(mBasepath, result)).getAbsolutePath();
+			result = (new File(basepath_, result)).getAbsolutePath();
 		}
-		mNextIndex++;
+		nextIndex_++;
 		return result;
 	}
 
 	@Override
 	public void reset() {
-		mNextIndex = 0;
+		nextIndex_ = 0;
 	}
 	
 	public String getName() {
-		return mPlaylistFilename;
+		return playlistFilename_;
 	}
 	
 	public List<String> toList() {
-		return (List<String>)mPlaylist.clone();
+		return (List<String>)playlist_.clone();
 	}
 
 	protected void load(final String filename)
-			throws FileNotFoundException, IOException {
+			throws FileNotFoundException, IOException
+	{
 		final BufferedReader br = new BufferedReader(new FileReader (filename));
 		String music_filename;
 		while ((music_filename = br.readLine()) != null) {
 			if (music_filename.charAt(0) != '#') {
-				mPlaylist.add(music_filename);
+				playlist_.add(music_filename);
 			}
 		}
 		br.close();
@@ -88,35 +89,35 @@ public final class M3UPlaylist
 	
 	@Override
 	public boolean isEmpty() {
-		return mPlaylist.isEmpty();
+		return playlist_.isEmpty();
 	}
 	
 	@Override
 	public int size() {
-		return mPlaylist.size();
+		return playlist_.size();
 	}
 
 	public void remove(int pos) {
-		mPlaylist.remove(pos);
+		playlist_.remove(pos);
 	}
 	
 	public void insert(int pos, String path) {
-		mPlaylist.add(pos, path);
+		playlist_.add(pos, path);
 	}
 	
 	public void save()
-			throws IOException {
-		File playlist = new File(mBasepath, mPlaylistFilename);
+			throws IOException
+	{
+		File playlist = new File(basepath_, playlistFilename_);
 		if (playlist.exists()) {
-			if (! playlist.renameTo(new File(mBasepath, "_" + mPlaylistFilename))) {
-				//TODO: localize
+			if (! playlist.renameTo(new File(basepath_, "_" + playlistFilename_))) {
 				Log.i(TAG, "rename failed");
 				return;
 			}
 		}
 		Log.i(TAG, "after rename: " + playlist.getAbsolutePath());
 		BufferedWriter bw = new BufferedWriter(new FileWriter(playlist));
-		for (String filename : mPlaylist) {
+		for (String filename : playlist_) {
 			bw.append(filename + "\n");
 		}
 		bw.close();

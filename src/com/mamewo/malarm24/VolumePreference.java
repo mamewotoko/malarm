@@ -18,45 +18,45 @@ public class VolumePreference
 	extends DialogPreference
 	implements OnClickListener
 {
-	private int mMaxVolume;
-	private int mVolume = 0;
-	private EditText mEditText;
-	private TextView mDialogText;
-	private Button mMinusButton;
-	private Button mPlusButton;
+	private int maxVolume_;
+	private int volume_ = 0;
+	private EditText editText_;
+	private TextView dialogText_;
+	private Button minusButton_;
+	private Button plusButton_;
 	
 	public VolumePreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		AudioManager mgr = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-		mMaxVolume = mgr.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+		maxVolume_ = mgr.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
 		setDialogLayoutResource(R.layout.volume_preference);
 	}
 
 	@Override
 	protected void onBindDialogView(View view) {
 		super.onBindDialogView(view);
-		mEditText = (EditText) view.findViewById(R.id.volume_pref_value);
-		mDialogText = (TextView) view.findViewById(R.id.volume_pref_text);
-		mEditText.setText(Integer.toString(mVolume));
-		mMinusButton = (Button) view.findViewById(R.id.volume_minus_button);
-		mMinusButton.setOnClickListener(this);
-		mPlusButton = (Button) view.findViewById(R.id.volume_plus_button);
-		mPlusButton.setOnClickListener(this);
+		editText_ = (EditText) view.findViewById(R.id.volume_pref_value);
+		dialogText_ = (TextView) view.findViewById(R.id.volume_pref_text);
+		editText_.setText(Integer.toString(volume_));
+		minusButton_ = (Button) view.findViewById(R.id.volume_minus_button);
+		minusButton_.setOnClickListener(this);
+		plusButton_ = (Button) view.findViewById(R.id.volume_plus_button);
+		plusButton_.setOnClickListener(this);
 		//TODO: add API to set string 
 		final Context context = view.getContext();
 		final AudioManager mgr = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 		final int current_volume = mgr.getStreamVolume(AudioManager.STREAM_MUSIC);
 		final MessageFormat mf = new MessageFormat(context.getString(R.string.volume_format));
-		mDialogText.setText(mf.format(new Object[] { Integer.valueOf(mMaxVolume), Integer.valueOf(current_volume)}));
+		dialogText_.setText(mf.format(new Object[] { Integer.valueOf(maxVolume_), Integer.valueOf(current_volume)}));
 	}
 
 	@Override
 	protected void onDialogClosed(boolean positiveResult) {
 		super.onDialogClosed(positiveResult);
 		if (positiveResult) {
-			String strvolume = mEditText.getText().toString();
-			mVolume = Integer.parseInt(strvolume);
-			setVolume(mVolume);
+			String strvolume = editText_.getText().toString();
+			volume_ = Integer.parseInt(strvolume);
+			setVolume(volume_);
 		}
 	}
 	
@@ -67,13 +67,13 @@ public class VolumePreference
 	
 	private void setVolume(int v) {
 		int value = v;
-		if (value > mMaxVolume) {
-			value = mMaxVolume;
+		if (value > maxVolume_) {
+			value = maxVolume_;
 		} else if (value < 0) {
 			value = 0;
 		}
 		if (callChangeListener(value)) {
-			mVolume = value;
+			volume_ = value;
 			persistString(Integer.toString(value));
 		}
 	}
@@ -83,7 +83,7 @@ public class VolumePreference
 		int volume;
 		
 		if (restoreValue) {
-			volume = Integer.parseInt(getPersistedString(Integer.toString(mVolume)));
+			volume = Integer.parseInt(getPersistedString(Integer.toString(volume_)));
 		}
 		else {
 			volume = Integer.parseInt((String) defaultValue);
@@ -95,23 +95,23 @@ public class VolumePreference
 	public void onClick(View view) {
 		int volume_value = 0;
 		try {
-			volume_value = Integer.valueOf(mEditText.getText().toString());
+			volume_value = Integer.valueOf(editText_.getText().toString());
 		}
 		catch (NumberFormatException e) {
 			//do nothing
 		}
-		if (view == mMinusButton) {
+		if (view == minusButton_) {
 			volume_value--;
 		}
-		else if (view == mPlusButton) {
+		else if (view == plusButton_) {
 			volume_value++;
 		}
 		if (volume_value < 0) {
 			volume_value = 0;
 		}
-		else if (volume_value > mMaxVolume) {
-			volume_value = mMaxVolume;
+		else if (volume_value > maxVolume_) {
+			volume_value = maxVolume_;
 		}
-		mEditText.setText(Integer.toString(volume_value));
+		editText_.setText(Integer.toString(volume_value));
 	}
 }

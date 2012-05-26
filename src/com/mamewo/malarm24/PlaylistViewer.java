@@ -20,9 +20,9 @@ import android.widget.ListView;
 public final class PlaylistViewer
 	extends ListActivity
 {
-	private ListView mListView;
-	private ArrayAdapter<String> mAdapter;
-	private M3UPlaylist mPlaylist;
+	private ListView listView_;
+	private ArrayAdapter<String> adapter_;
+	private M3UPlaylist playlist_;
 
 	//R.array.tune_operation
 	static private final int UP_INDEX = 0;
@@ -33,7 +33,7 @@ public final class PlaylistViewer
 	protected void onCreate(Bundle savedInstanceState){
 		Log.i("malrm", "onCreate in playlistview");
 		super.onCreate(savedInstanceState);
-		mListView = getListView();
+		listView_ = getListView();
 	}
 	
 	@Override
@@ -46,22 +46,22 @@ public final class PlaylistViewer
 		final String which = i.getStringExtra("playlist");
 		int title_id = 0;
 		if ("sleep".equals(which)) {
-			mPlaylist = MalarmActivity.sleepPlaylist;
+			playlist_ = MalarmActivity.sleepPlaylist;
 			title_id = R.string.sleep_playlist_viewer_title;
 		}
 		else {
-			mPlaylist = MalarmActivity.wakeupPlaylist;
+			playlist_ = MalarmActivity.wakeupPlaylist;
 			title_id = R.string.wakeup_playlist_viewer_title;
 		}
-		mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mPlaylist.toList());
-		setListAdapter(mAdapter);
+		adapter_ = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, playlist_.toList());
+		setListAdapter(adapter_);
 		setTitle(title_id);
 		Log.i("malrm", "onStart in playlistview(after getting adapter3)");
 
-		mListView.setLongClickable(true);
+		listView_.setLongClickable(true);
 		//TODO: implement undo?
 		//TODO: add selected effect
-		mListView.setOnItemLongClickListener(new OnItemLongClickListener() {
+		listView_.setOnItemLongClickListener(new OnItemLongClickListener() {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> adapter_view, View view, int position, long id) {
 				final int pos = position;
@@ -77,26 +77,26 @@ public final class PlaylistViewer
 								//TODO: disable item
 								return;
 							}
-							mAdapter.remove(title);
-							mAdapter.insert(title, pos-1);
+							adapter_.remove(title);
+							adapter_.insert(title, pos-1);
 
-							mPlaylist.remove(pos);
-							mPlaylist.insert(pos-1, title);
+							playlist_.remove(pos);
+							playlist_.insert(pos-1, title);
 						}
 						else if (which == DOWN_INDEX) {
-							if (pos == mAdapter.getCount()-1) {
+							if (pos == adapter_.getCount()-1) {
 								//TODO: disable item
 								return;
 							}
-							mAdapter.remove(title);
-							mAdapter.insert(title, pos + 1);
+							adapter_.remove(title);
+							adapter_.insert(title, pos + 1);
 
-							mPlaylist.remove(pos);
-							mPlaylist.insert(pos+1, title);
+							playlist_.remove(pos);
+							playlist_.insert(pos+1, title);
 						}
 						else if (which == DELETE_INDEX) {
-							mAdapter.remove(mPlaylist.toList().get(pos));
-							mPlaylist.remove(pos);
+							adapter_.remove(playlist_.toList().get(pos));
+							playlist_.remove(pos);
 						}
 					}
 				})
@@ -121,7 +121,7 @@ public final class PlaylistViewer
 		case R.id.save_playlist:
 			//TODO: implement
 			try {
-				mPlaylist.save();
+				playlist_.save();
 				MalarmActivity.showMessage(this, "saved");
 			} catch (IOException e) {
 				MalarmActivity.showMessage(this, "failed: " + e.getMessage());

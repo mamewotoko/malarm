@@ -1,4 +1,4 @@
-# malarm - Good-morning with your favorite tunes
+# malarm - Good-night & Good-morning with your favorite tunes
 ## What is this?
 
 This is a simple alarm application of android (version 2.2.x - 2.3.3, 4.x).
@@ -110,6 +110,8 @@ https://github.com/mamewotoko/malarm_test
 http://blog.350nice.com/wp/archives/240
 - Alarm application starts when user push appwidget of malarm.
 - Dropsync is a useful Android app!
+- To use @Overrides annotation, use following eclipse setting 
+  org.eclipse.jdt.core.compiler.compliance=1.6
 
 ----
 Takashi Masuyama < mamewotoko@gmail.com >  

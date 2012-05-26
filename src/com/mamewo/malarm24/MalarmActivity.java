@@ -97,24 +97,24 @@ public final class MalarmActivity
 	private static int pref_wakeup_volume;
 	private static Integer pref_default_hour;
 	private static Integer pref_default_min;
-	private static MalarmState mState;
+	private static MalarmState state_;
 
-	private ImageButton mSpeechButton;
-	private ImageButton mNextButton;
-	private TimePicker mTimePicker;
-	private TextView mTimeLabel;
-	private WebView mWebview;
-	private ToggleButton mAlarmButton;
-	private Button mSetNowButton;
-	private GestureDetector mGD;
-	private boolean mSetDefaultTime;
-	private Intent mSpeechIntent;
-	private ProgressBar mLoadingIcon;
-	private boolean mStartingSpeechActivity;
-	private TextView mPlaylistLabel;
-	private TextView mSleepTimeLabel;
+	private ImageButton speechButton_;
+	private ImageButton nextButton_;
+	private TimePicker timePicker_;
+	private TextView timeLabel_;
+	private WebView webview_;
+	private ToggleButton alarmButton_;
+	private Button setNowButton_;
+	private GestureDetector gd_;
+	private boolean setDefaultTime_;
+	private Intent speechIntent_;
+	private ProgressBar loadingIcon_;
+	private boolean startingSpeechActivity_;
+	private TextView playlistLabel_;
+	private TextView sleepTimeLabel_;
 	
-	private PhoneStateListener mCallListener;
+	private PhoneStateListener callListener_;
 
 	private static final int DOW_INDEX[] = {
 		Calendar.SUNDAY, 
@@ -126,7 +126,9 @@ public final class MalarmActivity
 		Calendar.SATURDAY, 
 	};
 
-	public final static class MalarmState implements Serializable {
+	public final static class MalarmState
+		implements Serializable
+	{
 		private static final long serialVersionUID = 1L;
 		public Calendar mTargetTime;
 		public int mWebIndex;
@@ -139,7 +141,9 @@ public final class MalarmActivity
 		}
 	}
 	
-	public final class MyCallListener extends PhoneStateListener {
+	public final class MyCallListener
+		extends PhoneStateListener
+	{
 		private boolean mIsPlaying = false;
 
 		public MyCallListener(MalarmActivity context) {
@@ -194,20 +198,20 @@ public final class MalarmActivity
 			final int x = (int)e.getX();
 			final int y = (int)e.getY();
 			Log.i(TAG, "onDoubleTap: " + x + ", " + y);
-			final int width = mWebview.getWidth();
+			final int width = webview_.getWidth();
 			boolean start_browser = false;
 			final int side_width = width/3;
 			if (x <= side_width) {
-				mState.mWebIndex--;
+				state_.mWebIndex--;
 			}
 			else if (x > width - side_width) {
-				mState.mWebIndex++;
+				state_.mWebIndex++;
 			}
 			else {
 				start_browser = true;
 			}
 			if (start_browser) {
-				final String url = mWebview.getUrl();
+				final String url = webview_.getUrl();
 				final Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
 				startActivity(i);
 			}
@@ -226,70 +230,70 @@ public final class MalarmActivity
 		pref.registerOnSharedPreferenceChangeListener(this);
 		syncPreferences(pref, "ALL");
 		setContentView(R.layout.main);
-		mSetDefaultTime = true;
+		setDefaultTime_ = true;
 				
-		mTimePicker = (TimePicker) findViewById(R.id.timePicker1);
-		mTimePicker.setIs24HourView(true);
+		timePicker_ = (TimePicker) findViewById(R.id.timePicker1);
+		timePicker_.setIs24HourView(true);
 
 		if (savedInstanceState == null) {
-			mState = new MalarmState();
+			state_ = new MalarmState();
 		}
 		else {
-			mState = (MalarmState)savedInstanceState.get("state");
+			state_ = (MalarmState)savedInstanceState.get("state");
 		}
-		mLoadingIcon = (ProgressBar) findViewById(R.id.loading_icon);
-		mLoadingIcon.setOnLongClickListener(this);
+		loadingIcon_ = (ProgressBar) findViewById(R.id.loading_icon);
+		loadingIcon_.setOnLongClickListener(this);
 		
-		mPlaylistLabel = (TextView) findViewById(R.id.playlist_name_view);
-		mPlaylistLabel.setOnLongClickListener(this);
+		playlistLabel_ = (TextView) findViewById(R.id.playlist_name_view);
+		playlistLabel_.setOnLongClickListener(this);
 		
-		mSpeechButton = (ImageButton) findViewById(R.id.set_by_voice);
-		mSpeechButton.setOnClickListener(this);
-		mStartingSpeechActivity = false;
+		speechButton_ = (ImageButton) findViewById(R.id.set_by_voice);
+		speechButton_.setOnClickListener(this);
+		startingSpeechActivity_ = false;
 		
-		mNextButton = (ImageButton) findViewById(R.id.next_button);
-		mNextButton.setOnClickListener(this);
-		mNextButton.setOnLongClickListener(this);
+		nextButton_ = (ImageButton) findViewById(R.id.next_button);
+		nextButton_.setOnClickListener(this);
+		nextButton_.setOnLongClickListener(this);
 		
-		mSetNowButton = (Button) findViewById(R.id.set_now_button);
-		mSetNowButton.setOnClickListener(this);
+		setNowButton_ = (Button) findViewById(R.id.set_now_button);
+		setNowButton_.setOnClickListener(this);
 		
-		mTimeLabel = (TextView) findViewById(R.id.target_time_label);
-		mSleepTimeLabel = (TextView) findViewById(R.id.sleep_time_label);
+		timeLabel_ = (TextView) findViewById(R.id.target_time_label);
+		sleepTimeLabel_ = (TextView) findViewById(R.id.sleep_time_label);
 		
-		mWebview = (WebView)findViewById(R.id.webView1);
-		mAlarmButton = (ToggleButton)findViewById(R.id.alarm_button);
-		mAlarmButton.setOnClickListener(this);
-		mAlarmButton.setLongClickable(true);
-		mAlarmButton.setOnLongClickListener(this);
+		webview_ = (WebView)findViewById(R.id.webView1);
+		alarmButton_ = (ToggleButton)findViewById(R.id.alarm_button);
+		alarmButton_.setOnClickListener(this);
+		alarmButton_.setLongClickable(true);
+		alarmButton_.setOnLongClickListener(this);
 		//umm...
-		mAlarmButton.setOnKeyListener(this);
+		alarmButton_.setOnKeyListener(this);
 
 		CookieSyncManager.createInstance(this);
 		
 		//umm...
-		mWebview.setOnKeyListener(this);
-		final WebSettings webSettings = mWebview.getSettings();
+		webview_.setOnKeyListener(this);
+		final WebSettings webSettings = webview_.getSettings();
 		//to display twitter...
 		webSettings.setDomStorageEnabled(true);
 		webSettings.setJavaScriptEnabled(true);
 		webSettings.setSupportZoom(true);
-		mWebview.setOnTouchListener(new OnTouchListener() {
+		webview_.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				mWebview.requestFocus();
-				mGD.onTouchEvent(event);
+				webview_.requestFocus();
+				gd_.onTouchEvent(event);
 				return false;
 			}
 		});
 		
 		final Activity activity = this;
-		mWebview.setWebChromeClient(new WebChromeClient());
-		mWebview.setWebViewClient(new WebViewClient() {
+		webview_.setWebChromeClient(new WebChromeClient());
+		webview_.setWebViewClient(new WebViewClient() {
 			@Override
 			public void onPageStarted(WebView view, String url, Bitmap favicon) {
 				Log.i(TAG, "onPageStart: " + url);
-				mLoadingIcon.setVisibility(View.VISIBLE);
+				loadingIcon_.setVisibility(View.VISIBLE);
 			}
 
 			@Override
@@ -319,7 +323,7 @@ public final class MalarmActivity
 			@Override
 			public void onPageFinished(WebView view, String url) {
 				Log.i(TAG, "onPageFinshed: " + url);
-				mLoadingIcon.setVisibility(View.INVISIBLE);
+				loadingIcon_.setVisibility(View.INVISIBLE);
 				if(url.contains("weather.yahoo")) {
 					view.scrollTo(0, 180);
 				}
@@ -327,8 +331,8 @@ public final class MalarmActivity
 		});
 
 		//stop alarm when phone call
-		mCallListener = new MyCallListener(this);
-		mGD = new GestureDetector(this, new WebViewDblTapListener());
+		callListener_ = new MyCallListener(this);
+		gd_ = new GestureDetector(this, new WebViewDblTapListener());
 	}
 
 	public void startVibrator() {
@@ -361,11 +365,11 @@ public final class MalarmActivity
 	protected void onResume() {
 		Log.i(TAG, "onResume is called, start JavaScript");
 		super.onResume();
-		mStartingSpeechActivity = false;
+		startingSpeechActivity_ = false;
 		
-		mAlarmButton.requestFocus();
+		alarmButton_.requestFocus();
 		//WebView.onResume is hidden, why!?!?
-		mWebview.getSettings().setJavaScriptEnabled(true);
+		webview_.getSettings().setJavaScriptEnabled(true);
 		updateUI();
 	}
 
@@ -373,8 +377,8 @@ public final class MalarmActivity
 	protected void onPause() {
 		super.onPause();
 		//stop tokei
-		mWebview.getSettings().setJavaScriptEnabled(false);
-		mWebview.stopLoading();
+		webview_.getSettings().setJavaScriptEnabled(false);
+		webview_.stopLoading();
 	}
 
 	@Override
@@ -393,8 +397,8 @@ public final class MalarmActivity
 	//Avoid finishing activity not to lost _state
 	@Override
 	public void onBackPressed() {
-		if (mWebview.canGoBack() && mWebview.hasFocus()) {
-			mWebview.goBack();
+		if (webview_.canGoBack() && webview_.hasFocus()) {
+			webview_.goBack();
 			return;
 		}
 		moveTaskToBack(false);
@@ -403,7 +407,7 @@ public final class MalarmActivity
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		Log.i("malarm", "onSaveInstanceState is called");
-		outState.putSerializable("state", mState);
+		outState.putSerializable("state", state_);
 	}
 
 	//escape preference value into static value
@@ -450,9 +454,9 @@ public final class MalarmActivity
 		}
 		Log.i(TAG, "syncPref: key " + key);
 		if("clear_webview_cache".equals(key)){
-			mWebview.clearCache(true);
-			mWebview.clearHistory();
-			mWebview.clearFormData();
+			webview_.clearCache(true);
+			webview_.clearHistory();
+			webview_.clearFormData();
 			CookieManager mgr = CookieManager.getInstance();
 			mgr.removeAllCookie();
 			showMessage(this, getString(R.string.webview_cache_cleared));
@@ -468,19 +472,19 @@ public final class MalarmActivity
 	 * load current web page
 	 */
 	private void loadWebPage() {
-		if (mState.mWebIndex < 0) {
-			mState.mWebIndex = WEB_PAGE_LIST.length - 1;
+		if (state_.mWebIndex < 0) {
+			state_.mWebIndex = WEB_PAGE_LIST.length - 1;
 		}
-		if (mState.mWebIndex >= WEB_PAGE_LIST.length) {
-			mState.mWebIndex = 0;
+		if (state_.mWebIndex >= WEB_PAGE_LIST.length) {
+			state_.mWebIndex = 0;
 		}
-		final String url = WEB_PAGE_LIST[mState.mWebIndex];
+		final String url = WEB_PAGE_LIST[state_.mWebIndex];
 		loadWebPage(url);
 	}
 
 	//TODO: move to resource
 	private void adjustWebviewSetting(String url) {
-		final WebSettings config = mWebview.getSettings();
+		final WebSettings config = webview_.getSettings();
 		if (url.contains("bijo-linux") || 
 			url.contains("google") ||
 			url.contains("yahoo") ||
@@ -501,34 +505,34 @@ public final class MalarmActivity
 	private void loadWebPage(String url) {
 		showMessage(this, "Loading... \n" + url);
 		adjustWebviewSetting(url);
-		mWebview.loadUrl(url);
+		webview_.loadUrl(url);
 	}
 	
 	/**
 	 * call updateUI from caller
 	 */
 	private void cancelAlarmTimer() {
-		if(mState.mTargetTime == null) {
+		if(state_.mTargetTime == null) {
 			return;
 		}
 		final PendingIntent p = makePlayPintent(WAKEUP_ACTION, false);
 		final AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		mgr.cancel(p);
-		mState.mTargetTime = null;
+		state_.mTargetTime = null;
 	}
 	
 	/**
 	 * call updateUI from caller
 	 */
 	private void cancelSleepTimer() {
-		if (mState.mSleepMin == 0) {
+		if (state_.mSleepMin == 0) {
 			return;
 		}
 		final PendingIntent sleep = makePlayPintent(SLEEP_ACTION, false);
 		final AlarmManager mgr =
 				(AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		mgr.cancel(sleep);
-		mState.mSleepMin = 0;
+		state_.mSleepMin = 0;
 	}
 
 	//onResume is called after this method is called
@@ -542,8 +546,8 @@ public final class MalarmActivity
 		}
 		if (action.equals(WAKEUPAPP_ACTION)) {
 			//native player cannot start until lock screen is displayed
-			if(mState.mSleepMin > 0) {
-				mState.mSleepMin = 0;
+			if(state_.mSleepMin > 0) {
+				state_.mSleepMin = 0;
 			}
 			if (pref_vibrate) {
 				startVibrator();
@@ -596,34 +600,34 @@ public final class MalarmActivity
 	}
 
 	private void updateUI () {
-		Calendar target = mState.mTargetTime;
+		Calendar target = state_.mTargetTime;
 		if(null != target) {
-			mTimeLabel.setText(dateStr(target));
-			mTimePicker.setCurrentHour(target.get(Calendar.HOUR_OF_DAY));
-			mTimePicker.setCurrentMinute(target.get(Calendar.MINUTE));
-			mTimePicker.setEnabled(false);
+			timeLabel_.setText(dateStr(target));
+			timePicker_.setCurrentHour(target.get(Calendar.HOUR_OF_DAY));
+			timePicker_.setCurrentMinute(target.get(Calendar.MINUTE));
+			timePicker_.setEnabled(false);
 		}
 		else {
-			mTimePicker.setEnabled(true);
-			mTimeLabel.setText("");
-			if (mSetDefaultTime) {
-				mTimePicker.setCurrentHour(pref_default_hour);
-				mTimePicker.setCurrentMinute(pref_default_min);
+			timePicker_.setEnabled(true);
+			timeLabel_.setText("");
+			if (setDefaultTime_) {
+				timePicker_.setCurrentHour(pref_default_hour);
+				timePicker_.setCurrentMinute(pref_default_min);
 			}
 			else {
-				mSetDefaultTime = true;
+				setDefaultTime_ = true;
 			}
 		}
-		int sleepMin = mState.mSleepMin;
+		int sleepMin = state_.mSleepMin;
 		if(sleepMin > 0) {
-			mSleepTimeLabel.setText(MessageFormat.format(getString(R.string.unit_min), 
+			sleepTimeLabel_.setText(MessageFormat.format(getString(R.string.unit_min), 
 								Integer.valueOf(sleepMin)));
 		}
 		else {
-			mSleepTimeLabel.setText("");
+			sleepTimeLabel_.setText("");
 		}
-		mAlarmButton.setChecked(mState.mTargetTime != null);
-		mPlaylistLabel.setText(Player.getCurrentPlaylistName());
+		alarmButton_.setChecked(state_.mTargetTime != null);
+		playlistLabel_.setText(Player.getCurrentPlaylistName());
 	}
 
 	private void stopAlarm() {
@@ -657,12 +661,12 @@ public final class MalarmActivity
 				PreferenceManager.getDefaultSharedPreferences(this);
 		final long nowMillis = System.currentTimeMillis();
 		long target = 0;
-		if(mState.mTargetTime != null) {
-			target = mState.mTargetTime.getTimeInMillis();
+		if(state_.mTargetTime != null) {
+			target = state_.mTargetTime.getTimeInMillis();
 		}
 		final int min = Integer.valueOf(pref.getString("sleeptime", MalarmPreference.DEFAULT_SLEEPTIME));
 		final long sleepTimeMillis = min * 60 * 1000;
-		mState.mSleepMin = min;
+		state_.mSleepMin = min;
 		if (target == 0 || target - nowMillis >= sleepTimeMillis) {
 			final PendingIntent sleepIntent = 
 					makePlayPintent(SLEEP_ACTION, pref_use_native_player);
@@ -691,9 +695,9 @@ public final class MalarmActivity
 		final Calendar now = new GregorianCalendar();
 
 		//remove focus from timeticker to save time which is entered by software keyboard
-		mTimePicker.clearFocus();
-		final int target_hour = mTimePicker.getCurrentHour().intValue();
-		final int target_min = mTimePicker.getCurrentMinute().intValue();
+		timePicker_.clearFocus();
+		final int target_hour = timePicker_.getCurrentHour().intValue();
+		final int target_min = timePicker_.getCurrentMinute().intValue();
 		final Calendar target = new GregorianCalendar(now.get(Calendar.YEAR),
 				now.get(Calendar.MONTH), now.get(Calendar.DATE), target_hour, target_min, 0);
 		long targetMillis = target.getTimeInMillis();
@@ -705,7 +709,7 @@ public final class MalarmActivity
 			target.setTimeInMillis(targetMillis);
 			tommorow = " (" + getString(R.string.tomorrow) + ")";
 		}
-		mState.mTargetTime = target;
+		state_.mTargetTime = target;
 
 		final AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		final PendingIntent pendingIntent = makePlayPintent(WAKEUP_ACTION, false);
@@ -720,10 +724,10 @@ public final class MalarmActivity
 	}
 
 	public void setNow() {
-		if (mTimePicker.isEnabled()) {
+		if (timePicker_.isEnabled()) {
 			final Calendar now = new GregorianCalendar();
-			mTimePicker.setCurrentHour(now.get(Calendar.HOUR_OF_DAY));
-			mTimePicker.setCurrentMinute(now.get(Calendar.MINUTE));
+			timePicker_.setCurrentHour(now.get(Calendar.HOUR_OF_DAY));
+			timePicker_.setCurrentMinute(now.get(Calendar.MINUTE));
 		}
 	}
 	
@@ -757,28 +761,28 @@ public final class MalarmActivity
 	}
 
 	public void onClick(View v) {
-		if (v == mNextButton) {
+		if (v == nextButton_) {
 			if(Player.isPlaying()) {
 				Player.playNext();
 			}
 			// otherwise confirm and play music?
 		}
-		else if (v == mSpeechButton) {
+		else if (v == speechButton_) {
 			setTimeBySpeech();
 		}
-		else if (v == mAlarmButton) {
+		else if (v == alarmButton_) {
 			InputMethodManager mgr = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-			mgr.hideSoftInputFromWindow(mTimePicker.getWindowToken(), 0);
-			if (mState.mTargetTime != null) {
+			mgr.hideSoftInputFromWindow(timePicker_.getWindowToken(), 0);
+			if (state_.mTargetTime != null) {
 				stopAlarm();
 			}
 			else {
 				setAlarm();
-				playSleepMusic(mState.mTargetTime.getTimeInMillis());
+				playSleepMusic(state_.mTargetTime.getTimeInMillis());
 				updateUI();
 			}
 		}
-		else if (v == mSetNowButton) {
+		else if (v == setNowButton_) {
 			setNow();
 		}
 	}
@@ -786,11 +790,11 @@ public final class MalarmActivity
 	@Override
 	public boolean onKey(View view, int keyCode, KeyEvent event) {
 		if(event.getAction() == KeyEvent.ACTION_UP) {
-			int index = mState.mWebIndex;
+			int index = state_.mWebIndex;
 			boolean handled = false;
 			if((KeyEvent.KEYCODE_0 <= keyCode) &&
 				(keyCode <= KeyEvent.KEYCODE_9)) {
-				mState.mWebIndex = (keyCode - KeyEvent.KEYCODE_0) % WEB_PAGE_LIST.length;
+				state_.mWebIndex = (keyCode - KeyEvent.KEYCODE_0) % WEB_PAGE_LIST.length;
 				loadWebPage();
 				handled = true;
 			}
@@ -800,10 +804,10 @@ public final class MalarmActivity
 	}
 
 	private void setTimeBySpeech() {
-		if (! mTimePicker.isEnabled() || mStartingSpeechActivity) {
+		if (! timePicker_.isEnabled() || startingSpeechActivity_) {
 			return;
 		}
-		if (mSpeechIntent == null) {
+		if (speechIntent_ == null) {
 			//to reduce task of onCreate method
 			showMessage(this, getString(R.string.init_voice));
 			final PackageManager pm = getPackageManager();
@@ -811,13 +815,13 @@ public final class MalarmActivity
 			if (activities.isEmpty()) {
 				return;
 			}
-			mSpeechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-			mSpeechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-			mSpeechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.voice_dialog));
+			speechIntent_ = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+			speechIntent_.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+			speechIntent_.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.voice_dialog));
 		}
-		mStartingSpeechActivity = true;
-		mWebview.stopLoading();
-		startActivityForResult(mSpeechIntent, SPEECH_RECOGNITION_REQUEST_CODE);
+		startingSpeechActivity_ = true;
+		webview_.stopLoading();
+		startActivityForResult(speechIntent_, SPEECH_RECOGNITION_REQUEST_CODE);
 	}
 	
 	public static void showMessage(Context c, String message) {
@@ -833,14 +837,14 @@ public final class MalarmActivity
 	
 	@Override
 	public boolean onLongClick(View view) {
-		if (view == mLoadingIcon) {
+		if (view == loadingIcon_) {
 			shortVibrate();
-			mWebview.stopLoading();
+			webview_.stopLoading();
 			showMessage(this, getString(R.string.stop_loading));
 			return true;
 		}
-		if (view == mAlarmButton) {
-			if (mAlarmButton.isChecked()) {
+		if (view == alarmButton_) {
+			if (alarmButton_.isChecked()) {
 				return false;
 			}
 			shortVibrate();
@@ -850,7 +854,7 @@ public final class MalarmActivity
 			.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int whichButton) {
-					playSleepMusic(mState.mTargetTime.getTimeInMillis());
+					playSleepMusic(state_.mTargetTime.getTimeInMillis());
 					updateUI();
 				}
 			})
@@ -864,7 +868,7 @@ public final class MalarmActivity
 			.show();
 			return true;
 		}
-		if (view == mPlaylistLabel) {
+		if (view == playlistLabel_) {
 			if (Player.isPlaying()) {
 				return false;
 			}
@@ -873,7 +877,7 @@ public final class MalarmActivity
 			updateUI();
 			return true;
 		}
-		if (view == mNextButton) {
+		if (view == nextButton_) {
 			shortVibrate();
 			if(! Player.isPlaying()) {
 				Player.playMusic();
@@ -914,9 +918,9 @@ public final class MalarmActivity
 	}
 	
 	private void setTimePickerTime(TimePickerTime time) {
-		mSetDefaultTime = false;
-		mTimePicker.setCurrentHour(time.mHour);
-		mTimePicker.setCurrentMinute(time.mMin);
+		setDefaultTime_ = false;
+		timePicker_.setCurrentHour(time.mHour);
+		timePicker_.setCurrentMinute(time.mMin);
 		String msg = MessageFormat.format(getString(R.string.voice_success_format), time.mSpeach);
 		showMessage(this, msg);
 	}
@@ -1081,9 +1085,9 @@ public final class MalarmActivity
 				else {
 					Player.pauseMusic();
 				}
-				if(mState != null) {
+				if(state_ != null) {
 					//TODO: BUG: update sleep label
-					mState.mSleepMin = 0;
+					state_.mSleepMin = 0;
 				}
 				showMessage(context, context.getString(R.string.goodnight));
 			}
