@@ -30,7 +30,10 @@ import android.view.View;
 
 public class MalarmPreference
 	extends PreferenceActivity
-	implements OnPreferenceClickListener, View.OnClickListener, FileFilter, OnSharedPreferenceChangeListener
+	implements OnPreferenceClickListener,
+		View.OnClickListener,
+		FileFilter,
+		OnSharedPreferenceChangeListener
 {
 	private Preference help_;
 	private Preference version_;
@@ -68,7 +71,9 @@ public class MalarmPreference
 		final String filename = pathname.getName();
 		
 		//TODO: other formats? mp4, m4v...
-		return filename.endsWith(".mp3") || filename.endsWith(".m4a");
+		return filename.endsWith(".mp3")
+				|| filename.endsWith(".m4a")
+				|| filename.endsWith(".ogg");
 	}
 
 	private void createDefaultPlaylist(File file) {
