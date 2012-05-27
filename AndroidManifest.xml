@@ -17,7 +17,7 @@
     
     <application android:label="@string/app_name"
                  android:icon="@drawable/img">
-        <activity android:name=".MalarmActivity"
+        <activity android:name="MalarmActivity"
                   android:label="@string/app_name"
                   android:theme="@android:style/Theme.Black.NoTitleBar"
                   android:launchMode="singleTask">
@@ -26,10 +26,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".PlaylistViewer" />
-        <activity android:name="com.mamewo.malarm24.MalarmPreference" />
+        <activity android:name="PlaylistViewer" />
+        <activity android:name="MalarmPreference" />
         <receiver android:name="MalarmActivity$Player" />
-        <receiver android:name="com.mamewo.malarm24.MalarmWidgetProvider" >
+        <receiver android:name="MalarmWidgetProvider" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
