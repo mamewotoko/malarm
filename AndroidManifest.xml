@@ -28,8 +28,7 @@
         </activity>
         <activity android:name=".PlaylistViewer" />
         <activity android:name="com.mamewo.malarm24.MalarmPreference" />
-        <receiver android:name="MalarmActivity$Player"
-                  android:permission="android.permission.VIBRATE" />
+        <receiver android:name="MalarmActivity$Player" />
         <receiver android:name="com.mamewo.malarm24.MalarmWidgetProvider" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

@@ -32,7 +32,8 @@ public final class M3UPlaylist
 	 * @param playlistFilename filename of playlist (not absolute path)
 	 */
 	public M3UPlaylist(String basepath, String playlistFilename)
-			throws FileNotFoundException {
+			throws FileNotFoundException
+	{
 		basepath_ = basepath;
 		playlistFilename_ = playlistFilename;
 		final String playlist_abs_path =
