@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import android.app.Service;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -81,7 +80,7 @@ public class MalarmPlayerService
 	}
 	
 	public boolean isPlaying() {
-		return player_ != null && player_.isPlaying();
+		return player_.isPlaying();
 	}
 
 	public void setPlaylist(Playlist list) {
@@ -159,24 +158,6 @@ public class MalarmPlayerService
 		return true;
 	}
 
-//	private void setNotification(String title, String text) {
-//		final Notification note =
-//				new Notification(R.drawable.icon, title, System.currentTimeMillis());
-//		
-//		final Intent ni = new Intent(this, MalarmActivity.class);
-//		final PendingIntent npi = PendingIntent.getActivity(this, 0, ni, 0);
-//		note.setLatestEventInfo(this, title, text, npi);
-//		final NotificationManager notify_mgr =
-//				(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//		notify_mgr.notify(TAG, 0, note);
-//	}
-
-//	private void clearNotification(){
-//		final NotificationManager notify_mgr =
-//				(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//		notify_mgr.cancel(TAG, 0);
-//	}
-	
 	public void stopMusic() {
 		player_.stop();
 	}
