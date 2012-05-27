@@ -28,7 +28,16 @@
         </activity>
         <activity android:name="PlaylistViewer" />
         <activity android:name="MalarmPreference" />
-        <receiver android:name="MalarmActivity$Player" />
+        <receiver android:name="MalarmPlayerService$Receiver">
+			<intent-filter>
+			    <action android:name="com.mamewo.malarm24.WAKEUP_ACTION" />
+			</intent-filter>
+        </receiver>
+        <service android:enabled="true" android:name="MalarmPlayerService">
+			<intent-filter>
+			    <action android:name="com.mamewo.malarm24.WAKEUPAPP_ACTION" />
+			</intent-filter>
+        </service>
         <receiver android:name="MalarmWidgetProvider" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

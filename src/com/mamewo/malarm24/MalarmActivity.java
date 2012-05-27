@@ -5,9 +5,7 @@ package com.mamewo.malarm24;
  * http://www002.upp.so-net.ne.jp/mamewo/
  */
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -26,16 +24,18 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
@@ -59,38 +59,45 @@ import android.webkit.*;
 import android.net.Uri;
 import android.graphics.Bitmap;
 
-public final class MalarmActivity
+final
+public class MalarmActivity
 	extends Activity
-	implements OnClickListener, OnSharedPreferenceChangeListener,
-			OnLongClickListener, OnKeyListener
+	implements OnClickListener,
+		OnSharedPreferenceChangeListener,
+		OnLongClickListener,
+		OnKeyListener,
+		ServiceConnection
 {
-	public static final String PACKAGE_NAME = MalarmActivity.class.getPackage().getName();
-	public static final String WAKEUP_ACTION = PACKAGE_NAME + ".WAKEUP_ACTION";
-	public static final String WAKEUPAPP_ACTION = PACKAGE_NAME + ".WAKEUPAPP_ACTION";
-	public static final String SLEEP_ACTION = PACKAGE_NAME + ".SLEEP_ACTION";
-	public static final String LOADWEB_ACTION = PACKAGE_NAME + ".LOADWEB_ACTION";
-	private static final String TAG = "malarm";
-	private static final String MYURL = "http://www002.upp.so-net.ne.jp/mamewo/mobile_shop.html";
-	
-	private static final long VIBRATE_PATTERN[] = { 10, 1500, 500, 1500, 500, 1500, 500, 1500, 500 };
-	private static final int SPEECH_RECOGNITION_REQUEST_CODE = 2121;
-	protected static final String FILE_SEPARATOR = System.getProperty("file.separator");
-
-	public static final String WAKEUP_PLAYLIST_FILENAME = "wakeup.m3u";
-	public static final String SLEEP_PLAYLIST_FILENAME = "sleep.m3u";
-	//copy stop.m4a file to stop native player
-	protected static final String STOP_MUSIC_FILENAME = "stop.m4a";
-	private static final String NATIVE_PLAYER_KEY = "nativeplayer";
-	private static final String PLAYLIST_PATH_KEY = "playlist_path";
-	private static final String VOLUME_KEY = "volume";
-	private static final Pattern TIME_PATTERN = Pattern.compile("(\\d+)時((\\d+)分|半)?");
-	private static final Pattern AFTER_TIME_PATTERN = Pattern.compile("((\\d+)時間)?((\\d+)分|半)?.*");
+	final static
+	public String PACKAGE_NAME = MalarmActivity.class.getPackage().getName();
+	final static
+	public String SLEEP_ACTION = PACKAGE_NAME + ".SLEEP_ACTION";
+	final static
+	public String LOADWEB_ACTION = PACKAGE_NAME + ".LOADWEB_ACTION";
+	final static
+	private String TAG = "malarm";
+	final static
+	private String MYURL = "http://www002.upp.so-net.ne.jp/mamewo/mobile_shop.html";
+	final static
+	private long VIBRATE_PATTERN[] =
+		{ 10, 1500, 500, 1500, 500, 1500, 500, 1500, 500 };
+	final static
+	private int SPEECH_RECOGNITION_REQUEST_CODE = 2121;
+	final static
+	public String WAKEUP_PLAYLIST_FILENAME = "wakeup.m3u";
+	final static
+	public String SLEEP_PLAYLIST_FILENAME = "sleep.m3u";
+	final static
+	private String NATIVE_PLAYER_KEY = "nativeplayer";
+	final static
+	private String PLAYLIST_PATH_KEY = "playlist_path";
+	final static
+	private Pattern TIME_PATTERN = Pattern.compile("(\\d+)時((\\d+)分|半)?");
+	final static
+	private Pattern AFTER_TIME_PATTERN = Pattern.compile("((\\d+)時間)?((\\d+)分|半)?.*");
 
 	protected static String prefPlaylistPath;
-
 	private static String[] WEB_PAGE_LIST = new String []{ MYURL };
-	public static M3UPlaylist wakeupPlaylist;
-	public static M3UPlaylist sleepPlaylist;
 	private static boolean pref_use_native_player;
 	private static boolean pref_vibrate;
 	private static int pref_sleep_volume;
@@ -98,6 +105,9 @@ public final class MalarmActivity
 	private static Integer pref_default_hour;
 	private static Integer pref_default_min;
 	private static MalarmState state_;
+
+	public static M3UPlaylist wakeupPlaylist;
+	public static M3UPlaylist sleepPlaylist;
 
 	private ImageButton speechButton_;
 	private ImageButton nextButton_;
@@ -113,6 +123,7 @@ public final class MalarmActivity
 	private boolean startingSpeechActivity_;
 	private TextView playlistLabel_;
 	private TextView sleepTimeLabel_;
+	private MalarmPlayerService player_ = null;
 	
 	private PhoneStateListener callListener_;
 
@@ -144,7 +155,7 @@ public final class MalarmActivity
 	public final class MyCallListener
 		extends PhoneStateListener
 	{
-		private boolean mIsPlaying = false;
+		private boolean playing_ = false;
 
 		public MyCallListener(MalarmActivity context) {
 			super();
@@ -158,11 +169,11 @@ public final class MalarmActivity
 				//fall-through
 			case TelephonyManager.CALL_STATE_OFFHOOK:
 				Log.i(TAG, "onCallStateChanged: RINGING");
-				stopVibrator();
+				player_.stopVibrator();
 				//native player stops automatically
-				mIsPlaying = Player.isPlaying();
-				if (mIsPlaying) {
-					Player.pauseMusic();
+				playing_ = player_.isPlaying();
+				if (playing_) {
+					player_.pauseMusic();
 				}
 				break;
 			case TelephonyManager.CALL_STATE_IDLE:
@@ -231,7 +242,11 @@ public final class MalarmActivity
 		syncPreferences(pref, "ALL");
 		setContentView(R.layout.main);
 		setDefaultTime_ = true;
-				
+		Intent intent = new Intent(this, MalarmPlayerService.class);
+		//TODO: handle failure of bindService
+		boolean result = bindService(intent, this, Context.BIND_AUTO_CREATE);
+		Log.i(TAG, "bindService: " + result);
+		
 		timePicker_ = (TimePicker) findViewById(R.id.timePicker1);
 		timePicker_.setIs24HourView(true);
 
@@ -333,24 +348,6 @@ public final class MalarmActivity
 		//stop alarm when phone call
 		callListener_ = new MyCallListener(this);
 		gd_ = new GestureDetector(this, new WebViewDblTapListener());
-	}
-
-	public void startVibrator() {
-		final Vibrator vibrator = 
-				(Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-		if (vibrator == null) {
-			return;
-		}
-		vibrator.vibrate(VIBRATE_PATTERN, 1);
-	}
-	
-	public void stopVibrator() {
-		final Vibrator vibrator =
-				(Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-		if (vibrator == null) {
-			return;
-		}
-		vibrator.cancel();
 	}
 	
 	@Override
@@ -515,7 +512,7 @@ public final class MalarmActivity
 		if(state_.mTargetTime == null) {
 			return;
 		}
-		final PendingIntent p = makePlayPintent(WAKEUP_ACTION, false);
+		final PendingIntent p = makePlayPintent(MalarmPlayerService.WAKEUP_ACTION, false);
 		final AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		mgr.cancel(p);
 		state_.mTargetTime = null;
@@ -544,13 +541,10 @@ public final class MalarmActivity
 		if (action == null) {
 			return;
 		}
-		if (action.equals(WAKEUPAPP_ACTION)) {
+		if (action.equals(MalarmPlayerService.WAKEUPAPP_ACTION)) {
 			//native player cannot start until lock screen is displayed
 			if(state_.mSleepMin > 0) {
 				state_.mSleepMin = 0;
-			}
-			if (pref_vibrate) {
-				startVibrator();
 			}
 			setNotification(getString(R.string.notify_wakeup_title),
 							getString(R.string.notify_wakeup_text));
@@ -563,11 +557,9 @@ public final class MalarmActivity
 
 	//TODO: design
 	private PendingIntent makePlayPintent(String action, boolean useNative) {
-		final Intent i = new Intent(this, Player.class);
+		final Intent i = new Intent(this, MalarmPlayerService.Receiver.class);
 		i.setAction(action);
 		i.putExtra(NATIVE_PLAYER_KEY, useNative);
-		i.putExtra(PLAYLIST_PATH_KEY, prefPlaylistPath);
-		i.putExtra(VOLUME_KEY, pref_wakeup_volume);
 		
 		final PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, i,
 				PendingIntent.FLAG_CANCEL_CURRENT);
@@ -627,7 +619,8 @@ public final class MalarmActivity
 			sleepTimeLabel_.setText("");
 		}
 		alarmButton_.setChecked(state_.mTargetTime != null);
-		playlistLabel_.setText(Player.getCurrentPlaylistName());
+		//TODO: add function
+		//playlistLabel_.setText(Player.getCurrentPlaylistName());
 	}
 
 	private void stopAlarm() {
@@ -637,9 +630,9 @@ public final class MalarmActivity
 		cancelSleepTimer();
 		cancelAlarmTimer();
 		updateUI();
-		stopVibrator();
+		player_.stopVibrator();
 		if (! pref_use_native_player) {
-			Player.pauseMusic();
+			player_.pauseMusic();
 			showMessage(this, getString(R.string.music_stopped));
 		}
 	}
@@ -664,13 +657,15 @@ public final class MalarmActivity
 		if(state_.mTargetTime != null) {
 			target = state_.mTargetTime.getTimeInMillis();
 		}
-		final int min = Integer.valueOf(pref.getString("sleeptime", MalarmPreference.DEFAULT_SLEEPTIME));
+		final String minStr =
+				pref.getString("sleeptime", MalarmPreference.DEFAULT_SLEEPTIME);
+		final int min = Integer.valueOf(minStr);
 		final long sleepTimeMillis = min * 60 * 1000;
 		state_.mSleepMin = min;
 		if (target == 0 || target - nowMillis >= sleepTimeMillis) {
 			final PendingIntent sleepIntent = 
 					makePlayPintent(SLEEP_ACTION, pref_use_native_player);
-			final AlarmManager mgr = 
+			final AlarmManager mgr =
 					(AlarmManager) getSystemService(Context.ALARM_SERVICE);
 			mgr.set(AlarmManager.RTC_WAKEUP, nowMillis + sleepTimeMillis, sleepIntent);
 			updateUI();
@@ -678,10 +673,12 @@ public final class MalarmActivity
 	}
 	
 	private void playSleepMusic(long targetMillis) {
-		if (Player.isPlaying()) {
-			Player.pauseMusic();
+		if (player_.isPlaying()) {
+			player_.pauseMusic();
 		}
-		Player.playSleepMusic(this);
+		AudioManager mgr = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+		mgr.setStreamVolume(AudioManager.STREAM_MUSIC, pref_sleep_volume, AudioManager.FLAG_SHOW_UI);
+		player_.playMusic(sleepPlaylist);
 		setSleepTimer();
 	}
 	
@@ -712,7 +709,8 @@ public final class MalarmActivity
 		state_.mTargetTime = target;
 
 		final AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-		final PendingIntent pendingIntent = makePlayPintent(WAKEUP_ACTION, false);
+		final PendingIntent pendingIntent =
+				makePlayPintent(MalarmPlayerService.WAKEUP_ACTION, false);
 		mgr.set(AlarmManager.RTC_WAKEUP, targetMillis, pendingIntent);
 
 		showMessage(this, getString(R.string.alarm_set) + tommorow);
@@ -735,21 +733,21 @@ public final class MalarmActivity
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch(item.getItemId()) {
 		case R.id.stop_vibration:
-			stopVibrator();
+			player_.stopVibrator();
 			showMessage(this, getString(R.string.notify_wakeup_text));
 			break;
 		case R.id.play_wakeup:
-			if (Player.isPlaying()) {
+			if (player_.isPlaying()) {
 				break;
 			}
-			Player.playMusic();
+			player_.playMusic();
 			break;
 		case R.id.pref:
 			//TODO: use startActivityForResult
 			startActivity(new Intent(this, MalarmPreference.class));
 			break;
 		case R.id.stop_music:
-			Player.pauseMusic();
+			player_.pauseMusic();
 			cancelSleepTimer();
 			updateUI();
 			break;
@@ -762,8 +760,8 @@ public final class MalarmActivity
 
 	public void onClick(View v) {
 		if (v == nextButton_) {
-			if(Player.isPlaying()) {
-				Player.playNext();
+			if(player_.isPlaying()) {
+				player_.playNext();
 			}
 			// otherwise confirm and play music?
 		}
@@ -868,19 +866,20 @@ public final class MalarmActivity
 			.show();
 			return true;
 		}
-		if (view == playlistLabel_) {
-			if (Player.isPlaying()) {
-				return false;
-			}
-			shortVibrate();
-			Player.switchPlaylist();
-			updateUI();
-			return true;
-		}
+		//TODO: implement
+//		if (view == playlistLabel_) {
+//			if (player_.isPlaying()) {
+//				return false;
+//			}
+//			shortVibrate();
+//			Player.switchPlaylist();
+//			updateUI();
+//			return true;
+//		}
 		if (view == nextButton_) {
 			shortVibrate();
-			if(! Player.isPlaying()) {
-				Player.playMusic();
+			if(! player_.isPlaying()) {
+				player_.playMusic();
 			}
 			cancelSleepTimer();
 			setSleepTimer();
@@ -891,15 +890,16 @@ public final class MalarmActivity
 		return false;
 	}
 
-	private static class TimePickerTime {
-		public final int mHour;
-		public final int mMin;
-		public final String mSpeach;
+	private class TimePickerTime
+	{
+		public final int hour_;
+		public final int min_;
+		public final String speach_;
 		
 		public TimePickerTime(int hour, int min, String speach) {
-			mHour = hour;
-			mMin = min;
-			mSpeach = speach;
+			hour_ = hour;
+			min_ = min;
+			speach_ = speach;
 		}
 	}
 
@@ -919,9 +919,9 @@ public final class MalarmActivity
 	
 	private void setTimePickerTime(TimePickerTime time) {
 		setDefaultTime_ = false;
-		timePicker_.setCurrentHour(time.mHour);
-		timePicker_.setCurrentMinute(time.mMin);
-		String msg = MessageFormat.format(getString(R.string.voice_success_format), time.mSpeach);
+		timePicker_.setCurrentHour(time.hour_);
+		timePicker_.setCurrentMinute(time.min_);
+		String msg = MessageFormat.format(getString(R.string.voice_success_format), time.speach_);
 		showMessage(this, msg);
 	}
 	
@@ -995,12 +995,14 @@ public final class MalarmActivity
 				Iterator<TimePickerTime> iter = result.values().iterator();
 				for(int i = 0; i < result.size(); i++){
 					TimePickerTime time = iter.next();
-					speechArray[i] = time.mSpeach + String.format(" (%02d:%02d)", time.mHour, time.mMin);
+					speechArray[i] = time.speach_ +
+							String.format(" (%02d:%02d)", time.hour_, time.min_);
 				}
 				//select from list dialog
 				new AlertDialog.Builder(this)
 				.setTitle(R.string.select_time_from_list)
-				.setItems(speechArray, new ClickListener(result.values().toArray(new TimePickerTime[0])))
+				.setItems(speechArray,
+						new ClickListener(result.values().toArray(new TimePickerTime[0])))
 				.create()
 				.show();
 			}
@@ -1011,225 +1013,17 @@ public final class MalarmActivity
 	public void onLowMemory () {
 		showMessage(this, getString(R.string.low_memory));
 	}
-	
-	//TODO: implement music player as Service to play long time
-	//Player now extends BrowdcastReceiver because to stop music this class should be loaded
-	public static class Player
-		extends BroadcastReceiver
-	{
-		private static Playlist currentPlaylist = sleepPlaylist;
-		private static MediaPlayer mPlayer = null;
 
-		public static boolean isPlaying() {
-			return mPlayer != null && mPlayer.isPlaying();
-		}
+	@Override
+	public void onServiceConnected(ComponentName name, IBinder binder) {
+		Log.i(TAG, "onServiceConnected");
+		player_ = ((MalarmPlayerService.LocalBinder)binder).getService();
+		updateUI();
+	}
 
-		public static String getCurrentPlaylistName() {
-			if(null == currentPlaylist){
-				return "None";
-			}
-			return currentPlaylist.getName();
-		}
-		
-		public static void switchPlaylist() {
-			if(isPlaying()) {
-				return;
-			}
-			if(currentPlaylist == sleepPlaylist) {
-				currentPlaylist = wakeupPlaylist;
-			}
-			else {
-				currentPlaylist = sleepPlaylist;
-			}
-		}
-		
-		/**
-		 * intent: com.mamewo.malarm.MalarmActivity.WAKEUP_ACTION
-		 * extra: playlist_path: path to playlist where wakeup.m3u exists
-		 */
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			// AppWidgetManager mgr = AppWidgetManager.getInstance(context);
-			Log.i(TAG, "onReceive!!: action: " + intent.getAction());
-			if (intent.getAction().equals(WAKEUP_ACTION)) {
-				//TODO: load optional m3u file to play by request from other application
-				//TODO: what to do if calling
-				//initialize player...
-				if (Player.isPlaying()) {
-					Player.pauseMusic();
-				}
-				if (prefPlaylistPath == null) {
-					prefPlaylistPath = intent.getStringExtra(PLAYLIST_PATH_KEY);
-				}
-				AudioManager mgr = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-				//following two methods require MODIFY_AUDIO_SETTINGS permissions...
-				//TODO: add preference to permit volume up when external speaker is connected
-				int wakeupVolume = 5;
-				if ((! mgr.isWiredHeadsetOn()) && (! mgr.isBluetoothA2dpOn())) {
-					wakeupVolume = intent.getIntExtra(VOLUME_KEY, 5);
-					Log.i(TAG, "playWakeupMusic: set volume: " + pref_wakeup_volume);
-				}
-				mgr.setStreamVolume(AudioManager.STREAM_MUSIC, wakeupVolume, AudioManager.FLAG_SHOW_UI);
-				playWakeupMusic(context, false);
-				
-				Intent i = new Intent(context, MalarmActivity.class);
-				i.setAction(WAKEUPAPP_ACTION);
-				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				context.startActivity(i);
-				//but this activity is not executed...(sleep before delivered?)
-			}
-			else if (intent.getAction().equals(SLEEP_ACTION)) {
-				if (intent.getExtras().getBoolean(NATIVE_PLAYER_KEY)) {
-					Player.stopMusicNativePlayer(context);
-				}
-				else {
-					Player.pauseMusic();
-				}
-				if(state_ != null) {
-					//TODO: BUG: update sleep label
-					state_.mSleepMin = 0;
-				}
-				showMessage(context, context.getString(R.string.goodnight));
-			}
-		}
-
-		public static void stopMusic() {
-			if (mPlayer == null) {
-				return;
-			}
-			mPlayer.stop();
-		}
-
-		public static void playMusicNativePlayer(Context context, File f) {
-			Intent i = new Intent();
-			i.setAction(Intent.ACTION_VIEW);
-			i.setDataAndType(Uri.fromFile(f), "audio/*");
-			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			context.startActivity(i);
-		}
-
-		public static void stopMusicNativePlayer(Context context) {
-			File f = new File(prefPlaylistPath + STOP_MUSIC_FILENAME);
-			if(! f.isFile()) {
-				Log.i(TAG, "No stop play list is found");
-				return;
-			}
-			playMusicNativePlayer(context, f);
-		}
-
-		public static void playWakeupMusic(Context context, boolean use_native) {
-			File f = new File(WAKEUP_PLAYLIST_FILENAME);
-
-			if (use_native && f.isFile()) {
-				playMusicNativePlayer(context, f);
-			}
-			else {
-				if(wakeupPlaylist == null) {
-					loadPlaylist();
-					if (wakeupPlaylist == null) {
-						Log.i(TAG, "playSleepMusic: SLEEP_PLAYLIST is null");
-						return;
-					}
-				}
-				wakeupPlaylist.reset();
-				playMusic(wakeupPlaylist);
-			}
-		}
-
-		public static void playSleepMusic(Context context) {
-			Log.i(TAG, "start sleep music and stop");
-			File f = new File(prefPlaylistPath + SLEEP_PLAYLIST_FILENAME);
-			AudioManager mgr = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-			mgr.setStreamVolume(AudioManager.STREAM_MUSIC, pref_sleep_volume, AudioManager.FLAG_SHOW_UI);
-			if (pref_use_native_player && f.isFile()) {
-				Log.i(TAG, "playSleepMusic: NativePlayer");
-				playMusicNativePlayer(context, f);
-			}
-			else {
-				Log.i(TAG, "playSleepMusic: MediaPlayer");
-				if(sleepPlaylist == null) {
-					loadPlaylist();
-					if (sleepPlaylist == null) {
-						Log.i(TAG, "playSleepMusic: SLEEP_PLAYLIST is null");
-						return;
-					}
-				}
-				sleepPlaylist.reset();
-				playMusic(sleepPlaylist);
-			}
-		}
-
-		public static void playNext() {
-			Log.i(TAG, "playNext is called: ");
-			if (Player.isPlaying()) {
-				stopMusic();
-			}
-			playMusic(currentPlaylist);
-		}
-
-		public static class MusicCompletionListener implements
-		MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener {
-			public void onCompletion(MediaPlayer mp) {
-				Log.i(TAG, "onCompletion listener is called");
-				Player.playNext();
-			}
-
-			// This method is not called when DRM error occurs
-			public boolean onError(MediaPlayer mp, int what, int extra) {
-				//TODO: show error message to GUI
-				Log.i(TAG, "onError is called, cannot play this media");
-				Player.playNext();
-				return true;
-			}
-		}
-		
-		public static void playMusic(Playlist playlist) {
-			currentPlaylist = playlist;
-			playMusic();
-		}
-
-		public static void playMusic() {
-			Log.i(TAG, "playMusic");
-			if (currentPlaylist == null || currentPlaylist.isEmpty()) {
-				Log.i(TAG, "playMusic: playlist is null");
-				return;
-			}
-			if (mPlayer == null) {
-				mPlayer = new MediaPlayer();
-				MusicCompletionListener l = new MusicCompletionListener();
-				mPlayer.setOnCompletionListener(l);
-				mPlayer.setOnErrorListener(l);
-			}
-			if (mPlayer.isPlaying()) {
-				return;
-			}
-			String path = "";
-			//skip unsupported files filtering by filename ...
-			for (int i = 0; i < 10; i++) {
-				path = currentPlaylist.next();
-				File f = new File(path);
-				// ....
-				if ((!path.endsWith(".m4p")) && f.exists()) {
-					break;
-				}
-			}
-			try {
-				mPlayer.reset();
-				mPlayer.setDataSource(path);
-				mPlayer.prepare();
-				mPlayer.start();
-			} catch (IOException e) {
-				//do nothing
-			}
-		}
-
-		public static void pauseMusic() {
-			Log.i(TAG, "pause music is called");
-			try {
-				mPlayer.pause();
-			} catch (Exception e) {
-				//do nothing
-			}
-		}
+	@Override
+	public void onServiceDisconnected(ComponentName arg0) {
+		Log.i(TAG, "onServiceDisconnected");
+		player_ = null;
 	}
 }
