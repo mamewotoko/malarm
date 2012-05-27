@@ -30,6 +30,10 @@ public class MalarmPlayerService
 	public String WAKEUP_ACTION = PACKAGE_NAME + ".WAKEUP_ACTION";
 	final static
 	public String WAKEUPAPP_ACTION = PACKAGE_NAME + ".WAKEUPAPP_ACTION";
+	final static
+	public String SLEEP_ACTION = PACKAGE_NAME + ".SLEEP_ACTION";
+	final static
+	public String STOP_MUSIC_ACTION = PACKAGE_NAME + ".STOP_MUSIC_ACTION";
 
 	final static
 	private String TAG = "malarm";
@@ -66,6 +70,11 @@ public class MalarmPlayerService
 			if(vibrate){
 				startVibrator();
 			}
+		}
+		else if(STOP_MUSIC_ACTION.equals(action)){
+			//TODO: support native player
+			stopMusic();
+			//TODO: quit service
 		}
 		//TODO: add sleep action and stop music
 		return START_STICKY;
@@ -232,6 +241,12 @@ public class MalarmPlayerService
 				Log.i(TAG, "onReceive is called(malarm24): action: " + action);
 				Intent i = new Intent(context, MalarmPlayerService.class);
 				i.setAction(WAKEUPAPP_ACTION);
+				context.startService(i);
+			}
+			else if(SLEEP_ACTION.equals(action)){
+				//TODO: support native player
+				Intent i = new Intent(context, MalarmPlayerService.class);
+				i.setAction(STOP_MUSIC_ACTION);
 				context.startService(i);
 			}
 		}

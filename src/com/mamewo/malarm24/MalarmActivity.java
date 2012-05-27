@@ -71,8 +71,6 @@ public class MalarmActivity
 	final static
 	public String PACKAGE_NAME = MalarmActivity.class.getPackage().getName();
 	final static
-	public String SLEEP_ACTION = PACKAGE_NAME + ".SLEEP_ACTION";
-	final static
 	public String LOADWEB_ACTION = PACKAGE_NAME + ".LOADWEB_ACTION";
 	final static
 	private String TAG = "malarm";
@@ -525,7 +523,7 @@ public class MalarmActivity
 		if (state_.mSleepMin == 0) {
 			return;
 		}
-		final PendingIntent sleep = makePlayPintent(SLEEP_ACTION, false);
+		final PendingIntent sleep = makePlayPintent(MalarmPlayerService.SLEEP_ACTION, false);
 		final AlarmManager mgr =
 				(AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		mgr.cancel(sleep);
@@ -663,8 +661,8 @@ public class MalarmActivity
 		final long sleepTimeMillis = min * 60 * 1000;
 		state_.mSleepMin = min;
 		if (target == 0 || target - nowMillis >= sleepTimeMillis) {
-			final PendingIntent sleepIntent = 
-					makePlayPintent(SLEEP_ACTION, pref_use_native_player);
+			final PendingIntent sleepIntent =
+					makePlayPintent(MalarmPlayerService.SLEEP_ACTION, pref_use_native_player);
 			final AlarmManager mgr =
 					(AlarmManager) getSystemService(Context.ALARM_SERVICE);
 			mgr.set(AlarmManager.RTC_WAKEUP, nowMillis + sleepTimeMillis, sleepIntent);
