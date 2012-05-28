@@ -52,18 +52,16 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - Android 4.0 emulator
 
 ## TODO
+- add guide / tutorial to create playlist
+- use ringtone when wakeup.m3u does not exist
+- improve UI to edit playlist
 - show notification while playing music
-- fix vibrator timing
 - change webview into photo view, movie player...
 - add UI to play ringtone on VolumePreference to check volume
-- support podcast
-- support HVGA, WVGA, WVGA+ resolution
--- http://developer.android.com/resources/dashboard/screens.html
--- hide time picker after malarm is set? (or count down?)
+- hide time picker after malarm is set? (or count down?)
 -- scale of web contents
 - localize: French, Chinese
 - add mode to display alert dialog if device is not charged when alarm is set
-- improve UI to edit playlist
 - fix UI update bug when sleep timer expires (broadcast -> activity)
 - conditional playlist
 -- Sunday, holiday playlist etc...
@@ -72,13 +70,14 @@ You can change path to playlist and music files by "Playlist directory" preferen
 -- double touch of webview
 -- label text is updated when music is stopped or alarm is canceled
 -- check default config value
-- add source of malarm_test into this repository
-- refactor code to clear browser history
 - Design for tablets
 - use Actionbar ?
 - record wakeup time?
 - support shuffle?
 - fix bug when native player is used....
+- support podcast
+- support HVGA, WVGA, WVGA+ resolution
+-- http://developer.android.com/resources/dashboard/screens.html
 
 ## Appendix
 ### How To Build From Command Line

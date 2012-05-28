@@ -702,7 +702,6 @@ public class MalarmActivity
 			//tomorrow
 			targetMillis += 24 * 60 * 60 * 1000;
 			target.setTimeInMillis(targetMillis);
-			tommorow = " (" + getString(R.string.tomorrow) + ")";
 		}
 		state_.mTargetTime = target;
 
@@ -711,11 +710,10 @@ public class MalarmActivity
 				makePlayPintent(MalarmPlayerService.WAKEUP_ACTION, false);
 		mgr.set(AlarmManager.RTC_WAKEUP, targetMillis, pendingIntent);
 
-		showMessage(this, getString(R.string.alarm_set) + tommorow);
 		String text = getString(R.string.notify_waiting_text);
-		text += " (" + dateStr(target) +")";
+		text += " " + dateStr(target);
 		final String title = getString(R.string.notify_waiting_title);
-		//umm...
+		//TODO: umm...
 		setNotification(title, text);
 	}
 
