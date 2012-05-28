@@ -52,6 +52,8 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - Android 4.0 emulator
 
 ## TODO
+- fix a bug that sleep music stops before sleep timer
+- fix a bug that wakeup music is not played but vibration starts
 - add guide / tutorial to create playlist
 - use ringtone when wakeup.m3u does not exist
 - improve UI to edit playlist
