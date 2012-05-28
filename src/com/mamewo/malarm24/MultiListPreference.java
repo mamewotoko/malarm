@@ -15,6 +15,7 @@
  */
 
 package com.mamewo.malarm24;
+//modified by Takashi Masuyama <mamewotoko@gmail.com>
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,11 +33,12 @@ import android.util.Log;
 public class MultiListPreference
 	extends ListPreference
 {
-	public static final String SEPARATOR = "!";
-	private static final String LOG_TAG = "ListPreferenceMultiSelect";
+	final static
+	public String SEPARATOR = "!";
+	final static
+	private String LOG_TAG = "ListPreferenceMultiSelect";
 	private boolean[] mClickedDialogEntryIndices;
 	
-	// Constructor
 	public MultiListPreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		// Initialize the array of boolean to the same size as number of entries
@@ -58,9 +60,11 @@ public class MultiListPreference
 	protected void onPrepareDialogBuilder(Builder builder) {
 		CharSequence[] entries = getEntries();
 		CharSequence[] entryValues = getEntryValues();
-		if (entries == null || entryValues == null || entries.length != entryValues.length) {
+		if (entries == null || entryValues == null ||
+				entries.length != entryValues.length) {
 			throw new IllegalStateException(
-					"ListPreference requires an entries array and an entryValues array which are both the same length");
+					"ListPreference requires an entries array and an entryValues array" +
+					"which are both the same length");
 		}
 
 		restoreCheckedEntries();
@@ -126,7 +130,8 @@ public class MultiListPreference
 	}
 
 	// Credits to kurellajunior on this post http://snippets.dzone.com/posts/show/91
-	protected static String join( Iterable< ? extends Object > pColl, String separator ) {
+	static
+	protected String join(Iterable< ? extends Object > pColl, String separator) {
 		Iterator< ? extends Object > oIter;
 		if ( pColl == null || ( !( oIter = pColl.iterator() ).hasNext() ) )
 			return "";
