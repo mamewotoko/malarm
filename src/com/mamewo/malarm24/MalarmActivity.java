@@ -622,15 +622,15 @@ public class MalarmActivity
 	}
 
 	private void stopAlarm() {
-		final NotificationManager notify_mgr = 
+		final NotificationManager mgr = 
 				(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		notify_mgr.cancel(PACKAGE_NAME, 0);
+		mgr.cancel(PACKAGE_NAME, 0);
 		cancelSleepTimer();
 		cancelAlarmTimer();
 		updateUI();
 		player_.stopVibrator();
 		if (! pref_use_native_player) {
-			player_.pauseMusic();
+			player_.stopMusic();
 			showMessage(this, getString(R.string.music_stopped));
 		}
 	}
@@ -672,7 +672,7 @@ public class MalarmActivity
 	
 	private void playSleepMusic(long targetMillis) {
 		if (player_.isPlaying()) {
-			player_.pauseMusic();
+			player_.stopMusic();
 		}
 		AudioManager mgr = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
 		mgr.setStreamVolume(AudioManager.STREAM_MUSIC, pref_sleep_volume, AudioManager.FLAG_SHOW_UI);
