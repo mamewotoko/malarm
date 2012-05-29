@@ -52,11 +52,14 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - Android 4.0 emulator
 
 ## TODO
+- implement UI when sleep play list does not exist
+- show toast when playlist is not found
+- improve wording especially one of notification
 - fix a bug that sleep music stops before sleep timer
 - fix a bug that wakeup music is not played but vibration starts
-- add guide / tutorial to create playlist
+- add introduction guide or tutorial to create playlist
 - use ringtone when wakeup.m3u does not exist
-- improve UI to edit playlist
+- improve UI to create and edit playlist
 - show notification while playing music
 - change webview into photo view, movie player...
 - add UI to play ringtone on VolumePreference to check volume
@@ -72,14 +75,16 @@ You can change path to playlist and music files by "Playlist directory" preferen
 -- double touch of webview
 -- label text is updated when music is stopped or alarm is canceled
 -- check default config value
-- Design for tablets
-- use Actionbar ?
-- record wakeup time?
-- support shuffle?
 - fix bug when native player is used....
 - support podcast
 - support HVGA, WVGA, WVGA+ resolution
 -- http://developer.android.com/resources/dashboard/screens.html
+
+## Future work
+- support shuffle
+- use Actionbar
+- Design for tablets
+- record wakeup time
 
 ## Appendix
 ### How To Build From Command Line

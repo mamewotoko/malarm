@@ -588,13 +588,12 @@ public class MalarmActivity
 	private void updateUI () {
 		Calendar target = state_.mTargetTime;
 		if(null != target) {
+			//alarm is not set
 			timeLabel_.setText(dateStr(target));
 			timePicker_.setCurrentHour(target.get(Calendar.HOUR_OF_DAY));
 			timePicker_.setCurrentMinute(target.get(Calendar.MINUTE));
-			timePicker_.setEnabled(false);
 		}
 		else {
-			timePicker_.setEnabled(true);
 			timeLabel_.setText("");
 			if (setDefaultTime_) {
 				timePicker_.setCurrentHour(pref_default_hour);
@@ -612,8 +611,13 @@ public class MalarmActivity
 		else {
 			sleepTimeLabel_.setText("");
 		}
-		alarmButton_.setChecked(state_.mTargetTime != null);
-		//TODO: add function
+		alarmButton_.setChecked(null != state_.mTargetTime);
+		//following two buttons can be hidden
+		speechButton_.setEnabled(null == state_.mTargetTime);
+		setNowButton_.setEnabled(null == state_.mTargetTime);
+
+		timePicker_.setEnabled(null == state_.mTargetTime);
+		//TODO: add function to get player state
 		//playlistLabel_.setText(Player.getCurrentPlaylistName());
 	}
 
