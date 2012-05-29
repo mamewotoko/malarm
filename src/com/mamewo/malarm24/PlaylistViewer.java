@@ -40,17 +40,15 @@ public final class PlaylistViewer
 	public void onStart() {
 		super.onStart();
 		Log.i("malrm", "onStart in playlistview");
-		//TODO: ummm
-		MalarmActivity.loadPlaylist();
-		final Intent i = getIntent();
-		final String which = i.getStringExtra("playlist");
+		Intent i = getIntent();
+		String which = i.getStringExtra("playlist");
 		int title_id = 0;
 		if ("sleep".equals(which)) {
-			playlist_ = MalarmActivity.sleepPlaylist;
+			playlist_ = MalarmPlayerService.sleepPlaylist_;
 			title_id = R.string.sleep_playlist_viewer_title;
 		}
 		else {
-			playlist_ = MalarmActivity.wakeupPlaylist;
+			playlist_ = MalarmPlayerService.wakeupPlaylist_;
 			title_id = R.string.wakeup_playlist_viewer_title;
 		}
 		adapter_ = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, playlist_.toList());
@@ -61,6 +59,7 @@ public final class PlaylistViewer
 		listView_.setLongClickable(true);
 		//TODO: implement undo?
 		//TODO: add selected effect
+		//TODO: implement LongClickListener by this class
 		listView_.setOnItemLongClickListener(new OnItemLongClickListener() {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> adapter_view, View view, int position, long id) {

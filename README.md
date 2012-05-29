@@ -54,9 +54,8 @@ You can change path to playlist and music files by "Playlist directory" preferen
 ## TODO
 - implement UI when sleep play list does not exist
 - show toast when playlist is not found
+- refactor syncPreference and remove unnecessary code and desing preference and default value
 - improve wording especially one of notification
-- fix a bug that sleep music stops before sleep timer
-- fix a bug that wakeup music is not played but vibration starts
 - add introduction guide or tutorial to create playlist
 - use ringtone when wakeup.m3u does not exist
 - improve UI to create and edit playlist
@@ -72,6 +71,7 @@ You can change path to playlist and music files by "Playlist directory" preferen
 -- Sunday, holiday playlist etc...
 - make COOL widget to set alarm (make clock widget?)
 - add more test cases
+-- setAlarm -> Activity quits
 -- double touch of webview
 -- label text is updated when music is stopped or alarm is canceled
 -- check default config value

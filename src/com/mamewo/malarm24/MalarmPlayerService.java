@@ -1,6 +1,7 @@
 package com.mamewo.malarm24;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -33,6 +34,10 @@ public class MalarmPlayerService
 	public String SLEEP_ACTION = PACKAGE_NAME + ".SLEEP_ACTION";
 	final static
 	public String STOP_MUSIC_ACTION = PACKAGE_NAME + ".STOP_MUSIC_ACTION";
+	final static
+	public String WAKEUP_PLAYLIST_FILENAME = "wakeup.m3u";
+	final static
+	public String SLEEP_PLAYLIST_FILENAME = "sleep.m3u";
 
 	final static
 	private String TAG = "malarm";
@@ -42,33 +47,34 @@ public class MalarmPlayerService
 	private Playlist currentPlaylist_;
 	private MediaPlayer player_;
 
-	public MalarmPlayerService(){
-		super();
-		currentPlaylist_ = null;
-		player_ = new MediaPlayer();
-		MusicCompletionListener l = new MusicCompletionListener();
-		player_.setOnCompletionListener(l);
-		player_.setOnErrorListener(l);
-	}
+	//TODO: umm...
+	static
+	public M3UPlaylist wakeupPlaylist_;
+	static
+	public M3UPlaylist sleepPlaylist_;
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId){
 		String action = intent.getAction();
 		if(WAKEUPAPP_ACTION.equals(action)){
-			Log.i(TAG, "onStartCommand: wakeup!: " + MalarmActivity.wakeupPlaylist);
-			MalarmActivity.loadPlaylist();
-			final SharedPreferences pref = 
+			Log.i(TAG, "onStartCommand: wakeup!: " + wakeupPlaylist_);
+			SharedPreferences pref =
 					PreferenceManager.getDefaultSharedPreferences(this);
 			int volume = Integer.valueOf(pref.getString("wakeup_volume", "5"));
 			AudioManager mgr = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
 			mgr.setStreamVolume(AudioManager.STREAM_MUSIC, volume, AudioManager.FLAG_SHOW_UI);
 			stopMusic();
-			playMusic(MalarmActivity.wakeupPlaylist);
+			//TODO: use ringtone when wakeupPlaylist_ is null
+			playMusic(wakeupPlaylist_);
 			boolean vibrate = 
 					pref.getBoolean("vibrate", MalarmPreference.DEFAULT_VIBRATION);
 			if(vibrate){
 				startVibrator();
 			}
+			Intent activityIntent = new Intent(this, MalarmActivity.class);
+			activityIntent.setAction(WAKEUP_ACTION);
+			activityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			startActivity(activityIntent);
 		}
 		else if(STOP_MUSIC_ACTION.equals(action)){
 			//TODO: support native player
@@ -77,6 +83,22 @@ public class MalarmPlayerService
 		}
 		//TODO: add sleep action and stop music
 		return START_STICKY;
+	}
+	
+	//TODO: display toast if file is not found
+	public void loadPlaylist(String playlistPath) {
+		try {
+			wakeupPlaylist_ = new M3UPlaylist(playlistPath, WAKEUP_PLAYLIST_FILENAME);
+		}
+		catch (FileNotFoundException e) {
+			Log.i(TAG, "wakeup playlist is not found: " + WAKEUP_PLAYLIST_FILENAME);
+		}
+		try {
+			sleepPlaylist_ = new M3UPlaylist(playlistPath, SLEEP_PLAYLIST_FILENAME);
+		}
+		catch (FileNotFoundException e) {
+			Log.i(TAG, "sleep playlist is not found: " + SLEEP_PLAYLIST_FILENAME);
+		}
 	}
 	
 	public boolean isPlaying() {
@@ -201,6 +223,19 @@ public class MalarmPlayerService
 		public MalarmPlayerService getService() {
 			return MalarmPlayerService.this;
 		}
+	}
+	
+	@Override
+	public void onCreate(){
+		SharedPreferences pref =
+				PreferenceManager.getDefaultSharedPreferences(this);
+		String path = pref.getString("playlist_path", "/sdcard/music");
+		loadPlaylist(path);
+		currentPlaylist_ = wakeupPlaylist_;
+		player_ = new MediaPlayer();
+		MusicCompletionListener l = new MusicCompletionListener();
+		player_.setOnCompletionListener(l);
+		player_.setOnErrorListener(l);
 	}
 	
 	@Override

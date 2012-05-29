@@ -5,7 +5,6 @@ package com.mamewo.malarm24;
  * http://www002.upp.so-net.ne.jp/mamewo/
  */
 
-import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -78,10 +77,6 @@ public class MalarmActivity
 	final static
 	private int SPEECH_RECOGNITION_REQUEST_CODE = 2121;
 	final static
-	public String WAKEUP_PLAYLIST_FILENAME = "wakeup.m3u";
-	final static
-	public String SLEEP_PLAYLIST_FILENAME = "sleep.m3u";
-	final static
 	private String NATIVE_PLAYER_KEY = "nativeplayer";
 	final static
 	private String PLAYLIST_PATH_KEY = "playlist_path";
@@ -93,15 +88,11 @@ public class MalarmActivity
 	protected static String prefPlaylistPath;
 	private static String[] WEB_PAGE_LIST = new String []{ MYURL };
 	private static boolean pref_use_native_player;
-	private static boolean pref_vibrate;
 	private static int pref_sleep_volume;
 	private static int pref_wakeup_volume;
 	private static Integer pref_default_hour;
 	private static Integer pref_default_min;
 	private static MalarmState state_;
-
-	public static M3UPlaylist wakeupPlaylist;
-	public static M3UPlaylist sleepPlaylist;
 
 	private ImageButton speechButton_;
 	private ImageButton nextButton_;
@@ -153,7 +144,8 @@ public class MalarmActivity
 
 		public MyCallListener(MalarmActivity context) {
 			super();
-			final TelephonyManager telmgr = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
+			final TelephonyManager telmgr =
+					(TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
 			telmgr.listen(this, LISTEN_CALL_STATE);
 		}
 
@@ -176,22 +168,6 @@ public class MalarmActivity
 			default:
 				break;
 			}
-		}
-	}
-
-	//TODO: display toast if file is not found
-	public static void loadPlaylist() {
-		try {
-			wakeupPlaylist = new M3UPlaylist(prefPlaylistPath, WAKEUP_PLAYLIST_FILENAME);
-		}
-		catch (FileNotFoundException e) {
-			Log.i(TAG, "wakeup playlist is not found: " + WAKEUP_PLAYLIST_FILENAME);
-		}
-		try {
-			sleepPlaylist = new M3UPlaylist(prefPlaylistPath, SLEEP_PLAYLIST_FILENAME);
-		}
-		catch (FileNotFoundException e) {
-			Log.i(TAG, "sleep playlist is not found: " + SLEEP_PLAYLIST_FILENAME);
 		}
 	}
 
@@ -231,7 +207,8 @@ public class MalarmActivity
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+		final SharedPreferences pref =
+				PreferenceManager.getDefaultSharedPreferences(this);
 		pref.registerOnSharedPreferenceChangeListener(this);
 		syncPreferences(pref, "ALL");
 		setContentView(R.layout.main);
@@ -306,7 +283,8 @@ public class MalarmActivity
 			}
 
 			@Override
-			public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+			public void onReceivedError(WebView view, int errorCode,
+										String description, String failingUrl) {
 				Toast.makeText(activity, "Oh no! " + description, Toast.LENGTH_SHORT).show();
 			}
 
@@ -406,7 +384,8 @@ public class MalarmActivity
 	public void syncPreferences(SharedPreferences pref, String key) {
 		boolean updateAll = "ALL".equals(key);
 		if (updateAll || "default_time".equals(key)) {
-			final String timestr = pref.getString("default_time", MalarmPreference.DEFAULT_WAKEUP_TIME);
+			final String timestr =
+					pref.getString("default_time", MalarmPreference.DEFAULT_WAKEUP_TIME);
 			final String[] split_timestr = timestr.split(":");
 			if (split_timestr.length == 2) {
 				pref_default_hour = Integer.valueOf(split_timestr[0]);
@@ -432,15 +411,14 @@ public class MalarmActivity
 		if (updateAll || "use_native_player".equals(key)) {
 			pref_use_native_player = pref.getBoolean("use_native_player", false);
 		}
-		if (updateAll || "vibrate".equals(key)) {
-			pref_vibrate = pref.getBoolean(key, MalarmPreference.DEFAULT_VIBRATION);
-		}
 		if (updateAll || "playlist_path".equals(key)) {
 			final String newpath = 
 					pref.getString(key, MalarmPreference.DEFAULT_PLAYLIST_PATH.getAbsolutePath());
 			if (! newpath.equals(prefPlaylistPath)) {
 				prefPlaylistPath = newpath;
-				loadPlaylist();
+				if (null != player_) {
+					player_.loadPlaylist(prefPlaylistPath);
+				}
 			}
 		}
 		Log.i(TAG, "syncPref: key " + key);
@@ -503,11 +481,12 @@ public class MalarmActivity
 	 * call updateUI from caller
 	 */
 	private void cancelAlarmTimer() {
-		if(state_.mTargetTime == null) {
+		if (state_.mTargetTime == null) {
 			return;
 		}
-		final PendingIntent p = makePlayPintent(MalarmPlayerService.WAKEUP_ACTION, false);
-		final AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		PendingIntent p =
+				makePlayPintent(MalarmPlayerService.WAKEUP_ACTION, false);
+		AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		mgr.cancel(p);
 		state_.mTargetTime = null;
 	}
@@ -519,7 +498,8 @@ public class MalarmActivity
 		if (state_.mSleepMin == 0) {
 			return;
 		}
-		final PendingIntent sleep = makePlayPintent(MalarmPlayerService.SLEEP_ACTION, false);
+		final PendingIntent sleep =
+				makePlayPintent(MalarmPlayerService.SLEEP_ACTION, false);
 		final AlarmManager mgr =
 				(AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		mgr.cancel(sleep);
@@ -537,14 +517,14 @@ public class MalarmActivity
 		}
 		if (action.equals(MalarmPlayerService.WAKEUPAPP_ACTION)) {
 			//native player cannot start until lock screen is displayed
-			if(state_.mSleepMin > 0) {
+			if (state_.mSleepMin > 0) {
 				state_.mSleepMin = 0;
 			}
 			setNotification(getString(R.string.notify_wakeup_title),
 							getString(R.string.notify_wakeup_text));
 		}
 		else if (action.equals(LOADWEB_ACTION)) {
-			final String url = intent.getStringExtra("url");
+			String url = intent.getStringExtra("url");
 			loadWebPage(url);
 		}
 	}
@@ -555,22 +535,22 @@ public class MalarmActivity
 		i.setAction(action);
 		i.putExtra(NATIVE_PLAYER_KEY, useNative);
 		
-		final PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, i,
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, i,
 				PendingIntent.FLAG_CANCEL_CURRENT);
 		return pendingIntent;
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		final MenuInflater inflater = getMenuInflater();
+		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.alarm_menu, menu);
 		return true;
 	}
 
 	private String dateStr(Calendar target) {
 		String dow_str = "";
-		final int dow_int = target.get(Calendar.DAY_OF_WEEK);
-		final String[] dow_name_table = getResources().getStringArray(R.array.day_of_week);
+		int dow_int = target.get(Calendar.DAY_OF_WEEK);
+		String[] dow_name_table = getResources().getStringArray(R.array.day_of_week);
 		for (int i = 0; i < DOW_INDEX.length; i++) {
 			if (DOW_INDEX[i] == dow_int) {
 				dow_str = dow_name_table[i];
@@ -676,7 +656,7 @@ public class MalarmActivity
 		}
 		AudioManager mgr = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
 		mgr.setStreamVolume(AudioManager.STREAM_MUSIC, pref_sleep_volume, AudioManager.FLAG_SHOW_UI);
-		player_.playMusic(sleepPlaylist);
+		player_.playMusic(MalarmPlayerService.sleepPlaylist_);
 		setSleepTimer();
 	}
 	

@@ -43,6 +43,7 @@ public class MalarmPreference
 	private Preference sleepVolume_;
 	private Preference wakeupVolume_;
 	private Preference clearWebviewCache_;
+	private View logo_;
 	private CheckBoxPreference sleepPlaylist_;
 	private CheckBoxPreference wakeupPlaylist_;
 	private static final String TAG = "malarm";
@@ -111,18 +112,18 @@ public class MalarmPreference
 		else if (preference == version_) {
 			Log.i(TAG, "onPreferenceClick: version");
 			//show dialog
-			final Dialog dialog = new Dialog(this);
+			Dialog dialog = new Dialog(this);
 			dialog.setContentView(R.layout.dialog);
-			final View logo = dialog.findViewById(R.id.dialog_logo);
-			logo.setOnClickListener(this);
+			logo_ = dialog.findViewById(R.id.dialog_logo);
+			logo_.setOnClickListener(this);
 			dialog.setTitle(R.string.dialog_title);
 			dialog.show();
 			result = true;
 		}
 		else if (preference == createPlaylist_) {
 			final String [] playlists = 
-				{ MalarmActivity.WAKEUP_PLAYLIST_FILENAME,
-					MalarmActivity.SLEEP_PLAYLIST_FILENAME };
+				{ MalarmPlayerService.WAKEUP_PLAYLIST_FILENAME,
+					MalarmPlayerService.SLEEP_PLAYLIST_FILENAME };
 			Log.i(TAG, "playlist pref is clicked");
 			for (String filename : playlists) {
 				final File file = new File(MalarmActivity.prefPlaylistPath, filename);
@@ -143,32 +144,31 @@ public class MalarmPreference
 		else if (preference == sleepPlaylist_ || preference == wakeupPlaylist_) {
 			Log.i(TAG, "View Sleep Playlist from check");
 			//TODO: move check code to Playlist class
-			String pref_key;
-			String playlist_filename;
+			String prefKey;
+			String playlistFilename;
 
 			if (preference == sleepPlaylist_) {
-				pref_key = "sleep";
-				playlist_filename = MalarmActivity.SLEEP_PLAYLIST_FILENAME;
+				prefKey = "sleep";
+				playlistFilename = MalarmPlayerService.SLEEP_PLAYLIST_FILENAME;
 			}
 			else {
-				pref_key = "wakeup";
-				playlist_filename = MalarmActivity.WAKEUP_PLAYLIST_FILENAME;
+				prefKey = "wakeup";
+				playlistFilename = MalarmPlayerService.WAKEUP_PLAYLIST_FILENAME;
 			}
-			final SharedPreferences pref = getPrefs();
+			SharedPreferences pref = getPrefs();
 			//get playlist path
-			final String path = 
+			String path = 
 					pref.getString("playlist_path", DEFAULT_PLAYLIST_PATH.getAbsolutePath());
 
 			//TODO: add dependency from playlist path
-			if (! (new File(path, playlist_filename)).exists()) {
-				//TODO: localize
+			if (! (new File(path, playlistFilename)).exists()) {
 				MalarmActivity.showMessage(this, getString(R.string.pref_playlist_does_not_exist));
 				((CheckBoxPreference) preference).setChecked(false);
 			}
 			else {
 				final Intent i = new Intent(this, PlaylistViewer.class);
 				//TODO: define key as constant
-				i.putExtra("playlist", pref_key);
+				i.putExtra("playlist", prefKey);
 				startActivity(i);
 			}
 			result = true;
@@ -238,19 +238,21 @@ public class MalarmPreference
 				pref.getString("playlist_path", DEFAULT_PLAYLIST_PATH.getAbsolutePath());
 
 		//TODO: move check code to Playlist class
-		final File sleepFile = new File(path, MalarmActivity.SLEEP_PLAYLIST_FILENAME);
+		final File sleepFile = new File(path, MalarmPlayerService.SLEEP_PLAYLIST_FILENAME);
 		sleepPlaylist_.setChecked(sleepFile.exists());
 
 		//TODO: move check code to Playlist class
-		final File wakeupFile = new File(path, MalarmActivity.WAKEUP_PLAYLIST_FILENAME);
+		final File wakeupFile = new File(path, MalarmPlayerService.WAKEUP_PLAYLIST_FILENAME);
 		wakeupPlaylist_.setChecked(wakeupFile.exists());
 	}
 	
 	@Override
 	public void onClick(View v) {
-		final Intent i = 
-				new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.git_url)));
-		startActivity(i);
+		if (v == logo_) {
+			Intent i =
+					new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.git_url)));
+			startActivity(i);
+		}
 	}
 
 	@Override
@@ -260,7 +262,8 @@ public class MalarmPreference
 		updateSummary(pref, "ALL");
 	}
 
-	private void setVolumeSummary(SharedPreferences pref, String key, Preference prefUI, String defaultVolumeStr) {
+	private void setVolumeSummary(SharedPreferences pref, String key,
+								Preference prefUI, String defaultVolumeStr) {
 		int volume =
 				Integer.valueOf(pref.getString(key, defaultVolumeStr));
 		final AudioManager mgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
@@ -276,9 +279,10 @@ public class MalarmPreference
 	}
 	
 	public void updateSummary(SharedPreferences pref, String key) {
-		final boolean update_all = "ALL".equals(key);
+		boolean update_all = "ALL".equals(key);
 		if (update_all || "default_time".equals(key)) {
-			final String timestr = pref.getString("default_time", MalarmPreference.DEFAULT_WAKEUP_TIME);
+			String timestr =
+					pref.getString("default_time", MalarmPreference.DEFAULT_WAKEUP_TIME);
 			String[] hourminStr = timestr.split(":");
 			String hour = hourminStr[0];
 			String min = hourminStr[1];
@@ -288,7 +292,8 @@ public class MalarmPreference
 			wakeupTime_.setSummary(hour + ":" + min);
 		}
 		if (update_all || "sleeptime".equals(key)) {
-			final String sleepTime = pref.getString("sleeptime", MalarmPreference.DEFAULT_SLEEPTIME);
+			final String sleepTime =
+					pref.getString("sleeptime", MalarmPreference.DEFAULT_SLEEPTIME);
 			String summary = MessageFormat.format(getString(R.string.unit_min), sleepTime);
 			sleepTime_.setSummary(summary);
 		}
