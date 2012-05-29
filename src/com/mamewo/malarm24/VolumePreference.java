@@ -7,7 +7,6 @@ import android.content.res.TypedArray;
 import android.media.AudioManager;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -27,7 +26,8 @@ public class VolumePreference
 	
 	public VolumePreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		AudioManager mgr = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+		AudioManager mgr =
+				(AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 		maxVolume_ = mgr.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
 		setDialogLayoutResource(R.layout.volume_preference);
 	}
@@ -43,11 +43,13 @@ public class VolumePreference
 		plusButton_ = (Button) view.findViewById(R.id.volume_plus_button);
 		plusButton_.setOnClickListener(this);
 		//TODO: add API to set string 
-		final Context context = view.getContext();
-		final AudioManager mgr = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-		final int current_volume = mgr.getStreamVolume(AudioManager.STREAM_MUSIC);
-		final MessageFormat mf = new MessageFormat(context.getString(R.string.volume_format));
-		dialogText_.setText(mf.format(new Object[] { Integer.valueOf(maxVolume_), Integer.valueOf(current_volume)}));
+		Context context = view.getContext();
+		AudioManager mgr =
+				(AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+		int currentVolume =
+				mgr.getStreamVolume(AudioManager.STREAM_MUSIC);
+		dialogText_.setText(MessageFormat.format(context.getString(R.string.volume_format),
+												maxVolume_, currentVolume));
 	}
 
 	@Override

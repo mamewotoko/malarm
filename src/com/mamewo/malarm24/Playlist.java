@@ -9,7 +9,8 @@ public interface Playlist
 
 	/**
 	 * 
-	 * @return iterator which refers wakeup playlist, which has filename relative to base path
+	 * @return iterator which refers wakeup playlist, 
+	 * which has filename relative to base path
 	 */
 	public String next();
 	/**

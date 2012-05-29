@@ -7,8 +7,7 @@
     <TextView
         android:id="@+id/volume_pref_text"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:layout_height="wrap_content" />
 
     <LinearLayout
         android:id="@+id/linearLayout1"
@@ -25,7 +24,7 @@
 
         <EditText
             android:id="@+id/volume_pref_value"
-            android:layout_width="fill_parent"
+            android:layout_width="0dip"
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:inputType="number"

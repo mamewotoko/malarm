@@ -23,7 +23,6 @@ import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -76,9 +75,6 @@ public class MalarmActivity
 	private String TAG = "malarm";
 	final static
 	private String MYURL = "http://www002.upp.so-net.ne.jp/mamewo/mobile_shop.html";
-	final static
-	private long VIBRATE_PATTERN[] =
-		{ 10, 1500, 500, 1500, 500, 1500, 500, 1500, 500 };
 	final static
 	private int SPEECH_RECOGNITION_REQUEST_CODE = 2121;
 	final static
@@ -408,8 +404,8 @@ public class MalarmActivity
 	//escape preference value into static value
 	//TODO: improve design
 	public void syncPreferences(SharedPreferences pref, String key) {
-		final boolean update_all = "ALL".equals(key);
-		if (update_all || "default_time".equals(key)) {
+		boolean updateAll = "ALL".equals(key);
+		if (updateAll || "default_time".equals(key)) {
 			final String timestr = pref.getString("default_time", MalarmPreference.DEFAULT_WAKEUP_TIME);
 			final String[] split_timestr = timestr.split(":");
 			if (split_timestr.length == 2) {
@@ -417,15 +413,15 @@ public class MalarmActivity
 				pref_default_min = Integer.valueOf(split_timestr[1]);
 			}
 		}
-		if (update_all || "sleep_volume".equals(key)) {
+		if (updateAll || "sleep_volume".equals(key)) {
 			pref_sleep_volume =
 					Integer.valueOf(pref.getString("sleep_volume", MalarmPreference.DEFAULT_SLEEP_VOLUME));
 		}
-		if (update_all || "wakeup_volume".equals(key)) {
+		if (updateAll || "wakeup_volume".equals(key)) {
 			pref_wakeup_volume =
 					Integer.valueOf(pref.getString("wakeup_volume", MalarmPreference.DEFAULT_WAKEUP_VOLUME));
 		}
-		if (update_all || "url_list".equals(key)) {
+		if (updateAll || "url_list".equals(key)) {
 			String liststr = pref.getString("url_list", MalarmPreference.DEFAULT_WEB_LIST);
 			if(0 < liststr.length()){
 				liststr += MultiListPreference.SEPARATOR;
@@ -433,13 +429,13 @@ public class MalarmActivity
 			liststr += MYURL;
 			WEB_PAGE_LIST = liststr.split(MultiListPreference.SEPARATOR);
 		}
-		if (update_all || "use_native_player".equals(key)) {
+		if (updateAll || "use_native_player".equals(key)) {
 			pref_use_native_player = pref.getBoolean("use_native_player", false);
 		}
-		if (update_all || "vibrate".equals(key)) {
+		if (updateAll || "vibrate".equals(key)) {
 			pref_vibrate = pref.getBoolean(key, MalarmPreference.DEFAULT_VIBRATION);
 		}
-		if (update_all || "playlist_path".equals(key)) {
+		if (updateAll || "playlist_path".equals(key)) {
 			final String newpath = 
 					pref.getString(key, MalarmPreference.DEFAULT_PLAYLIST_PATH.getAbsolutePath());
 			if (! newpath.equals(prefPlaylistPath)) {
@@ -696,7 +692,6 @@ public class MalarmActivity
 		final Calendar target = new GregorianCalendar(now.get(Calendar.YEAR),
 				now.get(Calendar.MONTH), now.get(Calendar.DATE), target_hour, target_min, 0);
 		long targetMillis = target.getTimeInMillis();
-		String tommorow ="";
 		final long nowMillis = System.currentTimeMillis();
 		if (targetMillis <= nowMillis) {
 			//tomorrow
@@ -1018,7 +1013,7 @@ public class MalarmActivity
 	}
 
 	@Override
-	public void onServiceDisconnected(ComponentName arg0) {
+	public void onServiceDisconnected(ComponentName name) {
 		Log.i(TAG, "onServiceDisconnected");
 		player_ = null;
 	}

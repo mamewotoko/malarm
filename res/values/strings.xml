@@ -3,22 +3,17 @@
     <string name="app_name">malarm</string>
     <string name="stop_music">Stop Music</string>
     <string name="music_stopped">Music stopped</string>
-    <string name="tomorrow">tomorrow</string>
-    <string name="alarm_set">malarm set!</string>
-    <string name="goodnight">Good Night</string>
 
     <string name="set_alarm">Set Alarm</string>
     <string name="stop_alarm">Cancel Alarm</string>
     <string name="stop_vibration">Stop vibaration</string>
     <string name="play_wakeup">Play</string>
-    <string name="preference_title">Preference of malarm</string>
     <string name="pref_menu">Preference</string>
     <string name="pref_webview_url">Web site to display</string>
     <string name="preference_time_title">Sleep time</string>
     <string name="pref_sleeptime">Sleep time</string>
     <string name="enable_vibration">ON</string>
     <string name="disable_vibration">OFF</string>
-    <string name="pref_title">Wakeup vibration</string>
     <string name="pref_vibration">Wakeup vibration</string>
     <string name="set_now_short">Now!</string>
 
@@ -34,7 +29,6 @@
     <string name="help_summary">Display how to use malarm as a web page</string>
     
     <string name="git_url">https://github.com/mamewotoko/malarm/</string>
-    <string name="dialog_ok">Close</string>
     <string name="dialog_title">malarm download page</string>
     
     <string name="pref_playlist_category">Playlist preferences</string>
@@ -55,14 +49,11 @@
     <string name="notify_wakeup_title">Playing malarm tunes</string>
     <string name="notify_wakeup_text">Good morning!</string>
     <string name="pref_sleep_volume_title">Sleep tunes volume</string>
-    <string name="pref_sleep_volume_summary"></string>
     <string name="pref_wakeup_volume_title">Wakeup tunes volume</string>
-    <string name="pref_wakeup_volume_summary"></string>
     <string name="other_category_title">others</string>
     <string name="pref_clear_webview_cache_title">Clear cache and history of Webview</string>
     <string name="pref_clear_webview_cache_summary">This clears cache and history of malarm web view. One of browser is not cleared.</string>
     
-    <string name="minutes">minutes</string>
     <string name="volume_category_title">Volume and vibration</string>
     <string name="volume_format">Set volume between 0 and {0}, current volume is {1}</string>
     <string name="file_exists_format">A file {0} already exists</string>

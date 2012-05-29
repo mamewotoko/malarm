@@ -6,7 +6,8 @@
  *
  * @contributor matiboy
  * Added support for check all/none and custom separator defined in XML.
- * IMPORTANT: The following attributes MUST be defined (probably inside attr.xml) for the code to even compile
+ * IMPORTANT: The following attributes MUST be defined (probably inside attr.xml)
+ * for the code to even compile
  * <declare-styleable name="ListPreferenceMultiSelect">
     	<attr format="string" name="separator" />
     </declare-styleable>
@@ -35,8 +36,6 @@ public class MultiListPreference
 {
 	final static
 	public String SEPARATOR = "!";
-	final static
-	private String LOG_TAG = "ListPreferenceMultiSelect";
 	private boolean[] mClickedDialogEntryIndices;
 	
 	public MultiListPreference(Context context, AttributeSet attrs) {
