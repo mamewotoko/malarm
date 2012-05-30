@@ -89,9 +89,9 @@ public class MalarmActivity
 	private static String[] WEB_PAGE_LIST = new String []{ MYURL };
 	private static boolean pref_use_native_player;
 	private static int prefSleepVolume;
-	private static int pref_wakeup_volume;
-	private static Integer pref_default_hour;
-	private static Integer pref_default_min;
+	private static int prefWakeupVolume;
+	private static Integer prefDefaultHour;
+	private static Integer prefDefaultMin;
 	private static MalarmState state_;
 
 	private ImageButton speechButton_;
@@ -309,7 +309,7 @@ public class MalarmActivity
 
 			@Override
 			public void onPageFinished(WebView view, String url) {
-				Log.i(TAG, "onPageFinshed: " + url);
+				//Log.i(TAG, "onPageFinshed: " + url);
 				loadingIcon_.setVisibility(View.INVISIBLE);
 				if(url.contains("weather.yahoo")) {
 					view.scrollTo(0, 180);
@@ -388,8 +388,8 @@ public class MalarmActivity
 					pref.getString("default_time", MalarmPreference.DEFAULT_WAKEUP_TIME);
 			final String[] split_timestr = timestr.split(":");
 			if (split_timestr.length == 2) {
-				pref_default_hour = Integer.valueOf(split_timestr[0]);
-				pref_default_min = Integer.valueOf(split_timestr[1]);
+				prefDefaultHour = Integer.valueOf(split_timestr[0]);
+				prefDefaultMin = Integer.valueOf(split_timestr[1]);
 			}
 		}
 		if (updateAll || "sleep_volume".equals(key)) {
@@ -397,7 +397,7 @@ public class MalarmActivity
 					Integer.valueOf(pref.getString("sleep_volume", MalarmPreference.DEFAULT_SLEEP_VOLUME));
 		}
 		if (updateAll || "wakeup_volume".equals(key)) {
-			pref_wakeup_volume =
+			prefWakeupVolume =
 					Integer.valueOf(pref.getString("wakeup_volume", MalarmPreference.DEFAULT_WAKEUP_VOLUME));
 		}
 		if (updateAll || "url_list".equals(key)) {
@@ -417,7 +417,7 @@ public class MalarmActivity
 			if (! newpath.equals(prefPlaylistPath)) {
 				prefPlaylistPath = newpath;
 				if (null != player_) {
-					player_.loadPlaylist(prefPlaylistPath);
+					player_.loadPlaylist();
 				}
 			}
 		}
@@ -576,8 +576,8 @@ public class MalarmActivity
 		else {
 			timeLabel_.setText("");
 			if (setDefaultTime_) {
-				timePicker_.setCurrentHour(pref_default_hour);
-				timePicker_.setCurrentMinute(pref_default_min);
+				timePicker_.setCurrentHour(prefDefaultHour);
+				timePicker_.setCurrentMinute(prefDefaultMin);
 			}
 			else {
 				setDefaultTime_ = true;
@@ -788,8 +788,9 @@ public class MalarmActivity
 		if (speechIntent_ == null) {
 			//to reduce task of onCreate method
 			showMessage(this, getString(R.string.init_voice));
-			final PackageManager pm = getPackageManager();
-			final List<ResolveInfo> activities = pm.queryIntentActivities(new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
+			PackageManager pm = getPackageManager();
+			List<ResolveInfo> activities =
+					pm.queryIntentActivities(new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
 			if (activities.isEmpty()) {
 				return;
 			}

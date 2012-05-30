@@ -37,6 +37,8 @@ public class MalarmPlayerService
 	final static
 	public String STOP_MUSIC_ACTION = PACKAGE_NAME + ".STOP_MUSIC_ACTION";
 	final static
+	public String LOAD_PLAYLIST_ACTION = PACKAGE_NAME + ".LOAD_PLAYLIST_ACTION";
+	final static
 	public String WAKEUP_PLAYLIST_FILENAME = "wakeup.m3u";
 	final static
 	public String SLEEP_PLAYLIST_FILENAME = "sleep.m3u";
@@ -44,7 +46,8 @@ public class MalarmPlayerService
 	final static
 	private String TAG = "malarm";
 	final static
-	private long VIBRATE_PATTERN[] = { 10, 1500, 500, 1500, 500, 1500, 500, 1500, 500 };
+	private long VIBRATE_PATTERN[] =
+		{ 10, 1500, 500, 1500, 500, 1500, 500, 1500, 500 };
 	private final IBinder binder_ = new LocalBinder();
 	private Playlist currentPlaylist_;
 	private MediaPlayer player_;
@@ -61,25 +64,26 @@ public class MalarmPlayerService
 		String action = intent.getAction();
 		if(WAKEUPAPP_ACTION.equals(action)){
 			Log.i(TAG, "onStartCommand: wakeup!: " + wakeupPlaylist_);
+			//TODO: refactor... (mount playlist when sd card is mount)
+			//loadPlaylist();
 			SharedPreferences pref =
 					PreferenceManager.getDefaultSharedPreferences(this);
 			int volume = Integer.valueOf(pref.getString("wakeup_volume", "5"));
 			AudioManager mgr = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
 			stopMusic();
+			mgr.setStreamVolume(AudioManager.STREAM_MUSIC, volume, AudioManager.FLAG_SHOW_UI);
 			if(null == wakeupPlaylist_){
-				//TODO: use ringtone when wakeupPlaylist_ is null
-				mgr.setStreamVolume(AudioManager.STREAM_ALARM, volume, AudioManager.FLAG_SHOW_UI);
+				//TODO: test volume
 				Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
 				tone_ = RingtoneManager.getRingtone(this, uri);
 				tone_.play();
 			}
 			else {
-				mgr.setStreamVolume(AudioManager.STREAM_MUSIC, volume, AudioManager.FLAG_SHOW_UI);
 				playMusic(wakeupPlaylist_);
 			}
 			boolean vibrate =
 					pref.getBoolean("vibrate", MalarmPreference.DEFAULT_VIBRATION);
-			if(vibrate){
+			if (vibrate) {
 				startVibrator();
 			}
 			Intent activityIntent = new Intent(this, MalarmActivity.class);
@@ -87,16 +91,23 @@ public class MalarmPlayerService
 			activityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(activityIntent);
 		}
-		else if(STOP_MUSIC_ACTION.equals(action)){
+		else if (STOP_MUSIC_ACTION.equals(action)) {
 			//TODO: support native player
 			stopMusic();
 			//TODO: quit service
 		}
+		else if (LOAD_PLAYLIST_ACTION.equals(action)) {
+			Log.i(TAG, "LOAD_PLAYLIST_ACTION");
+			loadPlaylist();
+		}
 		return START_STICKY;
 	}
 	
-	public void loadPlaylist(String playlistPath) {
-		Log.i(TAG, "loadPlaylist is called");
+	public void loadPlaylist() {
+		SharedPreferences pref =
+				PreferenceManager.getDefaultSharedPreferences(this);
+		String playlistPath = pref.getString("playlist_path", "/sdcard/music");
+		Log.i(TAG, "loadPlaylist is called:" + playlistPath);
 		try {
 			wakeupPlaylist_ = new M3UPlaylist(playlistPath, WAKEUP_PLAYLIST_FILENAME);
 		}
@@ -123,10 +134,6 @@ public class MalarmPlayerService
 	
 	public boolean isPlaying() {
 		return player_.isPlaying();
-	}
-
-	public void setPlaylist(Playlist list) {
-		currentPlaylist_ = list;
 	}
 
 	//not used..
@@ -164,8 +171,18 @@ public class MalarmPlayerService
 		}
 	}
 
+	/**
+	 * play given playlist from beginning.
+	 * 
+	 * @param playlist playlist to play
+	 * @return true if playlist is played, false if it fails.
+	 */
 	public boolean playMusic(Playlist playlist) {
 		currentPlaylist_ = playlist;
+		if(null == playlist){
+			return false;
+		}
+		playlist.reset();
 		return playMusic();
 	}
 
@@ -253,11 +270,7 @@ public class MalarmPlayerService
 		super.onCreate();
 		tone_ = null;
 
-		SharedPreferences pref =
-				PreferenceManager.getDefaultSharedPreferences(this);
-		String path = pref.getString("playlist_path", "/sdcard/music");
-		loadPlaylist(path);
-		Log.i(TAG, "Service.onCreate: " + wakeupPlaylist_ + " " + sleepPlaylist_);
+		loadPlaylist();
 		currentPlaylist_ = wakeupPlaylist_;
 		player_ = new MediaPlayer();
 		MusicCompletionListener l = new MusicCompletionListener();
@@ -290,6 +303,13 @@ public class MalarmPlayerService
 				//TODO: support native player
 				Intent i = new Intent(context, MalarmPlayerService.class);
 				i.setAction(STOP_MUSIC_ACTION);
+				context.startService(i);
+			}
+			else if(Intent.ACTION_MEDIA_MOUNTED.equals(action)) {
+				//TODO: test
+				//TODO: if service is alive
+				Intent i = new Intent(context, MalarmPlayerService.class);
+				i.setAction(LOAD_PLAYLIST_ACTION);
 				context.startService(i);
 			}
 		}

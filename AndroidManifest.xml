@@ -30,7 +30,7 @@
         <activity android:name="MalarmPreference" />
         <receiver android:name="MalarmPlayerService$Receiver">
 			<intent-filter>
-			    <action android:name="com.mamewo.malarm24.WAKEUP_ACTION" />
+			    <action android:name="android.intent.action.MEDIA_MOUNTED" />
 			</intent-filter>
         </receiver>
         <service android:name="MalarmPlayerService" />
