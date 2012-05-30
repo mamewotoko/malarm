@@ -88,7 +88,7 @@ public class MalarmActivity
 	protected static String prefPlaylistPath;
 	private static String[] WEB_PAGE_LIST = new String []{ MYURL };
 	private static boolean pref_use_native_player;
-	private static int pref_sleep_volume;
+	private static int prefSleepVolume;
 	private static int pref_wakeup_volume;
 	private static Integer pref_default_hour;
 	private static Integer pref_default_min;
@@ -393,7 +393,7 @@ public class MalarmActivity
 			}
 		}
 		if (updateAll || "sleep_volume".equals(key)) {
-			pref_sleep_volume =
+			prefSleepVolume =
 					Integer.valueOf(pref.getString("sleep_volume", MalarmPreference.DEFAULT_SLEEP_VOLUME));
 		}
 		if (updateAll || "wakeup_volume".equals(key)) {
@@ -654,9 +654,15 @@ public class MalarmActivity
 		if (player_.isPlaying()) {
 			player_.stopMusic();
 		}
+		Playlist list = MalarmPlayerService.sleepPlaylist_;
+		if(null == list){
+			showMessage(this, getString(R.string.sleep_playlist_not_exist));
+			return;
+		}
+		Log.i(TAG, "sleepPlaylist: " + list);
 		AudioManager mgr = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-		mgr.setStreamVolume(AudioManager.STREAM_MUSIC, pref_sleep_volume, AudioManager.FLAG_SHOW_UI);
-		player_.playMusic(MalarmPlayerService.sleepPlaylist_);
+		mgr.setStreamVolume(AudioManager.STREAM_MUSIC, prefSleepVolume, AudioManager.FLAG_SHOW_UI);
+		player_.playMusic(list);
 		setSleepTimer();
 	}
 	
@@ -763,7 +769,6 @@ public class MalarmActivity
 	@Override
 	public boolean onKey(View view, int keyCode, KeyEvent event) {
 		if(event.getAction() == KeyEvent.ACTION_UP) {
-			int index = state_.mWebIndex;
 			boolean handled = false;
 			if((KeyEvent.KEYCODE_0 <= keyCode) &&
 				(keyCode <= KeyEvent.KEYCODE_9)) {
@@ -896,7 +901,8 @@ public class MalarmActivity
 		setDefaultTime_ = false;
 		timePicker_.setCurrentHour(time.hour_);
 		timePicker_.setCurrentMinute(time.min_);
-		String msg = MessageFormat.format(getString(R.string.voice_success_format), time.speach_);
+		String msg = 
+				MessageFormat.format(getString(R.string.voice_success_format), time.speach_);
 		showMessage(this, msg);
 	}
 	

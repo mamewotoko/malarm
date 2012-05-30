@@ -31,21 +31,15 @@ public final class M3UPlaylist
 	 * @param playlistFilename filename of playlist (not absolute path)
 	 */
 	public M3UPlaylist(String basepath, String playlistFilename)
-			throws FileNotFoundException
+			throws FileNotFoundException, IOException
 	{
 		basepath_ = basepath;
 		playlistFilename_ = playlistFilename;
 		final String playlist_abs_path =
 				(new File(basepath, playlistFilename)).getAbsolutePath();
-		try {
-			playlist_ = new ArrayList<String>();
-			load(playlist_abs_path);
-		}
-		catch (IOException e) {
-			Log.i(TAG, "cannot read playlist " + playlistFilename);
-		}
+		playlist_ = new ArrayList<String>();
+		load(playlist_abs_path);
 	}
-	
 	
 	@Override
 	public String next() {
