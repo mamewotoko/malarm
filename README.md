@@ -52,13 +52,11 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - Android 4.0 emulator
 
 ## TODO
-- implement UI when sleep play list does not exist
-- show toast when playlist is not found
 - refactor syncPreference and remove unnecessary code and desing preference and default value
 - improve wording especially one of notification
 - add introduction guide or tutorial to create playlist
-- use ringtone when wakeup.m3u does not exist
 - improve UI to create and edit playlist
+- add preference to set silent mode or restore volume
 - show notification while playing music
 - change webview into photo view, movie player...
 - add UI to play ringtone on VolumePreference to check volume

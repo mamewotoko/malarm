@@ -10,6 +10,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
@@ -52,7 +54,8 @@ public class MalarmPlayerService
 	public M3UPlaylist wakeupPlaylist_;
 	static
 	public M3UPlaylist sleepPlaylist_;
-
+	private Ringtone tone_;
+	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId){
 		String action = intent.getAction();
@@ -62,10 +65,18 @@ public class MalarmPlayerService
 					PreferenceManager.getDefaultSharedPreferences(this);
 			int volume = Integer.valueOf(pref.getString("wakeup_volume", "5"));
 			AudioManager mgr = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-			mgr.setStreamVolume(AudioManager.STREAM_MUSIC, volume, AudioManager.FLAG_SHOW_UI);
 			stopMusic();
-			//TODO: use ringtone when wakeupPlaylist_ is null
-			playMusic(wakeupPlaylist_);
+			if(null == wakeupPlaylist_){
+				//TODO: use ringtone when wakeupPlaylist_ is null
+				mgr.setStreamVolume(AudioManager.STREAM_ALARM, volume, AudioManager.FLAG_SHOW_UI);
+				Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+				tone_ = RingtoneManager.getRingtone(this, uri);
+				tone_.play();
+			}
+			else {
+				mgr.setStreamVolume(AudioManager.STREAM_MUSIC, volume, AudioManager.FLAG_SHOW_UI);
+				playMusic(wakeupPlaylist_);
+			}
 			boolean vibrate =
 					pref.getBoolean("vibrate", MalarmPreference.DEFAULT_VIBRATION);
 			if(vibrate){
@@ -81,12 +92,11 @@ public class MalarmPlayerService
 			stopMusic();
 			//TODO: quit service
 		}
-		//TODO: add sleep action and stop music
 		return START_STICKY;
 	}
 	
-	//TODO: display toast if file is not found
 	public void loadPlaylist(String playlistPath) {
+		Log.i(TAG, "loadPlaylist is called");
 		try {
 			wakeupPlaylist_ = new M3UPlaylist(playlistPath, WAKEUP_PLAYLIST_FILENAME);
 		}
@@ -191,6 +201,9 @@ public class MalarmPlayerService
 	}
 
 	public void stopMusic() {
+		if(null != tone_){
+			tone_.stop();
+		}
 		player_.stop();
 	}
 
@@ -237,10 +250,14 @@ public class MalarmPlayerService
 	
 	@Override
 	public void onCreate(){
+		super.onCreate();
+		tone_ = null;
+
 		SharedPreferences pref =
 				PreferenceManager.getDefaultSharedPreferences(this);
 		String path = pref.getString("playlist_path", "/sdcard/music");
 		loadPlaylist(path);
+		Log.i(TAG, "Service.onCreate: " + wakeupPlaylist_ + " " + sleepPlaylist_);
 		currentPlaylist_ = wakeupPlaylist_;
 		player_ = new MediaPlayer();
 		MusicCompletionListener l = new MusicCompletionListener();

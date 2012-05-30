@@ -655,6 +655,7 @@ public class MalarmActivity
 			player_.stopMusic();
 		}
 		Playlist list = MalarmPlayerService.sleepPlaylist_;
+		Log.i(TAG, "playSleepMusic sleepPlaylist:" + list);
 		if(null == list){
 			showMessage(this, getString(R.string.sleep_playlist_not_exist));
 			return;
@@ -671,7 +672,6 @@ public class MalarmActivity
 	 * @return target time in epoch time (miliseconds)
 	 */
 	private void setAlarm() {
-		Log.i(TAG, "scheduleToPlaylist is called");
 		//set timer
 		final Calendar now = new GregorianCalendar();
 
