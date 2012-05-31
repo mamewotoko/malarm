@@ -64,8 +64,7 @@ public class MalarmPlayerService
 		String action = intent.getAction();
 		if(WAKEUPAPP_ACTION.equals(action)){
 			Log.i(TAG, "onStartCommand: wakeup!: " + wakeupPlaylist_);
-			//TODO: refactor... (mount playlist when sd card is mount)
-			//loadPlaylist();
+			loadPlaylist();
 			SharedPreferences pref =
 					PreferenceManager.getDefaultSharedPreferences(this);
 			int volume = Integer.valueOf(pref.getString("wakeup_volume", "5"));
@@ -290,6 +289,7 @@ public class MalarmPlayerService
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
+			Log.i(TAG, "onReceive: " + action);
 			if(null == action){
 				return;
 			}
@@ -303,13 +303,6 @@ public class MalarmPlayerService
 				//TODO: support native player
 				Intent i = new Intent(context, MalarmPlayerService.class);
 				i.setAction(STOP_MUSIC_ACTION);
-				context.startService(i);
-			}
-			else if(Intent.ACTION_MEDIA_MOUNTED.equals(action)) {
-				//TODO: test
-				//TODO: if service is alive
-				Intent i = new Intent(context, MalarmPlayerService.class);
-				i.setAction(LOAD_PLAYLIST_ACTION);
 				context.startService(i);
 			}
 		}

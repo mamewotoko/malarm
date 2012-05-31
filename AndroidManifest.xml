@@ -29,9 +29,6 @@
         <activity android:name="PlaylistViewer" />
         <activity android:name="MalarmPreference" />
         <receiver android:name="MalarmPlayerService$Receiver">
-			<intent-filter>
-			    <action android:name="android.intent.action.MEDIA_MOUNTED" />
-			</intent-filter>
         </receiver>
         <service android:name="MalarmPlayerService" />
         <receiver android:name="MalarmWidgetProvider" >
