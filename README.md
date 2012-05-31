@@ -53,8 +53,8 @@ You can change path to playlist and music files by "Playlist directory" preferen
 
 ## TODO
 - refactor syncPreference and remove unnecessary code and desing preference and default value
-- improve wording especially one of notification
 - add introduction guide or tutorial to create playlist
+- improve wording especially one of notification
 - improve UI to create and edit playlist
 - add preference to set silent mode or restore volume
 - add UI to quit activity for test
