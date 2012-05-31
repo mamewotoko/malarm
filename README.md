@@ -57,6 +57,7 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - add introduction guide or tutorial to create playlist
 - improve UI to create and edit playlist
 - add preference to set silent mode or restore volume
+- add UI to quit activity for test
 - show notification while playing music
 - change webview into photo view, movie player...
 - add UI to play ringtone on VolumePreference to check volume

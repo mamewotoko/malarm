@@ -42,6 +42,7 @@ public class MalarmPreference
 	private Preference wakeupTime_;
 	private Preference sleepVolume_;
 	private Preference wakeupVolume_;
+	private Preference reloadPlaylist_;
 	private Preference clearWebviewCache_;
 	private View logo_;
 	private CheckBoxPreference sleepPlaylist_;
@@ -184,6 +185,14 @@ public class MalarmPreference
 			editor.apply();
 			result = true;
 		}
+		else if (preference == reloadPlaylist_) {
+			Intent i = new Intent(this, MalarmPlayerService.class);
+			i.setAction(MalarmPlayerService.LOAD_PLAYLIST_ACTION);
+			startService(i);
+			updatePlaylistUI();
+			MalarmActivity.showMessage(this, getString(R.string.playlist_reload));
+			result = true;
+		}
 		return result;
 	}
 
@@ -209,6 +218,8 @@ public class MalarmPreference
 		sleepTime_ = findPreference("sleeptime");
 		wakeupTime_ = findPreference("default_time");
 		wakeupVolume_ = findPreference("wakeup_volume");
+		reloadPlaylist_ = findPreference("reload_playlist");
+		reloadPlaylist_.setOnPreferenceClickListener(this);
 		sleepVolume_ = findPreference("sleep_volume");
 		sleepPlaylist_ = (CheckBoxPreference) findPreference("sleep_playlist");
 		sleepPlaylist_.setOnPreferenceClickListener(this);
@@ -232,17 +243,23 @@ public class MalarmPreference
 	@Override
 	public void onStart() {
 		super.onStart();
+		updatePlaylistUI();
+	}
+	
+	//TODO: call this when playlist_path is modified by user
+	private void updatePlaylistUI(){
 		final SharedPreferences pref = getPrefs();
 		//get playlist path
 		final String path = 
 				pref.getString("playlist_path", DEFAULT_PLAYLIST_PATH.getAbsolutePath());
-
 		//TODO: move check code to Playlist class
-		final File sleepFile = new File(path, MalarmPlayerService.SLEEP_PLAYLIST_FILENAME);
+		final File sleepFile =
+				new File(path, MalarmPlayerService.SLEEP_PLAYLIST_FILENAME);
 		sleepPlaylist_.setChecked(sleepFile.exists());
 
 		//TODO: move check code to Playlist class
-		final File wakeupFile = new File(path, MalarmPlayerService.WAKEUP_PLAYLIST_FILENAME);
+		final File wakeupFile =
+				new File(path, MalarmPlayerService.WAKEUP_PLAYLIST_FILENAME);
 		wakeupPlaylist_.setChecked(wakeupFile.exists());
 	}
 	

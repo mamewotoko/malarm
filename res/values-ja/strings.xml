@@ -35,7 +35,8 @@
     <string name="pref_wakeup_playlist">wakeup.m3uプレイリスト</string>
     <string name="pref_no_wakeup_playlist">ないです。 (作ってください)</string>
     <string name="pref_ok_wakeup_playlist">あります。</string>
-
+    <string name="pref_reload_playlist">プレイリストを再読み込みする</string>
+    <string name="playlist_reload">プレイリストを読み込みました</string>
     <string name="pref_sleep_playlist">sleep.m3uプレイリスト</string>
     <string name="pref_no_sleep_playlist">ないです。 (作ってください)</string>
     <string name="pref_ok_sleep_playlist">あります。</string>

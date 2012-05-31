@@ -35,7 +35,9 @@
     <string name="pref_wakeup_playlist">wakeup.m3u playlist</string>
     <string name="pref_no_wakeup_playlist">Not exists (Please create it)</string>
     <string name="pref_ok_wakeup_playlist">Exists</string>
-
+    <string name="pref_reload_playlist">Reload playlist</string>
+    <string name="playlist_reload">Playlists are loaded</string>
+    
     <string name="pref_sleep_playlist">sleep.m3u playlist</string>
     <string name="pref_no_sleep_playlist">Not exists (Please create it)</string>
     <string name="pref_ok_sleep_playlist">Exists</string>
