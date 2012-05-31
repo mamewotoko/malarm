@@ -181,7 +181,7 @@ public class MalarmActivity
 			Log.i(TAG, "onDoubleTap: " + x + ", " + y);
 			final int width = webview_.getWidth();
 			boolean start_browser = false;
-			final int side_width = width/3;
+			int side_width = width/3;
 			if (x <= side_width) {
 				state_.mWebIndex--;
 			}
@@ -192,8 +192,11 @@ public class MalarmActivity
 				start_browser = true;
 			}
 			if (start_browser) {
-				final String url = webview_.getUrl();
-				final Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+				String url = webview_.getUrl();
+				if(null == url) {
+					return false;
+				}
+				Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
 				startActivity(i);
 			}
 			else {

@@ -149,7 +149,7 @@ public class MalarmPlayerService
 		if (isPlaying()) {
 			stopMusic();
 		}
-		playMusic(currentPlaylist_);
+		playMusic();
 	}
 
 	public class MusicCompletionListener
