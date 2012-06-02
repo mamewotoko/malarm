@@ -22,7 +22,7 @@ public class TimePreference
 		super.onBindDialogView(view);
 		timePicker_ = (TimePicker) view.findViewById(R.id.time_pref_time_picker);
 		timePicker_.setIs24HourView(true);
-		final String[] split_timestr = time_.split(":");
+		String[] split_timestr = time_.split(":");
 		timePicker_.setCurrentHour(Integer.valueOf(split_timestr[0]));
 		timePicker_.setCurrentMinute(Integer.valueOf(split_timestr[1]));
 	}

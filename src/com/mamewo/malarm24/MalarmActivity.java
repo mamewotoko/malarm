@@ -137,7 +137,6 @@ public class MalarmActivity
 		}
 	}
 	
-	
 	public final class MyCallListener
 		extends PhoneStateListener
 	{
@@ -145,7 +144,7 @@ public class MalarmActivity
 
 		public MyCallListener(MalarmActivity context) {
 			super();
-			final TelephonyManager telmgr =
+			TelephonyManager telmgr =
 					(TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
 			telmgr.listen(this, LISTEN_CALL_STATE);
 		}
@@ -177,10 +176,10 @@ public class MalarmActivity
 	{
 		@Override
 		public boolean onDoubleTap(MotionEvent e) {
-			final int x = (int)e.getX();
-			final int y = (int)e.getY();
+			int x = (int)e.getX();
+			int y = (int)e.getY();
 			Log.i(TAG, "onDoubleTap: " + x + ", " + y);
-			final int width = webview_.getWidth();
+			int width = webview_.getWidth();
 			boolean start_browser = false;
 			int side_width = width/3;
 			if (x <= side_width) {
@@ -211,8 +210,8 @@ public class MalarmActivity
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		final SharedPreferences pref =
-				PreferenceManager.getDefaultSharedPreferences(this);
+		SharedPreferences pref =
+			PreferenceManager.getDefaultSharedPreferences(this);
 		pref.registerOnSharedPreferenceChangeListener(this);
 		syncPreferences(pref, "ALL");
 		setContentView(R.layout.main);
@@ -263,7 +262,7 @@ public class MalarmActivity
 		
 		//umm...
 		webview_.setOnKeyListener(this);
-		final WebSettings webSettings = webview_.getSettings();
+		WebSettings webSettings = webview_.getSettings();
 		//to display twitter...
 		webSettings.setDomStorageEnabled(true);
 		webSettings.setJavaScriptEnabled(true);
@@ -296,7 +295,7 @@ public class MalarmActivity
 			public void onLoadResource (WebView view, String url) {
 				//addhoc polling...
 				//TODO: move to resource
-				final int height = view.getContentHeight();
+				int height = view.getContentHeight();
 				if ((url.contains("bijint") ||
 						url.contains("bijo-linux")) && height > 400) {
 					if(url.contains("binan") && height > 420) {
@@ -332,8 +331,8 @@ public class MalarmActivity
 		super.onDestroy();
 		player_ = null;
 		unbindService(this);
-		final SharedPreferences pref = 
-				PreferenceManager.getDefaultSharedPreferences(this);
+		SharedPreferences pref = 
+			PreferenceManager.getDefaultSharedPreferences(this);
 		pref.unregisterOnSharedPreferenceChangeListener(this);
 	}
 
@@ -393,9 +392,9 @@ public class MalarmActivity
 	public void syncPreferences(SharedPreferences pref, String key) {
 		boolean updateAll = "ALL".equals(key);
 		if (updateAll || "default_time".equals(key)) {
-			final String timestr =
+			String timestr =
 					pref.getString("default_time", MalarmPreference.DEFAULT_WAKEUP_TIME);
-			final String[] split_timestr = timestr.split(":");
+			String[] split_timestr = timestr.split(":");
 			if (split_timestr.length == 2) {
 				prefDefaultHour = Integer.valueOf(split_timestr[0]);
 				prefDefaultMin = Integer.valueOf(split_timestr[1]);
@@ -421,8 +420,8 @@ public class MalarmActivity
 			pref_use_native_player = pref.getBoolean("use_native_player", false);
 		}
 		if (updateAll || "playlist_path".equals(key)) {
-			final String newpath = 
-					pref.getString(key, MalarmPreference.DEFAULT_PLAYLIST_PATH.getAbsolutePath());
+			String newpath = 
+				pref.getString(key, MalarmPreference.DEFAULT_PLAYLIST_PATH.getAbsolutePath());
 			if (! newpath.equals(prefPlaylistPath)) {
 				prefPlaylistPath = newpath;
 				if (null != player_) {
@@ -456,13 +455,13 @@ public class MalarmActivity
 		if (state_.mWebIndex >= WEB_PAGE_LIST.length) {
 			state_.mWebIndex = 0;
 		}
-		final String url = WEB_PAGE_LIST[state_.mWebIndex];
+		String url = WEB_PAGE_LIST[state_.mWebIndex];
 		loadWebPage(url);
 	}
 
 	//TODO: move to resource
 	private void adjustWebviewSetting(String url) {
-		final WebSettings config = webview_.getSettings();
+		WebSettings config = webview_.getSettings();
 		if (url.contains("bijo-linux") || 
 			url.contains("google") ||
 			url.contains("yahoo") ||
@@ -507,10 +506,10 @@ public class MalarmActivity
 		if (state_.mSleepMin == 0) {
 			return;
 		}
-		final PendingIntent sleep =
-				makePlayPintent(MalarmPlayerService.SLEEP_ACTION, false);
-		final AlarmManager mgr =
-				(AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		PendingIntent sleep =
+			makePlayPintent(MalarmPlayerService.SLEEP_ACTION, false);
+		AlarmManager mgr =
+			(AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		mgr.cancel(sleep);
 		state_.mSleepMin = 0;
 	}
@@ -519,8 +518,8 @@ public class MalarmActivity
 	//TODO: call setNewIntent and handle in onResume?
 	//TODO: this method is not called until home button is pressed
 	protected void onNewIntent (Intent intent) {
-		Log.i (TAG, "onNewIntent is called");
-		final String action = intent.getAction();
+		Log.d(TAG, "onNewIntent is called");
+		String action = intent.getAction();
 		if (null == action) {
 			return;
 		}
@@ -540,7 +539,7 @@ public class MalarmActivity
 
 	//TODO: design
 	private PendingIntent makePlayPintent(String action, boolean useNative) {
-		final Intent i = new Intent(this, MalarmPlayerService.Receiver.class);
+		Intent i = new Intent(this, MalarmPlayerService.Receiver.class);
 		i.setAction(action);
 		i.putExtra(NATIVE_PLAYER_KEY, useNative);
 		
@@ -611,8 +610,8 @@ public class MalarmActivity
 	}
 
 	private void stopAlarm() {
-		final NotificationManager mgr = 
-				(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		NotificationManager mgr = 
+			(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		mgr.cancel(PACKAGE_NAME, 0);
 		cancelSleepTimer();
 		cancelAlarmTimer();
@@ -625,35 +624,35 @@ public class MalarmActivity
 	}
 	
 	private void setNotification(String title, String text) {
-		final Notification note =
-				new Notification(R.drawable.img, title, System.currentTimeMillis());
+		Notification note =
+			new Notification(R.drawable.img, title, System.currentTimeMillis());
 		
-		final Intent ni = new Intent(this, MalarmActivity.class);
-		final PendingIntent npi = PendingIntent.getActivity(this, 0, ni, 0);
+		Intent ni = new Intent(this, MalarmActivity.class);
+		PendingIntent npi = PendingIntent.getActivity(this, 0, ni, 0);
 		note.setLatestEventInfo(this, title, text, npi);
-		final NotificationManager notify_mgr =
-				(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		NotificationManager notify_mgr =
+			(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		notify_mgr.notify(PACKAGE_NAME, 0, note);
 	}
 	
 	private void setSleepTimer() {
-		final SharedPreferences pref =
-				PreferenceManager.getDefaultSharedPreferences(this);
-		final long nowMillis = System.currentTimeMillis();
+		SharedPreferences pref =
+			PreferenceManager.getDefaultSharedPreferences(this);
+		long nowMillis = System.currentTimeMillis();
 		long target = 0;
 		if(state_.mTargetTime != null) {
 			target = state_.mTargetTime.getTimeInMillis();
 		}
-		final String minStr =
-				pref.getString("sleeptime", MalarmPreference.DEFAULT_SLEEPTIME);
-		final int min = Integer.valueOf(minStr);
-		final long sleepTimeMillis = min * 60 * 1000;
+		String minStr =
+			pref.getString("sleeptime", MalarmPreference.DEFAULT_SLEEPTIME);
+		int min = Integer.valueOf(minStr);
+		long sleepTimeMillis = min * 60 * 1000;
 		state_.mSleepMin = min;
 		if (target == 0 || target - nowMillis >= sleepTimeMillis) {
-			final PendingIntent sleepIntent =
-					makePlayPintent(MalarmPlayerService.SLEEP_ACTION, pref_use_native_player);
-			final AlarmManager mgr =
-					(AlarmManager) getSystemService(Context.ALARM_SERVICE);
+			PendingIntent sleepIntent =
+				makePlayPintent(MalarmPlayerService.SLEEP_ACTION, pref_use_native_player);
+			AlarmManager mgr =
+				(AlarmManager) getSystemService(Context.ALARM_SERVICE);
 			mgr.set(AlarmManager.RTC_WAKEUP, nowMillis + sleepTimeMillis, sleepIntent);
 			updateUI();
 		}
@@ -682,16 +681,16 @@ public class MalarmActivity
 	 */
 	private void setAlarm() {
 		//set timer
-		final Calendar now = new GregorianCalendar();
+		Calendar now = new GregorianCalendar();
 
 		//remove focus from timeticker to save time which is entered by software keyboard
 		timePicker_.clearFocus();
-		final int target_hour = timePicker_.getCurrentHour().intValue();
-		final int target_min = timePicker_.getCurrentMinute().intValue();
-		final Calendar target = new GregorianCalendar(now.get(Calendar.YEAR),
+		int target_hour = timePicker_.getCurrentHour().intValue();
+		int target_min = timePicker_.getCurrentMinute().intValue();
+		Calendar target = new GregorianCalendar(now.get(Calendar.YEAR),
 				now.get(Calendar.MONTH), now.get(Calendar.DATE), target_hour, target_min, 0);
 		long targetMillis = target.getTimeInMillis();
-		final long nowMillis = System.currentTimeMillis();
+		long nowMillis = System.currentTimeMillis();
 		if (targetMillis <= nowMillis) {
 			//tomorrow
 			targetMillis += 24 * 60 * 60 * 1000;
@@ -699,21 +698,21 @@ public class MalarmActivity
 		}
 		state_.mTargetTime = target;
 
-		final AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-		final PendingIntent pendingIntent =
+		AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		PendingIntent pendingIntent =
 				makePlayPintent(MalarmPlayerService.WAKEUP_ACTION, false);
 		mgr.set(AlarmManager.RTC_WAKEUP, targetMillis, pendingIntent);
 
 		String text = getString(R.string.notify_waiting_text);
 		text += " " + dateStr(target);
-		final String title = getString(R.string.notify_waiting_title);
+		String title = getString(R.string.notify_waiting_title);
 		//TODO: umm...
 		setNotification(title, text);
 	}
 
 	public void setNow() {
 		if (timePicker_.isEnabled()) {
-			final Calendar now = new GregorianCalendar();
+			Calendar now = new GregorianCalendar();
 			timePicker_.setCurrentHour(now.get(Calendar.HOUR_OF_DAY));
 			timePicker_.setCurrentMinute(now.get(Calendar.MINUTE));
 		}
@@ -817,7 +816,7 @@ public class MalarmActivity
 	}
 
 	private void shortVibrate() {
-		final Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+		Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 		if (vibrator != null) {
 			vibrator.vibrate(150);
 		}
@@ -946,8 +945,8 @@ public class MalarmActivity
 				else {
 					Matcher m2 = AFTER_TIME_PATTERN.matcher(speech);
 					if (m2.matches()) {
-						final String hourStr = m2.group(2);
-						final String minStr = m2.group(3);
+						String hourStr = m2.group(2);
+						String minStr = m2.group(3);
 						if (null == hourStr && null == minStr) {
 							continue;
 						}
@@ -964,7 +963,7 @@ public class MalarmActivity
 								after_millis += 60 * 1000 * int_data;
 							}
 						}
-						final Calendar cal = new GregorianCalendar();
+						Calendar cal = new GregorianCalendar();
 						cal.setTimeInMillis(System.currentTimeMillis() + after_millis);
 						int hour = cal.get(Calendar.HOUR_OF_DAY);
 						int min = cal.get(Calendar.MINUTE);

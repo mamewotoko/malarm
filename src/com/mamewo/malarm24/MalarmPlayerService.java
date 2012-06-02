@@ -14,6 +14,7 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Environment;
 import android.os.IBinder;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
@@ -105,7 +106,7 @@ public class MalarmPlayerService
 	public void loadPlaylist() {
 		SharedPreferences pref =
 				PreferenceManager.getDefaultSharedPreferences(this);
-		String playlistPath = pref.getString("playlist_path", "/sdcard/music");
+		String playlistPath = pref.getString("playlist_path", Environment.DIRECTORY_MUSIC);
 		Log.i(TAG, "loadPlaylist is called:" + playlistPath);
 		try {
 			wakeupPlaylist_ = new M3UPlaylist(playlistPath, WAKEUP_PLAYLIST_FILENAME);
@@ -239,7 +240,7 @@ public class MalarmPlayerService
 	}
 
 	public void startVibrator() {
-		final Vibrator vibrator = 
+		Vibrator vibrator = 
 				(Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 		if (null == vibrator) {
 			return;
@@ -248,7 +249,7 @@ public class MalarmPlayerService
 	}
 	
 	public void stopVibrator() {
-		final Vibrator vibrator =
+		Vibrator vibrator =
 				(Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 		if (null == vibrator) {
 			return;

@@ -35,8 +35,8 @@ public final class M3UPlaylist
 	{
 		basepath_ = basepath;
 		playlistFilename_ = playlistFilename;
-		final String playlist_abs_path =
-				(new File(basepath, playlistFilename)).getAbsolutePath();
+		String playlist_abs_path =
+			(new File(basepath, playlistFilename)).getAbsolutePath();
 		playlist_ = new ArrayList<String>();
 		load(playlist_abs_path);
 	}
@@ -68,10 +68,10 @@ public final class M3UPlaylist
 		return (List<String>)playlist_.clone();
 	}
 
-	protected void load(final String filename)
+	protected void load(String filename)
 			throws FileNotFoundException, IOException
 	{
-		final BufferedReader br = new BufferedReader(new FileReader (filename));
+		BufferedReader br = new BufferedReader(new FileReader (filename));
 		String music_filename;
 		while ((music_filename = br.readLine()) != null) {
 			if (music_filename.charAt(0) != '#') {

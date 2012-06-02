@@ -63,7 +63,7 @@ public final class PlaylistViewer
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		final MenuInflater inflater = getMenuInflater();
+		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.playlist_viewer_menu, menu);
 		return true;
 	}

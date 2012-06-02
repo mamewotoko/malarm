@@ -15,16 +15,19 @@ import android.widget.RemoteViews;
 public class MalarmWidgetProvider
 	extends AppWidgetProvider
 {
-	private static final String PACKAGE_NAME = MalarmWidgetProvider.class.getPackage().getName();
-	public static final String HELLO_ACTION = PACKAGE_NAME + ".HELLO_ACTION";
-	private static final String TAG = "malarm";
+	final static
+	private String PACKAGE_NAME = MalarmWidgetProvider.class.getPackage().getName();
+	final static
+	public String HELLO_ACTION = PACKAGE_NAME + ".HELLO_ACTION";
+	final static
+	private String TAG = "malarm";
 	
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		final String action = intent.getAction();
+		String action = intent.getAction();
 		Log.i(TAG, "action: " + action);
 		if (HELLO_ACTION.equals(action)) {
-			final Intent i = new Intent(context, MalarmActivity.class);
+			Intent i = new Intent(context, MalarmActivity.class);
 			i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			context.startActivity(i);
 		}
@@ -33,11 +36,11 @@ public class MalarmWidgetProvider
 
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-		final RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.appwidget);
-		final Intent intent = new Intent(context, MalarmWidgetProvider.class);
+		RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.appwidget);
+		Intent intent = new Intent(context, MalarmWidgetProvider.class);
 		intent.setAction(HELLO_ACTION);
-		final PendingIntent pintent =
-				PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+		PendingIntent pintent =
+			PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 		rv.setOnClickPendingIntent(R.id.appwidget, pintent);
 
 		appWidgetManager.updateAppWidget(appWidgetIds[0], rv);

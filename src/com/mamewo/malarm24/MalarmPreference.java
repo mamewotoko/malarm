@@ -62,7 +62,7 @@ public class MalarmPreference
 		+ "!https://www.google.com/calendar/!http://www.okuiaki.com/mobile/login.php";
 	//e.g. /sdcard/music
 	public static final File DEFAULT_PLAYLIST_PATH =
-			new File(Environment.getExternalStorageDirectory(), Environment.DIRECTORY_MUSIC);
+		new File(Environment.getExternalStorageDirectory(), Environment.DIRECTORY_MUSIC);
 
 	private SharedPreferences getPrefs() {
 		return PreferenceManager.getDefaultSharedPreferences(this);
@@ -70,7 +70,7 @@ public class MalarmPreference
 	
 	@Override
 	public boolean accept(File pathname) {
-		final String filename = pathname.getName();
+		String filename = pathname.getName();
 		
 		//TODO: other formats? mp4, m4v...
 		return filename.endsWith(".mp3")
@@ -106,7 +106,7 @@ public class MalarmPreference
 	public boolean onPreferenceClick(Preference preference) {
 		boolean result = false;
 		if (preference == help_) {
-			final Uri url = Uri.parse(getString(R.string.help_url));
+			Uri url = Uri.parse(getString(R.string.help_url));
 			startActivity(new Intent(Intent.ACTION_VIEW, url));
 			result = true;
 		}
@@ -122,12 +122,12 @@ public class MalarmPreference
 			result = true;
 		}
 		else if (preference == createPlaylist_) {
-			final String [] playlists = 
+			String [] playlists = 
 				{ MalarmPlayerService.WAKEUP_PLAYLIST_FILENAME,
 					MalarmPlayerService.SLEEP_PLAYLIST_FILENAME };
 			Log.i(TAG, "playlist pref is clicked");
 			for (String filename : playlists) {
-				final File file = new File(MalarmActivity.prefPlaylistPath, filename);
+				File file = new File(MalarmActivity.prefPlaylistPath, filename);
 				if (file.exists()) {
 					//show confirm dialog?
 					Log.i(TAG, "playlist file exists: " + filename);
@@ -167,7 +167,7 @@ public class MalarmPreference
 				((CheckBoxPreference) preference).setChecked(false);
 			}
 			else {
-				final Intent i = new Intent(this, PlaylistViewer.class);
+				Intent i = new Intent(this, PlaylistViewer.class);
 				//TODO: define key as constant
 				i.putExtra("playlist", prefKey);
 				startActivity(i);
@@ -176,9 +176,9 @@ public class MalarmPreference
 		}
 		else if (preference == clearWebviewCache_) {
 			String prefKey = preference.getKey();
-			final SharedPreferences pref = preference.getSharedPreferences();
+			SharedPreferences pref = preference.getSharedPreferences();
 			Log.d(TAG, "clear pref is clicked: " + prefKey + " " + " hasKey " + pref.contains(prefKey));
-			final SharedPreferences.Editor editor = preference.getEditor();
+			SharedPreferences.Editor editor = preference.getEditor();
 			editor.putBoolean(prefKey, !pref.getBoolean(prefKey, false));
 			//compatibility: apply is not available in 7
 			editor.apply();
@@ -227,13 +227,13 @@ public class MalarmPreference
 		clearWebviewCache_ = findPreference("clear_webview_cache");
 		clearWebviewCache_.setOnPreferenceClickListener(this);
 
-		final SharedPreferences pref = getPrefs();
+		SharedPreferences pref = getPrefs();
 		pref.registerOnSharedPreferenceChangeListener(this);
 	}
 
 	@Override
 	public void onDestroy() {
-		final SharedPreferences pref = getPrefs();
+		SharedPreferences pref = getPrefs();
 		pref.unregisterOnSharedPreferenceChangeListener(this);
 		super.onDestroy();
 	}
@@ -246,15 +246,15 @@ public class MalarmPreference
 	
 	//TODO: call this when playlist_path is modified by user
 	private void updatePlaylistUI(){
-		final SharedPreferences pref = getPrefs();
+		SharedPreferences pref = getPrefs();
 		//get playlist path
-		final String path = 
-				pref.getString("playlist_path", DEFAULT_PLAYLIST_PATH.getAbsolutePath());
-		final File sleepFile =
-				new File(path, MalarmPlayerService.SLEEP_PLAYLIST_FILENAME);
+		String path = 
+			pref.getString("playlist_path", DEFAULT_PLAYLIST_PATH.getAbsolutePath());
+		File sleepFile =
+			new File(path, MalarmPlayerService.SLEEP_PLAYLIST_FILENAME);
 		sleepPlaylist_.setChecked(sleepFile.exists());
-		final File wakeupFile =
-				new File(path, MalarmPlayerService.WAKEUP_PLAYLIST_FILENAME);
+		File wakeupFile =
+			new File(path, MalarmPlayerService.WAKEUP_PLAYLIST_FILENAME);
 		wakeupPlaylist_.setChecked(wakeupFile.exists());
 	}
 	
@@ -270,7 +270,7 @@ public class MalarmPreference
 	@Override
 	public void onResume() {
 		super.onResume();
-		final SharedPreferences pref = getPrefs();
+		SharedPreferences pref = getPrefs();
 		updateSummary(pref, "ALL");
 	}
 
@@ -278,9 +278,9 @@ public class MalarmPreference
 								Preference prefUI, String defaultVolumeStr) {
 		int volume =
 				Integer.valueOf(pref.getString(key, defaultVolumeStr));
-		final AudioManager mgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-		final int maxVolume = mgr.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-		final StringBuilder sb = new StringBuilder();
+		AudioManager mgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		int maxVolume = mgr.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+		StringBuilder sb = new StringBuilder();
 		for(int i = 0; i < volume; i++){
 			sb.append("|");
 		}
@@ -304,8 +304,8 @@ public class MalarmPreference
 			wakeupTime_.setSummary(hour + ":" + min);
 		}
 		if (update_all || "sleeptime".equals(key)) {
-			final String sleepTime =
-					pref.getString("sleeptime", MalarmPreference.DEFAULT_SLEEPTIME);
+			String sleepTime =
+				pref.getString("sleeptime", MalarmPreference.DEFAULT_SLEEPTIME);
 			String summary = MessageFormat.format(getString(R.string.unit_min), sleepTime);
 			sleepTime_.setSummary(summary);
 		}
