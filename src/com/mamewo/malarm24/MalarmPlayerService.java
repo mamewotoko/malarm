@@ -14,7 +14,6 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Binder;
-import android.os.Environment;
 import android.os.IBinder;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
@@ -53,7 +52,6 @@ public class MalarmPlayerService
 	private Playlist currentPlaylist_;
 	private MediaPlayer player_;
 
-	//TODO: umm...
 	static
 	public M3UPlaylist wakeupPlaylist_;
 	static
@@ -68,21 +66,23 @@ public class MalarmPlayerService
 			loadPlaylist();
 			SharedPreferences pref =
 					PreferenceManager.getDefaultSharedPreferences(this);
-			int volume = Integer.valueOf(pref.getString("wakeup_volume", "5"));
+			int volume = Integer.valueOf(pref.getString(MalarmPreference.PREFKEY_WAKEUP_VOLUME,
+					MalarmPreference.DEFAULT_WAKEUP_VOLUME));
 			AudioManager mgr = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
 			stopMusic();
-			mgr.setStreamVolume(AudioManager.STREAM_MUSIC, volume, AudioManager.FLAG_SHOW_UI);
 			if(null == wakeupPlaylist_){
 				//TODO: test volume
+				mgr.setStreamVolume(AudioManager.STREAM_RING, volume, AudioManager.FLAG_SHOW_UI);
 				Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
 				tone_ = RingtoneManager.getRingtone(this, uri);
 				tone_.play();
 			}
 			else {
+				mgr.setStreamVolume(AudioManager.STREAM_MUSIC, volume, AudioManager.FLAG_SHOW_UI);
 				playMusic(wakeupPlaylist_);
 			}
 			boolean vibrate =
-					pref.getBoolean("vibrate", MalarmPreference.DEFAULT_VIBRATION);
+					pref.getBoolean(MalarmPreference.PREFKEY_VIBRATE, MalarmPreference.DEFAULT_VIBRATION);
 			if (vibrate) {
 				startVibrator();
 			}
@@ -106,7 +106,8 @@ public class MalarmPlayerService
 	public void loadPlaylist() {
 		SharedPreferences pref =
 				PreferenceManager.getDefaultSharedPreferences(this);
-		String playlistPath = pref.getString("playlist_path", Environment.DIRECTORY_MUSIC);
+		String playlistPath = pref.getString(MalarmPreference.PREFKEY_PLAYLIST_PATH,
+				MalarmPreference.DEFAULT_PLAYLIST_PATH.getAbsolutePath());
 		Log.i(TAG, "loadPlaylist is called:" + playlistPath);
 		try {
 			wakeupPlaylist_ = new M3UPlaylist(playlistPath, WAKEUP_PLAYLIST_FILENAME);

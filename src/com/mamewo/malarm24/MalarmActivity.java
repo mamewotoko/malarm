@@ -79,17 +79,13 @@ public class MalarmActivity
 	final static
 	private String NATIVE_PLAYER_KEY = "nativeplayer";
 	final static
-	private String PLAYLIST_PATH_KEY = "playlist_path";
-	final static
 	private Pattern TIME_PATTERN = Pattern.compile("(\\d+)時((\\d+)分|半)?");
 	final static
 	private Pattern AFTER_TIME_PATTERN = Pattern.compile("((\\d+)時間)?((\\d+)分|半)?.*");
 
 	protected static String prefPlaylistPath;
 	private static String[] WEB_PAGE_LIST = new String []{ MYURL };
-	private static boolean pref_use_native_player;
-	private static int prefSleepVolume;
-	private static int prefWakeupVolume;
+	private static boolean prefUseNativePlayer;
 	private static Integer prefDefaultHour;
 	private static Integer prefDefaultMin;
 	private static MalarmState state_;
@@ -106,10 +102,10 @@ public class MalarmActivity
 	private Intent speechIntent_;
 	private ProgressBar loadingIcon_;
 	private boolean startingSpeechActivity_;
-	private TextView playlistLabel_;
+//	private TextView playlistLabel_;
 	private TextView sleepTimeLabel_;
 	private MalarmPlayerService player_ = null;
-	
+	private SharedPreferences pref_;
 	private PhoneStateListener callListener_;
 
 	private static final int DOW_INDEX[] = {
@@ -209,11 +205,11 @@ public class MalarmActivity
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		SharedPreferences pref =
+		PreferenceManager.setDefaultValues(this, R.xml.preference, false);
+		pref_ =
 			PreferenceManager.getDefaultSharedPreferences(this);
-		pref.registerOnSharedPreferenceChangeListener(this);
-		syncPreferences(pref, "ALL");
+		pref_.registerOnSharedPreferenceChangeListener(this);
+		syncPreferences(pref_, "ALL");
 		setContentView(R.layout.main);
 		setDefaultTime_ = true;
 		Intent intent = new Intent(this, MalarmPlayerService.class);
@@ -233,8 +229,8 @@ public class MalarmActivity
 		loadingIcon_ = (ProgressBar) findViewById(R.id.loading_icon);
 		loadingIcon_.setOnLongClickListener(this);
 		
-		playlistLabel_ = (TextView) findViewById(R.id.playlist_name_view);
-		playlistLabel_.setOnLongClickListener(this);
+//		playlistLabel_ = (TextView) findViewById(R.id.playlist_name_view);
+//		playlistLabel_.setOnLongClickListener(this);
 		
 		speechButton_ = (ImageButton) findViewById(R.id.set_by_voice);
 		speechButton_.setOnClickListener(this);
@@ -393,23 +389,17 @@ public class MalarmActivity
 		boolean updateAll = "ALL".equals(key);
 		if (updateAll || "default_time".equals(key)) {
 			String timestr =
-					pref.getString("default_time", MalarmPreference.DEFAULT_WAKEUP_TIME);
+				pref.getString(MalarmPreference.PREFKEY_WAKEUP_TIME,
+						MalarmPreference.DEFAULT_WAKEUP_TIME);
 			String[] split_timestr = timestr.split(":");
 			if (split_timestr.length == 2) {
 				prefDefaultHour = Integer.valueOf(split_timestr[0]);
 				prefDefaultMin = Integer.valueOf(split_timestr[1]);
 			}
 		}
-		if (updateAll || "sleep_volume".equals(key)) {
-			prefSleepVolume =
-					Integer.valueOf(pref.getString("sleep_volume", MalarmPreference.DEFAULT_SLEEP_VOLUME));
-		}
-		if (updateAll || "wakeup_volume".equals(key)) {
-			prefWakeupVolume =
-					Integer.valueOf(pref.getString("wakeup_volume", MalarmPreference.DEFAULT_WAKEUP_VOLUME));
-		}
 		if (updateAll || "url_list".equals(key)) {
-			String liststr = pref.getString("url_list", MalarmPreference.DEFAULT_WEB_LIST);
+			String liststr = pref.getString(MalarmPreference.PREFKEY_URL_LIST,
+					MalarmPreference.DEFAULT_WEB_LIST);
 			if(0 < liststr.length()){
 				liststr += MultiListPreference.SEPARATOR;
 			}
@@ -417,7 +407,8 @@ public class MalarmActivity
 			WEB_PAGE_LIST = liststr.split(MultiListPreference.SEPARATOR);
 		}
 		if (updateAll || "use_native_player".equals(key)) {
-			pref_use_native_player = pref.getBoolean("use_native_player", false);
+			prefUseNativePlayer =
+					pref.getBoolean(MalarmPreference.PREFKEY_USE_NATIVE_PLAYER, false);
 		}
 		if (updateAll || "playlist_path".equals(key)) {
 			String newpath = 
@@ -617,7 +608,7 @@ public class MalarmActivity
 		cancelAlarmTimer();
 		updateUI();
 		player_.stopVibrator();
-		if (! pref_use_native_player) {
+		if (! prefUseNativePlayer) {
 			player_.stopMusic();
 			showMessage(this, getString(R.string.music_stopped));
 		}
@@ -644,13 +635,14 @@ public class MalarmActivity
 			target = state_.mTargetTime.getTimeInMillis();
 		}
 		String minStr =
-			pref.getString("sleeptime", MalarmPreference.DEFAULT_SLEEPTIME);
+			pref.getString(MalarmPreference.PREFKEY_SLEEP_TIME,
+					MalarmPreference.DEFAULT_SLEEPTIME);
 		int min = Integer.valueOf(minStr);
 		long sleepTimeMillis = min * 60 * 1000;
 		state_.mSleepMin = min;
 		if (target == 0 || target - nowMillis >= sleepTimeMillis) {
 			PendingIntent sleepIntent =
-				makePlayPintent(MalarmPlayerService.SLEEP_ACTION, pref_use_native_player);
+				makePlayPintent(MalarmPlayerService.SLEEP_ACTION, prefUseNativePlayer);
 			AlarmManager mgr =
 				(AlarmManager) getSystemService(Context.ALARM_SERVICE);
 			mgr.set(AlarmManager.RTC_WAKEUP, nowMillis + sleepTimeMillis, sleepIntent);
@@ -668,9 +660,12 @@ public class MalarmActivity
 			showMessage(this, getString(R.string.sleep_playlist_not_exist));
 			return;
 		}
+		int sleepVolume =
+			Integer.valueOf(pref_.getString(MalarmPreference.PREFKEY_SLEEP_VOLUME,
+					MalarmPreference.DEFAULT_SLEEP_VOLUME));
 		Log.i(TAG, "sleepPlaylist: " + list);
 		AudioManager mgr = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-		mgr.setStreamVolume(AudioManager.STREAM_MUSIC, prefSleepVolume, AudioManager.FLAG_SHOW_UI);
+		mgr.setStreamVolume(AudioManager.STREAM_MUSIC, sleepVolume, AudioManager.FLAG_SHOW_UI);
 		player_.playMusic(list);
 		setSleepTimer();
 	}

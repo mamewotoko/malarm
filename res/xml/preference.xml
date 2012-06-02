@@ -14,6 +14,7 @@
     <PreferenceCategory
         android:key="playlist_category"
         android:title="@string/pref_playlist_category" >
+        <!--  TODO: modify /sdcard/music  -->
         <EditTextPreference
             android:defaultValue="/sdcard/music/"
             android:dialogMessage="@string/enter_path_to_playlist"
@@ -74,11 +75,11 @@
         </CheckBoxPreference>
 
         <com.mamewo.malarm24.VolumePreference
-            android:defaultValue="5"
+            android:defaultValue="2"
             android:key="sleep_volume"
             android:title="@string/pref_sleep_volume_title" />
         <com.mamewo.malarm24.VolumePreference
-            android:defaultValue="5"
+            android:defaultValue="10"
             android:key="wakeup_volume"
             android:title="@string/pref_wakeup_volume_title" />
     </PreferenceCategory>
@@ -89,13 +90,8 @@
             android:key="clear_webview_cache"
             android:summary="@string/pref_clear_webview_cache_summary"
             android:title="@string/pref_clear_webview_cache_title" android:selectable="true"
-            android:defaultValue="false"
             android:persistent="true"
             />
-    </PreferenceCategory>
-    <PreferenceCategory
-        android:key="about"
-        android:title="@string/pref_about_title" >
         <CheckBoxPreference
             android:defaultValue="false"
             android:enabled="false"
@@ -104,6 +100,10 @@
             android:summaryOff="@string/use_internal_player"
             android:summaryOn="@string/use_native_player"
             android:title="@string/use_native_player_title" />
+        </PreferenceCategory>
+    <PreferenceCategory
+        android:key="about"
+        android:title="@string/pref_about_title" >
         <Preference
             android:key="help"
             android:selectable="true"
@@ -114,5 +114,4 @@
             android:selectable="true"
             android:title="@string/malarm_version_title" />
     </PreferenceCategory>
-
 </PreferenceScreen>

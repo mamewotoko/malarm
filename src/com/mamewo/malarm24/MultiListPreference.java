@@ -92,7 +92,7 @@ public class MultiListPreference
 	private void restoreCheckedEntries() {
 		CharSequence[] entryValues = getEntryValues();
 
-		Log.i("malrm", "value: " + getValue());
+		Log.d("malarm", "value: " + getValue());
 
 		// Explode the string read in sharedpreferences
 		String[] vals = parseStoredValue(getValue());

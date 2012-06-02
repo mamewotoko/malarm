@@ -53,7 +53,7 @@
     <string name="pref_sleep_volume_title">Sleep tunes volume</string>
     <string name="pref_wakeup_volume_title">Wakeup tunes volume</string>
     <string name="other_category_title">others</string>
-    <string name="pref_clear_webview_cache_title">Clear cache and history of Webview</string>
+    <string name="pref_clear_webview_cache_title">Clear cache of Webview</string>
     <string name="pref_clear_webview_cache_summary">This clears cache and history of malarm web view. One of browser is not cleared.</string>
     
     <string name="volume_category_title">Volume and vibration</string>

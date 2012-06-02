@@ -47,26 +47,43 @@ public class MalarmPreference
 	private View logo_;
 	private CheckBoxPreference sleepPlaylist_;
 	private CheckBoxPreference wakeupPlaylist_;
+	private SharedPreferences pref_;
 	private static final String TAG = "malarm";
 
-	//move to property file?
-	//TODO: use XML file to set default value
-	public static final boolean DEFAULT_VIBRATION = true;
-	public static final String DEFAULT_SLEEPTIME = "60";
-	public static final String DEFAULT_WAKEUP_TIME = "7:00";
-	public static final String DEFAULT_SLEEP_VOLUME = "3";
-	public static final String DEFAULT_WAKEUP_VOLUME = "7";
-	//TODO: manage default value in one file
-	public static final String DEFAULT_WEB_LIST = 
-		"http://bijo-linux.com/!http://twitter.com/!http://www.bijint.com/jp/!http://www.google.com/mail/"
-		+ "!https://www.google.com/calendar/!http://www.okuiaki.com/mobile/login.php";
-	//e.g. /sdcard/music
-	public static final File DEFAULT_PLAYLIST_PATH =
+	//default values are set in onCreate, so following values are not so important
+	final static
+	public boolean DEFAULT_VIBRATION = true;
+	final static
+	public String DEFAULT_SLEEPTIME = "60";
+	final static
+	public String DEFAULT_WAKEUP_TIME = "7:00";
+	final static
+	public String DEFAULT_SLEEP_VOLUME = "3";
+	final static
+	public String DEFAULT_WAKEUP_VOLUME = "10";
+	final static
+	public String DEFAULT_WEB_LIST = "";
+	final static
+	public File DEFAULT_PLAYLIST_PATH =
 		new File(Environment.getExternalStorageDirectory(), Environment.DIRECTORY_MUSIC);
 
-	private SharedPreferences getPrefs() {
-		return PreferenceManager.getDefaultSharedPreferences(this);
-	}
+	//list preference keys
+	final static
+	public String PREFKEY_URL_LIST = "url_list";
+	final static
+	public String PREFKEY_PLAYLIST_PATH = "playlist_path";
+	final static
+	public String PREFKEY_SLEEP_TIME = "sleeptime";
+	final static
+	public String PREFKEY_WAKEUP_TIME = "default_time";
+	final static
+	public String PREFKEY_VIBRATE = "vibrate";
+	final static
+	public String PREFKEY_SLEEP_VOLUME = "sleep_volume";
+	final static
+	public String PREFKEY_WAKEUP_VOLUME = "wakeup_volume";
+	final static
+	public String PREFKEY_USE_NATIVE_PLAYER = "use_native_player";
 	
 	@Override
 	public boolean accept(File pathname) {
@@ -156,11 +173,10 @@ public class MalarmPreference
 				prefKey = "wakeup";
 				playlistFilename = MalarmPlayerService.WAKEUP_PLAYLIST_FILENAME;
 			}
-			SharedPreferences pref = getPrefs();
 			//get playlist path
 			String path = 
-					pref.getString("playlist_path", DEFAULT_PLAYLIST_PATH.getAbsolutePath());
-
+					pref_.getString(MalarmPreference.PREFKEY_PLAYLIST_PATH,
+							DEFAULT_PLAYLIST_PATH.getAbsolutePath());
 			//TODO: add dependency from playlist path
 			if (! (new File(path, playlistFilename)).exists()) {
 				MalarmActivity.showMessage(this, getString(R.string.pref_playlist_does_not_exist));
@@ -177,7 +193,6 @@ public class MalarmPreference
 		else if (preference == clearWebviewCache_) {
 			String prefKey = preference.getKey();
 			SharedPreferences pref = preference.getSharedPreferences();
-			Log.d(TAG, "clear pref is clicked: " + prefKey + " " + " hasKey " + pref.contains(prefKey));
 			SharedPreferences.Editor editor = preference.getEditor();
 			editor.putBoolean(prefKey, !pref.getBoolean(prefKey, false));
 			//compatibility: apply is not available in 7
@@ -198,6 +213,7 @@ public class MalarmPreference
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		pref_ = PreferenceManager.getDefaultSharedPreferences(this);
 		addPreferencesFromResource(R.xml.preference);
 		version_ = findPreference("malarm_version");
 		PackageInfo pi;
@@ -227,14 +243,12 @@ public class MalarmPreference
 		clearWebviewCache_ = findPreference("clear_webview_cache");
 		clearWebviewCache_.setOnPreferenceClickListener(this);
 
-		SharedPreferences pref = getPrefs();
-		pref.registerOnSharedPreferenceChangeListener(this);
+		pref_.registerOnSharedPreferenceChangeListener(this);
 	}
 
 	@Override
 	public void onDestroy() {
-		SharedPreferences pref = getPrefs();
-		pref.unregisterOnSharedPreferenceChangeListener(this);
+		pref_.unregisterOnSharedPreferenceChangeListener(this);
 		super.onDestroy();
 	}
 	
@@ -246,10 +260,10 @@ public class MalarmPreference
 	
 	//TODO: call this when playlist_path is modified by user
 	private void updatePlaylistUI(){
-		SharedPreferences pref = getPrefs();
 		//get playlist path
-		String path = 
-			pref.getString("playlist_path", DEFAULT_PLAYLIST_PATH.getAbsolutePath());
+		String path =
+			pref_.getString(MalarmPreference.PREFKEY_PLAYLIST_PATH,
+							DEFAULT_PLAYLIST_PATH.getAbsolutePath());
 		File sleepFile =
 			new File(path, MalarmPlayerService.SLEEP_PLAYLIST_FILENAME);
 		sleepPlaylist_.setChecked(sleepFile.exists());
@@ -270,8 +284,7 @@ public class MalarmPreference
 	@Override
 	public void onResume() {
 		super.onResume();
-		SharedPreferences pref = getPrefs();
-		updateSummary(pref, "ALL");
+		updateSummary(pref_, "ALL");
 	}
 
 	private void setVolumeSummary(SharedPreferences pref, String key,
