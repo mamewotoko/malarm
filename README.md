@@ -12,6 +12,9 @@ This is a simple alarm application of android (version 2.2.x - 2.3.3, 4.x).
 
  If you want to stop vibration only, please use "stop vibration" menu
 
+## Demo video
+http://www.youtube.com/watch?v=vA2F_dO0mQA
+
 ## Screenshot
 ![Japanese screen shot](https://github.com/mamewotoko/malarm/raw/master/doc/alarm_ja.png)
 ![English screen shot](https://github.com/mamewotoko/malarm/raw/master/doc/alarm_en.png)
@@ -52,12 +55,14 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - Android 4.0 emulator
 
 ## TODO
+- add UI to quit activity for test
 - refactor syncPreference and remove unnecessary code and desing preference and default value
+- improve UI to create and edit playlist
 - add introduction guide or tutorial to create playlist
 - improve wording especially one of notification
-- improve UI to create and edit playlist
+- use text to speech to read web page
+http://developer.android.com/resources/articles/tts.html
 - add preference to set silent mode or restore volume
-- add UI to quit activity for test
 - show notification while playing music
 - change webview into photo view, movie player...
 - add UI to play ringtone on VolumePreference to check volume
