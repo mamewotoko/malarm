@@ -224,7 +224,7 @@ public class MalarmActivity
 		timePicker_ = (TimePicker) findViewById(R.id.timePicker1);
 		timePicker_.setIs24HourView(true);
 
-		if (savedInstanceState == null) {
+		if (null == savedInstanceState) {
 			state_ = new MalarmState();
 		}
 		else {
@@ -327,7 +327,9 @@ public class MalarmActivity
 	
 	@Override
 	public void onDestroy() {
+		Log.d(TAG, "onDestroy");
 		super.onDestroy();
+		unbindService(this);
 		final SharedPreferences pref = 
 				PreferenceManager.getDefaultSharedPreferences(this);
 		pref.unregisterOnSharedPreferenceChangeListener(this);
@@ -373,12 +375,14 @@ public class MalarmActivity
 			webview_.goBack();
 			return;
 		}
+		//this activity is not quit by back button
+		//to quit, state of timer should be saved and restored
 		moveTaskToBack(false);
 	}
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-		Log.i("malarm", "onSaveInstanceState is called");
+		Log.d("malarm", "onSaveInstanceState is called");
 		outState.putSerializable("state", state_);
 	}
 
@@ -424,7 +428,7 @@ public class MalarmActivity
 				}
 			}
 		}
-		Log.i(TAG, "syncPref: key " + key);
+		Log.d(TAG, "syncPref: key " + key);
 		if("clear_webview_cache".equals(key)){
 			webview_.clearCache(true);
 			webview_.clearHistory();
@@ -484,7 +488,7 @@ public class MalarmActivity
 	 * call updateUI from caller
 	 */
 	private void cancelAlarmTimer() {
-		if (state_.mTargetTime == null) {
+		if (null == state_.mTargetTime) {
 			return;
 		}
 		PendingIntent p =
@@ -515,10 +519,10 @@ public class MalarmActivity
 	protected void onNewIntent (Intent intent) {
 		Log.i (TAG, "onNewIntent is called");
 		final String action = intent.getAction();
-		if (action == null) {
+		if (null == action) {
 			return;
 		}
-		if (action.equals(MalarmPlayerService.WAKEUPAPP_ACTION)) {
+		if (MalarmPlayerService.WAKEUPAPP_ACTION.equals(action)) {
 			//native player cannot start until lock screen is displayed
 			if (state_.mSleepMin > 0) {
 				state_.mSleepMin = 0;
@@ -526,7 +530,7 @@ public class MalarmActivity
 			setNotification(getString(R.string.notify_wakeup_title),
 							getString(R.string.notify_wakeup_text));
 		}
-		else if (action.equals(LOADWEB_ACTION)) {
+		else if (LOADWEB_ACTION.equals(action)) {
 			String url = intent.getStringExtra("url");
 			loadWebPage(url);
 		}
@@ -788,7 +792,7 @@ public class MalarmActivity
 		if (! timePicker_.isEnabled() || startingSpeechActivity_) {
 			return;
 		}
-		if (speechIntent_ == null) {
+		if (null == speechIntent_) {
 			//to reduce task of onCreate method
 			showMessage(this, getString(R.string.init_voice));
 			PackageManager pm = getPackageManager();
@@ -922,11 +926,11 @@ public class MalarmActivity
 				if (m.matches()) {
 					int hour = Integer.valueOf(m.group(1)) % 24;
 					int minute;
-					String min_part = m.group(2);
-					if (min_part == null) {
+					String minStr = m.group(2);
+					if (null == minStr) {
 						minute = 0;
 					}
-					else if ("半".equals(min_part)) {
+					else if ("半".equals(minStr)) {
 						minute = 30;
 					}
 					else {
@@ -940,17 +944,17 @@ public class MalarmActivity
 				else {
 					Matcher m2 = AFTER_TIME_PATTERN.matcher(speech);
 					if (m2.matches()) {
-						final String hour_part = m2.group(2);
-						final String min_part = m2.group(3);
-						if (hour_part == null && min_part == null) {
+						final String hourStr = m2.group(2);
+						final String minStr = m2.group(3);
+						if (null == hourStr && null == minStr) {
 							continue;
 						}
 						long after_millis = 0;
-						if (hour_part != null) {
-							after_millis += 60 * 60 * 1000 * Integer.valueOf(hour_part);
+						if (null != hourStr) {
+							after_millis += 60 * 60 * 1000 * Integer.valueOf(hourStr);
 						}
-						if (min_part != null){
-							if ("半".equals(min_part)) {
+						if (null != minStr){
+							if ("半".equals(minStr)) {
 								after_millis += 60 * 1000 * 30;
 							}
 							else {

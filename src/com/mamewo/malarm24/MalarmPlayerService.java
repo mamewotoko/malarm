@@ -145,7 +145,7 @@ public class MalarmPlayerService
 	}
 
 	public void playNext() {
-		Log.i(TAG, "playNext is called: ");
+		//Log.i(TAG, "playNext is called: ");
 		if (isPlaying()) {
 			stopMusic();
 		}
@@ -157,7 +157,7 @@ public class MalarmPlayerService
 				MediaPlayer.OnErrorListener
 	{
 		public void onCompletion(MediaPlayer mp) {
-			Log.i(TAG, "onCompletion listener is called");
+			//Log.i(TAG, "onCompletion listener is called");
 			playNext();
 		}
 
@@ -187,7 +187,7 @@ public class MalarmPlayerService
 
 	public boolean playMusic() {
 		Log.i(TAG, "playMusic");
-		if (currentPlaylist_ == null || currentPlaylist_.isEmpty()) {
+		if (null == currentPlaylist_ || currentPlaylist_.isEmpty()) {
 			Log.i(TAG, "playMusic: playlist is null");
 			return false;
 		}
@@ -241,7 +241,7 @@ public class MalarmPlayerService
 	public void startVibrator() {
 		final Vibrator vibrator = 
 				(Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-		if (vibrator == null) {
+		if (null == vibrator) {
 			return;
 		}
 		vibrator.vibrate(VIBRATE_PATTERN, 1);
@@ -250,7 +250,7 @@ public class MalarmPlayerService
 	public void stopVibrator() {
 		final Vibrator vibrator =
 				(Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-		if (vibrator == null) {
+		if (null == vibrator) {
 			return;
 		}
 		vibrator.cancel();

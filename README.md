@@ -55,7 +55,6 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - Android 4.0 emulator
 
 ## TODO
-- add UI to quit activity for test
 - refactor syncPreference and remove unnecessary code and desing preference and default value
 - improve UI to create and edit playlist
 - add introduction guide or tutorial to create playlist
@@ -65,6 +64,7 @@ http://developer.android.com/resources/articles/tts.html
 - add preference to set silent mode or restore volume
 - show notification while playing music
 - change webview into photo view, movie player...
+-- separate webview part from main activity
 - add UI to play ringtone on VolumePreference to check volume
 - hide time picker after malarm is set? (or count down?)
 -- scale of web contents
