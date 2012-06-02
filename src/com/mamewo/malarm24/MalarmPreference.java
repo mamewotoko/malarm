@@ -136,14 +136,14 @@ public class MalarmPreference
 					continue;
 				}
 				createDefaultPlaylist(file);
-				//TODO: localize
-				String msg = MessageFormat.format(getString(R.string.playlist_created_format), filename);
+				String msg = MessageFormat.format(getString(R.string.playlist_created_format),
+												filename);
 				MalarmActivity.showMessage(this, msg);
 			}
 			result = true;
 		}
 		else if (preference == sleepPlaylist_ || preference == wakeupPlaylist_) {
-			Log.i(TAG, "View Sleep Playlist from check");
+			Log.d(TAG, "View Sleep Playlist from check");
 			//TODO: move check code to Playlist class
 			String prefKey;
 			String playlistFilename;
@@ -175,10 +175,9 @@ public class MalarmPreference
 			result = true;
 		}
 		else if (preference == clearWebviewCache_) {
-			//TODO: use more clear way
 			String prefKey = preference.getKey();
 			final SharedPreferences pref = preference.getSharedPreferences();
-			Log.i(TAG, "clear pref is clicked: " + prefKey + " " + " hasKey " + pref.contains(prefKey));
+			Log.d(TAG, "clear pref is clicked: " + prefKey + " " + " hasKey " + pref.contains(prefKey));
 			final SharedPreferences.Editor editor = preference.getEditor();
 			editor.putBoolean(prefKey, !pref.getBoolean(prefKey, false));
 			//compatibility: apply is not available in 7
@@ -199,7 +198,6 @@ public class MalarmPreference
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//TODO: check playpath existence and show message
 		addPreferencesFromResource(R.xml.preference);
 		version_ = findPreference("malarm_version");
 		PackageInfo pi;
@@ -252,12 +250,9 @@ public class MalarmPreference
 		//get playlist path
 		final String path = 
 				pref.getString("playlist_path", DEFAULT_PLAYLIST_PATH.getAbsolutePath());
-		//TODO: move check code to Playlist class
 		final File sleepFile =
 				new File(path, MalarmPlayerService.SLEEP_PLAYLIST_FILENAME);
 		sleepPlaylist_.setChecked(sleepFile.exists());
-
-		//TODO: move check code to Playlist class
 		final File wakeupFile =
 				new File(path, MalarmPlayerService.WAKEUP_PLAYLIST_FILENAME);
 		wakeupPlaylist_.setChecked(wakeupFile.exists());

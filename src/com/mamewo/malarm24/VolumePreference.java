@@ -42,7 +42,6 @@ public class VolumePreference
 		minusButton_.setOnClickListener(this);
 		plusButton_ = (Button) view.findViewById(R.id.volume_plus_button);
 		plusButton_.setOnClickListener(this);
-		//TODO: add API to set string 
 		Context context = view.getContext();
 		AudioManager mgr =
 				(AudioManager) context.getSystemService(Context.AUDIO_SERVICE);

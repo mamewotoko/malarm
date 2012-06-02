@@ -137,6 +137,7 @@ public class MalarmActivity
 		}
 	}
 	
+	
 	public final class MyCallListener
 		extends PhoneStateListener
 	{
@@ -329,6 +330,7 @@ public class MalarmActivity
 	public void onDestroy() {
 		Log.d(TAG, "onDestroy");
 		super.onDestroy();
+		player_ = null;
 		unbindService(this);
 		final SharedPreferences pref = 
 				PreferenceManager.getDefaultSharedPreferences(this);
@@ -1005,14 +1007,14 @@ public class MalarmActivity
 
 	@Override
 	public void onServiceConnected(ComponentName name, IBinder binder) {
-		Log.i(TAG, "onServiceConnected");
+		Log.d(TAG, "onServiceConnected");
 		player_ = ((MalarmPlayerService.LocalBinder)binder).getService();
 		updateUI();
 	}
 
 	@Override
 	public void onServiceDisconnected(ComponentName name) {
-		Log.i(TAG, "onServiceDisconnected");
+		Log.d(TAG, "onServiceDisconnected");
 		player_ = null;
 	}
 }
