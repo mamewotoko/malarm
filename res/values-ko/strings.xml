@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">M알람</string>
+    <string name="stop_music">음악을 멈춘다</string>
+    <string name="music_stopped">M알람을 세웠습니다 </string>
+
+    <string name="set_alarm">M알람을 세트 </string>
+    <string name="stop_alarm">알람을 세운다 </string>
+    <string name="stop_vibration">바이브레이터를 멈춘다</string>
+    <string name="play_wakeup">재생 </string>
+    <string name="pref_menu">설정 </string>
+    <string name="pref_webview_url">표시하는 사이트 </string>
+    <string name="preference_time_title">음악이 멈출 때까지의 시간 </string>
+    <string name="pref_sleeptime">음악이 멈출 때까지의 시간 </string>
+    <string name="enable_vibration">ON</string>
+    <string name="disable_vibration">OFF</string>
+    <string name="pref_vibration">알람 때의 바이브레이터</string>
+    <string name="set_now_short">지금 !</string>
+
+    <string name="use_native_player_title">Native의 음악 player를 사용한다 </string>
+    <string name="use_internal_player">MediaPlayer를 사용한다 </string>
+    <string name="use_native_player">Native의 음악 player를 사용한다 </string>
+    <string name="playlist_path_title">플레이 리스트의 장소 </string>
+    <string name="playlist_path_summary">플레이 리스트sleep. m3u와 wakeup. m3u를 보존한 디렉토리 </string>
+    <string name="enter_path_to_playlist">플레이 리스트sleep. m3u와 wakeup. m3u를 보존한 디렉토리를 입력해 주십시오. </string>
+    <string name="malarm_version_title">버전 </string>
+    <string name="help_url">http://mamewotoko.github.com/malarm/doc/index.html</string>
+    <string name="help_title">도움 </string>
+    <string name="help_summary">사용방법을 쓴 도움(홈페이지)을 표시합니다. 네트워크에 접속하므로, 접속 요금이 걸릴 것이 있습니다. </string>
+
+    <string name="git_url">https://github.com/mamewotoko/malarm/</string>
+    <string name="dialog_title">다운로드 페이지 </string>
+    
+    <string name="pref_playlist_category">플레이 리스트 설정 </string>
+    <string name="pref_wakeup_playlist">wakeup.m3u플레이 리스트 </string>
+    <string name="pref_no_wakeup_playlist">없습니다.  (만들어 주십시오) </string>
+    <string name="pref_ok_wakeup_playlist">있습니다.</string>
+    <string name="pref_reload_playlist">플레이 리스트를 재읽는다 </string>
+    <string name="playlist_reload">플레이 리스트를 읽었습니다 </string>
+    <string name="pref_sleep_playlist">sleep.m3u플레이 리스트 </string>
+    <string name="pref_no_sleep_playlist">없습니다.  (만들어 주십시오) </string>
+    <string name="pref_ok_sleep_playlist">있습니다.</string>
+    <string name="pref_playlist_does_not_exist">플레이 리스트가 없습니다. </string>
+    
+    <string name="pref_create_playlist_title">플레이 리스트 작성 </string>
+    <string name="pref_create_playlist_summary">플레이 리스트를 작성합니다. </string>
+
+    <string name="notify_waiting_title">M알람이 세트 되고 있습니다. </string>
+    <string name="notify_waiting_text">M알람 대기중 </string>
+    <string name="notify_wakeup_title">알람이 울리고 있습니다 </string>
+    <string name="notify_wakeup_text">안녕하세요 !</string>
+    <string name="pref_sleep_volume_title">휴식의 음량 </string>
+    <string name="pref_wakeup_volume_title">안녕하세요의 음량 </string>
+    <string name="other_category_title">기타 </string>
+    <string name="pref_clear_webview_cache_title">Webview의 이력소거 </string>
+    <string name="pref_clear_webview_cache_summary">Webview의 이력을 소거합니다. </string>
+    
+    <string name="volume_category_title">음량과 vibrator의 설정 </string>
+    <string name="volume_format">0로부터 {0}까지로 음량을 설정해 주십시오. 현재의 음량은 {1}입니다. </string>
+    <string name="file_exists_format">파일{0}는 이미 존재합니다. </string>
+    <string name="playlist_created_format">플레이 리스트{0}를 작성했습니다. </string>
+    <string name="pref_default_time_title">디폴트의 알람 시각 </string>
+    <string name="pref_default_time_summary">일어나는 시각을 설정해 주십시오. </string>
+    <string name="pref_time_category_title">시간의 설정 </string>
+    
+    <string name="voice_dialog">일본어로 시간을 말해 주십시오. \n예 : 15時20分(24時間制のみ), 1時間後</string>
+    <string name="voice_success_format">알람 시간을 {0}로서 설정했습니다 </string>
+    <string name="voice_fail">시간으로서 인식할 수 없었습니다 </string>
+    <string name="stop_loading">읽기를 중지했습니다 </string>
+    <string name="volume_minus"> - </string>
+    <string name="volume_plus"> + </string>
+    <string name="low_memory">메모리가 적으므로 멈출지도? </string>
+        
+    <string name="sleep_playlist_viewer_title">휴식 플레이 리스트 (sleep.m3u)</string>
+    <string name="wakeup_playlist_viewer_title">안녕하세요 플레이 리스트 (wakeup.m3u)</string>
+    <string name="pref_about_title">M알람에 대해서 </string>
+    <string name="select_time_from_list">시각을 선택해 주십시오 </string>
+    <string name="ask_play_sleep_tune">휴식의 음악을 흘려보냅니까? </string>
+    <string name="yes">네 </string>
+    <string name="no">아니에요 </string>
+    <string name="cancel">취소 </string>
+    <string name="save_playlist">보존 </string>
+
+    <string name="init_voice">음성인식 초기화중 </string>
+    <string name="voice_button_desc">목소리로 시각을 설정한다 </string>
+    <string name="next_button_desc">다음 곡을 재생한다 </string>
+    <string name="webview_cache_cleared">Webview의 이력을 삭제했습니다. </string>
+    <string name="unit_min">{0}분 </string>
+    <string name="play_with_sleep_timer">휴식 대마를 세트 했습니다. </string>
+    <string name="sleep_playlist_not_exist">플레이 리스트 sleep.m3u 가 존재하지 않습니다 </string>
+</resources>

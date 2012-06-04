@@ -4,7 +4,7 @@
 This is a simple alarm application of android (version 2.2.x - 2.3.3, 4.x).
 
 ## Overview
-                sleep tunes (1h)                   wake-up tunes w vibration
+                sleep tunes (e.g.1h)               wake-up tunes w vibration
                                                    application starts
      Alarm set ------------------> ..... Alarm time --------------->
      press "set alarm" button                      display google calendar/Gmail etc..
@@ -28,7 +28,11 @@ English:
 http://mamewotoko.github.com/malarm/doc/index_en.html
 
 ## Google Play
+For 2.3.x
 https://play.google.com/store/apps/details?id=com.mamewo.malarm24
+
+For 2.1 - 2.2
+https://play.google.com/store/apps/details?id=com.mamewo.malarm78
 
 ## Github
 https://github.com/mamewotoko/malarm
@@ -55,11 +59,14 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - Android 4.0 emulator
 
 ## TODO
-- refactor syncPreference and remove unnecessary code and desing preference and default value
+- localize: French, Chinese
+- support podcast
 - improve UI to create and edit playlist
-- localize: Korean, French, Chinese
+- improve accessibility
+http://android-developers.blogspot.jp/2012/04/accessibility-are-you-serving-all-your.html?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed:+blogspot/hsDu+(Android+Developers+Blog)
 - add introduction guide or tutorial to create playlist
 - improve wording especially one of notification
+- parse preference.xml to test preference easily. (remove lookup and table)
 - use text to speech to read web page
 http://developer.android.com/resources/articles/tts.html
 - add preference to set silent mode or restore volume
@@ -80,7 +87,6 @@ http://developer.android.com/resources/articles/tts.html
 -- label text is updated when music is stopped or alarm is canceled
 -- check default config value
 - fix bug when native player is used....
-- support podcast
 - support HVGA, WVGA, WVGA+ resolution
 -- http://developer.android.com/resources/dashboard/screens.html
 

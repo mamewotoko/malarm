@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="pref_url_list_key">
+        <item>美女(미녀)Linux</item>
+        <item>Yahoo! NEWS Weather </item>
+        <item>Twitter</item>
+        <item>美人時計(미인시계 )</item>
+        <item>美男時計(미남시계 )</item>
+        <item>GMail</item>
+        <item>Google캘린더 </item>
+        <item>Google Reader</item>
+        <item>OkuiAki.com Fun Club</item>
+    </string-array>
+
+    <string-array name="pref_url_list_value" formatted="false">
+        <item>http://bijo-linux.com/</item>
+        <item>http://weather.yahoo.com/south-korea/</item>
+        <item>http://twitter.com/</item>
+        <item>http://www.bijint.com/jp/</item>
+        <item>http://www.bijint.com/binan/</item>
+        <item>http://www.google.com/mail/</item>
+        <item>https://www.google.com/calendar/</item>
+        <item>http://www.google.com/reader/</item>
+        <item>http://www.okuiaki.com/mobile/login.php</item>
+    </string-array>
+
+    <string-array name="preference_time_key">
+        <item>1 분 </item>
+        <item>3 분 </item>
+        <item>5 분 </item>
+        <item>15 분 </item>
+        <item>30 분 </item>
+        <item>45 분 </item>
+        <item>60 분 </item>
+        <item>90 분 </item>
+        <item>120 분 </item>
+    </string-array>
+    <string-array name="preference_time_value">
+        <item>1</item>
+        <item>3</item>
+        <item>5</item>
+        <item>15</item>
+        <item>30</item>
+        <item>45</item>
+        <item>60</item>
+        <item>90</item>
+        <item>120</item>
+    </string-array>
+    <string-array name="day_of_week">
+        <item>일</item>
+        <item>월</item>
+        <item>화</item>
+        <item>수</item>
+        <item>목</item>
+        <item>금</item>
+        <item>토</item>
+    </string-array>
+    
+    <string-array name="tune_operation">
+        <item>위로 이동 </item>
+        <item>아래로 이동 </item>
+        <item>삭제 </item>
+    </string-array>
+</resources>
