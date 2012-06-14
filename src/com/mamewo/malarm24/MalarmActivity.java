@@ -341,6 +341,8 @@ public class MalarmActivity
 		alarmButton_.requestFocus();
 		//WebView.onResume is hidden, why!?!?
 		webview_.getSettings().setJavaScriptEnabled(true);
+		CookieSyncManager.getInstance().startSync();
+		loadWebPage();
 		updateUI();
 	}
 
@@ -350,18 +352,16 @@ public class MalarmActivity
 		//stop tokei
 		webview_.getSettings().setJavaScriptEnabled(false);
 		webview_.stopLoading();
+		CookieSyncManager.getInstance().stopSync();
 	}
 
 	@Override
 	protected void onStart () {
 		super.onStart();
-		CookieSyncManager.getInstance().startSync();
-		loadWebPage();
 	}
 	
 	@Override
 	protected void onStop(){
-		CookieSyncManager.getInstance().stopSync();
 		super.onStop();
 	}
 
