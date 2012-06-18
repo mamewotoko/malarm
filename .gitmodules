@@ -1,3 +1,6 @@
 [submodule "test/malarm_test"]
 	path = test/malarm_test
 	url = git://github.com/mamewotoko/malarm_test.git
+[submodule "test/malarm_scirocco_test"]
+	path = test/malarm_scirocco_test
+	url = git://github.com/mamewotoko/malarm_test.git
