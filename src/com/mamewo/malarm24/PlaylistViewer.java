@@ -32,7 +32,6 @@ public final class PlaylistViewer
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
-		Log.i("malrm", "onCreate in playlistview");
 		super.onCreate(savedInstanceState);
 		listView_ = getListView();
 	}
@@ -40,7 +39,6 @@ public final class PlaylistViewer
 	@Override
 	public void onStart() {
 		super.onStart();
-		Log.i("malrm", "onStart in playlistview");
 		Intent i = getIntent();
 		String which = i.getStringExtra("playlist");
 		int title_id = 0;
@@ -55,8 +53,6 @@ public final class PlaylistViewer
 		adapter_ = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, playlist_.toList());
 		setListAdapter(adapter_);
 		setTitle(title_id);
-		Log.i("malrm", "onStart in playlistview(after getting adapter3)");
-
 		listView_.setLongClickable(true);
 		listView_.setOnItemLongClickListener(this);
 	}

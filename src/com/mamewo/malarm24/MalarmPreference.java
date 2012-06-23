@@ -128,7 +128,6 @@ public class MalarmPreference
 			result = true;
 		}
 		else if (preference == version_) {
-			Log.i(TAG, "onPreferenceClick: version");
 			//show dialog
 			Dialog dialog = new Dialog(this);
 			dialog.setContentView(R.layout.dialog);
@@ -142,7 +141,6 @@ public class MalarmPreference
 			String [] playlists = 
 				{ MalarmPlayerService.WAKEUP_PLAYLIST_FILENAME,
 					MalarmPlayerService.SLEEP_PLAYLIST_FILENAME };
-			Log.i(TAG, "playlist pref is clicked");
 			for (String filename : playlists) {
 				File file = new File(MalarmActivity.prefPlaylistPath, filename);
 				if (file.exists()) {

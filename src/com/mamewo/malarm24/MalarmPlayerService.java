@@ -62,7 +62,7 @@ public class MalarmPlayerService
 	public int onStartCommand(Intent intent, int flags, int startId){
 		String action = intent.getAction();
 		if(WAKEUPAPP_ACTION.equals(action)){
-			Log.i(TAG, "onStartCommand: wakeup!: " + wakeupPlaylist_);
+			Log.d(TAG, "onStartCommand: wakeup!: " + wakeupPlaylist_);
 			loadPlaylist();
 			SharedPreferences pref =
 					PreferenceManager.getDefaultSharedPreferences(this);
@@ -79,6 +79,7 @@ public class MalarmPlayerService
 			}
 			else {
 				mgr.setStreamVolume(AudioManager.STREAM_MUSIC, volume, AudioManager.FLAG_SHOW_UI);
+				Log.d(TAG, "onStartCommand: playMusic");
 				playMusic(wakeupPlaylist_);
 			}
 			boolean vibrate =
@@ -97,7 +98,7 @@ public class MalarmPlayerService
 			//TODO: quit service
 		}
 		else if (LOAD_PLAYLIST_ACTION.equals(action)) {
-			Log.i(TAG, "LOAD_PLAYLIST_ACTION");
+			Log.d(TAG, "LOAD_PLAYLIST_ACTION");
 			loadPlaylist();
 		}
 		return START_STICKY;
@@ -108,7 +109,7 @@ public class MalarmPlayerService
 				PreferenceManager.getDefaultSharedPreferences(this);
 		String playlistPath = pref.getString(MalarmPreference.PREFKEY_PLAYLIST_PATH,
 				MalarmPreference.DEFAULT_PLAYLIST_PATH.getAbsolutePath());
-		Log.i(TAG, "loadPlaylist is called:" + playlistPath);
+		Log.d(TAG, "loadPlaylist is called:" + playlistPath);
 		try {
 			wakeupPlaylist_ = new M3UPlaylist(playlistPath, WAKEUP_PLAYLIST_FILENAME);
 		}
@@ -147,10 +148,10 @@ public class MalarmPlayerService
 	}
 
 	public void playNext() {
-		//Log.i(TAG, "playNext is called: ");
 		if (isPlaying()) {
 			stopMusic();
 		}
+		Log.d(TAG, "playNext: playMusic");
 		playMusic();
 	}
 
@@ -159,7 +160,6 @@ public class MalarmPlayerService
 				MediaPlayer.OnErrorListener
 	{
 		public void onCompletion(MediaPlayer mp) {
-			//Log.i(TAG, "onCompletion listener is called");
 			playNext();
 		}
 
@@ -167,6 +167,7 @@ public class MalarmPlayerService
 		public boolean onError(MediaPlayer mp, int what, int extra) {
 			//TODO: show error message to GUI
 			Log.i(TAG, "onError is called, cannot play this media");
+			//TODO: call playNext if error occurred while playing music
 			playNext();
 			return true;
 		}
@@ -184,11 +185,12 @@ public class MalarmPlayerService
 			return false;
 		}
 		playlist.reset();
+		Log.d(TAG, "playMusic playlist: playMusic");
 		return playMusic();
 	}
 
 	public boolean playMusic() {
-		Log.i(TAG, "playMusic");
+		Log.d(TAG, "playMusic");
 		if (null == currentPlaylist_ || currentPlaylist_.isEmpty()) {
 			Log.i(TAG, "playMusic: playlist is null");
 			return false;
@@ -222,16 +224,14 @@ public class MalarmPlayerService
 		if(null != tone_){
 			tone_.stop();
 		}
-		player_.stop();
+		if(player_.isPlaying()){
+			player_.stop();
+		}
 	}
 
 	public void pauseMusic() {
-		Log.i(TAG, "pause music is called");
-		try {
+		if(player_.isPlaying()){
 			player_.pause();
-		}
-		catch (Exception e) {
-			//do nothing
 		}
 		//clearNotification();
 	}
@@ -296,7 +296,6 @@ public class MalarmPlayerService
 				return;
 			}
 			if(WAKEUP_ACTION.equals(action)){
-				Log.i(TAG, "onReceive is called(malarm24): action: " + action);
 				Intent i = new Intent(context, MalarmPlayerService.class);
 				i.setAction(WAKEUPAPP_ACTION);
 				context.startService(i);

@@ -150,7 +150,7 @@ public class MalarmActivity
 			case TelephonyManager.CALL_STATE_RINGING:
 				//fall-through
 			case TelephonyManager.CALL_STATE_OFFHOOK:
-				Log.i(TAG, "onCallStateChanged: RINGING");
+				Log.d(TAG, "onCallStateChanged: RINGING");
 				player_.stopVibrator();
 				//native player stops automatically
 				playing_ = player_.isPlaying();
@@ -174,7 +174,7 @@ public class MalarmActivity
 		public boolean onDoubleTap(MotionEvent e) {
 			int x = (int)e.getX();
 			int y = (int)e.getY();
-			Log.i(TAG, "onDoubleTap: " + x + ", " + y);
+			Log.d(TAG, "onDoubleTap: " + x + ", " + y);
 			int width = webview_.getWidth();
 			boolean start_browser = false;
 			int side_width = width/3;
@@ -215,7 +215,7 @@ public class MalarmActivity
 		Intent intent = new Intent(this, MalarmPlayerService.class);
 		//TODO: handle failure of bindService
 		boolean result = bindService(intent, this, Context.BIND_AUTO_CREATE);
-		Log.i(TAG, "bindService: " + result);
+		Log.d(TAG, "bindService: " + result);
 		
 		timePicker_ = (TimePicker) findViewById(R.id.timePicker1);
 		timePicker_.setIs24HourView(true);
@@ -277,7 +277,6 @@ public class MalarmActivity
 		webview_.setWebViewClient(new WebViewClient() {
 			@Override
 			public void onPageStarted(WebView view, String url, Bitmap favicon) {
-				Log.i(TAG, "onPageStart: " + url);
 				loadingIcon_.setVisibility(View.VISIBLE);
 			}
 
@@ -308,7 +307,6 @@ public class MalarmActivity
 
 			@Override
 			public void onPageFinished(WebView view, String url) {
-				//Log.i(TAG, "onPageFinshed: " + url);
 				loadingIcon_.setVisibility(View.INVISIBLE);
 				if(url.contains("weather.yahoo")) {
 					view.scrollTo(0, 180);
@@ -334,7 +332,6 @@ public class MalarmActivity
 
 	@Override
 	protected void onResume() {
-		Log.i(TAG, "onResume is called, start JavaScript");
 		super.onResume();
 		startingSpeechActivity_ = false;
 		
@@ -655,7 +652,7 @@ public class MalarmActivity
 			player_.stopMusic();
 		}
 		Playlist list = MalarmPlayerService.sleepPlaylist_;
-		Log.i(TAG, "playSleepMusic sleepPlaylist:" + list);
+		Log.d(TAG, "playSleepMusic sleepPlaylist:" + list);
 		if(null == list){
 			showMessage(this, getString(R.string.sleep_playlist_not_exist));
 			return;
@@ -663,7 +660,6 @@ public class MalarmActivity
 		int sleepVolume =
 			Integer.valueOf(pref_.getString(MalarmPreference.PREFKEY_SLEEP_VOLUME,
 					MalarmPreference.DEFAULT_SLEEP_VOLUME));
-		Log.i(TAG, "sleepPlaylist: " + list);
 		AudioManager mgr = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
 		mgr.setStreamVolume(AudioManager.STREAM_MUSIC, sleepVolume, AudioManager.FLAG_SHOW_UI);
 		player_.playMusic(list);
@@ -724,6 +720,7 @@ public class MalarmActivity
 			if (player_.isPlaying()) {
 				break;
 			}
+			Log.d(TAG, "play_wakeup: playMusic");
 			player_.playMusic();
 			break;
 		case R.id.pref:
@@ -736,7 +733,7 @@ public class MalarmActivity
 			updateUI();
 			break;
 		default:
-			Log.i(TAG, "Unknown menu");
+			Log.d(TAG, "Unknown menu");
 			return false;
 		}
 		return true;
@@ -756,9 +753,11 @@ public class MalarmActivity
 			InputMethodManager mgr = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
 			mgr.hideSoftInputFromWindow(timePicker_.getWindowToken(), 0);
 			if (state_.mTargetTime != null) {
+				Log.d(TAG, "Stop Alarm");
 				stopAlarm();
 			}
 			else {
+				Log.d(TAG, "Set Alarm");
 				setAlarm();
 				playSleepMusic(state_.mTargetTime.getTimeInMillis());
 				updateUI();
@@ -863,6 +862,7 @@ public class MalarmActivity
 		if (view == nextButton_) {
 			shortVibrate();
 			if(! player_.isPlaying()) {
+				Log.d(TAG, "onLongClick: playMusic");
 				player_.playMusic();
 			}
 			cancelSleepTimer();
