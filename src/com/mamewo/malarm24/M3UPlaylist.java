@@ -41,14 +41,22 @@ public final class M3UPlaylist
 		load(playlist_abs_path);
 	}
 	
+	// file | mp3 file on web | podcast
 	@Override
 	public String next() {
 		if (playlist_.size() <= nextIndex_) {
 			nextIndex_ = 0;
 		}
 		String result = playlist_.get(nextIndex_);
-		//TODO: test
-		if (! (new File(result)).isAbsolute()) {
+		if (result.startsWith("http://")) {
+			//adhoc...
+			if ((!result.endsWith(".mp3")) && (!result.endsWith(".m4a"))){
+				//podcast?
+				//TODO: support multiple episode
+				//result = getFirstEpisodeURL(result);
+			}
+		}
+		else if (!(new File(result)).isAbsolute()) {
 			result = (new File(basepath_, result)).getAbsolutePath();
 		}
 		nextIndex_++;

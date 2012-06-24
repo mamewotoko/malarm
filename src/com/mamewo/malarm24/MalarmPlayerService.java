@@ -151,7 +151,6 @@ public class MalarmPlayerService
 		if (isPlaying()) {
 			stopMusic();
 		}
-		Log.d(TAG, "playNext: playMusic");
 		playMusic();
 	}
 
@@ -190,7 +189,6 @@ public class MalarmPlayerService
 	}
 
 	public boolean playMusic() {
-		Log.d(TAG, "playMusic");
 		if (null == currentPlaylist_ || currentPlaylist_.isEmpty()) {
 			Log.i(TAG, "playMusic: playlist is null");
 			return false;
@@ -201,13 +199,18 @@ public class MalarmPlayerService
 		String path = "";
 		//skip unsupported files filtering by filename ...
 		for (int i = 0; i < 10; i++) {
+			Log.d(TAG, "checking: " + path);
 			path = currentPlaylist_.next();
+			if (path.startsWith("http://")) {
+				break;
+			}
 			File f = new File(path);
 			// ... m4p is protected audio file
 			if ((!path.endsWith(".m4p")) && f.exists()) {
 				break;
 			}
 		}
+		Log.i(TAG, "playMusic: " + path);
 		try {
 			player_.reset();
 			player_.setDataSource(path);
