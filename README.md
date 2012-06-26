@@ -1,9 +1,12 @@
-# malarm - Good-night & Good-morning with your favorite tunes
-## What is this?
+=========
+ malarm - Good-night & Good-morning with your favorite tunes
+=========
+
+# What is this?
 
 This is a simple alarm application of android (version 2.2.x - 2.3.3, 4.x).
 
-## Overview
+# Overview
                 sleep tunes (e.g.1h)               wake-up tunes w vibration
                                                    application starts
      Alarm set ------------------> ..... Alarm time --------------->
@@ -12,6 +15,7 @@ This is a simple alarm application of android (version 2.2.x - 2.3.3, 4.x).
 
  If you want to stop vibration only, please use "stop vibration" menu
 
+# Resource
 ## Demo video
 http://www.youtube.com/watch?v=vA2F_dO0mQA
 
@@ -37,7 +41,7 @@ https://play.google.com/store/apps/details?id=com.mamewo.malarm78
 ## Github
 https://github.com/mamewotoko/malarm
 
-## How to build & run
+# How to build & run
 1. Put your music file into /sdcard/music directory of android device
 2. Prepare m3u format play list for sleep (named sleep.m3u) and wakeup (named wakeup.m3u).
 m3u file contains one music filename in one line.
@@ -50,7 +54,7 @@ or Build malarm and install it on android device
 
 You can change path to playlist and music files by "Playlist directory" preference screen
 
-## Tested Device
+# Tested Device
 - Xperia acro
 -- Android 2.3.4 (API level 10)
 -- 480x854 (WVGA+) screen
@@ -58,7 +62,7 @@ You can change path to playlist and music files by "Playlist directory" preferen
 - Android 2.2 emulator (API level 8)
 - Android 4.0 emulator
 
-## TODO
+# TODO
 - localize: French, Chinese
 - support podcast
 - improve UI to create and edit playlist
@@ -90,21 +94,21 @@ http://developer.android.com/resources/articles/tts.html
 - support HVGA, WVGA, WVGA+ resolution
 -- http://developer.android.com/resources/dashboard/screens.html
 
-## Future work
+# Future work
 - support shuffle
 - use Actionbar
 - Design for tablets
 - record wakeup time
 
-## Appendix
-### How To Build From Command Line
+# Appendix
+## How To Build From Command Line
 1. Create local.properties file and set sdk.dir property to location where you installed android SDK
     sdk.dir=<path to android SDK>
 2. In project top directory execute following command
     ant debug
 3. malarm-debug.apk will be created in bin directory, if successed
 
-### Start Android Emulator And Install APK From Command Line
+## Start Android Emulator And Install APK From Command Line
 1. start android emulator
     emulator -avd <avdname>
 2. install application on android emulator
@@ -114,11 +118,11 @@ http://developer.android.com/resources/articles/tts.html
 or install app using ant
     ant installd
 
-### Automated UI Testing
+## Automated UI Testing
 There is a GUI automated test using Robotium
 https://github.com/mamewotoko/malarm_test
 
-### Memo:
+## Memo
 - MultiListPreference is based on the following web page
 http://blog.350nice.com/wp/archives/240
 - Alarm application starts when user push appwidget of malarm.
