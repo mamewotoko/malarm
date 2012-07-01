@@ -106,20 +106,19 @@ Appendix
 ----------------------
 ### How To Build From Command Line
 1. Create local.properties file and set sdk.dir property to location where you installed android SDK
-    sdk.dir=<path to android SDK>
+     sdk.dir=<path to android SDK>
 2. In project top directory execute following command
-    ant debug
+     ant debug
 3. malarm-debug.apk will be created in bin directory, if successed
 
 ### Start Android Emulator And Install APK From Command Line
 1. start android emulator
-    emulator -avd <avdname>
+     emulator -avd <avdname>
 2. install application on android emulator
-    adb install bin/malarm-cmd.apk
+     adb install bin/malarm-cmd.apk
 (build.xml and *.property files are created by android create command)
-
 or install app using ant
-    ant installd
+     ant installd
 
 ### Automated UI Testing
 There is a GUI automated test using Robotium, named
@@ -132,7 +131,7 @@ http://blog.350nice.com/wp/archives/240
 * Alarm application starts when user push appwidget of malarm.
 * Dropsync is a useful Android app!
 * To use @Overrides annotation, use following eclipse setting 
-  org.eclipse.jdt.core.compiler.compliance=1.6
+     org.eclipse.jdt.core.compiler.compliance=1.6
 
 ----
 Takashi Masuyama < mamewotoko@gmail.com >  
