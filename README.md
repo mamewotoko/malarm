@@ -1,13 +1,13 @@
 ===============================================================================
- malarm - Good-night & Good-morning with your favorite tunes
+malarm - Good-night & Good-morning with your favorite tunes
 ===============================================================================
 
- What is this?
+What is this?
 ----------------------
 
 This is a simple alarm application of android (version 2.2.x - 2.3.3, 4.x).
 
- Overview
+Overview
 ----------------------
 
                 sleep tunes (e.g.1h)               wake-up tunes w vibration
@@ -18,7 +18,7 @@ This is a simple alarm application of android (version 2.2.x - 2.3.3, 4.x).
 
  If you want to stop vibration only, please use "stop vibration" menu
 
- Resource
+Resources
 ----------------------
 ### Demo video
 http://www.youtube.com/watch?v=vA2F_dO0mQA
@@ -29,19 +29,18 @@ http://www.youtube.com/watch?v=vA2F_dO0mQA
 ![Preference](https://github.com/mamewotoko/malarm/raw/master/doc/malarm_pref.png)
 
 ### Help page
-- [Japanese](http://mamewotoko.github.com/malarm/doc/index.html) 
-- [English](http://mamewotoko.github.com/malarm/doc/index_en.html)
+* [Japanese](http://mamewotoko.github.com/malarm/doc/index.html) 
+* [English](http://mamewotoko.github.com/malarm/doc/index_en.html)
 
 ### Google Play
-- [For 2.3.x](https://play.google.com/store/apps/details?id=com.mamewo.malarm24)
-- [For 2.1 - 2.2](https://play.google.com/store/apps/details?id=com.mamewo.malarm78)
+* [For 2.3.x](https://play.google.com/store/apps/details?id=com.mamewo.malarm24)
+* [For 2.1 - 2.2](https://play.google.com/store/apps/details?id=com.mamewo.malarm78)
 
 ### Github
 https://github.com/mamewotoko/malarm
 
- How to build & run
+How to build & run
 ----------------------
-
 1. Put your music file into /sdcard/music directory of android device
 2. Prepare m3u format play list for sleep (named sleep.m3u) and wakeup (named wakeup.m3u).
 m3u file contains one music filename in one line.
@@ -54,56 +53,56 @@ or Build malarm and install it on android device
 
 You can change path to playlist and music files by "Playlist directory" preference screen
 
- Tested Device
+Tested Device
 ----------------------
-- Xperia acro
--- Android 2.3.4 (API level 10)
--- 480x854 (WVGA+) screen
-- Android 2.1 emulator (API level 7)
-- Android 2.2 emulator (API level 8)
-- Android 4.0 emulator
+* Xperia acro
+    * Android 2.3.4 (API level 10)
+    * 480x854 (WVGA+) screen
+* Android 2.1 emulator (API level 7)
+* Android 2.2 emulator (API level 8)
+* Android 4.0 emulator
 
- TODO
+TODO
 ----------------------
-- localize: French, Chinese
-- support podcast
-- improve UI to create and edit playlist
-- improve accessibility
+* localize: French, Chinese
+* support podcast
+* improve UI to create and edit playlist
+* improve accessibility
 http://android-developers.blogspot.jp/2012/04/accessibility-are-you-serving-all-your.html?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed:+blogspot/hsDu+(Android+Developers+Blog)
-- add introduction guide or tutorial to create playlist
-- improve wording especially one of notification
-- parse preference.xml to test preference easily. (remove lookup and table)
-- use text to speech to read web page
+* add introduction guide or tutorial to create playlist
+* improve wording especially one of notification
+* parse preference.xml to test preference easily. (remove lookup and table)
+* use text to speech to read web page
 http://developer.android.com/resources/articles/tts.html
-- add preference to set silent mode or restore volume
-- show notification while playing music
-- change webview into photo view, movie player...
--- separate webview part from main activity
-- add UI to play ringtone on VolumePreference to check volume
-- hide time picker after malarm is set? (or count down?)
--- scale of web contents
-- add mode to display alert dialog if device is not charged when alarm is set
-- fix UI update bug when sleep timer expires (broadcast -> activity)
-- conditional playlist
--- Sunday, holiday playlist etc...
-- make COOL widget to set alarm (make clock widget?)
-- add more test cases
--- setAlarm -> Activity quits
--- double touch of webview
--- label text is updated when music is stopped or alarm is canceled
--- check default config value
-- fix bug when native player is used....
-- support HVGA, WVGA, WVGA+ resolution
--- http://developer.android.com/resources/dashboard/screens.html
+* add preference to set silent mode or restore volume
+* show notification while playing music
+* change webview into photo view, movie player...
+    * separate webview part from main activity
+* add UI to play ringtone on VolumePreference to check volume
+* hide time picker after malarm is set? (or count down?)
+    * scale of web contents
+* add mode to display alert dialog if device is not charged when alarm is set
+* fix UI update bug when sleep timer expires (broadcast -> activity)
+* conditional playlist
+    * Sunday, holiday playlist etc...
+* make COOL widget to set alarm (make clock widget?)
+* add more test cases
+    * setAlarm -> Activity quits
+    * double touch of webview
+    * label text is updated when music is stopped or alarm is canceled
+    * check default config value
+* fix bug when native player is used....
+* support HVGA, WVGA, WVGA+ resolution
+    * http://developer.android.com/resources/dashboard/screens.html
 
- Future work
+Future work
 ----------------------
-- support shuffle of music
-- use Actionbar
-- Design for tablets
-- record wakeup time
+* support shuffle of music
+* use Actionbar
+* Design for tablets
+* record wakeup time
 
- Appendix
+Appendix
 ----------------------
 ### How To Build From Command Line
 1. Create local.properties file and set sdk.dir property to location where you installed android SDK
@@ -123,16 +122,16 @@ or install app using ant
     ant installd
 
 ### Automated UI Testing
-There is a GUI automated test using Robotium
-https://github.com/mamewotoko/malarm_test
+There is a GUI automated test using Robotium, named
+[malarm_test](https://github.com/mamewotoko/malarm_test)
 
- Memo
+Memo
 ----------------------
-- MultiListPreference is based on the following web page
+* MultiListPreference is based on the following web page
 http://blog.350nice.com/wp/archives/240
-- Alarm application starts when user push appwidget of malarm.
-- Dropsync is a useful Android app!
-- To use @Overrides annotation, use following eclipse setting 
+* Alarm application starts when user push appwidget of malarm.
+* Dropsync is a useful Android app!
+* To use @Overrides annotation, use following eclipse setting 
   org.eclipse.jdt.core.compiler.compliance=1.6
 
 ----
