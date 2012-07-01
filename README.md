@@ -20,23 +20,23 @@ This is a simple alarm application of android (version 2.2.x - 2.3.3, 4.x).
 
  Resource
 ----------------------
-# Demo video
+### Demo video
 http://www.youtube.com/watch?v=vA2F_dO0mQA
 
-# Screenshot
+### Screenshot
 ![Japanese screen shot](https://github.com/mamewotoko/malarm/raw/master/doc/alarm_ja.png)
 ![English screen shot](https://github.com/mamewotoko/malarm/raw/master/doc/alarm_en.png)
 ![Preference](https://github.com/mamewotoko/malarm/raw/master/doc/malarm_pref.png)
 
-# Help page
+### Help page
 - [Japanese](http://mamewotoko.github.com/malarm/doc/index.html) 
 - [English](http://mamewotoko.github.com/malarm/doc/index_en.html)
 
-# Google Play
+### Google Play
 - [For 2.3.x](https://play.google.com/store/apps/details?id=com.mamewo.malarm24)
 - [For 2.1 - 2.2](https://play.google.com/store/apps/details?id=com.mamewo.malarm78)
 
-# Github
+### Github
 https://github.com/mamewotoko/malarm
 
  How to build & run
@@ -105,14 +105,14 @@ http://developer.android.com/resources/articles/tts.html
 
  Appendix
 ----------------------
-# How To Build From Command Line
+### How To Build From Command Line
 1. Create local.properties file and set sdk.dir property to location where you installed android SDK
     sdk.dir=<path to android SDK>
 2. In project top directory execute following command
     ant debug
 3. malarm-debug.apk will be created in bin directory, if successed
 
-# Start Android Emulator And Install APK From Command Line
+### Start Android Emulator And Install APK From Command Line
 1. start android emulator
     emulator -avd <avdname>
 2. install application on android emulator
@@ -122,7 +122,7 @@ http://developer.android.com/resources/articles/tts.html
 or install app using ant
     ant installd
 
-# Automated UI Testing
+### Automated UI Testing
 There is a GUI automated test using Robotium
 https://github.com/mamewotoko/malarm_test
 
