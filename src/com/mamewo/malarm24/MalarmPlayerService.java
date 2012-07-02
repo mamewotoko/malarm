@@ -178,6 +178,7 @@ public class MalarmPlayerService
 	 * @param playlist playlist to play
 	 * @return true if playlist is played, false if it fails.
 	 */
+	//TODO: call startForeground to survive
 	public boolean playMusic(Playlist playlist) {
 		currentPlaylist_ = playlist;
 		if(null == playlist){
