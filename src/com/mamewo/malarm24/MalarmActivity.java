@@ -122,14 +122,14 @@ public class MalarmActivity
 		implements Serializable
 	{
 		private static final long serialVersionUID = 1L;
-		public Calendar mTargetTime;
-		public int mWebIndex;
-		public int mSleepMin;
+		public Calendar targetTime_;
+		public int webIndex_;
+		public int sleepMin_;
 		
 		public MalarmState() {
-			mWebIndex = 0;
-			mTargetTime = null;
-			mSleepMin = 0;
+			webIndex_ = 0;
+			targetTime_ = null;
+			sleepMin_ = 0;
 		}
 	}
 	
@@ -179,10 +179,10 @@ public class MalarmActivity
 			boolean start_browser = false;
 			int side_width = width/3;
 			if (x <= side_width) {
-				state_.mWebIndex--;
+				state_.webIndex_--;
 			}
 			else if (x > width - side_width) {
-				state_.mWebIndex++;
+				state_.webIndex_++;
 			}
 			else {
 				start_browser = true;
@@ -433,17 +433,14 @@ public class MalarmActivity
 		syncPreferences(pref, key);
 	}
 
-	/**
-	 * load current web page
-	 */
 	private void loadWebPage() {
-		if (state_.mWebIndex < 0) {
-			state_.mWebIndex = WEB_PAGE_LIST.length - 1;
+		if (state_.webIndex_ < 0) {
+			state_.webIndex_ = WEB_PAGE_LIST.length - 1;
 		}
-		if (state_.mWebIndex >= WEB_PAGE_LIST.length) {
-			state_.mWebIndex = 0;
+		if (state_.webIndex_ >= WEB_PAGE_LIST.length) {
+			state_.webIndex_ = 0;
 		}
-		String url = WEB_PAGE_LIST[state_.mWebIndex];
+		String url = WEB_PAGE_LIST[state_.webIndex_];
 		loadWebPage(url);
 	}
 
@@ -477,21 +474,21 @@ public class MalarmActivity
 	 * call updateUI from caller
 	 */
 	private void cancelAlarmTimer() {
-		if (null == state_.mTargetTime) {
+		if (null == state_.targetTime_) {
 			return;
 		}
 		PendingIntent p =
 				makePlayPintent(MalarmPlayerService.WAKEUP_ACTION, false);
 		AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		mgr.cancel(p);
-		state_.mTargetTime = null;
+		state_.targetTime_ = null;
 	}
 	
 	/**
 	 * call updateUI from caller
 	 */
 	private void cancelSleepTimer() {
-		if (state_.mSleepMin == 0) {
+		if (state_.sleepMin_ == 0) {
 			return;
 		}
 		PendingIntent sleep =
@@ -499,22 +496,23 @@ public class MalarmActivity
 		AlarmManager mgr =
 			(AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		mgr.cancel(sleep);
-		state_.mSleepMin = 0;
+		state_.sleepMin_ = 0;
 	}
 
 	//onResume is called after this method is called
 	//TODO: call setNewIntent and handle in onResume?
 	//TODO: this method is not called until home button is pressed
 	protected void onNewIntent (Intent intent) {
-		Log.d(TAG, "onNewIntent is called");
 		String action = intent.getAction();
+		Log.d(TAG, "onNewIntent is called: " + action);
 		if (null == action) {
 			return;
 		}
-		if (MalarmPlayerService.WAKEUPAPP_ACTION.equals(action)) {
+		//TODO: modify action name
+		if (MalarmPlayerService.WAKEUP_ACTION.equals(action)) {
 			//native player cannot start until lock screen is displayed
-			if (state_.mSleepMin > 0) {
-				state_.mSleepMin = 0;
+			if (state_.sleepMin_ > 0) {
+				state_.sleepMin_ = 0;
 			}
 			setNotification(getString(R.string.notify_wakeup_title),
 							getString(R.string.notify_wakeup_text));
@@ -562,7 +560,7 @@ public class MalarmActivity
 	}
 
 	private void updateUI () {
-		Calendar target = state_.mTargetTime;
+		Calendar target = state_.targetTime_;
 		if(null != target) {
 			//alarm is not set
 			timeLabel_.setText(dateStr(target));
@@ -579,7 +577,7 @@ public class MalarmActivity
 				setDefaultTime_ = true;
 			}
 		}
-		int sleepMin = state_.mSleepMin;
+		int sleepMin = state_.sleepMin_;
 		if(sleepMin > 0) {
 			sleepTimeLabel_.setText(MessageFormat.format(getString(R.string.unit_min), 
 								Integer.valueOf(sleepMin)));
@@ -587,12 +585,12 @@ public class MalarmActivity
 		else {
 			sleepTimeLabel_.setText("");
 		}
-		alarmButton_.setChecked(null != state_.mTargetTime);
+		alarmButton_.setChecked(null != state_.targetTime_);
 		//following two buttons can be hidden
-		speechButton_.setEnabled(null == state_.mTargetTime);
-		setNowButton_.setEnabled(null == state_.mTargetTime);
+		speechButton_.setEnabled(null == state_.targetTime_);
+		setNowButton_.setEnabled(null == state_.targetTime_);
 
-		timePicker_.setEnabled(null == state_.mTargetTime);
+		timePicker_.setEnabled(null == state_.targetTime_);
 		//TODO: add function to get player state
 		//playlistLabel_.setText(Player.getCurrentPlaylistName());
 	}
@@ -628,15 +626,15 @@ public class MalarmActivity
 			PreferenceManager.getDefaultSharedPreferences(this);
 		long nowMillis = System.currentTimeMillis();
 		long target = 0;
-		if(state_.mTargetTime != null) {
-			target = state_.mTargetTime.getTimeInMillis();
+		if(state_.targetTime_ != null) {
+			target = state_.targetTime_.getTimeInMillis();
 		}
 		String minStr =
 			pref.getString(MalarmPreference.PREFKEY_SLEEP_TIME,
 					MalarmPreference.DEFAULT_SLEEPTIME);
 		int min = Integer.valueOf(minStr);
 		long sleepTimeMillis = min * 60 * 1000;
-		state_.mSleepMin = min;
+		state_.sleepMin_ = min;
 		if (target == 0 || target - nowMillis >= sleepTimeMillis) {
 			PendingIntent sleepIntent =
 				makePlayPintent(MalarmPlayerService.SLEEP_ACTION, prefUseNativePlayer);
@@ -687,7 +685,7 @@ public class MalarmActivity
 			targetMillis += 24 * 60 * 60 * 1000;
 			target.setTimeInMillis(targetMillis);
 		}
-		state_.mTargetTime = target;
+		state_.targetTime_ = target;
 
 		AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		PendingIntent pendingIntent =
@@ -752,14 +750,14 @@ public class MalarmActivity
 		else if (v == alarmButton_) {
 			InputMethodManager mgr = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
 			mgr.hideSoftInputFromWindow(timePicker_.getWindowToken(), 0);
-			if (state_.mTargetTime != null) {
+			if (state_.targetTime_ != null) {
 				Log.d(TAG, "Stop Alarm");
 				stopAlarm();
 			}
 			else {
 				Log.d(TAG, "Set Alarm");
 				setAlarm();
-				playSleepMusic(state_.mTargetTime.getTimeInMillis());
+				playSleepMusic(state_.targetTime_.getTimeInMillis());
 				updateUI();
 			}
 		}
@@ -774,7 +772,7 @@ public class MalarmActivity
 			boolean handled = false;
 			if((KeyEvent.KEYCODE_0 <= keyCode) &&
 				(keyCode <= KeyEvent.KEYCODE_9)) {
-				state_.mWebIndex = (keyCode - KeyEvent.KEYCODE_0) % WEB_PAGE_LIST.length;
+				state_.webIndex_ = (keyCode - KeyEvent.KEYCODE_0) % WEB_PAGE_LIST.length;
 				loadWebPage();
 				handled = true;
 			}
@@ -835,7 +833,7 @@ public class MalarmActivity
 			.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int whichButton) {
-					playSleepMusic(state_.mTargetTime.getTimeInMillis());
+					playSleepMusic(state_.targetTime_.getTimeInMillis());
 					updateUI();
 				}
 			})

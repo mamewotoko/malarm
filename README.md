@@ -4,12 +4,10 @@ malarm - Good-night & Good-morning with your favorite tunes
 
 What is this?
 ----------------------
-
 This is a simple alarm application of android (version 2.2.x - 2.3.3, 4.x).
 
 Overview
 ----------------------
-
                 sleep tunes (e.g.1h)               wake-up tunes w vibration
                                                    application starts
      Alarm set ------------------> ..... Alarm time --------------->

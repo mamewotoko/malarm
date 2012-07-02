@@ -31,7 +31,7 @@ public class MalarmPlayerService
 	final static
 	public String WAKEUP_ACTION = PACKAGE_NAME + ".WAKEUP_ACTION";
 	final static
-	public String WAKEUPAPP_ACTION = PACKAGE_NAME + ".WAKEUPAPP_ACTION";
+	public String START_WAKEUP_SERVICE_ACTION = PACKAGE_NAME + ".START_WAKEUP_SERVICE_ACTION";
 	final static
 	public String SLEEP_ACTION = PACKAGE_NAME + ".SLEEP_ACTION";
 	final static
@@ -61,7 +61,7 @@ public class MalarmPlayerService
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId){
 		String action = intent.getAction();
-		if(WAKEUPAPP_ACTION.equals(action)){
+		if(START_WAKEUP_SERVICE_ACTION.equals(action)){
 			Log.d(TAG, "onStartCommand: wakeup!: " + wakeupPlaylist_);
 			loadPlaylist();
 			SharedPreferences pref =
@@ -300,7 +300,7 @@ public class MalarmPlayerService
 			}
 			if(WAKEUP_ACTION.equals(action)){
 				Intent i = new Intent(context, MalarmPlayerService.class);
-				i.setAction(WAKEUPAPP_ACTION);
+				i.setAction(START_WAKEUP_SERVICE_ACTION);
 				context.startService(i);
 			}
 			else if(SLEEP_ACTION.equals(action)){
