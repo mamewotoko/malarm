@@ -3,6 +3,8 @@ package com.mamewo.malarm24;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -25,6 +27,8 @@ import android.util.Log;
  */
 public class MalarmPlayerService
 	extends Service
+	implements MediaPlayer.OnCompletionListener,
+	MediaPlayer.OnErrorListener
 {
 	final static
 	public String PACKAGE_NAME = MalarmActivity.class.getPackage().getName();
@@ -42,7 +46,10 @@ public class MalarmPlayerService
 	public String WAKEUP_PLAYLIST_FILENAME = "wakeup.m3u";
 	final static
 	public String SLEEP_PLAYLIST_FILENAME = "sleep.m3u";
-
+	final static
+	private int NOTIFY_PLAYING_ID = 1;
+	final private Class<MalarmActivity> userClass_ = MalarmActivity.class;
+	
 	final static
 	private String TAG = "malarm";
 	final static
@@ -93,9 +100,8 @@ public class MalarmPlayerService
 			startActivity(activityIntent);
 		}
 		else if (STOP_MUSIC_ACTION.equals(action)) {
-			//TODO: support native player
 			stopMusic();
-			//TODO: quit service
+			//TODO: stop if activity is dead / stop activity
 		}
 		else if (LOAD_PLAYLIST_ACTION.equals(action)) {
 			Log.d(TAG, "LOAD_PLAYLIST_ACTION");
@@ -154,22 +160,31 @@ public class MalarmPlayerService
 		playMusic();
 	}
 
-	public class MusicCompletionListener
-	implements MediaPlayer.OnCompletionListener,
-				MediaPlayer.OnErrorListener
-	{
-		public void onCompletion(MediaPlayer mp) {
-			playNext();
-		}
+	public void onCompletion(MediaPlayer mp) {
+		playNext();
+	}
 
-		// This method is not called when DRM error occurs
-		public boolean onError(MediaPlayer mp, int what, int extra) {
-			//TODO: show error message to GUI
-			Log.i(TAG, "onError is called, cannot play this media");
-			//TODO: call playNext if error occurred while playing music
-			playNext();
-			return true;
-		}
+	// This method is not called when DRM error occurs
+	public boolean onError(MediaPlayer mp, int what, int extra) {
+		//TODO: show error message to GUI
+		Log.i(TAG, "onError is called, cannot play this media");
+		//TODO: call playNext if error occurred while playing music
+		playNext();
+		return true;
+	}
+
+	public void showNotification(String title, String description) {
+		Notification note =
+				new Notification(R.drawable.img, title, 0);
+		Intent ni = new Intent(this, userClass_);
+		PendingIntent npi = PendingIntent.getActivity(this, 0, ni, 0);
+		//TODO: localize
+		note.setLatestEventInfo(this, title, description, npi);
+		startForeground(NOTIFY_PLAYING_ID, note);
+	}
+	
+	public void clearNotification() {
+		stopForeground(true);
 	}
 
 	/**
@@ -240,10 +255,6 @@ public class MalarmPlayerService
 		//clearNotification();
 	}
 	
-	public void quit(){
-		stopSelf();
-	}
-
 	public void startVibrator() {
 		Vibrator vibrator = 
 				(Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -278,9 +289,8 @@ public class MalarmPlayerService
 		loadPlaylist();
 		currentPlaylist_ = wakeupPlaylist_;
 		player_ = new MediaPlayer();
-		MusicCompletionListener l = new MusicCompletionListener();
-		player_.setOnCompletionListener(l);
-		player_.setOnErrorListener(l);
+		player_.setOnCompletionListener(this);
+		player_.setOnErrorListener(this);
 	}
 	
 	@Override

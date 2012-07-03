@@ -213,6 +213,7 @@ public class MalarmActivity
 		setContentView(R.layout.main);
 		setDefaultTime_ = true;
 		Intent intent = new Intent(this, MalarmPlayerService.class);
+		startService(intent);
 		//TODO: handle failure of bindService
 		boolean result = bindService(intent, this, Context.BIND_AUTO_CREATE);
 		Log.d(TAG, "bindService: " + result);
@@ -324,12 +325,15 @@ public class MalarmActivity
 	@Override
 	public void onDestroy() {
 		Log.d(TAG, "onDestroy");
-		super.onDestroy();
-		player_ = null;
+		if (! player_.isPlaying()) {
+			Intent intent = new Intent(this, MalarmPlayerService.class);
+			stopService(intent);
+		}
 		unbindService(this);
 		SharedPreferences pref = 
 			PreferenceManager.getDefaultSharedPreferences(this);
 		pref.unregisterOnSharedPreferenceChangeListener(this);
+		super.onDestroy();
 	}
 
 	@Override
@@ -516,8 +520,8 @@ public class MalarmActivity
 			if (state_.sleepMin_ > 0) {
 				state_.sleepMin_ = 0;
 			}
-			setNotification(getString(R.string.notify_wakeup_title),
-							getString(R.string.notify_wakeup_text));
+			player_.showNotification(getString(R.string.notify_wakeup_title),
+									getString(R.string.notify_wakeup_text));
 		}
 		else if (LOADWEB_ACTION.equals(action)) {
 			String url = intent.getStringExtra("url");
@@ -598,9 +602,10 @@ public class MalarmActivity
 	}
 
 	private void stopAlarm() {
-		NotificationManager mgr = 
-			(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		mgr.cancel(PACKAGE_NAME, 0);
+//		NotificationManager mgr = 
+//			(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//		mgr.cancel(PACKAGE_NAME, 0);
+		player_.clearNotification();
 		cancelSleepTimer();
 		cancelAlarmTimer();
 		updateUI();
@@ -611,17 +616,17 @@ public class MalarmActivity
 		}
 	}
 	
-	private void setNotification(String title, String text) {
-		Notification note =
-			new Notification(R.drawable.img, title, System.currentTimeMillis());
-		
-		Intent ni = new Intent(this, MalarmActivity.class);
-		PendingIntent npi = PendingIntent.getActivity(this, 0, ni, 0);
-		note.setLatestEventInfo(this, title, text, npi);
-		NotificationManager notify_mgr =
-			(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		notify_mgr.notify(PACKAGE_NAME, 0, note);
-	}
+//	private void setNotification(String title, String text) {
+//		Notification note =
+//			new Notification(R.drawable.img, title, System.currentTimeMillis());
+//		
+//		Intent ni = new Intent(this, MalarmActivity.class);
+//		PendingIntent npi = PendingIntent.getActivity(this, 0, ni, 0);
+//		note.setLatestEventInfo(this, title, text, npi);
+//		NotificationManager notify_mgr =
+//			(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//		notify_mgr.notify(PACKAGE_NAME, 0, note);
+//	}
 	
 	private void setSleepTimer() {
 		SharedPreferences pref =
@@ -697,8 +702,7 @@ public class MalarmActivity
 		String text = getString(R.string.notify_waiting_text);
 		text += " " + dateStr(target);
 		String title = getString(R.string.notify_waiting_title);
-		//TODO: umm...
-		setNotification(title, text);
+		player_.showNotification(title, text);
 	}
 
 	public void setNow() {
@@ -996,7 +1000,8 @@ public class MalarmActivity
 
 	@Override
 	public void onLowMemory () {
-		showMessage(this, getString(R.string.low_memory));
+		//TODO: close this activity
+		webview_.clearCache(false);
 	}
 
 	@Override
