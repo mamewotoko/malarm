@@ -82,7 +82,13 @@ public class MalarmPlayerService
 				mgr.setStreamVolume(AudioManager.STREAM_RING, volume, AudioManager.FLAG_SHOW_UI);
 				Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
 				tone_ = RingtoneManager.getRingtone(this, uri);
-				tone_.play();
+				if (null == tone_) {
+					uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+					tone_ = RingtoneManager.getRingtone(this, uri);
+				}
+				if (null != tone_) {
+					tone_.play();
+				}
 			}
 			else {
 				mgr.setStreamVolume(AudioManager.STREAM_MUSIC, volume, AudioManager.FLAG_SHOW_UI);
@@ -194,13 +200,7 @@ public class MalarmPlayerService
 	 * @return true if playlist is played, false if it fails.
 	 */
 	public boolean playMusic(Playlist playlist) {
-		currentPlaylist_ = playlist;
-		if(null == playlist){
-			return false;
-		}
-		playlist.reset();
-		Log.d(TAG, "playMusic playlist: playMusic");
-		return playMusic();
+		return playMusic(playlist, 0);
 	}
 
 	public boolean playMusic(Playlist playlist, int pos) {
@@ -220,7 +220,7 @@ public class MalarmPlayerService
 		}
 		//TODO: remove this check
 		if (player_.isPlaying()) {
-			return false;
+			player_.stop();
 		}
 		String path = "";
 		//skip unsupported files filtering by filename ...
