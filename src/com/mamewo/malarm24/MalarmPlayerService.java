@@ -193,7 +193,6 @@ public class MalarmPlayerService
 	 * @param playlist playlist to play
 	 * @return true if playlist is played, false if it fails.
 	 */
-	//TODO: call startForeground to survive
 	public boolean playMusic(Playlist playlist) {
 		currentPlaylist_ = playlist;
 		if(null == playlist){
@@ -204,11 +203,22 @@ public class MalarmPlayerService
 		return playMusic();
 	}
 
+	public boolean playMusic(Playlist playlist, int pos) {
+		currentPlaylist_ = playlist;
+		if(null == playlist){
+			return false;
+		}
+		playlist.setPosition(pos);
+		Log.d(TAG, "playMusic playlist: playMusic pos");
+		return playMusic();
+	}
+	
 	public boolean playMusic() {
 		if (null == currentPlaylist_ || currentPlaylist_.isEmpty()) {
 			Log.i(TAG, "playMusic: playlist is null");
 			return false;
 		}
+		//TODO: remove this check
 		if (player_.isPlaying()) {
 			return false;
 		}

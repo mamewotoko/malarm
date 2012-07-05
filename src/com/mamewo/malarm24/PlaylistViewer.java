@@ -13,13 +13,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 public final class PlaylistViewer
 	extends ListActivity
-	implements OnItemLongClickListener
+	implements OnItemLongClickListener, OnItemClickListener
 {
 	private ListView listView_;
 	private ArrayAdapter<String> adapter_;
@@ -34,6 +35,9 @@ public final class PlaylistViewer
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		listView_ = getListView();
+		listView_.setLongClickable(true);
+		listView_.setOnItemLongClickListener(this);
+		listView_.setOnItemClickListener(this);
 	}
 	
 	@Override
@@ -53,8 +57,6 @@ public final class PlaylistViewer
 		adapter_ = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, playlist_.toList());
 		setListAdapter(adapter_);
 		setTitle(title_id);
-		listView_.setLongClickable(true);
-		listView_.setOnItemLongClickListener(this);
 	}
 
 	@Override
@@ -70,8 +72,10 @@ public final class PlaylistViewer
 		case R.id.save_playlist:
 			try {
 				playlist_.save();
+				//TODO: localize
 				MalarmActivity.showMessage(this, "saved");
 			} catch (IOException e) {
+				//TODO: localize
 				MalarmActivity.showMessage(this, "failed: " + e.getMessage());
 			}
 			break;
@@ -126,5 +130,16 @@ public final class PlaylistViewer
 		.create()
 		.show();
 		return true;
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> adapter, View view, int pos, long id) {
+		Intent i = getIntent();
+		String which = i.getStringExtra("playlist");
+		Intent playIntent = new Intent(this, MalarmActivity.class);
+		playIntent.setAction(MalarmActivity.PLAY_ACTION);
+		playIntent.putExtra("playlist", which);
+		playIntent.putExtra("position", pos);
+		startActivity(playIntent);
 	}
 }

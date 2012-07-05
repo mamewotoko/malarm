@@ -17,4 +17,5 @@ public interface Playlist
 	 * reset position
 	 */
 	public void reset();
+	public void setPosition(int pos);
 }

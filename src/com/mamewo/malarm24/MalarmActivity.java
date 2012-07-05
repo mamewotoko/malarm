@@ -71,6 +71,8 @@ public class MalarmActivity
 	final static
 	public String LOADWEB_ACTION = PACKAGE_NAME + ".LOADWEB_ACTION";
 	final static
+	public String PLAY_ACTION = PACKAGE_NAME + ".PLAY_ACTION";
+	final static
 	private String TAG = "malarm";
 	final static
 	private String MYURL = "http://www002.upp.so-net.ne.jp/mamewo/mobile_shop.html";
@@ -526,6 +528,20 @@ public class MalarmActivity
 		else if (LOADWEB_ACTION.equals(action)) {
 			String url = intent.getStringExtra("url");
 			loadWebPage(url);
+		}
+		else if (PLAY_ACTION.equals(action)) {
+			//sleep | wakeup
+			String playlist = intent.getStringExtra("playlist");
+			int pos = intent.getIntExtra("position", 0);
+			//TODO: 
+			Playlist list;
+			if(null == playlist || "wakeup".equals(playlist)){
+				list = MalarmPlayerService.wakeupPlaylist_;
+			}
+			else {
+				list = MalarmPlayerService.sleepPlaylist_;
+			}
+			player_.playMusic(list, pos);
 		}
 	}
 

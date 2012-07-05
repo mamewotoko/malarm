@@ -22,6 +22,7 @@ public class MalarmWidgetProvider
 	final static
 	private String TAG = "malarm";
 	
+	//TODO: play interface
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		String action = intent.getAction();

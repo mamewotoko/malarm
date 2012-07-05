@@ -41,7 +41,8 @@ public final class M3UPlaylist
 		load(playlist_abs_path);
 	}
 	
-	// file | mp3 file on web | podcast
+	//add repeat setting, shuffle mode
+	// file | mp3 file on web | podcast (not supported yet)
 	@Override
 	public String next() {
 		if (playlist_.size() <= nextIndex_) {
@@ -68,6 +69,7 @@ public final class M3UPlaylist
 		nextIndex_ = 0;
 	}
 	
+	@Override
 	public String getName() {
 		return playlistFilename_;
 	}
@@ -87,6 +89,11 @@ public final class M3UPlaylist
 			}
 		}
 		br.close();
+	}
+	
+	@Override
+	public void setPosition(int pos) {
+		nextIndex_ = pos % size();
 	}
 	
 	@Override
