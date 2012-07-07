@@ -91,7 +91,9 @@ public class MalarmPreference
 		
 		//TODO: other formats? mp4, m4v...
 		return filename.endsWith(".mp3")
+				|| filename.endsWith(".mp4")
 				|| filename.endsWith(".m4a")
+				|| filename.endsWith(".m4v")
 				|| filename.endsWith(".ogg");
 	}
 
