@@ -13,9 +13,6 @@ public interface Playlist
 	 * which has filename relative to base path
 	 */
 	public String next();
-	/**
-	 * reset position
-	 */
-	public void reset();
+
 	public void setPosition(int pos);
 }

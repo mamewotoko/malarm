@@ -63,11 +63,6 @@ public final class M3UPlaylist
 		nextIndex_++;
 		return result;
 	}
-
-	@Override
-	public void reset() {
-		nextIndex_ = 0;
-	}
 	
 	@Override
 	public String getName() {
