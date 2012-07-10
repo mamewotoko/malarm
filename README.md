@@ -75,7 +75,7 @@ http://android-developers.blogspot.jp/2012/04/accessibility-are-you-serving-all-
 * use text to speech to read web page
 http://developer.android.com/resources/articles/tts.html
 * add preference to set silent mode or restore volume
-* show notification while playing music
+* change notification icon while playing music
 * change webview into photo view, movie player...
     * separate webview part from main activity
 * add UI to play ringtone on VolumePreference to check volume
