@@ -737,8 +737,8 @@ public class MalarmActivity
 			showMessage(this, getString(R.string.notify_wakeup_text));
 			break;
 		case R.id.play_wakeup:
-			if (player_.isPlaying()) {
-				break;
+			if(player_.isPlaying()) {
+				return true;
 			}
 			Log.d(TAG, "play_wakeup: playMusic");
 			player_.playMusic(null == state_.targetTime_);
@@ -748,7 +748,13 @@ public class MalarmActivity
 			startActivity(new Intent(this, MalarmPreference.class));
 			break;
 		case R.id.stop_music:
+			if(! player_.isPlaying()){
+				return true;
+			}
 			player_.pauseMusic();
+			if(null == state_.targetTime_){
+				player_.clearNotification();
+			}
 			cancelSleepTimer();
 			updateUI();
 			break;
