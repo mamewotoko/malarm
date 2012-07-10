@@ -65,7 +65,7 @@ TODO
 * localize: French, Chinese
 * support podcast
 * add play button on volume preference to check volume
-* add play menu in playlist preference
+* show mark on playing music in playlist preference
 * improve UI to create and edit playlist
 * improve accessibility
 http://android-developers.blogspot.jp/2012/04/accessibility-are-you-serving-all-your.html?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed:+blogspot/hsDu+(Android+Developers+Blog)

@@ -89,4 +89,5 @@
     <string name="unit_min">{0} min</string>
     <string name="play_with_sleep_timer">Playing music with sleep timer</string>
     <string name="sleep_playlist_not_exist">Playlist sleep.m3u does not exist.</string>
+    <string name="playing">Playing</string>
 </resources>

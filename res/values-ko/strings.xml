@@ -88,4 +88,5 @@
     <string name="unit_min">{0}분 </string>
     <string name="play_with_sleep_timer">휴식 대마를 세트 했습니다. </string>
     <string name="sleep_playlist_not_exist">플레이 리스트 sleep.m3u 가 존재하지 않습니다 </string>
+    <string name="playing">재생중</string>
 </resources>

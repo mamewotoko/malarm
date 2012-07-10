@@ -57,6 +57,7 @@ public class MalarmPlayerService
 		{ 10, 1500, 500, 1500, 500, 1500, 500, 1500, 500 };
 	private final IBinder binder_ = new LocalBinder();
 	private Playlist currentPlaylist_;
+	private String currentMusicName_;
 	private MediaPlayer player_;
 
 	static
@@ -93,7 +94,7 @@ public class MalarmPlayerService
 			else {
 				mgr.setStreamVolume(AudioManager.STREAM_MUSIC, volume, AudioManager.FLAG_SHOW_UI);
 				Log.d(TAG, "onStartCommand: playMusic");
-				playMusic(wakeupPlaylist_);
+				playMusic(wakeupPlaylist_, false);
 			}
 			boolean vibrate =
 					pref.getBoolean(MalarmPreference.PREFKEY_VIBRATE, MalarmPreference.DEFAULT_VIBRATION);
@@ -179,16 +180,19 @@ public class MalarmPlayerService
 		return true;
 	}
 
-	public void showNotification(String title, String description) {
+	public void showNotification(String title, String description, int iconId) {
 		Notification note =
-				new Notification(R.drawable.img, title, 0);
+				new Notification(iconId, title, 0);
 		Intent ni = new Intent(this, userClass_);
 		PendingIntent npi = PendingIntent.getActivity(this, 0, ni, 0);
-		//TODO: localize
 		note.setLatestEventInfo(this, title, description, npi);
 		startForeground(NOTIFY_PLAYING_ID, note);
 	}
-	
+
+	public void showNotification(String title, String description) {
+		showNotification(title, description, R.drawable.img);
+	}
+
 	public void clearNotification() {
 		stopForeground(true);
 	}
@@ -199,20 +203,28 @@ public class MalarmPlayerService
 	 * @param playlist playlist to play
 	 * @return true if playlist is played, false if it fails.
 	 */
-	public boolean playMusic(Playlist playlist) {
-		return playMusic(playlist, 0);
+	public boolean playMusic(Playlist playlist, boolean notify) {
+		return playMusic(playlist, 0,notify);
 	}
 
-	public boolean playMusic(Playlist playlist, int pos) {
+	public boolean playMusic(Playlist playlist, int pos, boolean notify) {
 		currentPlaylist_ = playlist;
 		if(null == playlist){
 			return false;
 		}
 		playlist.setPosition(pos);
 		Log.d(TAG, "playMusic playlist: playMusic pos");
-		return playMusic();
+		return playMusic(notify);
 	}
 	
+	public boolean playMusic(boolean playingNotification) {
+		boolean result = playMusic();
+		if(playingNotification) {
+			showNotification(getString(R.string.playing), currentMusicName_, R.drawable.playing);
+		}
+		return result;
+	}
+
 	public boolean playMusic() {
 		if (null == currentPlaylist_ || currentPlaylist_.isEmpty()) {
 			Log.i(TAG, "playMusic: playlist is null");
@@ -237,6 +249,8 @@ public class MalarmPlayerService
 			}
 		}
 		Log.i(TAG, "playMusic: " + path);
+		//TODO: get title from file
+		currentMusicName_ = (new File(path)).getName();
 		try {
 			player_.reset();
 			player_.setDataSource(path);
@@ -295,7 +309,7 @@ public class MalarmPlayerService
 	public void onCreate(){
 		super.onCreate();
 		tone_ = null;
-
+		currentMusicName_ = null;
 		loadPlaylist();
 		currentPlaylist_ = wakeupPlaylist_;
 		player_ = new MediaPlayer();

@@ -88,4 +88,5 @@
     <string name="unit_min">{0}分</string>
     <string name="play_with_sleep_timer">スリープタイマをセットしました。</string>
     <string name="sleep_playlist_not_exist">プレイリストsleep.m3uが存在しません。</string>
+    <string name="playing">再生中</string>
 </resources>

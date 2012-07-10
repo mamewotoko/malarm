@@ -541,7 +541,7 @@ public class MalarmActivity
 			else {
 				list = MalarmPlayerService.sleepPlaylist_;
 			}
-			player_.playMusic(list, pos);
+			player_.playMusic(list, pos, null == state_.targetTime_);
 		}
 	}
 
@@ -683,7 +683,7 @@ public class MalarmActivity
 					MalarmPreference.DEFAULT_SLEEP_VOLUME));
 		AudioManager mgr = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
 		mgr.setStreamVolume(AudioManager.STREAM_MUSIC, sleepVolume, AudioManager.FLAG_SHOW_UI);
-		player_.playMusic(list);
+		player_.playMusic(list, null == state_.targetTime_);
 		setSleepTimer();
 	}
 	
@@ -741,7 +741,7 @@ public class MalarmActivity
 				break;
 			}
 			Log.d(TAG, "play_wakeup: playMusic");
-			player_.playMusic();
+			player_.playMusic(null == state_.targetTime_);
 			break;
 		case R.id.pref:
 			//TODO: use startActivityForResult
@@ -883,7 +883,7 @@ public class MalarmActivity
 			shortVibrate();
 			if(! player_.isPlaying()) {
 				Log.d(TAG, "onLongClick: playMusic");
-				player_.playMusic();
+				player_.playMusic(null == state_.targetTime_);
 			}
 			cancelSleepTimer();
 			setSleepTimer();
