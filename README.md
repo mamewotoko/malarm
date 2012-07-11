@@ -31,6 +31,7 @@ http://www.youtube.com/watch?v=vA2F_dO0mQA
 * [English](http://mamewotoko.github.com/malarm/doc/index_en.html)
 
 ### Google Play
+ [![my play page](http://www.android.com/images/brand/get_it_on_play_logo_small.png)](http://play.google.com/store/search?q=pub:mamewotoko)
 * [For 2.3.x](https://play.google.com/store/apps/details?id=com.mamewo.malarm24)
 * [For 2.1 - 2.2](https://play.google.com/store/apps/details?id=com.mamewo.malarm78)
 
