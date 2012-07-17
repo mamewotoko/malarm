@@ -9,6 +9,7 @@ import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -43,13 +44,15 @@ public class MalarmPlayerService
 	final static
 	public String LOAD_PLAYLIST_ACTION = PACKAGE_NAME + ".LOAD_PLAYLIST_ACTION";
 	final static
+	public String UNPLUGGED_ACTION = PACKAGE_NAME + ".UNPLUGGED_ACTION";
+	final static
 	public String WAKEUP_PLAYLIST_FILENAME = "wakeup.m3u";
 	final static
 	public String SLEEP_PLAYLIST_FILENAME = "sleep.m3u";
 	final static
 	private int NOTIFY_PLAYING_ID = 1;
 	final private Class<MalarmActivity> userClass_ = MalarmActivity.class;
-	
+
 	final static
 	private String TAG = "malarm";
 	final static
@@ -59,6 +62,7 @@ public class MalarmPlayerService
 	private Playlist currentPlaylist_;
 	private String currentMusicName_;
 	private MediaPlayer player_;
+	private UnpluggedReceiver receiver_;
 
 	static
 	public M3UPlaylist wakeupPlaylist_;
@@ -113,6 +117,10 @@ public class MalarmPlayerService
 		else if (LOAD_PLAYLIST_ACTION.equals(action)) {
 			Log.d(TAG, "LOAD_PLAYLIST_ACTION");
 			loadPlaylist();
+		}
+		else if (UNPLUGGED_ACTION.equals(action)) {
+			pauseMusic();
+			//TODO: callback
 		}
 		return START_STICKY;
 	}
@@ -315,6 +323,18 @@ public class MalarmPlayerService
 		player_ = new MediaPlayer();
 		player_.setOnCompletionListener(this);
 		player_.setOnErrorListener(this);
+		receiver_ = new UnpluggedReceiver();
+		registerReceiver(receiver_, new IntentFilter(Intent.ACTION_HEADSET_PLUG));
+	}
+	
+	@Override
+	public void onDestroy(){
+		unregisterReceiver(receiver_);
+		player_ = null;
+		currentPlaylist_ = null;
+		wakeupPlaylist_ = null;
+		sleepPlaylist_ = null;
+		super.onDestroy();
 	}
 	
 	@Override
@@ -346,4 +366,25 @@ public class MalarmPlayerService
 			}
 		}
 	}
+	
+	final static
+	public class UnpluggedReceiver
+		extends BroadcastReceiver
+	{
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String action = intent.getAction();
+			if(null == action) {
+				return;
+			}
+			if(Intent.ACTION_HEADSET_PLUG.equals(action)) {
+				if(intent.getIntExtra("state", 1) == 0){
+					Intent i = new Intent(context, MalarmPlayerService.class);
+					i.setAction(UNPLUGGED_ACTION);
+					context.startService(i);
+				}
+			}
+		}
+	}
+
 }

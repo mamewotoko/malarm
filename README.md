@@ -65,6 +65,9 @@ TODO
 ----------------------
 * localize: French, Chinese
 * support podcast
+* add callback which is called when music is stopped
+* show music title as a notificaition
+* add preference of "stop music on unplugged headphone"
 * add play button on volume preference to check volume
 * show mark on playing music in playlist preference
 * improve UI to create and edit playlist
