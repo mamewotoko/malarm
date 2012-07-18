@@ -126,9 +126,15 @@ public class MalarmPlayerService
 			loadPlaylist();
 		}
 		else if (UNPLUGGED_ACTION.equals(action)) {
-			pauseMusic();
-			if (null != listener_) {
-				listener_.onStopMusic();
+			SharedPreferences pref =
+					PreferenceManager.getDefaultSharedPreferences(this);
+			boolean stop = pref.getBoolean("stop_on_unplugged", true);
+			if (stop) {
+				pauseMusic();
+				if (null != listener_) {
+					listener_.onStopMusic();
+				}
+				//TODO: fix notification
 			}
 		}
 		return START_STICKY;

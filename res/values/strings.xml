@@ -89,4 +89,8 @@
     <string name="play_with_sleep_timer">Playing music with sleep timer</string>
     <string name="sleep_playlist_not_exist">Playlist sleep.m3u does not exist.</string>
     <string name="playing">Playing</string>
+
+    <string name="pref_stop_on_unplugged_title">Stop music when unplugged</string>
+    <string name="pref_stop_on_unplugged_on_summary">stop playing</string>
+    <string name="pref_stop_on_unplugged_off_summary">continue playing</string>
 </resources>

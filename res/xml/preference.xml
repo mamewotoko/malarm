@@ -73,8 +73,14 @@
             android:summaryOn="@string/enable_vibration"
             android:title="@string/pref_vibration" >
         </CheckBoxPreference>
-
-        <com.mamewo.malarm24.VolumePreference
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:enabled="true"
+            android:key="stop_on_unplugged"
+            android:summaryOff="@string/pref_stop_on_unplugged_off_summary"
+            android:summaryOn="@string/pref_stop_on_unplugged_on_summary"
+            android:title="@string/pref_stop_on_unplugged_title" />
+<com.mamewo.malarm24.VolumePreference
             android:defaultValue="2"
             android:key="sleep_volume"
             android:title="@string/pref_sleep_volume_title" />
@@ -82,6 +88,7 @@
             android:defaultValue="10"
             android:key="wakeup_volume"
             android:title="@string/pref_wakeup_volume_title" />
+        
     </PreferenceCategory>
     <PreferenceCategory
         android:key="other_category"

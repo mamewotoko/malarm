@@ -88,4 +88,7 @@
     <string name="play_with_sleep_timer">スリープタイマをセットしました。</string>
     <string name="sleep_playlist_not_exist">プレイリストsleep.m3uが存在しません。</string>
     <string name="playing">再生中</string>
+    <string name="pref_stop_on_unplugged_title">ヘッドホンを抜いたとき</string>
+    <string name="pref_stop_on_unplugged_on_summary">音楽をとめる</string>
+    <string name="pref_stop_on_unplugged_off_summary">音楽をとめない</string>
 </resources>
