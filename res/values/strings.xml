@@ -47,7 +47,6 @@
 
     <string name="pref_playlist_does_not_exist">Playlist does not exist</string>
     <string name="notify_waiting_title">malarm is set</string>
-    <string name="notify_waiting_text">malarm will start</string>
     <string name="notify_wakeup_title">Playing malarm tunes</string>
     <string name="notify_wakeup_text">Good morning!</string>
     <string name="pref_sleep_volume_title">Sleep tunes volume</string>

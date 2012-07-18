@@ -3,6 +3,7 @@ package com.mamewo.malarm24;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -52,7 +53,7 @@ public class MalarmPlayerService
 	final static
 	private int NOTIFY_PLAYING_ID = 1;
 	final private Class<MalarmActivity> userClass_ = MalarmActivity.class;
-
+	
 	final static
 	private String TAG = "malarm";
 	final static
@@ -63,13 +64,16 @@ public class MalarmPlayerService
 	private String currentMusicName_;
 	private MediaPlayer player_;
 	private UnpluggedReceiver receiver_;
+	private int iconId_ = 0;
 
 	static
-	public M3UPlaylist wakeupPlaylist_;
+	public M3UPlaylist wakeupPlaylist_ = null;
 	static
-	public M3UPlaylist sleepPlaylist_;
-	private Ringtone tone_;
-	
+	public M3UPlaylist sleepPlaylist_ = null;
+	private Ringtone tone_ = null;
+	private PlayerStateListener listener_ = null;
+	private String currentNoteTitle_ = "";
+
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId){
 		String action = intent.getAction();
@@ -96,6 +100,7 @@ public class MalarmPlayerService
 				}
 			}
 			else {
+				currentNoteTitle_ = getString(R.string.notify_wakeup_text);
 				mgr.setStreamVolume(AudioManager.STREAM_MUSIC, volume, AudioManager.FLAG_SHOW_UI);
 				Log.d(TAG, "onStartCommand: playMusic");
 				playMusic(wakeupPlaylist_, false);
@@ -112,6 +117,8 @@ public class MalarmPlayerService
 		}
 		else if (STOP_MUSIC_ACTION.equals(action)) {
 			stopMusic();
+			//TODO: check alarm info
+			showNotification(currentNoteTitle_, "");
 			//TODO: stop if activity is dead / stop activity
 		}
 		else if (LOAD_PLAYLIST_ACTION.equals(action)) {
@@ -120,7 +127,9 @@ public class MalarmPlayerService
 		}
 		else if (UNPLUGGED_ACTION.equals(action)) {
 			pauseMusic();
-			//TODO: callback
+			if (null != listener_) {
+				listener_.onStopMusic();
+			}
 		}
 		return START_STICKY;
 	}
@@ -189,6 +198,8 @@ public class MalarmPlayerService
 	}
 
 	public void showNotification(String title, String description, int iconId) {
+		iconId_ = iconId;
+		currentNoteTitle_ = title;
 		Notification note =
 				new Notification(iconId, title, 0);
 		Intent ni = new Intent(this, userClass_);
@@ -203,6 +214,7 @@ public class MalarmPlayerService
 
 	public void clearNotification() {
 		stopForeground(true);
+		iconId_ = 0;
 	}
 
 	/**
@@ -212,7 +224,7 @@ public class MalarmPlayerService
 	 * @return true if playlist is played, false if it fails.
 	 */
 	public boolean playMusic(Playlist playlist, boolean notify) {
-		return playMusic(playlist, 0,notify);
+		return playMusic(playlist, 0, notify);
 	}
 
 	public boolean playMusic(Playlist playlist, int pos, boolean notify) {
@@ -226,11 +238,11 @@ public class MalarmPlayerService
 	}
 	
 	public boolean playMusic(boolean playingNotification) {
-		boolean result = playMusic();
 		if(playingNotification) {
-			showNotification(getString(R.string.playing), currentMusicName_, R.drawable.playing);
+			iconId_ = R.drawable.playing;
+			currentNoteTitle_ = getString(R.string.playing);
 		}
-		return result;
+		return playMusic();
 	}
 
 	public boolean playMusic() {
@@ -264,6 +276,13 @@ public class MalarmPlayerService
 			player_.setDataSource(path);
 			player_.prepare();
 			player_.start();
+			if (null != listener_) {
+				listener_.onStartMusic(currentMusicName_);
+			}
+			if (iconId_ != 0) {
+				//TODO: modify notification title
+				showNotification(currentNoteTitle_, currentMusicName_, iconId_);
+			}
 		}
 		catch (IOException e) {
 			return false;
@@ -277,14 +296,28 @@ public class MalarmPlayerService
 		}
 		if(player_.isPlaying()){
 			player_.stop();
+			if (null != listener_) {
+				listener_.onStopMusic();
+			}
+		}
+		//umm...
+		if(iconId_ == R.drawable.playing) {
+			clearNotification();
 		}
 	}
 
 	public void pauseMusic() {
-		if(player_.isPlaying()){
-			player_.pause();
+		if(! player_.isPlaying()) {
+			return;
 		}
-		//clearNotification();
+		player_.pause();
+		if (null != listener_) {
+			listener_.onStopMusic();
+		}
+		//umm...
+		if(iconId_ == R.drawable.playing) {
+			clearNotification();
+		}
 	}
 	
 	public void startVibrator() {
@@ -386,5 +419,17 @@ public class MalarmPlayerService
 			}
 		}
 	}
+	
+	public void setPlayerStateListener(PlayerStateListener listener) {
+		listener_ = listener;
+	}
+	
+	public void clearPlayerStateListener() {
+		listener_ = null;
+	}
 
+	public interface PlayerStateListener {
+		public void onStartMusic(String title);
+		public void onStopMusic();
+	}
 }

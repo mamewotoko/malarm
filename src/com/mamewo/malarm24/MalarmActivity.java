@@ -64,7 +64,8 @@ public class MalarmActivity
 		OnSharedPreferenceChangeListener,
 		OnLongClickListener,
 		OnKeyListener,
-		ServiceConnection
+		ServiceConnection,
+		MalarmPlayerService.PlayerStateListener
 {
 	final static
 	public String PACKAGE_NAME = MalarmActivity.class.getPackage().getName();
@@ -522,8 +523,6 @@ public class MalarmActivity
 			if (state_.sleepMin_ > 0) {
 				state_.sleepMin_ = 0;
 			}
-			player_.showNotification(getString(R.string.notify_wakeup_title),
-									getString(R.string.notify_wakeup_text));
 		}
 		else if (LOADWEB_ACTION.equals(action)) {
 			String url = intent.getStringExtra("url");
@@ -715,10 +714,9 @@ public class MalarmActivity
 				makePlayPintent(MalarmPlayerService.WAKEUP_ACTION, false);
 		mgr.set(AlarmManager.RTC_WAKEUP, targetMillis, pendingIntent);
 
-		String text = getString(R.string.notify_waiting_text);
-		text += " " + dateStr(target);
 		String title = getString(R.string.notify_waiting_title);
-		player_.showNotification(title, text);
+		title += " " + dateStr(target);
+		player_.showNotification(title, "");
 	}
 
 	public void setNow() {
@@ -1031,11 +1029,23 @@ public class MalarmActivity
 		Log.d(TAG, "onServiceConnected");
 		player_ = ((MalarmPlayerService.LocalBinder)binder).getService();
 		updateUI();
+		player_.setPlayerStateListener(this);
 	}
 
 	@Override
 	public void onServiceDisconnected(ComponentName name) {
 		Log.d(TAG, "onServiceDisconnected");
+		player_.clearPlayerStateListener();
 		player_ = null;
+	}
+
+	@Override
+	public void onStartMusic(String title) {
+		updateUI();
+	}
+
+	@Override
+	public void onStopMusic() {
+		updateUI();
 	}
 }

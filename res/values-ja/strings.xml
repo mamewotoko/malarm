@@ -45,8 +45,7 @@
     <string name="pref_create_playlist_title">プレイリスト作成</string>
     <string name="pref_create_playlist_summary">プレイリストを作成します。</string>
 
-    <string name="notify_waiting_title">まらーむがセットされています。</string>
-    <string name="notify_waiting_text">まらーむ待機中</string>
+    <string name="notify_waiting_title">まらーむ待機中。</string>
     <string name="notify_wakeup_title">まらーむがなっています。</string>
     <string name="notify_wakeup_text">おはよう!</string>
     <string name="pref_sleep_volume_title">おやすみの音量</string>
