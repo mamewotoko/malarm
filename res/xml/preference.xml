@@ -14,7 +14,8 @@
     <PreferenceCategory
         android:key="playlist_category"
         android:title="@string/pref_playlist_category" >
-        <!--  TODO: modify /sdcard/music  -->
+
+        <!-- TODO: modify /sdcard/music -->
         <EditTextPreference
             android:defaultValue="/sdcard/music/"
             android:dialogMessage="@string/enter_path_to_playlist"
@@ -23,6 +24,7 @@
             android:key="playlist_path"
             android:summary="@string/playlist_path_summary"
             android:title="@string/playlist_path_title" />
+
         <CheckBoxPreference
             android:disableDependentsState="true"
             android:key="sleep_playlist"
@@ -37,6 +39,7 @@
             android:summaryOff="@string/pref_no_wakeup_playlist"
             android:summaryOn="@string/pref_ok_wakeup_playlist"
             android:title="@string/pref_wakeup_playlist" />
+
         <Preference
             android:key="reload_playlist"
             android:selectable="true"
@@ -80,7 +83,8 @@
             android:summaryOff="@string/pref_stop_on_unplugged_off_summary"
             android:summaryOn="@string/pref_stop_on_unplugged_on_summary"
             android:title="@string/pref_stop_on_unplugged_title" />
-<com.mamewo.malarm24.VolumePreference
+
+        <com.mamewo.malarm24.VolumePreference
             android:defaultValue="2"
             android:key="sleep_volume"
             android:title="@string/pref_sleep_volume_title" />
@@ -88,17 +92,17 @@
             android:defaultValue="10"
             android:key="wakeup_volume"
             android:title="@string/pref_wakeup_volume_title" />
-        
     </PreferenceCategory>
     <PreferenceCategory
         android:key="other_category"
         android:title="@string/other_category_title" >
         <Preference
             android:key="clear_webview_cache"
-            android:summary="@string/pref_clear_webview_cache_summary"
-            android:title="@string/pref_clear_webview_cache_title" android:selectable="true"
             android:persistent="true"
-            />
+            android:selectable="true"
+            android:summary="@string/pref_clear_webview_cache_summary"
+            android:title="@string/pref_clear_webview_cache_title" />
+
         <CheckBoxPreference
             android:defaultValue="false"
             android:enabled="false"
@@ -107,7 +111,7 @@
             android:summaryOff="@string/use_internal_player"
             android:summaryOn="@string/use_native_player"
             android:title="@string/use_native_player_title" />
-        </PreferenceCategory>
+    </PreferenceCategory>
     <PreferenceCategory
         android:key="about"
         android:title="@string/pref_about_title" >
@@ -121,4 +125,5 @@
             android:selectable="true"
             android:title="@string/malarm_version_title" />
     </PreferenceCategory>
+
 </PreferenceScreen>

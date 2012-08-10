@@ -49,6 +49,8 @@ public class MalarmPreference
 	private CheckBoxPreference wakeupPlaylist_;
 	private SharedPreferences pref_;
 	private static final String TAG = "malarm";
+	static final
+	private int VERSION_DIALOG = 1;
 
 	//default values are set in onCreate, so following values are not so important
 	final static
@@ -121,6 +123,7 @@ public class MalarmPreference
 		}
 	}
 
+	
 	@Override
 	public boolean onPreferenceClick(Preference preference) {
 		boolean result = false;
@@ -130,13 +133,7 @@ public class MalarmPreference
 			result = true;
 		}
 		else if (preference == version_) {
-			//show dialog
-			Dialog dialog = new Dialog(this);
-			dialog.setContentView(R.layout.dialog);
-			logo_ = dialog.findViewById(R.id.dialog_logo);
-			logo_.setOnClickListener(this);
-			dialog.setTitle(R.string.dialog_title);
-			dialog.show();
+			showDialog(VERSION_DIALOG);
 			result = true;
 		}
 		else if (preference == createPlaylist_) {
@@ -331,6 +328,25 @@ public class MalarmPreference
 		//url_list has no summary
 	}
 
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		Dialog dialog;
+		switch(id) {
+		case VERSION_DIALOG:
+			//show dialog
+			dialog = new Dialog(this);
+			dialog.setContentView(R.layout.dialog);
+			logo_ = dialog.findViewById(R.id.dialog_logo);
+			logo_.setOnClickListener(this);
+			dialog.setTitle(R.string.dialog_title);
+			break;
+		default:
+			dialog = null;
+			break;
+		}
+		return dialog;
+	}
+	
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences pref, String key) {
 		updateSummary(pref, key);

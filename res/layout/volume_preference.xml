@@ -24,8 +24,8 @@
 
         <EditText
             android:id="@+id/volume_pref_value"
-            android:layout_width="0dip"
             android:layout_height="fill_parent"
+            android:layout_width="0dip"
             android:layout_weight="1"
             android:inputType="number"
             android:singleLine="true" />
