@@ -1,35 +1,48 @@
 package com.mamewo.malarm24;
 
 import java.io.IOException;
+import java.util.List;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public final class PlaylistViewer
 	extends ListActivity
-	implements OnItemLongClickListener, OnItemClickListener
+	implements OnItemLongClickListener,
+	OnItemClickListener,
+	ServiceConnection
 {
 	private ListView listView_;
-	private ArrayAdapter<String> adapter_;
+	//private ArrayAdapter<String> adapter_;
+	private MusicAdapter adapter_;
 	private M3UPlaylist playlist_;
-
+	private MalarmPlayerService player_;
+	
 	//R.array.tune_operation
 	static private final int UP_INDEX = 0;
 	static private final int DOWN_INDEX = 1;
 	static private final int DELETE_INDEX = 2;
+	static final
+	private String TAG = "malarm";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
@@ -38,6 +51,12 @@ public final class PlaylistViewer
 		listView_.setLongClickable(true);
 		listView_.setOnItemLongClickListener(this);
 		listView_.setOnItemClickListener(this);
+		player_ = null;
+		Intent intent = new Intent(this, MalarmPlayerService.class);
+		startService(intent);
+		//TODO: handle failure of bindService
+		boolean result = bindService(intent, this, Context.BIND_AUTO_CREATE);
+		Log.d(TAG, "bindService: " + result);
 	}
 	
 	@Override
@@ -54,7 +73,7 @@ public final class PlaylistViewer
 			playlist_ = MalarmPlayerService.wakeupPlaylist_;
 			title_id = R.string.wakeup_playlist_viewer_title;
 		}
-		adapter_ = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, playlist_.toList());
+		adapter_ = new MusicAdapter(this, playlist_.toList());
 		setListAdapter(adapter_);
 		setTitle(title_id);
 	}
@@ -134,12 +153,56 @@ public final class PlaylistViewer
 
 	@Override
 	public void onItemClick(AdapterView<?> adapter, View view, int pos, long id) {
-		Intent i = getIntent();
-		String which = i.getStringExtra("playlist");
-		Intent playIntent = new Intent(this, MalarmActivity.class);
-		playIntent.setAction(MalarmActivity.PLAY_ACTION);
-		playIntent.putExtra("playlist", which);
-		playIntent.putExtra("position", pos);
-		startActivity(playIntent);
+		if (null == player_) {
+			return;
+		}
+		player_.playMusic(playlist_, pos, true);
+//		Intent i = getIntent();
+//		String which = i.getStringExtra("playlist");
+//		Intent playIntent = new Intent(this, MalarmActivity.class);
+//		playIntent.setAction(MalarmActivity.PLAY_ACTION);
+//		playIntent.putExtra("playlist", which);
+//		playIntent.putExtra("position", pos);
+//		startActivity(playIntent);
+	}
+	
+	final private
+	class MusicAdapter
+		extends ArrayAdapter<String>
+	{
+		public MusicAdapter(Context context) {
+			super(context, R.layout.playlist_item);
+		}
+		
+		public MusicAdapter(Context context, List<String> list) {
+			super(context, R.layout.playlist_item, list);
+		}
+		
+		public View getView(int position, View convertView, ViewGroup parent) {
+			View view;
+			if (null == convertView) {
+				view = View.inflate(PlaylistViewer.this, R.layout.playlist_item, null);
+			}
+			else {
+				view = convertView;
+			}
+			String title = getItem(position);
+			TextView titleView = (TextView) view.findViewById(R.id.title_view);
+			titleView.setText(title);
+			return view;
+		}
+	}
+	
+	@Override
+	public void onServiceConnected(ComponentName name, IBinder binder) {
+		Log.d(TAG, "onServiceConnected");
+		player_ = ((MalarmPlayerService.LocalBinder)binder).getService();
+	}
+
+	@Override
+	public void onServiceDisconnected(ComponentName name) {
+		Log.d(TAG, "onServiceDisconnected");
+		player_.clearPlayerStateListener();
+		player_ = null;
 	}
 }
