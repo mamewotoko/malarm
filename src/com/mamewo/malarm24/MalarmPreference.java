@@ -301,8 +301,8 @@ public class MalarmPreference
 	}
 	
 	public void updateSummary(SharedPreferences pref, String key) {
-		boolean update_all = "ALL".equals(key);
-		if (update_all || "default_time".equals(key)) {
+		boolean updateAll = "ALL".equals(key);
+		if (updateAll || "default_time".equals(key)) {
 			String timestr =
 					pref.getString("default_time", MalarmPreference.DEFAULT_WAKEUP_TIME);
 			String[] hourminStr = timestr.split(":");
@@ -313,16 +313,16 @@ public class MalarmPreference
 			}
 			wakeupTime_.setSummary(hour + ":" + min);
 		}
-		if (update_all || "sleeptime".equals(key)) {
+		if (updateAll || "sleeptime".equals(key)) {
 			String sleepTime =
 				pref.getString("sleeptime", MalarmPreference.DEFAULT_SLEEPTIME);
 			String summary = MessageFormat.format(getString(R.string.unit_min), sleepTime);
 			sleepTime_.setSummary(summary);
 		}
-		if (update_all || "sleep_volume".equals(key)) {
+		if (updateAll || "sleep_volume".equals(key)) {
 			setVolumeSummary(pref, "sleep_volume", sleepVolume_, DEFAULT_SLEEP_VOLUME);
 		}
-		if (update_all || "wakeup_volume".equals(key)) {
+		if (updateAll || "wakeup_volume".equals(key)) {
 			setVolumeSummary(pref, "wakeup_volume", wakeupVolume_, DEFAULT_WAKEUP_VOLUME);
 		}
 		//url_list has no summary
