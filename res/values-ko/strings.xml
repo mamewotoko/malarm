@@ -92,4 +92,8 @@
     <string name="pref_stop_on_unplugged_title">헤드폰을 뺐을 때</string>
     <string name="pref_stop_on_unplugged_on_summary">음악을 멈춘다</string>
     <string name="pref_stop_on_unplugged_off_summary">음악을 멈추지 않는다</string>
+
+    <string name="play">재생</string>
+    <string name="pause">정지</string>
+    
 </resources>

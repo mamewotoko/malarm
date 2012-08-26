@@ -93,4 +93,8 @@
     <string name="pref_stop_on_unplugged_title">Stop music when unplugged</string>
     <string name="pref_stop_on_unplugged_on_summary">stop playing</string>
     <string name="pref_stop_on_unplugged_off_summary">continue playing</string>
+
+    <string name="play">play</string>
+    <string name="pause">pause</string>
+    
 </resources>

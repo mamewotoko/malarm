@@ -187,6 +187,9 @@ public class MalarmPlayerService
 		if (isPlaying()) {
 			stopMusic();
 		}
+		int pos = currentPlaylist_.getCurrentPosition();
+		pos = (pos + 1) % currentPlaylist_.size();
+		currentPlaylist_.setPosition(pos);
 		playMusic();
 	}
 
@@ -264,7 +267,7 @@ public class MalarmPlayerService
 		//skip unsupported files filtering by filename ...
 		for (int i = 0; i < 10; i++) {
 			Log.d(TAG, "checking: " + path);
-			path = currentPlaylist_.next();
+			path = currentPlaylist_.getURL();
 			if (path.startsWith("http://")) {
 				break;
 			}

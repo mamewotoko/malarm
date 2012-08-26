@@ -3,8 +3,8 @@ package com.mamewo.malarm24;
 import java.io.IOException;
 import java.util.List;
 
+import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ListActivity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,18 +17,22 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.MediaController.MediaPlayerControl;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 public final class PlaylistViewer
-	extends ListActivity
+	extends Activity
 	implements OnItemLongClickListener,
 	OnItemClickListener,
+	OnClickListener,
 	ServiceConnection
 {
 	private ListView listView_;
@@ -36,6 +40,7 @@ public final class PlaylistViewer
 	private MusicAdapter adapter_;
 	private M3UPlaylist playlist_;
 	private MalarmPlayerService player_;
+	private ToggleButton playButton_;
 	
 	//R.array.tune_operation
 	static private final int UP_INDEX = 0;
@@ -47,10 +52,14 @@ public final class PlaylistViewer
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
-		listView_ = getListView();
+		setContentView(R.layout.playlist_viewer);
+		listView_ = (ListView) findViewById(R.id.play_list_view);
 		listView_.setLongClickable(true);
 		listView_.setOnItemLongClickListener(this);
 		listView_.setOnItemClickListener(this);
+		playButton_ = (ToggleButton) findViewById(R.id.play_button);
+		playButton_.setOnClickListener(this);
+		playButton_.setEnabled(false);
 		player_ = null;
 		Intent intent = new Intent(this, MalarmPlayerService.class);
 		startService(intent);
@@ -74,8 +83,9 @@ public final class PlaylistViewer
 			title_id = R.string.wakeup_playlist_viewer_title;
 		}
 		adapter_ = new MusicAdapter(this, playlist_.toList());
-		setListAdapter(adapter_);
+		listView_.setAdapter(adapter_);
 		setTitle(title_id);
+		updateUI();
 	}
 
 	@Override
@@ -111,6 +121,7 @@ public final class PlaylistViewer
 									View view, int position, long id) {
 		final int pos = position;
 		final String title = (String)adapter_view.getItemAtPosition(pos);
+		//TODO: use showDialog
 		new AlertDialog.Builder(PlaylistViewer.this)
 		.setTitle(title)
 		//TODO: show detail of tune
@@ -157,13 +168,7 @@ public final class PlaylistViewer
 			return;
 		}
 		player_.playMusic(playlist_, pos, true);
-//		Intent i = getIntent();
-//		String which = i.getStringExtra("playlist");
-//		Intent playIntent = new Intent(this, MalarmActivity.class);
-//		playIntent.setAction(MalarmActivity.PLAY_ACTION);
-//		playIntent.putExtra("playlist", which);
-//		playIntent.putExtra("position", pos);
-//		startActivity(playIntent);
+		updateUI();
 	}
 	
 	final private
@@ -189,6 +194,7 @@ public final class PlaylistViewer
 			String title = getItem(position);
 			TextView titleView = (TextView) view.findViewById(R.id.title_view);
 			titleView.setText(title);
+			
 			return view;
 		}
 	}
@@ -197,6 +203,7 @@ public final class PlaylistViewer
 	public void onServiceConnected(ComponentName name, IBinder binder) {
 		Log.d(TAG, "onServiceConnected");
 		player_ = ((MalarmPlayerService.LocalBinder)binder).getService();
+		playButton_.setEnabled(true);
 	}
 
 	@Override
@@ -204,5 +211,28 @@ public final class PlaylistViewer
 		Log.d(TAG, "onServiceDisconnected");
 		player_.clearPlayerStateListener();
 		player_ = null;
+	}
+
+	private void updateUI() {
+		if (null != player_) {
+			playButton_.setChecked(player_.isPlaying());
+		}
+		//TOOO: update list
+	}
+	
+	@Override
+	public void onClick(View view) {
+		if (view == playButton_) {
+			if (null == player_) {
+				return;
+			}
+			if (player_.isPlaying()) {
+				player_.pauseMusic();
+			}
+			else {
+				player_.playMusic();
+			}
+			playButton_.setChecked(player_.isPlaying());
+		}
 	}
 }
