@@ -63,6 +63,7 @@ Tested Device
 
 TODO
 ----------------------
+* merge PlayserService from podplayer project
 * localize: French, Chinese
 * support podcast
 * add callback which is called when music is stopped
