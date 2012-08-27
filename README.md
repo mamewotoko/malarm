@@ -66,6 +66,8 @@ TODO
 * merge PlayserService from podplayer project
 * localize: French, Chinese
 * support podcast
+* manage audio focus
+http://developer.android.com/training/managing-audio/audio-focus.html
 * add callback which is called when music is stopped
 * show music title as a notificaition, not filename
 * add play button on volume preference to check volume

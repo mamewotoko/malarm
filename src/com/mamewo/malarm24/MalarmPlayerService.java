@@ -8,6 +8,7 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -22,6 +23,7 @@ import android.os.IBinder;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.KeyEvent;
 
 /**
  * @author Takashi Masuyama <mamewotoko@gmail.com>
@@ -47,6 +49,8 @@ public class MalarmPlayerService
 	final static
 	public String UNPLUGGED_ACTION = PACKAGE_NAME + ".UNPLUGGED_ACTION";
 	final static
+	public String MEDIA_BUTTON_ACTION = PACKAGE_NAME + ".MEDIA_BUTTON_ACTION";
+	final static
 	public String WAKEUP_PLAYLIST_FILENAME = "wakeup.m3u";
 	final static
 	public String SLEEP_PLAYLIST_FILENAME = "sleep.m3u";
@@ -65,6 +69,7 @@ public class MalarmPlayerService
 	private MediaPlayer player_;
 	private UnpluggedReceiver receiver_;
 	private int iconId_ = 0;
+	private ComponentName mediaButtonReceiver_;
 
 	static
 	public M3UPlaylist wakeupPlaylist_ = null;
@@ -135,6 +140,34 @@ public class MalarmPlayerService
 					listener_.onStopMusic();
 				}
 				//TODO: fix notification
+			}
+		}
+		else if (MEDIA_BUTTON_ACTION.equals(action)) {
+			KeyEvent event = intent.getParcelableExtra("event");
+			Log.d(TAG, "SERVICE: Received media button: " + event.getKeyCode());
+			if (event.getAction() != KeyEvent.ACTION_UP) {
+				return START_STICKY;
+			}
+			switch(event.getKeyCode()) {
+			case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
+				if (player_.isPlaying()){
+					pauseMusic();
+				}
+				else {
+					playMusic();
+				}
+				break;
+			case KeyEvent.KEYCODE_MEDIA_NEXT:
+				if (player_.isPlaying()) {
+					playNext();
+				}
+				break;
+			case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
+				//rewind...
+				playMusic();
+				break;
+			default:
+				break;
 			}
 		}
 		return START_STICKY;
@@ -276,6 +309,9 @@ public class MalarmPlayerService
 			if ((!path.endsWith(".m4p")) && f.exists()) {
 				break;
 			}
+			int pos = currentPlaylist_.getCurrentPosition();
+			pos = (pos + 1) % currentPlaylist_.size();
+			currentPlaylist_.setPosition(pos);
 		}
 		Log.i(TAG, "playMusic: " + path);
 		//TODO: get title from file
@@ -367,10 +403,15 @@ public class MalarmPlayerService
 		player_.setOnErrorListener(this);
 		receiver_ = new UnpluggedReceiver();
 		registerReceiver(receiver_, new IntentFilter(Intent.ACTION_HEADSET_PLUG));
+		AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		mediaButtonReceiver_ = new ComponentName(getPackageName(), UnpluggedReceiver.class.getName());
+		manager.registerMediaButtonEventReceiver(mediaButtonReceiver_);
 	}
 	
 	@Override
 	public void onDestroy(){
+		AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		manager.unregisterMediaButtonEventReceiver(mediaButtonReceiver_);
 		unregisterReceiver(receiver_);
 		player_ = null;
 		currentPlaylist_ = null;
@@ -425,6 +466,17 @@ public class MalarmPlayerService
 					i.setAction(UNPLUGGED_ACTION);
 					context.startService(i);
 				}
+			}
+			else if(Intent.ACTION_MEDIA_BUTTON.equals(action)){
+				Log.d(TAG, "media button");
+				KeyEvent event = intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
+				if (null == event) {
+					return;
+				}
+				Intent i = new Intent(context, MalarmPlayerService.class);
+				i.setAction(MEDIA_BUTTON_ACTION);
+				i.putExtra("event", event);
+				context.startService(i);
 			}
 		}
 	}

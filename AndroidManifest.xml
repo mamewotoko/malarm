@@ -28,8 +28,8 @@
         </activity>
         <activity android:name="PlaylistViewer" />
         <activity android:name="MalarmPreference" />
-        <receiver android:name="MalarmPlayerService$Receiver">
-        </receiver>
+        <receiver android:name="MalarmPlayerService$Receiver" />
+        <receiver android:name="MalarmPlayerService$UnpluggedReceiver" />
         <service android:name="MalarmPlayerService" />
         <receiver android:name="MalarmWidgetProvider" >
             <intent-filter>

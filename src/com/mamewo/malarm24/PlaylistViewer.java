@@ -24,7 +24,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.MediaController.MediaPlayerControl;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -67,7 +66,7 @@ public final class PlaylistViewer
 		boolean result = bindService(intent, this, Context.BIND_AUTO_CREATE);
 		Log.d(TAG, "bindService: " + result);
 	}
-	
+
 	@Override
 	public void onStart() {
 		super.onStart();
@@ -194,7 +193,6 @@ public final class PlaylistViewer
 			String title = getItem(position);
 			TextView titleView = (TextView) view.findViewById(R.id.title_view);
 			titleView.setText(title);
-			
 			return view;
 		}
 	}
