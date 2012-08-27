@@ -263,6 +263,10 @@ public class MalarmPlayerService
 		currentPlaylist_ = list;
 	}
 	
+	public Playlist getCurrentPlaylist() {
+		return currentPlaylist_;
+	}
+	
 	/**
 	 * play given playlist from beginning.
 	 * 
@@ -279,7 +283,6 @@ public class MalarmPlayerService
 			return false;
 		}
 		playlist.setPosition(pos);
-		Log.d(TAG, "playMusic playlist: playMusic pos");
 		return playMusic(notify);
 	}
 	

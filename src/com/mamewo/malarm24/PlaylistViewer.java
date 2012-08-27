@@ -23,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -194,6 +195,20 @@ public final class PlaylistViewer
 			String title = getItem(position);
 			TextView titleView = (TextView) view.findViewById(R.id.title_view);
 			titleView.setText(title);
+			ImageView playIcon = (ImageView) view.findViewById(R.id.play_icon);
+			Playlist currentList = player_.getCurrentPlaylist();
+			if (currentList == playlist_ && currentList.getCurrentPosition() == position) {
+				if (player_.isPlaying()) {
+					playIcon.setImageResource(android.R.drawable.ic_media_play);
+				}
+				else {
+					playIcon.setImageResource(android.R.drawable.ic_media_pause);
+				}
+				playIcon.setVisibility(View.VISIBLE);
+			}
+			else {
+				playIcon.setVisibility(View.GONE);
+			}
 			return view;
 		}
 	}
@@ -217,7 +232,7 @@ public final class PlaylistViewer
 		if (null != player_) {
 			playButton_.setChecked(player_.isPlaying());
 		}
-		//TOOO: update list
+		adapter_.notifyDataSetChanged();
 	}
 	
 	@Override
