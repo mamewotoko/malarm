@@ -73,18 +73,18 @@ public final class PlaylistViewer
 		super.onStart();
 		Intent i = getIntent();
 		String which = i.getStringExtra("playlist");
-		int title_id = 0;
+		int titleID = 0;
 		if ("sleep".equals(which)) {
 			playlist_ = MalarmPlayerService.sleepPlaylist_;
-			title_id = R.string.sleep_playlist_viewer_title;
+			titleID = R.string.sleep_playlist_viewer_title;
 		}
 		else {
 			playlist_ = MalarmPlayerService.wakeupPlaylist_;
-			title_id = R.string.wakeup_playlist_viewer_title;
+			titleID = R.string.wakeup_playlist_viewer_title;
 		}
 		adapter_ = new MusicAdapter(this, playlist_.toList());
 		listView_.setAdapter(adapter_);
-		setTitle(title_id);
+		setTitle(titleID);
 		updateUI();
 	}
 
@@ -230,6 +230,7 @@ public final class PlaylistViewer
 				player_.pauseMusic();
 			}
 			else {
+				player_.setCurrentPlaylist(playlist_);
 				player_.playMusic();
 			}
 			playButton_.setChecked(player_.isPlaying());

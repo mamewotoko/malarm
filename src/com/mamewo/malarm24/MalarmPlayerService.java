@@ -259,6 +259,10 @@ public class MalarmPlayerService
 		iconId_ = 0;
 	}
 
+	public void setCurrentPlaylist(Playlist list) {
+		currentPlaylist_ = list;
+	}
+	
 	/**
 	 * play given playlist from beginning.
 	 * 
@@ -286,7 +290,7 @@ public class MalarmPlayerService
 		}
 		return playMusic();
 	}
-
+	
 	public boolean playMusic() {
 		if (null == currentPlaylist_ || currentPlaylist_.isEmpty()) {
 			Log.i(TAG, "playMusic: playlist is null");
@@ -299,7 +303,6 @@ public class MalarmPlayerService
 		String path = "";
 		//skip unsupported files filtering by filename ...
 		for (int i = 0; i < 10; i++) {
-			Log.d(TAG, "checking: " + path);
 			path = currentPlaylist_.getURL();
 			if (path.startsWith("http://")) {
 				break;
