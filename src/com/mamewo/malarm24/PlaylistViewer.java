@@ -63,6 +63,7 @@ public final class PlaylistViewer
 		Intent intent = new Intent(this, MalarmPlayerService.class);
 		startService(intent);
 		//TODO: handle failure of bindService
+		//TODO: connect callback functions
 		boolean result = bindService(intent, this, Context.BIND_AUTO_CREATE);
 		Log.d(TAG, "bindService: " + result);
 	}
@@ -202,6 +203,7 @@ public final class PlaylistViewer
 		Log.d(TAG, "onServiceConnected");
 		player_ = ((MalarmPlayerService.LocalBinder)binder).getService();
 		playButton_.setEnabled(true);
+		updateUI();
 	}
 
 	@Override
