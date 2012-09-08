@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">まらーむ</string>
     <string name="stop_music">音楽をとめる</string>
-    <string name="music_stopped">まらーむををとめました</string>
+    <string name="music_stopped">まらーむをとめました</string>
 
     <string name="set_alarm">まらーむをセット</string>
     <string name="stop_alarm">まらーむをとめる</string>

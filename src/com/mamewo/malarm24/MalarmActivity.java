@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
@@ -83,6 +84,8 @@ public class MalarmActivity
 	private Pattern TIME_PATTERN = Pattern.compile("(\\d+)時((\\d+)分|半)?");
 	final static
 	private Pattern AFTER_TIME_PATTERN = Pattern.compile("((\\d+)時間)?((\\d+)分|半)?.*");
+	final static
+	private int DIALOG_PLAY_SLEEP_TUNE = 1;
 
 	protected static String prefPlaylistPath;
 	private static String[] WEB_PAGE_LIST = new String []{ MYURL };
@@ -852,23 +855,7 @@ public class MalarmActivity
 			}
 			shortVibrate();
 			setAlarm();
-			new AlertDialog.Builder(this)
-			.setTitle(R.string.ask_play_sleep_tune)
-			.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int whichButton) {
-					playSleepMusic(state_.targetTime_.getTimeInMillis());
-					updateUI();
-				}
-			})
-			.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface arg0, int arg1) {
-					updateUI();
-				}
-			})
-			.create()
-			.show();
+			showDialog(DIALOG_PLAY_SLEEP_TUNE);
 			return true;
 		}
 		//TODO: implement
@@ -895,7 +882,34 @@ public class MalarmActivity
 		}
 		return false;
 	}
-
+	
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		Dialog dialog = null;
+		switch(id){
+		case DIALOG_PLAY_SLEEP_TUNE:
+			dialog = new AlertDialog.Builder(this)
+			.setTitle(R.string.ask_play_sleep_tune)
+			.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int whichButton) {
+					playSleepMusic(state_.targetTime_.getTimeInMillis());
+					updateUI();
+				}
+			})
+			.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface arg0, int arg1) {
+					updateUI();
+				}
+			})
+			.create();
+			break;
+		default:
+			break;
+		}
+		return dialog;
+	}
 	private class TimePickerTime
 	{
 		public final int hour_;
