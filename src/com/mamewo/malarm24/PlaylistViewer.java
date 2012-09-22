@@ -168,7 +168,13 @@ public final class PlaylistViewer
 		if (null == player_) {
 			return;
 		}
-		player_.playMusic(playlist_, pos, true);
+		Playlist currentList = player_.getCurrentPlaylist();
+		if (player_.isPlaying() && currentList == playlist_ && currentList.getCurrentPosition() == pos) {
+			player_.pauseMusic();
+		}
+		else {
+			player_.playMusic(playlist_, pos, true);
+		}
 		updateUI();
 	}
 	
@@ -248,6 +254,7 @@ public final class PlaylistViewer
 				player_.setCurrentPlaylist(playlist_);
 				player_.playMusic();
 			}
+			adapter_.notifyDataSetChanged();
 			playButton_.setChecked(player_.isPlaying());
 		}
 	}
