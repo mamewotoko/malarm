@@ -67,7 +67,6 @@
     <string name="stop_loading">읽기를 중지했습니다 </string>
     <string name="volume_minus"> - </string>
     <string name="volume_plus"> + </string>
-    <string name="low_memory">메모리가 적으므로 멈출지도? </string>
         
     <string name="sleep_playlist_viewer_title">휴식 플레이 리스트 (sleep.m3u)</string>
     <string name="wakeup_playlist_viewer_title">안녕하세요 플레이 리스트 (wakeup.m3u)</string>
