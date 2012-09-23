@@ -75,10 +75,16 @@ public final class PlaylistViewer
 		String which = i.getStringExtra("playlist");
 		int titleID = 0;
 		if ("sleep".equals(which)) {
+			if (null == MalarmPlayerService.sleepPlaylist_) {
+				player_.loadPlaylist();
+			}
 			playlist_ = MalarmPlayerService.sleepPlaylist_;
 			titleID = R.string.sleep_playlist_viewer_title;
 		}
 		else {
+			if (null == MalarmPlayerService.wakeupPlaylist_) {
+				player_.loadPlaylist();
+			}
 			playlist_ = MalarmPlayerService.wakeupPlaylist_;
 			titleID = R.string.wakeup_playlist_viewer_title;
 		}
