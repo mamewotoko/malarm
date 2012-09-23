@@ -68,7 +68,6 @@
     <string name="stop_loading">読み込みを中止しました</string>
     <string name="volume_minus"> - </string>
     <string name="volume_plus"> + </string>
-    <string name="low_memory">メモリが少ないので止まるかも?</string>
         
     <string name="sleep_playlist_viewer_title">おやすみプレイリスト(sleep.m3u)</string>
     <string name="wakeup_playlist_viewer_title">おはようプレイリスト(wakeup.m3u)</string>
