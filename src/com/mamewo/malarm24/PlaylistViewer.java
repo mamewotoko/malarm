@@ -64,7 +64,6 @@ public final class PlaylistViewer
 		Intent intent = new Intent(this, MalarmPlayerService.class);
 		startService(intent);
 		//TODO: handle failure of bindService
-		//TODO: connect callback functions
 		boolean result = bindService(intent, this, Context.BIND_AUTO_CREATE);
 		Log.d(TAG, "bindService: " + result);
 	}
@@ -102,11 +101,10 @@ public final class PlaylistViewer
 		case R.id.save_playlist:
 			try {
 				playlist_.save();
-				//TODO: localize
-				MalarmActivity.showMessage(this, "saved");
-			} catch (IOException e) {
-				//TODO: localize
-				MalarmActivity.showMessage(this, "failed: " + e.getMessage());
+				MalarmActivity.showMessage(this, getString(R.string.saved));
+			}
+			catch (IOException e) {
+				MalarmActivity.showMessage(this, getString(R.string.failed) + ": " + e.getMessage());
 			}
 			break;
 		default:
@@ -169,7 +167,10 @@ public final class PlaylistViewer
 			return;
 		}
 		Playlist currentList = player_.getCurrentPlaylist();
-		if (player_.isPlaying() && currentList == playlist_ && currentList.getCurrentPosition() == pos) {
+		if (player_.isPlaying()
+			&& currentList == playlist_
+			&& currentList.getCurrentPosition() == pos)
+		{
 			player_.pauseMusic();
 		}
 		else {

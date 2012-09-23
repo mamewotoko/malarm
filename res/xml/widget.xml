@@ -21,6 +21,5 @@
     android:initialLayout="@layout/appwidget"
     >
 </appwidget-provider>
-
 <!-- 86400000 is the value of AlarmManager.INTERVAL_DAY - or once per day. -->
 

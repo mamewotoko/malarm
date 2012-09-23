@@ -94,5 +94,6 @@
     
     <string name="play">再生</string>
     <string name="pause">停止</string>
-    
+    <string name="saved">保存しました</string>
+    <string name="failed">失敗しました</string>
 </resources>

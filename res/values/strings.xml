@@ -47,7 +47,6 @@
 
     <string name="pref_playlist_does_not_exist">Playlist does not exist</string>
     <string name="notify_waiting_title">malarm is set</string>
-    <string name="notify_wakeup_title">Playing malarm tunes</string>
     <string name="notify_wakeup_text">Good morning!</string>
     <string name="pref_sleep_volume_title">Sleep tunes volume</string>
     <string name="pref_wakeup_volume_title">Wakeup tunes volume</string>
@@ -70,7 +69,6 @@
     <string name="stop_loading">Loading aborted</string>
     <string name="volume_minus"> - </string>
     <string name="volume_plus"> + </string>
-    <string name="low_memory">low memory occur, malarm will be stopped</string>
     <string name="sleep_playlist_viewer_title">malarm: Sleep playlist (sleep.m3u)</string>
     <string name="wakeup_playlist_viewer_title">malarm: Wakeup playlist (wakeup.m3u)</string>
     <string name="pref_about_title">About malarm</string>
@@ -97,4 +95,6 @@
     <string name="play">play</string>
     <string name="pause">pause</string>
     
+    <string name="saved">Saved</string>
+    <string name="failed">Failed</string>
 </resources>
