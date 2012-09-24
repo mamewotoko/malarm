@@ -830,7 +830,8 @@ public class MalarmActivity
 		startActivityForResult(speechIntent_, SPEECH_RECOGNITION_REQUEST_CODE);
 	}
 	
-	public static void showMessage(Context c, String message) {
+	static
+	public void showMessage(Context c, String message) {
 		Toast.makeText(c, message, Toast.LENGTH_LONG).show();
 	}
 
@@ -1041,13 +1042,13 @@ public class MalarmActivity
 		Log.d(TAG, "onServiceConnected");
 		player_ = ((MalarmPlayerService.LocalBinder)binder).getService();
 		updateUI();
-		player_.setPlayerStateListener(this);
+		player_.addPlayerStateListener(this);
 	}
 
 	@Override
 	public void onServiceDisconnected(ComponentName name) {
 		Log.d(TAG, "onServiceDisconnected");
-		player_.clearPlayerStateListener();
+		player_.removePlayerStateListener(this);
 		player_ = null;
 	}
 

@@ -3,6 +3,8 @@ package com.mamewo.malarm24;
 import java.io.IOException;
 import java.util.List;
 
+import com.mamewo.malarm24.MalarmPlayerService.PlayerStateListener;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ComponentName;
@@ -33,7 +35,8 @@ public final class PlaylistViewer
 	implements OnItemLongClickListener,
 	OnItemClickListener,
 	OnClickListener,
-	ServiceConnection
+	ServiceConnection,
+	PlayerStateListener
 {
 	private ListView listView_;
 	//private ArrayAdapter<String> adapter_;
@@ -48,6 +51,7 @@ public final class PlaylistViewer
 	static private final int DELETE_INDEX = 2;
 	static final
 	private String TAG = "malarm";
+	private String playlistName_;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
@@ -61,39 +65,15 @@ public final class PlaylistViewer
 		playButton_.setOnClickListener(this);
 		playButton_.setEnabled(false);
 		player_ = null;
+		Intent i = getIntent();
+		playlistName_ = i.getStringExtra("playlist");
 		Intent intent = new Intent(this, MalarmPlayerService.class);
 		startService(intent);
 		//TODO: handle failure of bindService
 		boolean result = bindService(intent, this, Context.BIND_AUTO_CREATE);
 		Log.d(TAG, "bindService: " + result);
 	}
-
-	@Override
-	public void onStart() {
-		super.onStart();
-		Intent i = getIntent();
-		String which = i.getStringExtra("playlist");
-		int titleID = 0;
-		if ("sleep".equals(which)) {
-			if (null == MalarmPlayerService.sleepPlaylist_) {
-				player_.loadPlaylist();
-			}
-			playlist_ = MalarmPlayerService.sleepPlaylist_;
-			titleID = R.string.sleep_playlist_viewer_title;
-		}
-		else {
-			if (null == MalarmPlayerService.wakeupPlaylist_) {
-				player_.loadPlaylist();
-			}
-			playlist_ = MalarmPlayerService.wakeupPlaylist_;
-			titleID = R.string.wakeup_playlist_viewer_title;
-		}
-		adapter_ = new MusicAdapter(this, playlist_.toList());
-		listView_.setAdapter(adapter_);
-		setTitle(titleID);
-		updateUI();
-	}
-
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
@@ -230,14 +210,33 @@ public final class PlaylistViewer
 	public void onServiceConnected(ComponentName name, IBinder binder) {
 		Log.d(TAG, "onServiceConnected");
 		player_ = ((MalarmPlayerService.LocalBinder)binder).getService();
+		player_.addPlayerStateListener(this);
 		playButton_.setEnabled(true);
+		int titleID = 0;
+		if ("sleep".equals(playlistName_)) {
+			if (null == MalarmPlayerService.sleepPlaylist_) {
+				player_.loadPlaylist();
+			}
+			playlist_ = MalarmPlayerService.sleepPlaylist_;
+			titleID = R.string.sleep_playlist_viewer_title;
+		}
+		else {
+			if (null == MalarmPlayerService.wakeupPlaylist_) {
+				player_.loadPlaylist();
+			}
+			playlist_ = MalarmPlayerService.wakeupPlaylist_;
+			titleID = R.string.wakeup_playlist_viewer_title;
+		}
+		adapter_ = new MusicAdapter(this, playlist_.toList());
+		listView_.setAdapter(adapter_);
+		setTitle(titleID);
 		updateUI();
 	}
 
 	@Override
 	public void onServiceDisconnected(ComponentName name) {
 		Log.d(TAG, "onServiceDisconnected");
-		player_.clearPlayerStateListener();
+		player_.removePlayerStateListener(this);
 		player_ = null;
 	}
 
@@ -261,8 +260,16 @@ public final class PlaylistViewer
 				player_.setCurrentPlaylist(playlist_);
 				player_.playMusic();
 			}
-			adapter_.notifyDataSetChanged();
-			playButton_.setChecked(player_.isPlaying());
 		}
+	}
+
+	@Override
+	public void onStartMusic(String title) {
+		updateUI();
+	}
+
+	@Override
+	public void onStopMusic() {
+		updateUI();
 	}
 }

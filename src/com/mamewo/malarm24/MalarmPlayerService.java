@@ -3,6 +3,8 @@ package com.mamewo.malarm24;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -57,6 +59,37 @@ public class MalarmPlayerService
 	final static
 	private int NOTIFY_PLAYING_ID = 1;
 	final private Class<MalarmActivity> userClass_ = MalarmActivity.class;
+
+	//error code from base/include/media/stagefright/MediaErrors.h
+	final static
+	private int MEDIA_ERROR_BASE = -1000;
+	final static
+	private int ERROR_ALREADY_CONNECTED = MEDIA_ERROR_BASE;
+	final static
+	private int ERROR_NOT_CONNECTED = MEDIA_ERROR_BASE - 1;
+	final static
+	private int ERROR_UNKNOWN_HOST = MEDIA_ERROR_BASE - 2;
+	final static
+	private int ERROR_CANNOT_CONNECT = MEDIA_ERROR_BASE - 3;
+	final static
+	private int ERROR_IO = MEDIA_ERROR_BASE - 4;
+	final static
+	private int ERROR_CONNECTION_LOST = MEDIA_ERROR_BASE - 5;
+	final static
+	private int ERROR_MALFORMED = MEDIA_ERROR_BASE - 7;
+	final static
+	private int ERROR_OUT_OF_RANGE = MEDIA_ERROR_BASE - 8;
+	final static
+	private int ERROR_BUFFER_TOO_SMALL = MEDIA_ERROR_BASE - 9;
+	final static
+	private int ERROR_UNSUPPORTED = MEDIA_ERROR_BASE - 10;
+	final static
+	private int ERROR_END_OF_STREAM = MEDIA_ERROR_BASE - 11;
+	// Not technically an error.
+	final static
+	private int INFO_FORMAT_CHANGED = MEDIA_ERROR_BASE - 12;
+	final static
+	private int INFO_DISCONTINUITY = MEDIA_ERROR_BASE - 13;
 	
 	final static
 	private String TAG = "malarm";
@@ -76,9 +109,9 @@ public class MalarmPlayerService
 	static
 	public M3UPlaylist sleepPlaylist_ = null;
 	private Ringtone tone_ = null;
-	private PlayerStateListener listener_ = null;
+	private List<PlayerStateListener> listenerList_;
 	private String currentNoteTitle_ = "";
-
+	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId){
 		String action = intent.getAction();
@@ -136,10 +169,6 @@ public class MalarmPlayerService
 			boolean stop = pref.getBoolean("stop_on_unplugged", true);
 			if (stop) {
 				pauseMusic();
-				if (null != listener_) {
-					listener_.onStopMusic();
-				}
-				//TODO: fix notification
 			}
 		}
 		else if (MEDIA_BUTTON_ACTION.equals(action)) {
@@ -230,12 +259,63 @@ public class MalarmPlayerService
 		playNext();
 	}
 
+	private String ErrorCode2String(int err) {
+		String result;
+		switch(err){
+		//TODO: localize?
+		case ERROR_ALREADY_CONNECTED:
+			result = "Already Connected";
+			break;
+		case ERROR_NOT_CONNECTED:
+			result = "Not Connected";
+			break;
+		case ERROR_UNKNOWN_HOST:
+			result = "Unknown Host";
+			break;
+		case ERROR_CANNOT_CONNECT:
+			result = "Cannot Connect";
+			break;
+		case ERROR_IO:
+			result = "I/O Error";
+			break;
+		case ERROR_CONNECTION_LOST:
+			result = "Connection Lost";
+			break;
+		case ERROR_MALFORMED:
+			result = "Malformed Media";
+			break;
+		case ERROR_OUT_OF_RANGE:
+			result = "Out of Range";
+			break;
+		case ERROR_BUFFER_TOO_SMALL:
+			result = "Buffer too Small";
+			break;
+		case ERROR_UNSUPPORTED:
+			result = "Unsupported Media";
+			break;
+		case ERROR_END_OF_STREAM:
+			result = "End of Stream";
+			break;
+		case INFO_FORMAT_CHANGED:
+			result = "Format Changed";
+			break;
+		case INFO_DISCONTINUITY:
+			result = "Info Discontinuity";
+			break;
+		default:
+			result = "Unknown error: " + err;
+			break;
+		}
+		return result;
+	}
+
 	// This method is not called when DRM error occurs
 	public boolean onError(MediaPlayer mp, int what, int extra) {
-		//TODO: show error message to GUI
-		Log.i(TAG, "onError is called, cannot play this media");
-		//TODO: call playNext if error occurred while playing music
+		String error = ErrorCode2String(extra);
+		Log.i(TAG, "onError is called, cannot play this media: " + error);
+		MalarmActivity.showMessage(this, error);
 		playNext();
+		//onCompletion is not called
 		return true;
 	}
 
@@ -327,8 +407,8 @@ public class MalarmPlayerService
 			player_.setDataSource(path);
 			player_.prepare();
 			player_.start();
-			if (null != listener_) {
-				listener_.onStartMusic(currentMusicName_);
+			for (PlayerStateListener listener: listenerList_) {
+				listener.onStartMusic(currentMusicName_);
 			}
 			if (iconId_ != 0) {
 				//TODO: modify notification title
@@ -347,8 +427,8 @@ public class MalarmPlayerService
 		}
 		if(player_.isPlaying()){
 			player_.stop();
-			if (null != listener_) {
-				listener_.onStopMusic();
+			for (PlayerStateListener listener: listenerList_) {
+				listener.onStopMusic();
 			}
 		}
 		//umm...
@@ -362,8 +442,8 @@ public class MalarmPlayerService
 			return;
 		}
 		player_.pause();
-		if (null != listener_) {
-			listener_.onStopMusic();
+		for (PlayerStateListener listener: listenerList_) {
+			listener.onStopMusic();
 		}
 		//umm...
 		if(iconId_ == R.drawable.playing) {
@@ -400,6 +480,7 @@ public class MalarmPlayerService
 	@Override
 	public void onCreate(){
 		super.onCreate();
+		listenerList_ = new ArrayList<PlayerStateListener>();
 		tone_ = null;
 		currentMusicName_ = null;
 		loadPlaylist();
@@ -487,12 +568,12 @@ public class MalarmPlayerService
 		}
 	}
 	
-	public void setPlayerStateListener(PlayerStateListener listener) {
-		listener_ = listener;
+	public void addPlayerStateListener(PlayerStateListener listener) {
+		listenerList_.add(listener);
 	}
 	
-	public void clearPlayerStateListener() {
-		listener_ = null;
+	public void removePlayerStateListener(PlayerStateListener listener) {
+		listenerList_.remove(listener);
 	}
 
 	public interface PlayerStateListener {
