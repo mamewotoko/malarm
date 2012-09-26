@@ -751,6 +751,7 @@ public class MalarmActivity
 				return true;
 			}
 			player_.pauseMusic();
+			//TODO: remove?
 			if(null == state_.targetTime_){
 				player_.clearNotification();
 			}

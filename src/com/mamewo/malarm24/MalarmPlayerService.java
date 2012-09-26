@@ -45,6 +45,10 @@ public class MalarmPlayerService
 	final static
 	public String SLEEP_ACTION = PACKAGE_NAME + ".SLEEP_ACTION";
 	final static
+	public String PLAYSTOP_ACTION = PACKAGE_NAME + ".PLAYSTOP_ACTION";
+	final static
+	public String PLAYNEXT_ACTION = PACKAGE_NAME + ".PLAYNEXT_ACTION";
+	final static
 	public String STOP_MUSIC_ACTION = PACKAGE_NAME + ".STOP_MUSIC_ACTION";
 	final static
 	public String LOAD_PLAYLIST_ACTION = PACKAGE_NAME + ".LOAD_PLAYLIST_ACTION";
@@ -115,8 +119,8 @@ public class MalarmPlayerService
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId){
 		String action = intent.getAction();
+		Log.d(TAG, "onStartCommand: " + action);
 		if(START_WAKEUP_SERVICE_ACTION.equals(action)){
-			Log.d(TAG, "onStartCommand: wakeup!: " + wakeupPlaylist_);
 			loadPlaylist();
 			SharedPreferences pref =
 					PreferenceManager.getDefaultSharedPreferences(this);
@@ -156,8 +160,27 @@ public class MalarmPlayerService
 		else if (STOP_MUSIC_ACTION.equals(action)) {
 			stopMusic();
 			//TODO: check alarm info
-			showNotification(currentNoteTitle_, "");
+			//if (isAlarmSet) {
+			//showNotification(currentNoteTitle_, "");
+			//}
 			//TODO: stop if activity is dead / stop activity
+		}
+		else if (PLAYSTOP_ACTION.equals(action)) {
+			if (isPlaying()) {
+				pauseMusic();
+			}
+			else {
+				if (null == currentPlaylist_) {
+					loadPlaylist();
+					currentPlaylist_ = wakeupPlaylist_;
+				}
+				playMusic(true);
+			}
+		}
+		else if (PLAYNEXT_ACTION.equals(action)) {
+			if (isPlaying()) {
+				playNext();
+			}
 		}
 		else if (LOAD_PLAYLIST_ACTION.equals(action)) {
 			Log.d(TAG, "LOAD_PLAYLIST_ACTION");
@@ -183,7 +206,7 @@ public class MalarmPlayerService
 					pauseMusic();
 				}
 				else {
-					playMusic();
+					playMusic(true);
 				}
 				break;
 			case KeyEvent.KEYCODE_MEDIA_NEXT:
@@ -245,6 +268,7 @@ public class MalarmPlayerService
 		context.startActivity(i);
 	}
 
+	//TODO: show notification if it is shown previous
 	public void playNext() {
 		if (isPlaying()) {
 			stopMusic();

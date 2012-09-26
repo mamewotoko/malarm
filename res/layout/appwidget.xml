@@ -8,7 +8,14 @@
        android:id="@+id/widget_play"
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
-       android:text="Play" />
+       android:text="Play/Pause" />
+
+   <Button
+       android:id="@+id/widget_next"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="Next" />
+
    <LinearLayout
        android:layout_width="fill_parent"
        android:layout_height="wrap_content"
