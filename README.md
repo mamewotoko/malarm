@@ -68,6 +68,9 @@ TODO
     * long press set alarm button
       -> rotate
       -> then notification disappears but alarm is set
+    * alarm set
+      -> pause music from menu
+      -> notification title is incorrect
 * localize: French, Chinese
 * support podcast
 * manage audio focus
