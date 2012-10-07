@@ -159,11 +159,6 @@ public class MalarmPlayerService
 		}
 		else if (STOP_MUSIC_ACTION.equals(action)) {
 			stopMusic();
-			//TODO: check alarm info
-			//if (isAlarmSet) {
-			//showNotification(currentNoteTitle_, "");
-			//}
-			//TODO: stop if activity is dead / stop activity
 		}
 		else if (PLAYSTOP_ACTION.equals(action)) {
 			if (isPlaying()) {
@@ -459,6 +454,10 @@ public class MalarmPlayerService
 		if(iconId_ == R.drawable.playing) {
 			clearNotification();
 		}
+		//clear music title
+		if (iconId_ == R.drawable.img) {
+			showNotification(currentNoteTitle_, "");
+		}
 	}
 
 	public void pauseMusic() {
@@ -472,6 +471,10 @@ public class MalarmPlayerService
 		//umm...
 		if(iconId_ == R.drawable.playing) {
 			clearNotification();
+		}
+		//clear music title
+		if (iconId_ == R.drawable.img) {
+			showNotification(currentNoteTitle_, "");
 		}
 	}
 	
