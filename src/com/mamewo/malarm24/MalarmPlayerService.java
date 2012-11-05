@@ -118,9 +118,15 @@ public class MalarmPlayerService
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId){
-		String action = intent.getAction();
-		Log.d(TAG, "onStartCommand: " + action);
+		String action = null;
+		if(null != intent){
+			action = intent.getAction();
+		}
+		if(action == null) {
+			return START_STICKY;
+		}
 		if(START_WAKEUP_SERVICE_ACTION.equals(action)){
+			Log.d(TAG, "onStartCommand: wakeup");
 			loadPlaylist();
 			SharedPreferences pref =
 					PreferenceManager.getDefaultSharedPreferences(this);
