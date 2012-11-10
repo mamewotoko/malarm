@@ -215,7 +215,7 @@ public class MalarmPlayerService
 	}
 
 	public void showNotification(String title, String description) {
-		showNotification(title, description, R.drawable.img);
+		showNotification(title, description, R.drawable.ic_status);
 	}
 
 	public void clearNotification() {
