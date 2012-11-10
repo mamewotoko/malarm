@@ -12,7 +12,7 @@ public interface Playlist
 	 * @return iterator which refers wakeup playlist, 
 	 * which has filename relative to base path
 	 */
-	public String next();
-
+	public String getURL();
+	public int getCurrentPosition();
 	public void setPosition(int pos);
 }

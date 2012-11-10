@@ -1,64 +1,79 @@
 package com.mamewo.malarm24;
 
 import java.io.IOException;
+import java.util.List;
 
+import com.mamewo.malarm24.MalarmPlayerService.PlayerStateListener;
+
+import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ListActivity;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.ToggleButton;
 
 public final class PlaylistViewer
-	extends ListActivity
-	implements OnItemLongClickListener, OnItemClickListener
+	extends Activity
+	implements OnItemLongClickListener,
+	OnItemClickListener,
+	OnClickListener,
+	ServiceConnection,
+	PlayerStateListener
 {
 	private ListView listView_;
-	private ArrayAdapter<String> adapter_;
+	//private ArrayAdapter<String> adapter_;
+	private MusicAdapter adapter_;
 	private M3UPlaylist playlist_;
-
+	private MalarmPlayerService player_;
+	private ToggleButton playButton_;
+	
 	//R.array.tune_operation
 	static private final int UP_INDEX = 0;
 	static private final int DOWN_INDEX = 1;
 	static private final int DELETE_INDEX = 2;
+	static final
+	private String TAG = "malarm";
+	private String playlistName_;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
-		listView_ = getListView();
+		setContentView(R.layout.playlist_viewer);
+		listView_ = (ListView) findViewById(R.id.play_list_view);
 		listView_.setLongClickable(true);
 		listView_.setOnItemLongClickListener(this);
 		listView_.setOnItemClickListener(this);
+		playButton_ = (ToggleButton) findViewById(R.id.play_button);
+		playButton_.setOnClickListener(this);
+		playButton_.setEnabled(false);
+		player_ = null;
+		Intent i = getIntent();
+		playlistName_ = i.getStringExtra("playlist");
+		Intent intent = new Intent(this, MalarmPlayerService.class);
+		startService(intent);
+		//TODO: handle failure of bindService
+		boolean result = bindService(intent, this, Context.BIND_AUTO_CREATE);
+		Log.d(TAG, "bindService: " + result);
 	}
 	
-	@Override
-	public void onStart() {
-		super.onStart();
-		Intent i = getIntent();
-		String which = i.getStringExtra("playlist");
-		int title_id = 0;
-		if ("sleep".equals(which)) {
-			playlist_ = MalarmPlayerService.sleepPlaylist_;
-			title_id = R.string.sleep_playlist_viewer_title;
-		}
-		else {
-			playlist_ = MalarmPlayerService.wakeupPlaylist_;
-			title_id = R.string.wakeup_playlist_viewer_title;
-		}
-		adapter_ = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, playlist_.toList());
-		setListAdapter(adapter_);
-		setTitle(title_id);
-	}
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
@@ -72,11 +87,10 @@ public final class PlaylistViewer
 		case R.id.save_playlist:
 			try {
 				playlist_.save();
-				//TODO: localize
-				MalarmActivity.showMessage(this, "saved");
-			} catch (IOException e) {
-				//TODO: localize
-				MalarmActivity.showMessage(this, "failed: " + e.getMessage());
+				MalarmActivity.showMessage(this, getString(R.string.saved));
+			}
+			catch (IOException e) {
+				MalarmActivity.showMessage(this, getString(R.string.failed) + ": " + e.getMessage());
 			}
 			break;
 		default:
@@ -92,6 +106,7 @@ public final class PlaylistViewer
 									View view, int position, long id) {
 		final int pos = position;
 		final String title = (String)adapter_view.getItemAtPosition(pos);
+		//TODO: use showDialog
 		new AlertDialog.Builder(PlaylistViewer.this)
 		.setTitle(title)
 		//TODO: show detail of tune
@@ -134,12 +149,127 @@ public final class PlaylistViewer
 
 	@Override
 	public void onItemClick(AdapterView<?> adapter, View view, int pos, long id) {
-		Intent i = getIntent();
-		String which = i.getStringExtra("playlist");
-		Intent playIntent = new Intent(this, MalarmActivity.class);
-		playIntent.setAction(MalarmActivity.PLAY_ACTION);
-		playIntent.putExtra("playlist", which);
-		playIntent.putExtra("position", pos);
-		startActivity(playIntent);
+		if (null == player_) {
+			return;
+		}
+		Playlist currentList = player_.getCurrentPlaylist();
+		if (player_.isPlaying()
+			&& currentList == playlist_
+			&& currentList.getCurrentPosition() == pos)
+		{
+			player_.pauseMusic();
+		}
+		else {
+			player_.playMusic(playlist_, pos, true);
+		}
+		updateUI();
+	}
+	
+	final private
+	class MusicAdapter
+		extends ArrayAdapter<String>
+	{
+		public MusicAdapter(Context context) {
+			super(context, R.layout.playlist_item);
+		}
+		
+		public MusicAdapter(Context context, List<String> list) {
+			super(context, R.layout.playlist_item, list);
+		}
+		
+		public View getView(int position, View convertView, ViewGroup parent) {
+			View view;
+			if (null == convertView) {
+				view = View.inflate(PlaylistViewer.this, R.layout.playlist_item, null);
+			}
+			else {
+				view = convertView;
+			}
+			String title = getItem(position);
+			TextView titleView = (TextView) view.findViewById(R.id.title_view);
+			titleView.setText(title);
+			ImageView playIcon = (ImageView) view.findViewById(R.id.play_icon);
+			Playlist currentList = player_.getCurrentPlaylist();
+			if (currentList == playlist_ && currentList.getCurrentPosition() == position) {
+				if (player_.isPlaying()) {
+					playIcon.setImageResource(android.R.drawable.ic_media_play);
+				}
+				else {
+					playIcon.setImageResource(android.R.drawable.ic_media_pause);
+				}
+				playIcon.setVisibility(View.VISIBLE);
+			}
+			else {
+				playIcon.setVisibility(View.GONE);
+			}
+			return view;
+		}
+	}
+	
+	@Override
+	public void onServiceConnected(ComponentName name, IBinder binder) {
+		Log.d(TAG, "onServiceConnected");
+		player_ = ((MalarmPlayerService.LocalBinder)binder).getService();
+		player_.addPlayerStateListener(this);
+		playButton_.setEnabled(true);
+		int titleID = 0;
+		if ("sleep".equals(playlistName_)) {
+			if (null == MalarmPlayerService.sleepPlaylist_) {
+				player_.loadPlaylist();
+			}
+			playlist_ = MalarmPlayerService.sleepPlaylist_;
+			titleID = R.string.sleep_playlist_viewer_title;
+		}
+		else {
+			if (null == MalarmPlayerService.wakeupPlaylist_) {
+				player_.loadPlaylist();
+			}
+			playlist_ = MalarmPlayerService.wakeupPlaylist_;
+			titleID = R.string.wakeup_playlist_viewer_title;
+		}
+		adapter_ = new MusicAdapter(this, playlist_.toList());
+		listView_.setAdapter(adapter_);
+		setTitle(titleID);
+		updateUI();
+	}
+
+	@Override
+	public void onServiceDisconnected(ComponentName name) {
+		Log.d(TAG, "onServiceDisconnected");
+		player_.removePlayerStateListener(this);
+		player_ = null;
+	}
+
+	private void updateUI() {
+		if (null != player_) {
+			playButton_.setChecked(player_.isPlaying());
+		}
+		adapter_.notifyDataSetChanged();
+	}
+	
+	@Override
+	public void onClick(View view) {
+		if (view == playButton_) {
+			if (null == player_) {
+				return;
+			}
+			if (player_.isPlaying()) {
+				player_.pauseMusic();
+			}
+			else {
+				player_.setCurrentPlaylist(playlist_);
+				player_.playMusic();
+			}
+		}
+	}
+
+	@Override
+	public void onStartMusic(String title) {
+		updateUI();
+	}
+
+	@Override
+	public void onStopMusic() {
+		updateUI();
 	}
 }

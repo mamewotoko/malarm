@@ -3,11 +3,14 @@ package com.mamewo.malarm24;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -22,6 +25,7 @@ import android.os.IBinder;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.KeyEvent;
 
 /**
  * @author Takashi Masuyama <mamewotoko@gmail.com>
@@ -41,11 +45,17 @@ public class MalarmPlayerService
 	final static
 	public String SLEEP_ACTION = PACKAGE_NAME + ".SLEEP_ACTION";
 	final static
+	public String PLAYSTOP_ACTION = PACKAGE_NAME + ".PLAYSTOP_ACTION";
+	final static
+	public String PLAYNEXT_ACTION = PACKAGE_NAME + ".PLAYNEXT_ACTION";
+	final static
 	public String STOP_MUSIC_ACTION = PACKAGE_NAME + ".STOP_MUSIC_ACTION";
 	final static
 	public String LOAD_PLAYLIST_ACTION = PACKAGE_NAME + ".LOAD_PLAYLIST_ACTION";
 	final static
 	public String UNPLUGGED_ACTION = PACKAGE_NAME + ".UNPLUGGED_ACTION";
+	final static
+	public String MEDIA_BUTTON_ACTION = PACKAGE_NAME + ".MEDIA_BUTTON_ACTION";
 	final static
 	public String WAKEUP_PLAYLIST_FILENAME = "wakeup.m3u";
 	final static
@@ -53,6 +63,37 @@ public class MalarmPlayerService
 	final static
 	private int NOTIFY_PLAYING_ID = 1;
 	final private Class<MalarmActivity> userClass_ = MalarmActivity.class;
+
+	//error code from base/include/media/stagefright/MediaErrors.h
+	final static
+	private int MEDIA_ERROR_BASE = -1000;
+	final static
+	private int ERROR_ALREADY_CONNECTED = MEDIA_ERROR_BASE;
+	final static
+	private int ERROR_NOT_CONNECTED = MEDIA_ERROR_BASE - 1;
+	final static
+	private int ERROR_UNKNOWN_HOST = MEDIA_ERROR_BASE - 2;
+	final static
+	private int ERROR_CANNOT_CONNECT = MEDIA_ERROR_BASE - 3;
+	final static
+	private int ERROR_IO = MEDIA_ERROR_BASE - 4;
+	final static
+	private int ERROR_CONNECTION_LOST = MEDIA_ERROR_BASE - 5;
+	final static
+	private int ERROR_MALFORMED = MEDIA_ERROR_BASE - 7;
+	final static
+	private int ERROR_OUT_OF_RANGE = MEDIA_ERROR_BASE - 8;
+	final static
+	private int ERROR_BUFFER_TOO_SMALL = MEDIA_ERROR_BASE - 9;
+	final static
+	private int ERROR_UNSUPPORTED = MEDIA_ERROR_BASE - 10;
+	final static
+	private int ERROR_END_OF_STREAM = MEDIA_ERROR_BASE - 11;
+	// Not technically an error.
+	final static
+	private int INFO_FORMAT_CHANGED = MEDIA_ERROR_BASE - 12;
+	final static
+	private int INFO_DISCONTINUITY = MEDIA_ERROR_BASE - 13;
 	
 	final static
 	private String TAG = "malarm";
@@ -65,20 +106,27 @@ public class MalarmPlayerService
 	private MediaPlayer player_;
 	private UnpluggedReceiver receiver_;
 	private int iconId_ = 0;
+	private ComponentName mediaButtonReceiver_;
 
 	static
 	public M3UPlaylist wakeupPlaylist_ = null;
 	static
 	public M3UPlaylist sleepPlaylist_ = null;
 	private Ringtone tone_ = null;
-	private PlayerStateListener listener_ = null;
+	private List<PlayerStateListener> listenerList_;
 	private String currentNoteTitle_ = "";
-
+	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId){
-		String action = intent.getAction();
+		String action = null;
+		if(null != intent){
+			action = intent.getAction();
+		}
+		if(action == null) {
+			return START_STICKY;
+		}
 		if(START_WAKEUP_SERVICE_ACTION.equals(action)){
-			Log.d(TAG, "onStartCommand: wakeup!: " + wakeupPlaylist_);
+			Log.d(TAG, "onStartCommand: wakeup");
 			loadPlaylist();
 			SharedPreferences pref =
 					PreferenceManager.getDefaultSharedPreferences(this);
@@ -117,9 +165,23 @@ public class MalarmPlayerService
 		}
 		else if (STOP_MUSIC_ACTION.equals(action)) {
 			stopMusic();
-			//TODO: check alarm info
-			showNotification(currentNoteTitle_, "");
-			//TODO: stop if activity is dead / stop activity
+		}
+		else if (PLAYSTOP_ACTION.equals(action)) {
+			if (isPlaying()) {
+				pauseMusic();
+			}
+			else {
+				if (null == currentPlaylist_) {
+					loadPlaylist();
+					currentPlaylist_ = wakeupPlaylist_;
+				}
+				playMusic(true);
+			}
+		}
+		else if (PLAYNEXT_ACTION.equals(action)) {
+			if (isPlaying()) {
+				playNext();
+			}
 		}
 		else if (LOAD_PLAYLIST_ACTION.equals(action)) {
 			Log.d(TAG, "LOAD_PLAYLIST_ACTION");
@@ -131,10 +193,34 @@ public class MalarmPlayerService
 			boolean stop = pref.getBoolean("stop_on_unplugged", true);
 			if (stop) {
 				pauseMusic();
-				if (null != listener_) {
-					listener_.onStopMusic();
+			}
+		}
+		else if (MEDIA_BUTTON_ACTION.equals(action)) {
+			KeyEvent event = intent.getParcelableExtra("event");
+			Log.d(TAG, "SERVICE: Received media button: " + event.getKeyCode());
+			if (event.getAction() != KeyEvent.ACTION_UP) {
+				return START_STICKY;
+			}
+			switch(event.getKeyCode()) {
+			case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
+				if (player_.isPlaying()){
+					pauseMusic();
 				}
-				//TODO: fix notification
+				else {
+					playMusic(true);
+				}
+				break;
+			case KeyEvent.KEYCODE_MEDIA_NEXT:
+				if (player_.isPlaying()) {
+					playNext();
+				}
+				break;
+			case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
+				//rewind...
+				playMusic();
+				break;
+			default:
+				break;
 			}
 		}
 		return START_STICKY;
@@ -183,10 +269,14 @@ public class MalarmPlayerService
 		context.startActivity(i);
 	}
 
+	//TODO: show notification if it is shown previous
 	public void playNext() {
 		if (isPlaying()) {
 			stopMusic();
 		}
+		int pos = currentPlaylist_.getCurrentPosition();
+		pos = (pos + 1) % currentPlaylist_.size();
+		currentPlaylist_.setPosition(pos);
 		playMusic();
 	}
 
@@ -194,12 +284,63 @@ public class MalarmPlayerService
 		playNext();
 	}
 
+	private String ErrorCode2String(int err) {
+		String result;
+		switch(err){
+		//TODO: localize?
+		case ERROR_ALREADY_CONNECTED:
+			result = "Already Connected";
+			break;
+		case ERROR_NOT_CONNECTED:
+			result = "Not Connected";
+			break;
+		case ERROR_UNKNOWN_HOST:
+			result = "Unknown Host";
+			break;
+		case ERROR_CANNOT_CONNECT:
+			result = "Cannot Connect";
+			break;
+		case ERROR_IO:
+			result = "I/O Error";
+			break;
+		case ERROR_CONNECTION_LOST:
+			result = "Connection Lost";
+			break;
+		case ERROR_MALFORMED:
+			result = "Malformed Media";
+			break;
+		case ERROR_OUT_OF_RANGE:
+			result = "Out of Range";
+			break;
+		case ERROR_BUFFER_TOO_SMALL:
+			result = "Buffer too Small";
+			break;
+		case ERROR_UNSUPPORTED:
+			result = "Unsupported Media";
+			break;
+		case ERROR_END_OF_STREAM:
+			result = "End of Stream";
+			break;
+		case INFO_FORMAT_CHANGED:
+			result = "Format Changed";
+			break;
+		case INFO_DISCONTINUITY:
+			result = "Info Discontinuity";
+			break;
+		default:
+			result = "Unknown error: " + err;
+			break;
+		}
+		return result;
+	}
+
 	// This method is not called when DRM error occurs
 	public boolean onError(MediaPlayer mp, int what, int extra) {
-		//TODO: show error message to GUI
-		Log.i(TAG, "onError is called, cannot play this media");
-		//TODO: call playNext if error occurred while playing music
+		String error = ErrorCode2String(extra);
+		Log.i(TAG, "onError is called, cannot play this media: " + error);
+		MalarmActivity.showMessage(this, error);
 		playNext();
+		//onCompletion is not called
 		return true;
 	}
 
@@ -223,6 +364,14 @@ public class MalarmPlayerService
 		iconId_ = 0;
 	}
 
+	public void setCurrentPlaylist(Playlist list) {
+		currentPlaylist_ = list;
+	}
+	
+	public Playlist getCurrentPlaylist() {
+		return currentPlaylist_;
+	}
+	
 	/**
 	 * play given playlist from beginning.
 	 * 
@@ -239,7 +388,6 @@ public class MalarmPlayerService
 			return false;
 		}
 		playlist.setPosition(pos);
-		Log.d(TAG, "playMusic playlist: playMusic pos");
 		return playMusic(notify);
 	}
 	
@@ -250,7 +398,7 @@ public class MalarmPlayerService
 		}
 		return playMusic();
 	}
-
+	
 	public boolean playMusic() {
 		if (null == currentPlaylist_ || currentPlaylist_.isEmpty()) {
 			Log.i(TAG, "playMusic: playlist is null");
@@ -263,8 +411,7 @@ public class MalarmPlayerService
 		String path = "";
 		//skip unsupported files filtering by filename ...
 		for (int i = 0; i < 10; i++) {
-			Log.d(TAG, "checking: " + path);
-			path = currentPlaylist_.next();
+			path = currentPlaylist_.getURL();
 			if (path.startsWith("http://")) {
 				break;
 			}
@@ -273,6 +420,9 @@ public class MalarmPlayerService
 			if ((!path.endsWith(".m4p")) && f.exists()) {
 				break;
 			}
+			int pos = currentPlaylist_.getCurrentPosition();
+			pos = (pos + 1) % currentPlaylist_.size();
+			currentPlaylist_.setPosition(pos);
 		}
 		Log.i(TAG, "playMusic: " + path);
 		//TODO: get title from file
@@ -282,8 +432,8 @@ public class MalarmPlayerService
 			player_.setDataSource(path);
 			player_.prepare();
 			player_.start();
-			if (null != listener_) {
-				listener_.onStartMusic(currentMusicName_);
+			for (PlayerStateListener listener: listenerList_) {
+				listener.onStartMusic(currentMusicName_);
 			}
 			if (iconId_ != 0) {
 				//TODO: modify notification title
@@ -302,13 +452,17 @@ public class MalarmPlayerService
 		}
 		if(player_.isPlaying()){
 			player_.stop();
-			if (null != listener_) {
-				listener_.onStopMusic();
+			for (PlayerStateListener listener: listenerList_) {
+				listener.onStopMusic();
 			}
 		}
 		//umm...
 		if(iconId_ == R.drawable.playing) {
 			clearNotification();
+		}
+		//clear music title
+		if (iconId_ == R.drawable.img) {
+			showNotification(currentNoteTitle_, "");
 		}
 	}
 
@@ -317,12 +471,16 @@ public class MalarmPlayerService
 			return;
 		}
 		player_.pause();
-		if (null != listener_) {
-			listener_.onStopMusic();
+		for (PlayerStateListener listener: listenerList_) {
+			listener.onStopMusic();
 		}
 		//umm...
 		if(iconId_ == R.drawable.playing) {
 			clearNotification();
+		}
+		//clear music title
+		if (iconId_ == R.drawable.img) {
+			showNotification(currentNoteTitle_, "");
 		}
 	}
 	
@@ -355,6 +513,7 @@ public class MalarmPlayerService
 	@Override
 	public void onCreate(){
 		super.onCreate();
+		listenerList_ = new ArrayList<PlayerStateListener>();
 		tone_ = null;
 		currentMusicName_ = null;
 		loadPlaylist();
@@ -364,10 +523,15 @@ public class MalarmPlayerService
 		player_.setOnErrorListener(this);
 		receiver_ = new UnpluggedReceiver();
 		registerReceiver(receiver_, new IntentFilter(Intent.ACTION_HEADSET_PLUG));
+		AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		mediaButtonReceiver_ = new ComponentName(getPackageName(), UnpluggedReceiver.class.getName());
+		manager.registerMediaButtonEventReceiver(mediaButtonReceiver_);
 	}
 	
 	@Override
 	public void onDestroy(){
+		AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		manager.unregisterMediaButtonEventReceiver(mediaButtonReceiver_);
 		unregisterReceiver(receiver_);
 		player_ = null;
 		currentPlaylist_ = null;
@@ -423,15 +587,26 @@ public class MalarmPlayerService
 					context.startService(i);
 				}
 			}
+			else if(Intent.ACTION_MEDIA_BUTTON.equals(action)){
+				Log.d(TAG, "media button");
+				KeyEvent event = intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
+				if (null == event) {
+					return;
+				}
+				Intent i = new Intent(context, MalarmPlayerService.class);
+				i.setAction(MEDIA_BUTTON_ACTION);
+				i.putExtra("event", event);
+				context.startService(i);
+			}
 		}
 	}
 	
-	public void setPlayerStateListener(PlayerStateListener listener) {
-		listener_ = listener;
+	public void addPlayerStateListener(PlayerStateListener listener) {
+		listenerList_.add(listener);
 	}
 	
-	public void clearPlayerStateListener() {
-		listener_ = null;
+	public void removePlayerStateListener(PlayerStateListener listener) {
+		listenerList_.remove(listener);
 	}
 
 	public interface PlayerStateListener {

@@ -20,7 +20,7 @@ public final class M3UPlaylist
 	implements Playlist
 {
 	private static final String TAG = "malarm";
-	private int nextIndex_ = 0;
+	private int currentIndex_ = 0;
 	private final String basepath_;
 	private final String playlistFilename_;
 	private ArrayList<String> playlist_;
@@ -38,17 +38,22 @@ public final class M3UPlaylist
 		String playlist_abs_path =
 			(new File(basepath, playlistFilename)).getAbsolutePath();
 		playlist_ = new ArrayList<String>();
+		currentIndex_ = 0;
 		load(playlist_abs_path);
+	}
+	
+	public void goNext() {
+		//TODO: refactoring
 	}
 	
 	//add repeat setting, shuffle mode
 	// file | mp3 file on web | podcast (not supported yet)
 	@Override
-	public String next() {
-		if (playlist_.size() <= nextIndex_) {
-			nextIndex_ = 0;
+	public String getURL() {
+		if (playlist_.size() <= currentIndex_) {
+			currentIndex_ = 0;
 		}
-		String result = playlist_.get(nextIndex_);
+		String result = playlist_.get(currentIndex_);
 		if (result.startsWith("http://")) {
 			//adhoc...
 			if ((!result.endsWith(".mp3")) && (!result.endsWith(".m4a"))){
@@ -60,7 +65,6 @@ public final class M3UPlaylist
 		else if (!(new File(result)).isAbsolute()) {
 			result = (new File(basepath_, result)).getAbsolutePath();
 		}
-		nextIndex_++;
 		return result;
 	}
 	
@@ -88,7 +92,7 @@ public final class M3UPlaylist
 	
 	@Override
 	public void setPosition(int pos) {
-		nextIndex_ = pos % size();
+		currentIndex_ = pos % size();
 	}
 	
 	@Override
@@ -109,6 +113,10 @@ public final class M3UPlaylist
 		playlist_.add(pos, path);
 	}
 	
+	public int getCurrentPosition() {
+		return currentIndex_;
+	}
+
 	public void save()
 			throws IOException
 	{

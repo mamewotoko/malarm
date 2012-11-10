@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">まらーむ</string>
     <string name="stop_music">音楽をとめる</string>
-    <string name="music_stopped">まらーむををとめました</string>
+    <string name="music_stopped">まらーむをとめました</string>
 
     <string name="set_alarm">まらーむをセット</string>
     <string name="stop_alarm">まらーむをとめる</string>
@@ -46,7 +46,6 @@
     <string name="pref_create_playlist_summary">プレイリストを作成します。</string>
 
     <string name="notify_waiting_title">まらーむ待機中。</string>
-    <string name="notify_wakeup_title">まらーむがなっています。</string>
     <string name="notify_wakeup_text">おはよう!</string>
     <string name="pref_sleep_volume_title">おやすみの音量</string>
     <string name="pref_wakeup_volume_title">おはようの音量</string>
@@ -68,7 +67,6 @@
     <string name="stop_loading">読み込みを中止しました</string>
     <string name="volume_minus"> - </string>
     <string name="volume_plus"> + </string>
-    <string name="low_memory">メモリが少ないので止まるかも?</string>
         
     <string name="sleep_playlist_viewer_title">おやすみプレイリスト(sleep.m3u)</string>
     <string name="wakeup_playlist_viewer_title">おはようプレイリスト(wakeup.m3u)</string>
@@ -91,4 +89,9 @@
     <string name="pref_stop_on_unplugged_title">ヘッドホンを抜いたとき</string>
     <string name="pref_stop_on_unplugged_on_summary">音楽をとめる</string>
     <string name="pref_stop_on_unplugged_off_summary">音楽をとめない</string>
+    
+    <string name="play">再生</string>
+    <string name="pause">停止</string>
+    <string name="saved">保存しました</string>
+    <string name="failed">失敗しました</string>
 </resources>

@@ -63,8 +63,18 @@ Tested Device
 
 TODO
 ----------------------
+* merge PlayserService from podplayer project
+* fix bugs
+    * long press set alarm button
+      -> rotate
+      -> then notification disappears but alarm is set
+    * alarm set
+      -> pause music from menu
+      -> notification title is incorrect
 * localize: French, Chinese
 * support podcast
+* manage audio focus
+http://developer.android.com/training/managing-audio/audio-focus.html
 * add callback which is called when music is stopped
 * show music title as a notificaition, not filename
 * add play button on volume preference to check volume
@@ -84,6 +94,7 @@ http://developer.android.com/resources/articles/tts.html
 * add UI to play ringtone on VolumePreference to check volume
 * hide time picker after malarm is set? (or count down?)
     * scale of web contents
+* move current playing position when playlist is edited
 * add mode to display alert dialog if device is not charged when alarm is set
 * fix UI update bug when sleep timer expires (broadcast -> activity)
 * conditional playlist
