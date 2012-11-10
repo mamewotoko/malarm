@@ -22,10 +22,6 @@ public class MalarmWidgetProvider
 	public String LIST_VIEWER_ACTION = PACKAGE_NAME + ".LIST_VIEWER_ACTION";
 	final static
 	public String PLAYER_ACTION = PACKAGE_NAME + ".PLAYER_ACTION";
-	final static
-	private int PLAY_COMMAND = 1;
-	final static
-	private int PLAYNEXT_COMMAND = 3;
 	
 	final static
 	private String TAG = "malarm";
