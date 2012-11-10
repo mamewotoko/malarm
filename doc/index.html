@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ja"><head>
+   <meta charset="utf-8" />
+   <title>まらーむの使いかた</title>
+   <meta name="Author" content="Takashi Masuyama" />
+   <meta name="viewport" content="width=device-width" />
+		<script type='text/javascript' src='assets/javascript/prettify.js'></script>
+		<link rel='stylesheet' type='text/css' href='assets/css/skeleton/stylesheets/base.css' />
+		<link rel='stylesheet' type='text/css' href='assets/css/skeleton/stylesheets/skeleton.css' />
+		<link rel='stylesheet' type='text/css' href='assets/css/prettify.css' />
+		<link rel='stylesheet' type='text/css' href='assets/css/style.css' />
+</head>
+<body onload='prettyPrint()'>
+
+<h1>まらーむの使い方</h1>
+<div align="right"><p>
+<!-- hhmts start -->
+Last modified: Sun Jul 08 08:53:14 2012
+<!-- hhmts end -->
+</p>
+<p><a href="index_en.html">English</a></p>
+</div>
+
+<h2>何?</h2>
+<p><img src="https://github.com/mamewotoko/malarm/raw/master/res/drawable/img.png" alt="app icon" />
+<br />まらーむは、寝るとき、起きるときにプレイリストの音楽を鳴らすAndroidアプリケーションです。</p>
+
+<h2>準備</h2>
+<ol>
+<li>Android携帯で使えるSDメモリのmusicディレクトリに音楽ファイル(mp3, m4a, m4v, mp4)を数個入れます。</li>
+<li>おやすみのプレイリスト(sleep.m3u)とおはようのプレイリスト(wakeup.m3u)を作成し、SDメモリの music ディレクトリに入れます。 
+<br />プレイリストは1で入れたファイル名を一行一曲で記述したテキストです。</li>
+<li>SDメモリをAndroid携帯に入れます。</li>
+</ol>
+<h3>プレイリスト(sleep.m3u, wakeup.m3u)の例:</h3>
+<pre><code> #EXTINF:279,Go my way - 矢井田瞳
+ 07 Go my way.m4a
+ #EXTINF:291,新しいラプソディー - 井上陽水
+ 1-17 新しいラプソディー.m4a
+ #EXTINF:205,心のファンファーレ - 奥井亜紀
+ 02 心のファンファーレ.m4a
+</code></pre>
+#で始まる行は無視されます。
+
+<h3>SDメモリのファイル構成例:</h3>
+<pre><code>music
+  |
+  +-- sleep.m3u
+      wakeup.m3u
+      07 Go my way.m4a
+      1-17 新しいラプソディー.m4a
+      02 心のファンファーレ.m4a</code></pre>
+
+<h2>アラームのセット方法</h2>
+<h3>メイン画面</h3>
+<img src="https://github.com/mamewotoko/malarm/raw/master/doc/malarm_screen.png" alt="screen" width="273" height="348" />
+<ol>
+<li>メイン画面のタイムピッカーを起きる時刻に合せます。</li>
+<li>「マラームをセットする」ボタンを押します。</li>
+<li>sleep.m3uで指定した音楽を1時間流したあと、タイムピッカーで指定した時刻にwakeup.m3uプレイリストで
+指定した音楽が流れます。</li>
+</ol>
+
+<h2>アラームの解除方法</h2>
+<p>メイン画面の「まらーむをとめる」ボタンを押します。</p>
+
+<h2>ヒント</h2>
+<ol>
+<li>動画ファイルは音楽のみ流します。</li>
+<li>メニューから設定を選び、「プレイリストを作成」を選択するとSDメモリの"music"ディレクトリにある音楽ファイル全てを
+含むプレイリスト(sleep.m3u, wakeup.m3u)が作成されます。</li>
+<li>M3UプレイリストはiTunesで作成できます。ただし、NFCへの正規化が必要です。参考: 正規化スクリプト <a href="https://github.com/mamewotoko/malarm/blob/master/tool/convert_m3u.pl">convert_m3u.pl</a> 
+</li>
+<li>マイクボタンを押すと声（日本語）でタイムピッカーの時刻を指定できます。</li>
+<li>「なぅ！」ボタンを押すとタイムピッカーが現在時刻にセットされます。</li>
+<li>メイン画面の下にあるウェブページは、右端、左端をダブルタップすると別のページに切り替わります。</li>
+<!--
+ばーじょん毎にかく
+<li>「まらーむをセットする」ボタンを長押しするとおやすみの音楽(sleep.m3u)を流すかどうかを選択できます。</li>
+-->
+</ol>
+<hr />
+<address><p>
+<a href="https://github.com/mamewotoko/malarm"><img src="http://www002.upp.so-net.ne.jp/mamewo/github.png" width="60" height="26" alt="github icon" style="background-color: #CCC; border: 0px;" /></a>
+Author: Takashi Masuyama <a href="mailto:mamewotoko@gmail.com">mamewotoko@gmail.com</a>
+</p></address>
+</div>
+</body></html>

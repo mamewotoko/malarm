@@ -1,0 +1,29 @@
+h1 { font-size: 150%;
+     text-align: center
+ }
+h2 { font-size: large;
+     font-weight: bold;
+     text-decoration: underline;
+}
+h3 { font-size: medium;
+     font-weight: bold;
+     text-decoration: underline;
+}
+h4 { font-size: medium;
+     text-decoration: underline;
+}
+code { 
+  display: block;
+  border: solid 2px gray;
+  padding: 2px;
+  background: rightgray;
+}
+#lastupdate { 
+  text-align: right;
+}
+img { border-width: 0px; }
+a:link { color: #0000EE  }
+a:visited { color: #551A8B }
+a:active { color: #FF0000 }
+div.center { text-align: center; }
+div.right { text-align: right; }
