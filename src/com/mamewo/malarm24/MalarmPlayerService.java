@@ -34,7 +34,8 @@ import android.view.KeyEvent;
 public class MalarmPlayerService
 	extends Service
 	implements MediaPlayer.OnCompletionListener,
-	MediaPlayer.OnErrorListener
+			   MediaPlayer.OnErrorListener,
+			   AudioManager.OnAudioFocusChangeListener
 {
 	final static
 	public String PACKAGE_NAME = MalarmActivity.class.getPackage().getName();
@@ -406,6 +407,8 @@ public class MalarmPlayerService
 		}
 		//TODO: remove this check
 		if (player_.isPlaying()) {
+			AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+			manager.abandonAudioFocus(this);
 			player_.stop();
 		}
 		String path = "";
@@ -431,6 +434,11 @@ public class MalarmPlayerService
 			player_.reset();
 			player_.setDataSource(path);
 			player_.prepare();
+			AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+			int result = manager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+			if (result == AudioManager.AUDIOFOCUS_REQUEST_FAILED){
+				return false;
+			}
 			player_.start();
 			for (PlayerStateListener listener: listenerList_) {
 				listener.onStartMusic(currentMusicName_);
@@ -451,6 +459,8 @@ public class MalarmPlayerService
 			tone_.stop();
 		}
 		if(player_.isPlaying()){
+			AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+			manager.abandonAudioFocus(this);
 			player_.stop();
 			for (PlayerStateListener listener: listenerList_) {
 				listener.onStopMusic();
@@ -470,6 +480,8 @@ public class MalarmPlayerService
 		if(! player_.isPlaying()) {
 			return;
 		}
+		AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		manager.abandonAudioFocus(this);
 		player_.pause();
 		for (PlayerStateListener listener: listenerList_) {
 			listener.onStopMusic();
@@ -612,5 +624,21 @@ public class MalarmPlayerService
 	public interface PlayerStateListener {
 		public void onStartMusic(String title);
 		public void onStopMusic();
+	}
+
+	@Override
+	public void onAudioFocusChange(int focusChange){
+		switch(focusChange){
+		case AudioManager.AUDIOFOCUS_GAIN:
+			//TODO: test stop -> gain / plaing -> gain
+			player_.start();
+			break;
+		case AudioManager.AUDIOFOCUS_LOSS:
+			pauseMusic();
+			//TODO: flag?
+			break;
+		default:
+			break;
+		}
 	}
 }
