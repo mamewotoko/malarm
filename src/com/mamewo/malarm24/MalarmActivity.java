@@ -102,10 +102,9 @@ public class MalarmActivity
 	private ToggleButton alarmButton_;
 	private Button setNowButton_;
 	private GestureDetector gd_;
-	private boolean setDefaultTime_;
 	private Intent speechIntent_;
 	private ProgressBar loadingIcon_;
-	private boolean startingSpeechActivity_;
+	private boolean runningSpeechActivity_;
 //	private TextView playlistLabel_;
 	private TextView sleepTimeLabel_;
 	private MalarmPlayerService player_ = null;
@@ -215,7 +214,6 @@ public class MalarmActivity
 		pref_.registerOnSharedPreferenceChangeListener(this);
 		syncPreferences(pref_, "ALL");
 		setContentView(R.layout.main);
-		setDefaultTime_ = true;
 		Intent intent = new Intent(this, MalarmPlayerService.class);
 		startService(intent);
 		//TODO: handle failure of bindService
@@ -239,7 +237,7 @@ public class MalarmActivity
 		
 		speechButton_ = (ImageButton) findViewById(R.id.set_by_voice);
 		speechButton_.setOnClickListener(this);
-		startingSpeechActivity_ = false;
+		runningSpeechActivity_ = false;
 		
 		nextButton_ = (ImageButton) findViewById(R.id.next_button);
 		nextButton_.setOnClickListener(this);
@@ -343,14 +341,14 @@ public class MalarmActivity
 	@Override
 	protected void onResume() {
 		super.onResume();
-		startingSpeechActivity_ = false;
-		
+
 		alarmButton_.requestFocus();
 		//WebView.onResume is hidden, why!?!?
 		webview_.getSettings().setJavaScriptEnabled(true);
 		CookieSyncManager.getInstance().startSync();
 		loadWebPage();
 		updateUI();
+		runningSpeechActivity_ = false;
 	}
 
 	@Override
@@ -584,19 +582,16 @@ public class MalarmActivity
 	private void updateUI () {
 		Calendar target = state_.targetTime_;
 		if(null != target) {
-			//alarm is not set
 			timeLabel_.setText(dateStr(target));
 			timePicker_.setCurrentHour(target.get(Calendar.HOUR_OF_DAY));
 			timePicker_.setCurrentMinute(target.get(Calendar.MINUTE));
 		}
 		else {
+			//alarm is not set
 			timeLabel_.setText("");
-			if (setDefaultTime_) {
+			if (! runningSpeechActivity_) {
 				timePicker_.setCurrentHour(prefDefaultHour);
 				timePicker_.setCurrentMinute(prefDefaultMin);
-			}
-			else {
-				setDefaultTime_ = true;
 			}
 		}
 		int sleepMin = state_.sleepMin_;
@@ -810,7 +805,7 @@ public class MalarmActivity
 	}
 
 	private void setTimeBySpeech() {
-		if (! timePicker_.isEnabled() || startingSpeechActivity_) {
+		if (! timePicker_.isEnabled() || runningSpeechActivity_) {
 			return;
 		}
 		if (null == speechIntent_) {
@@ -826,7 +821,7 @@ public class MalarmActivity
 			speechIntent_.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
 			speechIntent_.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.voice_dialog));
 		}
-		startingSpeechActivity_ = true;
+		runningSpeechActivity_ = true;
 		webview_.stopLoading();
 		startActivityForResult(speechIntent_, SPEECH_RECOGNITION_REQUEST_CODE);
 	}
@@ -857,6 +852,7 @@ public class MalarmActivity
 			}
 			shortVibrate();
 			setAlarm();
+			//TODO: use new method to display dialog
 			showDialog(DIALOG_PLAY_SLEEP_TUNE);
 			return true;
 		}
@@ -940,7 +936,6 @@ public class MalarmActivity
 	}
 	
 	private void setTimePickerTime(TimePickerTime time) {
-		setDefaultTime_ = false;
 		timePicker_.setCurrentHour(time.hour_);
 		timePicker_.setCurrentMinute(time.min_);
 		String msg = 
@@ -951,7 +946,14 @@ public class MalarmActivity
 	//TODO: support english???
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == SPEECH_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
+		if (requestCode == SPEECH_RECOGNITION_REQUEST_CODE) {
+			if (resultCode == RESULT_CANCELED) {
+				//TODO: flag
+				return;
+			}
+			if (resultCode != RESULT_OK) {
+				return;
+			}
 			ArrayList<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 			//ArrayList<TimePickerTime> result = new ArrayList<TimePickerTime>();
 			Map<String, TimePickerTime> result = new HashMap<String, TimePickerTime>();
