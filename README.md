@@ -66,6 +66,11 @@ Tested Device
 TODO
 ----------------------
 * merge PlayserService from podplayer project
+* use playlist created by Google music player
+    * add UI to select playlist for wakeup and sleep.
+* add preference to avoid network access from web viewer
+    * add network preference, disable/enable
+    * e.g. display photo
 * fix bugs
     * long press set alarm button
       -> rotate
@@ -78,7 +83,7 @@ TODO
 * manage audio focus
 http://developer.android.com/training/managing-audio/audio-focus.html
 * add callback which is called when music is stopped
-* show music title as a notificaition, not filename
+* show music title as a notification, not filename
 * add play button on volume preference to check volume
 * show mark on playing music in playlist preference
 * improve UI to create and edit playlist

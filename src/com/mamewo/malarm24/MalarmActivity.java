@@ -109,7 +109,6 @@ public class MalarmActivity
 	private TextView sleepTimeLabel_;
 	private MalarmPlayerService player_ = null;
 	private SharedPreferences pref_;
-	private PhoneStateListener callListener_;
 
 	private static final int DOW_INDEX[] = {
 		Calendar.SUNDAY, 
@@ -136,40 +135,6 @@ public class MalarmActivity
 		}
 	}
 	
-	public final class MyCallListener
-		extends PhoneStateListener
-	{
-		private boolean playing_ = false;
-
-		public MyCallListener(MalarmActivity context) {
-			super();
-			TelephonyManager telmgr =
-					(TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
-			telmgr.listen(this, LISTEN_CALL_STATE);
-		}
-
-		public void onCallStateChanged (int state, String incomingNumber) {
-			switch (state) {
-			case TelephonyManager.CALL_STATE_RINGING:
-				//fall-through
-			case TelephonyManager.CALL_STATE_OFFHOOK:
-				Log.d(TAG, "onCallStateChanged: RINGING");
-				player_.stopVibrator();
-				//native player stops automatically
-				playing_ = player_.isPlaying();
-				if (playing_) {
-					player_.pauseMusic();
-				}
-				break;
-			case TelephonyManager.CALL_STATE_IDLE:
-				//TODO: play music
-				break;
-			default:
-				break;
-			}
-		}
-	}
-
 	private class WebViewDblTapListener 
 		extends GestureDetector.SimpleOnGestureListener
 	{
@@ -319,8 +284,6 @@ public class MalarmActivity
 			}
 		});
 
-		//stop alarm when phone call
-		callListener_ = new MyCallListener(this);
 		gd_ = new GestureDetector(this, new WebViewDblTapListener());
 	}
 	
