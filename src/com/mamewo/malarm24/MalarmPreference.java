@@ -192,7 +192,7 @@ public class MalarmPreference
 			SharedPreferences pref = preference.getSharedPreferences();
 			SharedPreferences.Editor editor = preference.getEditor();
 			editor.putBoolean(prefKey, !pref.getBoolean(prefKey, false));
-			//compatibility: apply is not available in 7
+			//compatibility: apply method is not available in 7
 			editor.apply();
 			result = true;
 		}

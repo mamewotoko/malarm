@@ -335,14 +335,14 @@ public class MalarmPlayerService
 		return result;
 	}
 
-	// This method is not called when DRM error occurs
+	// This method is NOT called when DRM error occurs, but following log message appears
+	// E/MediaPlayer(28365): error (1, -2147483648)
 	public boolean onError(MediaPlayer mp, int what, int extra) {
 		String error = ErrorCode2String(extra);
-		Log.i(TAG, "onError is called, cannot play this media: " + error);
+		Log.e(TAG, "onError is called, cannot play this media: " + error);
 		MalarmActivity.showMessage(this, error);
-		playNext();
-		//onCompletion is not called
-		return true;
+		//onCompletion will be called
+		return false;
 	}
 
 	public void showNotification(String title, String description, int iconId) {

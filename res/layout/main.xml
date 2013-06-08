@@ -62,6 +62,7 @@
                     android:id="@+id/loading_icon"
                     style="?android:attr/progressBarStyleSmall"
                     android:layout_width="38dp"
+		    android:visibility="invisible"
                     android:gravity="right"
                     android:layout_height="fill_parent" />
             </LinearLayout>

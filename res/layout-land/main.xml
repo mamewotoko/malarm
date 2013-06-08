@@ -39,6 +39,7 @@
 
             <ProgressBar
                 android:id="@+id/loading_icon"
+  	        android:visibility="invisible"
                 style="?android:attr/progressBarStyleSmall"
                 android:layout_width="38dp"
                 android:layout_height="fill_parent"
