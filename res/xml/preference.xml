@@ -11,6 +11,14 @@
         android:key="url_list"
         android:title="@string/pref_webview_url" />
 
+    <CheckBoxPreference
+       android:key="wifi_only"
+       android:defaultValue="false"
+       android:selectable="true"
+       android:summaryOff="@string/not_wifi_only"
+       android:summaryOn="@string/wifi_only"
+       android:title="@string/pref_wifi_only" />
+
     <PreferenceCategory
         android:key="playlist_category"
         android:title="@string/pref_playlist_category" >

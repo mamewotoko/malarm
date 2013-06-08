@@ -63,6 +63,10 @@ Tested Device
 * Android 2.2 emulator (API level 8)
 * Android 4.0 emulator
 
+Limitation
+----------------------
+* Music stops when DRM decoding failed
+
 TODO
 ----------------------
 * merge PlayserService from podplayer project

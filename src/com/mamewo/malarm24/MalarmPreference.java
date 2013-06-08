@@ -73,6 +73,8 @@ public class MalarmPreference
 	final static
 	public String PREFKEY_URL_LIST = "url_list";
 	final static
+	public String PREFKEY_WIFI_ONLY = "wifi_only";
+	final static
 	public String PREFKEY_PLAYLIST_PATH = "playlist_path";
 	final static
 	public String PREFKEY_SLEEP_TIME = "sleeptime";

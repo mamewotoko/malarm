@@ -17,6 +17,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import android.app.Activity;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -436,6 +438,19 @@ public class MalarmActivity
 	}
 	
 	private void loadWebPage(String url) {
+		SharedPreferences pref = 
+			PreferenceManager.getDefaultSharedPreferences(this);
+		boolean prefWifiOnly = pref.getBoolean(MalarmPreference.PREFKEY_WIFI_ONLY, false);
+		if(prefWifiOnly){
+			ConnectivityManager connMgr = (ConnectivityManager) 
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+			NetworkInfo activeInfo = connMgr.getActiveNetworkInfo();
+			if(activeInfo == null || activeInfo.getType() != ConnectivityManager.TYPE_WIFI){
+				//TODO: display?
+				showMessage(this, "Wifi is not available");
+				return;
+			}
+		}
 		showMessage(this, "Loading... \n" + url);
 		adjustWebviewSetting(url);
 		webview_.loadUrl(url);
