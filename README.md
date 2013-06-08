@@ -69,6 +69,7 @@ Limitation
 
 TODO
 ----------------------
+* add content for off-line mode, i.e. Wifi is not avilable and wifi only mode is selected.
 * merge PlayserService from podplayer project
 * use playlist created by Google music player
     * add UI to select playlist for wakeup and sleep.
