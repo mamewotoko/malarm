@@ -98,7 +98,7 @@
     <string name="saved">Saved</string>
     <string name="failed">Failed</string>
 
-    <string name="not_wifi_only">Use mobile connection</string>
+    <string name="not_wifi_only">Use Wi-Fi or mobile network</string>
     <string name="wifi_only">Use Wi-Fi only</string>
     <string name="pref_wifi_only">Use Wi-Fi only</string>
 </resources>

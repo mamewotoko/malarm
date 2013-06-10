@@ -96,4 +96,8 @@
     
     <string name="saved">보존했습니다</string>
     <string name="failed">실패했습니다</string>
+
+    <string name="not_wifi_only">Wi-Fi가 아닌 네트워크도 이용할</string>
+    <string name="wifi_only">Wi-Fi 만 사용</string>
+    <string name="pref_wifi_only">Wi-Fi 만 사용</string>
 </resources>

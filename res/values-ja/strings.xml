@@ -94,4 +94,8 @@
     <string name="pause">停止</string>
     <string name="saved">保存しました</string>
     <string name="failed">失敗しました</string>
+
+    <string name="not_wifi_only">Wi-Fi以外のネットワークも使用する</string>
+    <string name="wifi_only">Wi-Fiのみ使用する</string>
+    <string name="pref_wifi_only">Wi-Fiのみ使用する</string>
 </resources>
