@@ -152,6 +152,13 @@ There is a GUI automated test using Robotium, named
 
 Memo
 ----------------------
+* URL list specification
+    1. if malarm/urllist.txt exists, it is used as url list file
+       url list file is a text file which contains title followed by tab and its url par line
+       you can specify slide show contents in asset
+       e.g. file:///android_asset/local/step.html
+    2. otherwise, url list specified by UI is used
+        pref_url_list_value in values/arrays.xml is used
 * MultiListPreference is based on the following web page
 http://blog.350nice.com/wp/archives/240
 * Alarm application starts when user push appwidget of malarm.
@@ -162,4 +169,3 @@ http://blog.350nice.com/wp/archives/240
 ----
 Takashi Masuyama < mamewotoko@gmail.com >  
 http://www002.upp.so-net.ne.jp/mamewo/
-

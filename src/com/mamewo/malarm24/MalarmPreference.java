@@ -35,6 +35,7 @@ public class MalarmPreference
 		FileFilter,
 		OnSharedPreferenceChangeListener
 {
+	private Preference selectURL_;
 	private Preference help_;
 	private Preference version_;
 	private Preference createPlaylist_;
@@ -68,6 +69,9 @@ public class MalarmPreference
 	final static
 	public File DEFAULT_PLAYLIST_PATH =
 		new File(Environment.getExternalStorageDirectory(), Environment.DIRECTORY_MUSIC);
+	final static
+	public File CUSTOM_URL_LIST =
+		new File(Environment.getExternalStorageDirectory(), "./malarm/urllist.txt");
 
 	//list preference keys
 	final static
@@ -92,7 +96,6 @@ public class MalarmPreference
 	@Override
 	public boolean accept(File pathname) {
 		String filename = pathname.getName();
-		
 		//TODO: other formats? mp4, m4v...
 		return filename.endsWith(".mp3")
 				|| filename.endsWith(".mp4")
@@ -173,7 +176,7 @@ public class MalarmPreference
 				playlistFilename = MalarmPlayerService.WAKEUP_PLAYLIST_FILENAME;
 			}
 			//get playlist path
-			String path = 
+			String path =
 					pref_.getString(MalarmPreference.PREFKEY_PLAYLIST_PATH,
 							DEFAULT_PLAYLIST_PATH.getAbsolutePath());
 			//TODO: add dependency from playlist path
@@ -224,6 +227,7 @@ public class MalarmPreference
 			version_.setSummary("unknown");
 		}
 		version_.setOnPreferenceClickListener(this);
+		selectURL_ = findPreference("url_list");
 		help_ = findPreference("help");
 		help_.setOnPreferenceClickListener(this);
 		createPlaylist_ = findPreference("create_playlist");
@@ -255,8 +259,9 @@ public class MalarmPreference
 	public void onStart() {
 		super.onStart();
 		updatePlaylistUI();
+		selectURL_.setEnabled(!CUSTOM_URL_LIST.exists());
 	}
-	
+
 	//TODO: call this when playlist_path is modified by user
 	private void updatePlaylistUI(){
 		//get playlist path

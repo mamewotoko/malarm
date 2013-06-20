@@ -6,6 +6,11 @@ package com.mamewo.malarm24;
  */
 
 import java.io.Serializable;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -36,6 +41,7 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Vibrator;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.telephony.PhoneStateListener;
@@ -90,7 +96,7 @@ public class MalarmActivity
 	private int DIALOG_PLAY_SLEEP_TUNE = 1;
 
 	protected static String prefPlaylistPath;
-	private static String[] WEB_PAGE_LIST = new String []{ MYURL };
+	private static List<String> WEB_PAGE_LIST = new ArrayList<String>();
 	private static boolean prefUseNativePlayer;
 	private static Integer prefDefaultHour;
 	private static Integer prefDefaultMin;
@@ -353,6 +359,15 @@ public class MalarmActivity
 		outState.putSerializable("state", state_);
 	}
 
+	private void addURLListFromPref(SharedPreferences pref){
+		String liststr = pref.getString(MalarmPreference.PREFKEY_URL_LIST,
+										MalarmPreference.DEFAULT_WEB_LIST);
+		String[] tmpURLlist = liststr.split(MultiListPreference.SEPARATOR);
+		for(String url: tmpURLlist){
+			WEB_PAGE_LIST.add(url);
+		}
+	}
+
 	//escape preference value into static value
 	//TODO: improve design
 	public void syncPreferences(SharedPreferences pref, String key) {
@@ -368,17 +383,58 @@ public class MalarmActivity
 			}
 		}
 		if (updateAll || "url_list".equals(key)) {
-			String liststr = pref.getString(MalarmPreference.PREFKEY_URL_LIST,
-					MalarmPreference.DEFAULT_WEB_LIST);
-			if(0 < liststr.length()){
-				liststr += MultiListPreference.SEPARATOR;
+			WEB_PAGE_LIST.clear();
+			String liststr = null;
+			if(MalarmPreference.CUSTOM_URL_LIST.exists()){
+				FileInputStream fis = null;
+				BufferedReader br = null;
+				try {
+					fis = new FileInputStream(MalarmPreference.CUSTOM_URL_LIST.getAbsolutePath());
+					br = new BufferedReader(new InputStreamReader(fis));
+					String line;
+					StringBuffer sb = new StringBuffer();
+					while(null != (line = br.readLine())){
+						if(line.startsWith("#")){
+							continue;
+						}
+						String[] titleURL = line.split("\t");
+						if(titleURL.length != 2){
+							continue;
+						}
+						String url = titleURL[1];
+						WEB_PAGE_LIST.add(url);
+					}
+				}
+				catch(IOException e){
+					addURLListFromPref(pref);
+				}
+				finally {
+					if(null != br){
+						try{
+							br.close();
+						}
+						catch(IOException e){
+							//
+						}
+					}
+					if(null != fis){
+						try{
+							fis.close();
+						}
+						catch(IOException e){
+							//
+						}
+					}
+				}
 			}
-			liststr += MYURL;
-			WEB_PAGE_LIST = liststr.split(MultiListPreference.SEPARATOR);
+			else {
+				addURLListFromPref(pref);
+			}
+			WEB_PAGE_LIST.add(MYURL);
 		}
 		if (updateAll || "use_native_player".equals(key)) {
 			prefUseNativePlayer =
-					pref.getBoolean(MalarmPreference.PREFKEY_USE_NATIVE_PLAYER, false);
+				pref.getBoolean(MalarmPreference.PREFKEY_USE_NATIVE_PLAYER, false);
 		}
 		if (updateAll || "playlist_path".equals(key)) {
 			String newpath = 
@@ -408,12 +464,12 @@ public class MalarmActivity
 
 	private void loadWebPage() {
 		if (state_.webIndex_ < 0) {
-			state_.webIndex_ = WEB_PAGE_LIST.length - 1;
+			state_.webIndex_ = WEB_PAGE_LIST.size() - 1;
 		}
-		if (state_.webIndex_ >= WEB_PAGE_LIST.length) {
+		if (state_.webIndex_ >= WEB_PAGE_LIST.size()) {
 			state_.webIndex_ = 0;
 		}
-		String url = WEB_PAGE_LIST[state_.webIndex_];
+		String url = WEB_PAGE_LIST.get(state_.webIndex_);
 		loadWebPage(url);
 	}
 
@@ -773,7 +829,7 @@ public class MalarmActivity
 			boolean handled = false;
 			if((KeyEvent.KEYCODE_0 <= keyCode) &&
 				(keyCode <= KeyEvent.KEYCODE_9)) {
-				state_.webIndex_ = (keyCode - KeyEvent.KEYCODE_0) % WEB_PAGE_LIST.length;
+				state_.webIndex_ = (keyCode - KeyEvent.KEYCODE_0) % WEB_PAGE_LIST.size();
 				loadWebPage();
 				handled = true;
 			}
