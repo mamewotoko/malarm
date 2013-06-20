@@ -408,6 +408,7 @@ public class MalarmActivity
 				}
 				catch(IOException e){
 					addURLListFromPref(pref);
+					WEB_PAGE_LIST.add(MYURL);
 				}
 				finally {
 					if(null != br){
@@ -430,8 +431,8 @@ public class MalarmActivity
 			}
 			else {
 				addURLListFromPref(pref);
+				WEB_PAGE_LIST.add(MYURL);
 			}
-			WEB_PAGE_LIST.add(MYURL);
 		}
 		if (updateAll || "use_native_player".equals(key)) {
 			prefUseNativePlayer =
