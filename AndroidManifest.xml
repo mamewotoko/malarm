@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.mamewo.malarm24"
       android:installLocation="auto"
-      android:versionCode="8"
-      android:versionName="0.90">
+      android:versionCode="9"
+      android:versionName="0.99">
       <!-- 7 = 2.1 -->
     <uses-sdk android:minSdkVersion="9"
               android:targetSdkVersion="10"/>
