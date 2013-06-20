@@ -372,7 +372,7 @@ public class MalarmActivity
 		}
 		if (updateAll || "url_list".equals(key)) {
 			String liststr = pref.getString(MalarmPreference.PREFKEY_URL_LIST,
-					MalarmPreference.DEFAULT_WEB_LIST);
+											MalarmPreference.DEFAULT_WEB_LIST);
 			String[] tmpList = liststr.split(MultiListPreference.SEPARATOR);
 			WEB_PAGE_LIST = new String[tmpList.length + PRESET_URL_LIST.length];
 			for(int i = 0; i < tmpList.length; i++){
@@ -452,11 +452,11 @@ public class MalarmActivity
                 getSystemService(Context.CONNECTIVITY_SERVICE);
 			NetworkInfo activeInfo = connMgr.getActiveNetworkInfo();
 			//TODO: check scheme is file:// or not
-			if(activeInfo == null
-			   || ! (activeInfo.getType() == ConnectivityManager.TYPE_WIFI 
-					 && url.startsWith("file:"))){
-				//TODO: display?
-				showMessage(this, "Wifi is not available");
+			if(activeInfo != null
+			   && activeInfo.getType() != ConnectivityManager.TYPE_WIFI
+			   && ! url.startsWith("file:")){
+				//TODO: translate
+				showMessage(this, "Wi-Fi is not available: " + url);
 				return;
 			}
 		}
