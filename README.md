@@ -71,8 +71,12 @@ TODO
 ----------------------
 * add content for off-line mode, i.e. Wifi is not avilable and wifi only mode is selected.
 * merge PlayserService from podplayer project
+* add UI to widen WebView area
 * use playlist created by Google music player
     * add UI to select playlist for wakeup and sleep.
+* Write more detail to help page
+    * how to cerate playlist
+    * how to create customized url list file
 * add preference to avoid network access from web viewer
     * add network preference, disable/enable
     * e.g. display photo
