@@ -77,7 +77,10 @@ public class MalarmActivity
 	final static
 	private String TAG = "malarm";
 	final static
-	private String MYURL = "http://www002.upp.so-net.ne.jp/mamewo/mobile_shop.html";
+	private String[] PRESET_URL_LIST = 
+		new String[] { "file:///android_asset/local/step.html",
+					   "file:///android_asset/local/jump.html",
+					   "http://www002.upp.so-net.ne.jp/mamewo/mobile_shop.html" };
 	final static
 	private int SPEECH_RECOGNITION_REQUEST_CODE = 2121;
 	final static
@@ -90,7 +93,7 @@ public class MalarmActivity
 	private int DIALOG_PLAY_SLEEP_TUNE = 1;
 
 	protected static String prefPlaylistPath;
-	private static String[] WEB_PAGE_LIST = new String []{ MYURL };
+	private static String[] WEB_PAGE_LIST = null;
 	private static boolean prefUseNativePlayer;
 	private static Integer prefDefaultHour;
 	private static Integer prefDefaultMin;
@@ -370,11 +373,14 @@ public class MalarmActivity
 		if (updateAll || "url_list".equals(key)) {
 			String liststr = pref.getString(MalarmPreference.PREFKEY_URL_LIST,
 					MalarmPreference.DEFAULT_WEB_LIST);
-			if(0 < liststr.length()){
-				liststr += MultiListPreference.SEPARATOR;
+			String[] tmpList = liststr.split(MultiListPreference.SEPARATOR);
+			WEB_PAGE_LIST = new String[tmpList.length + PRESET_URL_LIST.length];
+			for(int i = 0; i < tmpList.length; i++){
+				WEB_PAGE_LIST[i] = tmpList[i];
 			}
-			liststr += MYURL;
-			WEB_PAGE_LIST = liststr.split(MultiListPreference.SEPARATOR);
+			for(int i = 0; i < PRESET_URL_LIST.length; i++){
+				WEB_PAGE_LIST[i + tmpList.length] = PRESET_URL_LIST[i];
+			}
 		}
 		if (updateAll || "use_native_player".equals(key)) {
 			prefUseNativePlayer =
@@ -445,7 +451,10 @@ public class MalarmActivity
 			ConnectivityManager connMgr = (ConnectivityManager) 
                 getSystemService(Context.CONNECTIVITY_SERVICE);
 			NetworkInfo activeInfo = connMgr.getActiveNetworkInfo();
-			if(activeInfo == null || activeInfo.getType() != ConnectivityManager.TYPE_WIFI){
+			//TODO: check scheme is file:// or not
+			if(activeInfo == null
+			   || ! (activeInfo.getType() == ConnectivityManager.TYPE_WIFI 
+					 && url.startsWith("file:"))){
 				//TODO: display?
 				showMessage(this, "Wifi is not available");
 				return;
