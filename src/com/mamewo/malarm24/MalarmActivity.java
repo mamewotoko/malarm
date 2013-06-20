@@ -97,6 +97,7 @@ public class MalarmActivity
 
 	protected static String prefPlaylistPath;
 	private static List<String> WEB_PAGE_LIST = new ArrayList<String>();
+
 	private static boolean prefUseNativePlayer;
 	private static Integer prefDefaultHour;
 	private static Integer prefDefaultMin;
@@ -501,9 +502,12 @@ public class MalarmActivity
 			ConnectivityManager connMgr = (ConnectivityManager) 
                 getSystemService(Context.CONNECTIVITY_SERVICE);
 			NetworkInfo activeInfo = connMgr.getActiveNetworkInfo();
-			if(activeInfo == null || activeInfo.getType() != ConnectivityManager.TYPE_WIFI){
-				//TODO: display?
-				showMessage(this, "Wifi is not available");
+			//TODO: check scheme is file:// or not
+			if(activeInfo != null
+			   && activeInfo.getType() != ConnectivityManager.TYPE_WIFI
+			   && ! url.startsWith("file:")){
+				//TODO: translate
+				showMessage(this, "Wi-Fi is not available: " + url);
 				return;
 			}
 		}
