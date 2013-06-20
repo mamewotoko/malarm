@@ -59,6 +59,7 @@ Tested Device
     * 480x854 (WVGA+) screen
 * AQUOS PHONE Serie SHL21
     * Android 4.0.4
+    * Android 4.1.2
 * Android 2.1 emulator (API level 7)
 * Android 2.2 emulator (API level 8)
 * Android 4.0 emulator
