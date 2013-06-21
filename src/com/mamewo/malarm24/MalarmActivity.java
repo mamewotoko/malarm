@@ -6,7 +6,6 @@ package com.mamewo.malarm24;
  */
 
 import java.io.Serializable;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
@@ -41,11 +40,8 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Vibrator;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
-import android.telephony.PhoneStateListener;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -385,7 +381,6 @@ public class MalarmActivity
 		}
 		if (updateAll || "url_list".equals(key)) {
 			WEB_PAGE_LIST.clear();
-			String liststr = null;
 			if(MalarmPreference.CUSTOM_URL_LIST.exists()){
 				FileInputStream fis = null;
 				BufferedReader br = null;
@@ -393,7 +388,6 @@ public class MalarmActivity
 					fis = new FileInputStream(MalarmPreference.CUSTOM_URL_LIST.getAbsolutePath());
 					br = new BufferedReader(new InputStreamReader(fis));
 					String line;
-					StringBuffer sb = new StringBuffer();
 					while(null != (line = br.readLine())){
 						if(line.startsWith("#")){
 							continue;
