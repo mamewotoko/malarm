@@ -12,13 +12,20 @@
         android:title="@string/pref_webview_url" />
 
     <CheckBoxPreference
-       android:key="wifi_only"
-       android:defaultValue="false"
-       android:selectable="true"
-       android:summaryOff="@string/not_wifi_only"
-       android:summaryOn="@string/wifi_only"
-       android:title="@string/pref_wifi_only" />
+        android:defaultValue="false"
+        android:key="wifi_only"
+        android:selectable="true"
+        android:summaryOff="@string/not_wifi_only"
+        android:summaryOn="@string/wifi_only"
+        android:title="@string/pref_wifi_only" />
 
+    <PreferenceCategory android:title="@string/pref_ui_category" >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_use_drawable_ui"
+            android:title="@string/pref_use_drawable_ui" />
+        <CheckBoxPreference android:key="pref_reset_url_index" android:title="@string/pref_reset_url_index" android:defaultValue="true"/>
+    </PreferenceCategory>
     <PreferenceCategory
         android:key="playlist_category"
         android:title="@string/pref_playlist_category" >

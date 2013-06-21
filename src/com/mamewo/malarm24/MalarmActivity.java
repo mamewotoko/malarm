@@ -183,7 +183,12 @@ public class MalarmActivity
 			PreferenceManager.getDefaultSharedPreferences(this);
 		pref_.registerOnSharedPreferenceChangeListener(this);
 		syncPreferences(pref_, "ALL");
-		setContentView(R.layout.main);
+		if (pref_.getBoolean("pref_use_drawable_ui", false)){
+			setContentView(R.layout.main_drawing);
+		}
+		else {
+			setContentView(R.layout.main);
+		}
 		Intent intent = new Intent(this, MalarmPlayerService.class);
 		startService(intent);
 		//TODO: handle failure of bindService
@@ -555,6 +560,10 @@ public class MalarmActivity
 			if (state_.sleepMin_ > 0) {
 				state_.sleepMin_ = 0;
 			}
+			//TODO: use values.xxxx as default value
+			if(pref_.getBoolean("pref_reset_url_index", true)){
+				state_.webIndex_ = 0;
+			}
 		}
 		else if (LOADWEB_ACTION.equals(action)) {
 			String url = intent.getStringExtra("url");
@@ -564,7 +573,6 @@ public class MalarmActivity
 			//sleep | wakeup
 			String playlist = intent.getStringExtra("playlist");
 			int pos = intent.getIntExtra("position", 0);
-			//TODO: 
 			Playlist list;
 			if(null == playlist || "wakeup".equals(playlist)){
 				list = MalarmPlayerService.wakeupPlaylist_;
