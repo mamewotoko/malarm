@@ -59,6 +59,7 @@ import android.widget.*;
 import android.webkit.*;
 import android.net.Uri;
 import android.graphics.Bitmap;
+import android.widget.SlidingDrawer;
 
 final
 public class MalarmActivity
@@ -293,7 +294,6 @@ public class MalarmActivity
 				}
 			}
 		});
-
 		gd_ = new GestureDetector(this, new WebViewDblTapListener());
 	}
 	
@@ -336,6 +336,19 @@ public class MalarmActivity
 	@Override
 	protected void onStart() {
 		super.onStart();
+		Intent i = getIntent();
+		Log.d(TAG, "onStart: " + i.getAction());
+		Log.d(TAG, "pref_use_drawable_ui: " + pref_.getBoolean("pref_use_drawable_ui", false));
+		Log.d(TAG, "pref_open_drawable: " + pref_.getBoolean("pref_open_drawable", false));
+		
+		if (MalarmPlayerService.WAKEUP_ACTION.equals(i.getAction())
+				&& pref_.getBoolean("pref_use_drawable_ui", false)
+				&& pref_.getBoolean("pref_open_drawable", false)) {
+			SlidingDrawer drawer = (SlidingDrawer)findViewById(R.id.slidingDrawer1);
+			Log.d(TAG, "drawer open");
+			drawer.open();
+			i.setAction("android.intent.action.MAIN");
+		}
 	}
 	
 	@Override
@@ -564,6 +577,7 @@ public class MalarmActivity
 			if(pref_.getBoolean("pref_reset_url_index", true)){
 				state_.webIndex_ = 0;
 			}
+			setIntent(intent);
 		}
 		else if (LOADWEB_ACTION.equals(action)) {
 			String url = intent.getStringExtra("url");

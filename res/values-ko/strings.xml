@@ -104,5 +104,6 @@
     <string name="pref_ui_category">UI</string>
     <string name="pref_use_drawable_ui">Web 서랍 UI를 사용</string>
     <string name="pref_reset_url_index">일어날 때 처음 사이트를 열</string>
-    
+
+    <string name="pref_open_drawable_title">일어날 때 서랍 UI 열기</string>
 </resources>
