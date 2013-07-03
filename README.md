@@ -64,6 +64,13 @@ Tested Device
 * Android 2.2 emulator (API level 8)
 * Android 4.0 emulator
 
+Playlist format
+----------------------
+Basically m3u format.
+podcast is supported by adding podcast XML url like following
+
+    podcast:http://www.nhk.or.jp/rj/podcast/rss/english.xml
+
 Limitation
 ----------------------
 * Music stops when DRM decoding failed
@@ -89,10 +96,6 @@ TODO
       -> pause music from menu
       -> notification title is incorrect
 * localize: French, Chinese
-* support podcast
-* manage audio focus
-http://developer.android.com/training/managing-audio/audio-focus.html
-* add callback which is called when music is stopped
 * show music title as a notification, not filename
 * add play button on volume preference to check volume
 * show mark on playing music in playlist preference
@@ -128,6 +131,7 @@ http://developer.android.com/resources/articles/tts.html
 
 Future work
 ----------------------
+* support multiple episode of podcast?
 * support shuffle of music
 * use Actionbar
 * Design for tablets

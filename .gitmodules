@@ -4,3 +4,6 @@
 [submodule "test/malarm_scirocco_test"]
 	path = test/malarm_scirocco_test
 	url = git://github.com/mamewotoko/malarm_scirocco_test.git
+[submodule "libsrc/podcast_parser"]
+	path = libsrc/podcast_parser
+	url = git@github.com:mamewotoko/podcast_parser.git

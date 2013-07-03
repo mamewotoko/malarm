@@ -3,8 +3,12 @@ package com.mamewo.malarm24;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.mamewo.lib.podcast_parser.PodcastInfo;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -35,6 +39,7 @@ public class MalarmPlayerService
 	extends Service
 	implements MediaPlayer.OnCompletionListener,
 			   MediaPlayer.OnErrorListener,
+			   MediaPlayer.OnPreparedListener,
 			   AudioManager.OnAudioFocusChangeListener
 {
 	final static
@@ -411,17 +416,30 @@ public class MalarmPlayerService
 			manager.abandonAudioFocus(this);
 			player_.stop();
 		}
+		MusicURL url;
 		String path = "";
 		//skip unsupported files filtering by filename ...
 		for (int i = 0; i < 10; i++) {
-			path = currentPlaylist_.getURL();
-			if (path.startsWith("http://")) {
-				break;
-			}
-			File f = new File(path);
-			// ... m4p is protected audio file
-			if ((!path.endsWith(".m4p")) && f.exists()) {
-				break;
+			url = currentPlaylist_.getURL();
+			try {
+				if (url.type_ == MusicURL.URLType.PODCAST_XML) {
+					Log.d(TAG, "play podcast: " + url.url_);
+					//start async task to get episode URL
+					URL podcastURL = new URL(url.url_);
+					PodcastInfo[] info = new PodcastInfo[]{ new PodcastInfo(null, podcastURL, null, true) };
+					PlayFirstEpisodeTask task = new PlayFirstEpisodeTask(this, player_);
+					task.execute(info);
+					//umm
+					return true;
+				}
+				path = url.url_;
+				File f = new File(path);
+				// ... m4p is protected audio file
+				if ((!path.endsWith(".m4p")) && f.exists()) {
+					break;
+				}
+			} catch (MalformedURLException e) {
+				Log.d(TAG, "exception: ", e);
 			}
 			int pos = currentPlaylist_.getCurrentPosition();
 			pos = (pos + 1) % currentPlaylist_.size();
@@ -533,6 +551,7 @@ public class MalarmPlayerService
 		player_ = new MediaPlayer();
 		player_.setOnCompletionListener(this);
 		player_.setOnErrorListener(this);
+		player_.setOnPreparedListener(this);
 		receiver_ = new UnpluggedReceiver();
 		registerReceiver(receiver_, new IntentFilter(Intent.ACTION_HEADSET_PLUG));
 		AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
@@ -640,5 +659,24 @@ public class MalarmPlayerService
 		default:
 			break;
 		}
+	}
+	
+	//Podcast support
+	@Override
+	public void onPrepared(MediaPlayer player) {
+		Log.d(TAG, "onPrepared is called");
+		AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		int result = manager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+		if (result == AudioManager.AUDIOFOCUS_REQUEST_FAILED){
+			return;
+		}
+		player_.start();
+		for (PlayerStateListener listener: listenerList_) {
+			listener.onStartMusic(currentMusicName_);
+		}
+		if (iconId_ != 0) {
+			//TODO: modify notification title
+			showNotification(currentNoteTitle_, currentMusicName_, iconId_);
+		}	
 	}
 }

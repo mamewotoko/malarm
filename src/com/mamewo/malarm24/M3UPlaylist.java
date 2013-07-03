@@ -49,21 +49,24 @@ public final class M3UPlaylist
 	//add repeat setting, shuffle mode
 	// file | mp3 file on web | podcast (not supported yet)
 	@Override
-	public String getURL() {
+	public MusicURL getURL() {
 		if (playlist_.size() <= currentIndex_) {
 			currentIndex_ = 0;
 		}
-		String result = playlist_.get(currentIndex_);
-		if (result.startsWith("http://")) {
+		MusicURL result;
+		String path = playlist_.get(currentIndex_);
+		if (path.startsWith("podcast:http")) {
 			//adhoc...
-			if ((!result.endsWith(".mp3")) && (!result.endsWith(".m4a"))){
-				//podcast?
-				//TODO: support multiple episode
-				//result = getFirstEpisodeURL(result);
-			}
+			String xmlURL = path.substring(8);
+			//TODO: support multiple episode
+			//result = getFirstEpisodeURL(result);
+			result = new MusicURL(MusicURL.URLType.PODCAST_XML, xmlURL);
 		}
-		else if (!(new File(result)).isAbsolute()) {
-			result = (new File(basepath_, result)).getAbsolutePath();
+		else {
+			if (!(new File(path)).isAbsolute()) {
+				path = (new File(basepath_, path)).getAbsolutePath();
+			}
+			result = new MusicURL(MusicURL.URLType.MUSIC, path);
 		}
 		return result;
 	}
