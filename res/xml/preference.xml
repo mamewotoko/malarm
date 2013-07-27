@@ -26,15 +26,16 @@
             android:defaultValue="true"
             android:key="pref_reset_url_index"
             android:title="@string/pref_reset_url_index" />
+<!--
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="pref_use_drawable_ui"
             android:title="@string/pref_use_drawable_ui" />
-        <!-- TODO: disable when drawable UI is not used -->
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="pref_open_drawable"
             android:title="@string/pref_open_drawable_title" />
+-->
     </PreferenceCategory>
     <PreferenceCategory
         android:key="playlist_category"
@@ -114,7 +115,7 @@
             android:key="sleep_volume"
             android:title="@string/pref_sleep_volume_title" />
         <com.mamewo.malarm24.VolumePreference
-            android:defaultValue="10"
+            android:defaultValue="8"
             android:key="wakeup_volume"
             android:title="@string/pref_wakeup_volume_title" />
     </PreferenceCategory>
