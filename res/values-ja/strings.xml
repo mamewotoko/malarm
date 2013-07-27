@@ -24,7 +24,7 @@
     <string name="playlist_path_summary">プレイリストsleep.m3uとwakeup.m3uを保存したディレクトリ</string>
     <string name="enter_path_to_playlist">プレイリストsleep.m3uとwakeup.m3uを保存したディレクトリを入力してください。</string>
     <string name="malarm_version_title">バージョン</string>
-    <string name="help_url">http://mamewotoko.github.com/malarm/doc/index.html</string>
+    <string name="help_url">http://mamewotoko.github.com/malarm/doc/0.99/index.html</string>
     <string name="help_title">ヘルプ</string>
     <string name="help_summary">使い方を書いたヘルプ(Webページ)を表示します。ネットワークに接続しますので、接続料金がかかることがあります。</string>
 

@@ -77,7 +77,6 @@ Limitation
 
 TODO
 ----------------------
-* add content for off-line mode, i.e. Wifi is not avilable and wifi only mode is selected.
 * merge PlayserService from podplayer project
 * add UI to widen WebView area
 * use playlist created by Google music player
@@ -95,7 +94,7 @@ TODO
     * alarm set
       -> pause music from menu
       -> notification title is incorrect
-* localize: French, Chinese
+* make COOL widget to set alarm (make clock widget?)
 * show music title as a notification, not filename
 * add play button on volume preference to check volume
 * show mark on playing music in playlist preference
@@ -119,7 +118,6 @@ http://developer.android.com/resources/articles/tts.html
 * fix UI update bug when sleep timer expires (broadcast -> activity)
 * conditional playlist
     * Sunday, holiday playlist etc...
-* make COOL widget to set alarm (make clock widget?)
 * add more test cases
     * setAlarm -> Activity quits
     * double touch of webview
@@ -131,6 +129,7 @@ http://developer.android.com/resources/articles/tts.html
 
 Future work
 ----------------------
+* localize: French, Chinese (needs pull request...?)
 * support multiple episode of podcast?
 * support shuffle of music
 * use Actionbar

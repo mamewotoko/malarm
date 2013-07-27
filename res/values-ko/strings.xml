@@ -24,7 +24,7 @@
     <string name="playlist_path_summary">플레이 리스트sleep. m3u와 wakeup. m3u를 보존한 디렉토리 </string>
     <string name="enter_path_to_playlist">플레이 리스트sleep. m3u와 wakeup. m3u를 보존한 디렉토리를 입력해 주십시오. </string>
     <string name="malarm_version_title">버전 </string>
-    <string name="help_url">http://mamewotoko.github.com/malarm/doc/index.html</string>
+    <string name="help_url">http://mamewotoko.github.com/malarm/doc/0.99/index_en.html</string>
     <string name="help_title">도움 </string>
     <string name="help_summary">사용방법을 쓴 도움(홈페이지)을 표시합니다. 네트워크에 접속하므로, 접속 요금이 걸릴 것이 있습니다. </string>
 
