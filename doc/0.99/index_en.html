@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+   <meta charset="utf-8" />
+   <title>How to use malarm</title>
+<meta name="Author" content="Takashi Masuyama" />
+<meta name="viewport" content="width=device-width" />
+<script type='text/javascript' src='assets/javascript/prettify.js'></script>
+<link rel='stylesheet' type='text/css' href='assets/css/skeleton/stylesheets/base.css' />
+<link rel='stylesheet' type='text/css' href='assets/css/skeleton/stylesheets/skeleton.css' />
+<link rel='stylesheet' type='text/css' href='assets/css/prettify.css' />
+<link rel='stylesheet' type='text/css' href='assets/css/style.css' />
+</head>
+<body onload='prettyPrint()'>
+<h1>How to use malarm (v.0.99)</h1>
+<div align="right"><p>
+<!-- hhmts start -->
+Last modified: Sat Jul 27 17:02:32 2013
+<!-- hhmts end -->
+</p><p><a href="index.html">Japanese</a></p>
+</div>
+
+<h2>What is malarm?</h2>
+<p><img src="https://github.com/mamewotoko/malarm/raw/master/res/drawable/img.png" alt="app icon" />
+<br />malarm is an Android application which plays music in playlist at sleep time and 
+wakeup time.
+
+<h2>How to setup</h2>
+<ol>
+<li>Copy some music files (mp3, m4a, m4v, mp4) into "music" directory of SD memory which is supported by your android device</li>
+<li>Create 2 playlists in M3U format, sleep.m3u and wakeup.m3u.
+sleep.m3u is sleep time playlist and wakeup.m3u is wakeup time playlist. An M3U playlist file is a text file which lists one music file per one line.
+Copy them into "music" directory of SD memory.</li>
+<li>Insert SD memory into your Android device.</li>
+</ol>
+
+<h3>Example of playlist</h3>
+<pre><code>Help.m4a
+podcast:http://www.nhk.or.jp/rj/podcast/rss/english.xml
+ABC.m4a
+11 Crazy about you.mp3</code></pre>
+
+You can specify podcast by adding a line like podcast:<i>[URL of podcast]</i>. The first episode will be played.
+
+<h3>Example of SD memory</h3>
+<pre><code>music
+  |
+  +-- sleep.m3u
+      wakeup.m3u
+      Help.m4a
+      ABC.m4a
+      11 Crazy about you.mp3</code></pre>
+
+<h2>How to set alarm</h2>
+<!-- TODO: put main screen of english version -->
+<h3>Main screen</h3>
+<img src="malarm_en_balloon.png" width="245" height="427" alt="main screen" />
+<ol>
+<li>Set time picker to wakeup time.</li>
+<li>Click "Set Alarm" button.</li>
+<li>Malarm application plays sleep music listed in sleep.m3u one hour. It plays wakeup
+music listed in wakeup.m3u at specified time by time picker.</li>
+</ol>
+
+<h2>How to stop or cancel alarm</h2>
+<p>Click "Cancel Alarm" button</p>
+
+<hr />
+<address><p>
+<a href="https://github.com/mamewotoko/malarm"><img src="http://www002.upp.so-net.ne.jp/mamewo/github.png" width="60" height="26" alt="github icon" style="background-color: #CCC; border: 0px;" /></a>
+Author: Takashi Masuyama <a href="mailto:mamewotoko@gmail.com">mamewotoko@gmail.com</a>
+</p></address>
+</div>
+</body></html>
