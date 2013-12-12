@@ -3,17 +3,17 @@
     xmlns:mamewo="http://schemas.android.com/apk/res/mamewo" >
 
     <com.mamewo.malarm24.MultiListPreference
+        android:key="url_list"
         separator="!"
         android:defaultValue="http://bijo-linux.com/!http://twitter.com/!http://www.bijint.com/jp/!http://www.google.com/mail/!https://www.google.com/calendar/!http://www.okuiaki.com/mobile/login.php"
         android:dialogTitle="@string/pref_webview_url"
         android:entries="@array/pref_url_list_key"
         android:entryValues="@array/pref_url_list_value"
-        android:key="url_list"
         android:title="@string/pref_webview_url" />
 
     <CheckBoxPreference
-        android:defaultValue="false"
         android:key="wifi_only"
+        android:defaultValue="false"
         android:selectable="true"
         android:summaryOff="@string/not_wifi_only"
         android:summaryOn="@string/wifi_only"
@@ -28,12 +28,12 @@
             android:title="@string/pref_reset_url_index" />
 <!--
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="pref_use_drawable_ui"
+            android:defaultValue="false"
             android:title="@string/pref_use_drawable_ui" />
         <CheckBoxPreference
-            android:defaultValue="false"
             android:key="pref_open_drawable"
+            android:defaultValue="false"
             android:title="@string/pref_open_drawable_title" />
 -->
     </PreferenceCategory>
@@ -43,24 +43,24 @@
 
         <!-- TODO: modify /sdcard/music -->
         <EditTextPreference
-            android:defaultValue="/sdcard/music/"
+            android:key="playlist_path"
+            android:defaultValue="/sdcard/external_sd/music/"
             android:dialogMessage="@string/enter_path_to_playlist"
             android:dialogTitle="@string/playlist_path_title"
             android:enabled="true"
-            android:key="playlist_path"
             android:summary="@string/playlist_path_summary"
             android:title="@string/playlist_path_title" />
 
         <CheckBoxPreference
-            android:disableDependentsState="true"
             android:key="sleep_playlist"
+            android:disableDependentsState="true"
             android:selectable="true"
             android:summaryOff="@string/pref_no_sleep_playlist"
             android:summaryOn="@string/pref_ok_sleep_playlist"
             android:title="@string/pref_sleep_playlist" />
         <CheckBoxPreference
-            android:disableDependentsState="true"
             android:key="wakeup_playlist"
+            android:disableDependentsState="true"
             android:selectable="true"
             android:summaryOff="@string/pref_no_wakeup_playlist"
             android:summaryOn="@string/pref_ok_wakeup_playlist"
@@ -79,16 +79,16 @@
         android:key="time_category"
         android:title="@string/pref_time_category_title" >
         <ListPreference
+            android:key="sleeptime"
             android:defaultValue="60"
             android:dialogTitle="@string/preference_time_title"
             android:entries="@array/preference_time_key"
             android:entryValues="@array/preference_time_value"
-            android:key="sleeptime"
             android:title="@string/pref_sleeptime" />
 
         <com.mamewo.malarm24.TimePreference
-            android:defaultValue="7:00"
             android:key="default_time"
+            android:defaultValue="7:00"
             android:summary="@string/pref_default_time_summary"
             android:title="@string/pref_default_time_title" />
     </PreferenceCategory>
@@ -96,27 +96,27 @@
         android:key="volume_category"
         android:title="@string/volume_category_title" >
         <CheckBoxPreference
-            android:defaultValue="true"
             android:key="vibrate"
+            android:defaultValue="true"
             android:summaryOff="@string/disable_vibration"
             android:summaryOn="@string/enable_vibration"
             android:title="@string/pref_vibration" >
         </CheckBoxPreference>
         <CheckBoxPreference
+            android:key="stop_on_unplugged"
             android:defaultValue="true"
             android:enabled="true"
-            android:key="stop_on_unplugged"
             android:summaryOff="@string/pref_stop_on_unplugged_off_summary"
             android:summaryOn="@string/pref_stop_on_unplugged_on_summary"
             android:title="@string/pref_stop_on_unplugged_title" />
 
         <com.mamewo.malarm24.VolumePreference
-            android:defaultValue="2"
             android:key="sleep_volume"
+            android:defaultValue="2"
             android:title="@string/pref_sleep_volume_title" />
         <com.mamewo.malarm24.VolumePreference
-            android:defaultValue="8"
             android:key="wakeup_volume"
+            android:defaultValue="8"
             android:title="@string/pref_wakeup_volume_title" />
     </PreferenceCategory>
     <PreferenceCategory
@@ -130,9 +130,9 @@
             android:title="@string/pref_clear_webview_cache_title" />
 
         <CheckBoxPreference
+            android:key="use_native_player"
             android:defaultValue="false"
             android:enabled="false"
-            android:key="use_native_player"
             android:selectable="false"
             android:summaryOff="@string/use_internal_player"
             android:summaryOn="@string/use_native_player"
@@ -151,5 +151,4 @@
             android:selectable="true"
             android:title="@string/malarm_version_title" />
     </PreferenceCategory>
-
 </PreferenceScreen>

@@ -86,7 +86,7 @@ public final class M3UPlaylist
 		BufferedReader br = new BufferedReader(new FileReader (filename));
 		String music_filename;
 		while ((music_filename = br.readLine()) != null) {
-			if (music_filename.charAt(0) != '#') {
+			if (music_filename.length() > 0 && music_filename.charAt(0) != '#') {
 				playlist_.add(music_filename);
 			}
 		}
