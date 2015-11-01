@@ -82,7 +82,7 @@ TODO
 * use playlist created by Google music player
     * add UI to select playlist for wakeup and sleep.
 * Write more detail to help page
-    * how to cerate playlist
+    * how to create playlist
     * how to create customized url list file
 * add preference to avoid network access from web viewer
     * add network preference, disable/enable
