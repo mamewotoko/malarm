@@ -33,7 +33,6 @@ import android.view.KeyEvent;
 
 /**
  * @author Takashi Masuyama <mamewotoko@gmail.com>
- * http://www002.upp.so-net.ne.jp/mamewo/
  */
 public class MalarmPlayerService
 	extends Service
@@ -245,7 +244,7 @@ public class MalarmPlayerService
 			Log.i(TAG, "wakeup playlist is not found: " + WAKEUP_PLAYLIST_FILENAME);
 			wakeupPlaylist_ = null;
 		}
-		catch (IOException e) {
+		catch (Exception e) {
 			Log.i(TAG, "wakeup playlist cannot be load: " + WAKEUP_PLAYLIST_FILENAME);
 			wakeupPlaylist_ = null;
 		}
@@ -256,7 +255,7 @@ public class MalarmPlayerService
 			Log.i(TAG, "sleep playlist is not found: " + SLEEP_PLAYLIST_FILENAME);
 			sleepPlaylist_ = null;
 		}
-		catch (IOException e) {
+		catch (Exception e) {
 			Log.i(TAG, "sleep playlist cannot be load: " + WAKEUP_PLAYLIST_FILENAME);
 			sleepPlaylist_ = null;
 		}

@@ -2,7 +2,6 @@ package com.mamewo.malarm24;
 
 /**
  * @author Takashi Masuyama <mamewotoko@gmail.com>
- * http://www002.upp.so-net.ne.jp/mamewo/
  */
 
 import java.io.Serializable;
@@ -80,7 +79,7 @@ public class MalarmActivity
 	final static
 	private String TAG = "malarm";
 	final static
-	private String MYURL = "http://www002.upp.so-net.ne.jp/mamewo/mobile_shop.html";
+	private String MYURL = "http://mamewo.ddo.jp/mobile_shop.html";
 	final static
 	private int SPEECH_RECOGNITION_REQUEST_CODE = 2121;
 	final static

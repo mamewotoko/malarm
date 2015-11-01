@@ -142,17 +142,25 @@ Appendix
 1. Create local.properties file and set sdk.dir property to location where you installed android SDK
     `sdk.dir=<path to android SDK>`
 2. In project top directory execute following command
-    `ant debug`
+```bash
+ant debug
+```
 3. malarm-debug.apk will be created in bin directory, if successed
 
 ### Start Android Emulator And Install APK From Command Line
 1. start android emulator
-    `emulator -avd <avdname>`
+```bash
+emulator -avd <avdname>
+```
 2. install application on android emulator
-    `adb install bin/malarm-cmd.apk`
+```bash
+adb install bin/malarm-cmd.apk
+```
 (build.xml and *.property files are created by android create command)
 or install app using ant
-    `ant installd`
+```bash
+ant installd
+```
 
 ### Automated UI Testing
 There is a GUI automated test using Robotium, named
@@ -161,7 +169,7 @@ There is a GUI automated test using Robotium, named
 Memo
 ----------------------
 * URL list specification
-    1. if malarm/urllist.txt exists, it is used as url list file
+    1. if malarm/urllist.txt exists in external storage(e.g. SD card), it is used as url list file
        url list file is a text file which contains title followed by tab and its url par line
        you can specify slide show contents in asset
        e.g. file:///android_asset/local/step.html
