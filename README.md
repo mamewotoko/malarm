@@ -38,7 +38,7 @@ http://www.youtube.com/watch?v=vA2F_dO0mQA
 ### Github
 https://github.com/mamewotoko/malarm
 
-How to build & run
+How to start
 ----------------------
 1. Put your music file into /sdcard/music directory of android device
 2. Prepare m3u format play list for sleep (named sleep.m3u) and wakeup (named wakeup.m3u).
