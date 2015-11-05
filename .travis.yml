@@ -8,6 +8,6 @@ android:
 
 before_script:
     - android update project -t android-16 -p .
-
+    - adnroid update lib-project -p libsrc/podcast_parser
 script:
     - ant debug
