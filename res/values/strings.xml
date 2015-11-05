@@ -11,14 +11,12 @@
     <string name="stop_alarm">Cancel Alarm</string>
     <string name="stop_vibration">Stop vibaration</string>
     <string name="play_wakeup">Play</string>
-    <string name="preference_title">Preference of malarm</string>
     <string name="pref_menu">Preference</string>
     <string name="pref_webview_url">Web site to display</string>
     <string name="preference_time_title">Sleep time</string>
     <string name="pref_sleeptime">Sleep time</string>
     <string name="enable_vibration">ON</string>
     <string name="disable_vibration">OFF</string>
-    <string name="pref_title">Wakeup vibration</string>
     <string name="pref_vibration">Wakeup vibration</string>
     <string name="set_now_short">Now!</string>
 
