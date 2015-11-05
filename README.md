@@ -183,4 +183,4 @@ http://blog.350nice.com/wp/archives/240
 
 ----
 Takashi Masuyama < mamewotoko@gmail.com >  
-http://www002.upp.so-net.ne.jp/mamewo/
+http://mamewo.ddo.jp/
