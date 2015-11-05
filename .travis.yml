@@ -5,3 +5,9 @@ android:
         - android-16
     licences:
         - '.+'
+
+before_script:
+    - android update project -t android-16 -p .
+
+script:
+    - ant debug

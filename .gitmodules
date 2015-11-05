@@ -1,9 +1,12 @@
 [submodule "test/malarm_test"]
 	path = test/malarm_test
-	url = git://github.com/mamewotoko/malarm_test.git
+	url = https://github.com/mamewotoko/malarm_test.git
+#	url = git://github.com/mamewotoko/malarm_test.git
 [submodule "test/malarm_scirocco_test"]
 	path = test/malarm_scirocco_test
-	url = git://github.com/mamewotoko/malarm_scirocco_test.git
+	url = https://github.com/mamewotoko/malarm_scirocco_test.git
+#	url = git://github.com/mamewotoko/malarm_scirocco_test.git
 [submodule "libsrc/podcast_parser"]
 	path = libsrc/podcast_parser
-	url = git@github.com:mamewotoko/podcast_parser.git
+	url = https://github.com/mamewotoko/podcast_parser.git
+#	url = git@github.com:mamewotoko/podcast_parser.git
