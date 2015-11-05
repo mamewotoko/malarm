@@ -1,6 +1,6 @@
-===============================================================================
 malarm - Good-night & Good-morning with your favorite tunes
-===============================================================================
+[![Build Status](https://travis-ci.org/mamewotoko/malarm.svg?branch=master)](https://travis-ci.org/mamewotoko/malarm)
+===========================================================
 
 What is this?
 ----------------------
