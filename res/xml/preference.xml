@@ -58,6 +58,7 @@
             android:summaryOff="@string/pref_no_sleep_playlist"
             android:summaryOn="@string/pref_ok_sleep_playlist"
             android:title="@string/pref_sleep_playlist" />
+
         <CheckBoxPreference
             android:key="wakeup_playlist"
             android:disableDependentsState="true"

@@ -337,8 +337,6 @@ public class MalarmActivity
 		super.onStart();
 		Intent i = getIntent();
 		Log.d(TAG, "onStart: " + i.getAction());
-		Log.d(TAG, "pref_use_drawable_ui: " + pref_.getBoolean("pref_use_drawable_ui", false));
-		Log.d(TAG, "pref_open_drawable: " + pref_.getBoolean("pref_open_drawable", false));
 		
 		if (MalarmPlayerService.WAKEUP_ACTION.equals(i.getAction())
 				&& pref_.getBoolean("pref_use_drawable_ui", false)
@@ -560,6 +558,7 @@ public class MalarmActivity
 	//onResume is called after this method is called
 	//TODO: call setNewIntent and handle in onResume?
 	//TODO: this method is not called until home button is pressed
+	@Override
 	protected void onNewIntent (Intent intent) {
 		String action = intent.getAction();
 		Log.d(TAG, "onNewIntent is called: " + action);
@@ -680,18 +679,6 @@ public class MalarmActivity
 			showMessage(this, getString(R.string.music_stopped));
 		}
 	}
-	
-//	private void setNotification(String title, String text) {
-//		Notification note =
-//			new Notification(R.drawable.img, title, System.currentTimeMillis());
-//		
-//		Intent ni = new Intent(this, MalarmActivity.class);
-//		PendingIntent npi = PendingIntent.getActivity(this, 0, ni, 0);
-//		note.setLatestEventInfo(this, title, text, npi);
-//		NotificationManager notify_mgr =
-//			(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//		notify_mgr.notify(PACKAGE_NAME, 0, note);
-//	}
 	
 	private void setSleepTimer() {
 		SharedPreferences pref =
@@ -814,6 +801,7 @@ public class MalarmActivity
 		return true;
 	}
 
+	@Override
 	public void onClick(View v) {
 		if (v == nextButton_) {
 			if(player_.isPlaying()) {
