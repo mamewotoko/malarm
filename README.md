@@ -66,9 +66,11 @@ Tested Device
 Playlist format
 ----------------------
 Basically m3u format.
-podcast is supported by adding podcast XML url like following
-
-    podcast:http://www.nhk.or.jp/rj/podcast/rss/english.xml
+Podcast is supported by adding podcast XML url like following
+```
+podcast:http://www.nhk.or.jp/rj/podcast/rss/english.xml
+```
+The first episode is played.
 
 Limitation
 ----------------------

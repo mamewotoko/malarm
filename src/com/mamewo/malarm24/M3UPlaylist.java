@@ -47,7 +47,7 @@ public final class M3UPlaylist
 	}
 	
 	//add repeat setting, shuffle mode
-	// file | mp3 file on web | podcast (not supported yet)
+	// file | mp3 file on web | podcast 
 	@Override
 	public MusicURL getURL() {
 		if (playlist_.size() <= currentIndex_) {
