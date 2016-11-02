@@ -78,6 +78,8 @@ Limitation
 
 TODO
 ----------------------
+* use gradle to build
+  * download robotium and scirocco jar from repository
 * merge PlayserService from podplayer project
 * add UI to widen WebView area
 * use playlist created by Google music player
