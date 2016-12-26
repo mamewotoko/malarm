@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.mamewo.lib.podcast_parser.BaseGetPodcastTask;
 import com.mamewo.lib.podcast_parser.EpisodeInfo;
+import okhttp3.OkHttpClient;
 
 public class PlayFirstEpisodeTask
 	extends BaseGetPodcastTask
@@ -19,8 +20,8 @@ public class PlayFirstEpisodeTask
 	static final
 	private String TAG = "malarm";
 	
-	public PlayFirstEpisodeTask(Context context, MediaPlayer player) {
-		super(context, 1, TIMEOUT_SEC, false);
+	public PlayFirstEpisodeTask(Context context, OkHttpClient client, MediaPlayer player) {
+		super(context, client, 1);
 		player_ = player;
 		info_ = null;
 	}
@@ -29,7 +30,7 @@ public class PlayFirstEpisodeTask
 	protected void onProgressUpdate(EpisodeInfo... values){
 		if(null != values) {
 			info_ = values[0];
-			Log.d(TAG, "onProgress: url " + info_.url_);
+			Log.d(TAG, "onProgress: url " + info_.getURL());
 		}
 	}
 	
@@ -40,9 +41,9 @@ public class PlayFirstEpisodeTask
 			return;
 		}
 		try {
-			Log.d(TAG, "Start playing podcast:" + info_.url_);
+			Log.d(TAG, "Start playing podcast:" + info_.getURL());
 			player_.reset();
-			player_.setDataSource(info_.url_);
+			player_.setDataSource(info_.getURL());
 			Log.d(TAG, "prepareAsync");
 			player_.prepareAsync();
 		} catch (IOException e) {

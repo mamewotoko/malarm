@@ -78,6 +78,7 @@ Limitation
 
 TODO
 ----
+* use NotificationCompat
 * use Actionbar
 * support android-6, 7, 8 and remove malarm78
 * stop playing on phone call
@@ -201,6 +202,7 @@ http://blog.350nice.com/wp/archives/240
 * [Dropsync](https://play.google.com/store/apps/details?id=com.ttxapps.dropsync) is a useful Android app!
 * To use @Overrides annotation, use following eclipse setting 
 `org.eclipse.jdt.core.compiler.compliance=1.6`
+* Notification.setLatestEventInfo is removed.....
 
 ----
 Takashi Masuyama < mamewotoko@gmail.com >  

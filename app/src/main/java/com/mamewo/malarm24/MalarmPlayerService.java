@@ -31,6 +31,10 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Cache;
+import java.util.concurrent.TimeUnit;
+
 /**
  * @author Takashi Masuyama <mamewotoko@gmail.com>
  */
@@ -68,6 +72,11 @@ public class MalarmPlayerService
 	final static
 	private int NOTIFY_PLAYING_ID = 1;
 	final private Class<MalarmActivity> userClass_ = MalarmActivity.class;
+    public String HTTP_CACHE_DIR = "http_cache";
+    //2Mbyte
+    final static
+    public long HTTP_CACHE_SIZE = 2*1024*1024; 
+
 
 	//error code from base/include/media/stagefright/MediaErrors.h
 	final static
@@ -108,6 +117,7 @@ public class MalarmPlayerService
 	private final IBinder binder_ = new LocalBinder();
 	private Playlist currentPlaylist_;
 	private String currentMusicName_;
+    private OkHttpClient client_;
 	private MediaPlayer player_;
 	private UnpluggedReceiver receiver_;
 	private int iconId_ = 0;
@@ -426,9 +436,9 @@ public class MalarmPlayerService
 					//start async task to get episode URL
 					URL podcastURL = new URL(url.url_);
 					PodcastInfo[] info = new PodcastInfo[]{ new PodcastInfo(null, podcastURL, null, true) };
-					PlayFirstEpisodeTask task = new PlayFirstEpisodeTask(this, player_);
+					PlayFirstEpisodeTask task = new PlayFirstEpisodeTask(this, client_, player_);
 					task.execute(info);
-					//umm
+					//XXX umm
 					return true;
 				}
 				path = url.url_;
@@ -547,6 +557,11 @@ public class MalarmPlayerService
 		currentMusicName_ = null;
 		loadPlaylist();
 		currentPlaylist_ = wakeupPlaylist_;
+        File cacheDir = new File(getExternalCacheDir(), HTTP_CACHE_DIR);
+        client_ = new OkHttpClient.Builder()
+            .readTimeout(30, TimeUnit.SECONDS)
+            .cache(new Cache(cacheDir, HTTP_CACHE_SIZE))
+            .build();
 		player_ = new MediaPlayer();
 		player_.setOnCompletionListener(this);
 		player_.setOnErrorListener(this);
