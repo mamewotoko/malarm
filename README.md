@@ -2,11 +2,11 @@ malarm - Good-night & Good-morning with your favorite tunes [![Build Status](htt
 ===========================================================
 
 What is this?
-----------------------
+-------------
 This is a simple alarm application of android (version 2.2.x - 2.3.3, 4.x).
 
 Overview
-----------------------
+--------
                 sleep tunes (e.g.1h)               wake-up tunes w vibration
                                                    application starts
      Alarm set ------------------> ..... Alarm time --------------->
@@ -16,7 +16,7 @@ Overview
  If you want to stop vibration only, please use "stop vibration" menu
 
 Resources
-----------------------
+----------
 ### Demo video
 http://www.youtube.com/watch?v=vA2F_dO0mQA
 
@@ -52,7 +52,7 @@ or Build malarm and install it on android device
 You can change path to playlist and music files by "Playlist directory" preference screen
 
 Tested Device
-----------------------
+-------------
 * Xperia acro
     * Android 2.3.4 (API level 10)
     * 480x854 (WVGA+) screen
@@ -64,7 +64,7 @@ Tested Device
 * Android 4.0 emulator
 
 Playlist format
-----------------------
+---------------
 Basically m3u format.
 Podcast is supported by adding podcast XML url like following
 ```
@@ -73,11 +73,11 @@ podcast:http://www.nhk.or.jp/rj/podcast/rss/english.xml
 The first episode is played.
 
 Limitation
-----------------------
+----------
 * Music stops when DRM decoding failed
 
 TODO
-----------------------
+----
 * use gradle to build
   * download robotium and scirocco jar from repository
 * merge PlayserService from podplayer project
@@ -131,7 +131,7 @@ http://developer.android.com/resources/articles/tts.html
     * http://developer.android.com/resources/dashboard/screens.html
 
 Future work
-----------------------
+-----------
 * localize: French, Chinese (needs pull request...?)
 * support multiple episode of podcast?
 * support shuffle of music
@@ -140,7 +140,7 @@ Future work
 * record wakeup time
 
 Appendix
-----------------------
+--------
 ### How To Build From Command Line
 1. Create local.properties file and set sdk.dir property to location where you installed android SDK
     `sdk.dir=<path to android SDK>`
@@ -170,7 +170,7 @@ There is a GUI automated test using Robotium, named
 [malarm_test](https://github.com/mamewotoko/malarm_test)
 
 Memo
-----------------------
+----
 * URL list specification
     1. if malarm/urllist.txt exists in external storage(e.g. SD card), it is used as url list file
        url list file is a text file which contains title followed by tab and its url par line
