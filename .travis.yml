@@ -2,13 +2,13 @@ language: android
 android:
     components:
         - build-tools-19.1.0
-        - android-16
+        - build-tools-24.0.3
+        - android-24
+        - android-6
+        - extra-android-support
+        - extra-android-m2repository
     licences:
         - '.+'
 
-before_script:
-    - android update project -t android-16 -p .
-    - android update lib-project -p libsrc/podcast_parser
-
 script:
-    - ant debug
+    - ./gradlew assembleDebug

@@ -1,6 +1,6 @@
 package com.mamewo.malarm_test;
 
-import com.jayway.android.robotium.solo.Solo;
+import com.robotium.solo.Solo;
 
 public class TestLandscapeUI
 	extends TestPortraitUI

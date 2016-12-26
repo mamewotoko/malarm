@@ -17,9 +17,14 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import com.jayway.android.robotium.solo.Solo;
+
 import com.mamewo.malarm24.*;
 import com.mamewo.malarm24.R;
+
+import com.robotium.solo.Solo;
+import com.robotium.solo.Solo.Config;
+import com.robotium.solo.Solo.Config.ScreenshotFileType;
+import com.jraska.falcon.FalconSpoon;
 
 public class TestPortraitUI
 	extends ActivityInstrumentationTestCase2<MalarmActivity>
@@ -40,47 +45,6 @@ public class TestPortraitUI
 	//set true to capture screen (it requires CaptureServer in mimicj)
 	private boolean _support_capture = false;
 
-	public void initCapture() throws IOException {
-		if (!_support_capture) {
-			return;
-		}
-		_sock = new Socket(_hostname, PORT);
-		_bw = new BufferedWriter(new OutputStreamWriter(_sock.getOutputStream()));
-	}
-	
-	public void finalizeCapture() {
-		if (!_support_capture) {
-			return;
-		}
-		Log.i("malam_test", "finalizeCapture is called");
-		try {
-			_bw.close();
-			_sock.close();
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void captureScreen(String filename) {
-		if (!_support_capture) {
-			return;
-		}
-		try {
-			_bw.write(filename + "\n");
-			_bw.flush();
-			//TODO: wait until captured
-			Thread.sleep(1000);
-		}
-		catch (IOException e) {
-			Log.i ("malarm_test", "capture failed: " + filename);
-			e.printStackTrace();
-		}
-		catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
-	
 	public TestPortraitUI() {
 		super("com.mamewo.malarm24", MalarmActivity.class);
 	}
@@ -104,7 +68,6 @@ public class TestPortraitUI
 	@Override
 	public void setUp() throws Exception {
 		solo_ = new Solo(getInstrumentation(), getActivity());
-		initCapture();
 	}
 
 	@Override
@@ -118,7 +81,6 @@ public class TestPortraitUI
 		catch (Throwable e) {
 			e.printStackTrace();
 		}
-		finalizeCapture();
 		getActivity().finish();
 		super.tearDown();
 	} 
@@ -128,7 +90,7 @@ public class TestPortraitUI
 
 		TextView view = null;
 		do {
-			ArrayList<TextView> list = solo_.getCurrentTextViews(null);
+			ArrayList<TextView> list = solo_.getCurrentViews(TextView.class);
 			for (TextView listText : list) {
 				Log.i(TAG, "listtext: " + listText.getText());
 				if(targetTitle.equals(listText.getText())){
@@ -149,12 +111,16 @@ public class TestPortraitUI
 		solo_.clickOnMenuItem(solo_.getString(R.string.pref_menu));
 		solo_.waitForActivity("MalarmPreference");
 		solo_.sleep(500);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "start_preference_activity");
 	}
-	
+
+    ///////////////////////////////
 	@Smoke
 	public void testSetAlarm() {
 		Date now = new Date(System.currentTimeMillis() + 60 * 1000);
 		solo_.setTimePicker(0, now.getHours(), now.getMinutes());
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "set_alarm");
+
 		solo_.clickOnView(solo_.getView(R.id.alarm_button));
 		solo_.sleep(2000);
 		TextView targetTimeLabel = (TextView)solo_.getView(R.id.target_time_label);
@@ -162,6 +128,8 @@ public class TestPortraitUI
 		Assert.assertTrue("check wakeup label", targetTimeLabel.getText().length() > 0);
 		Assert.assertTrue("check sleep label", sleepTimeLabel.getText().length() > 0);
 		solo_.goBack();
+
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "set_alarm");
 		solo_.sleep(61 * 1000);
 		Assert.assertTrue("Switch alarm button wording", solo_.searchToggleButton(solo_.getString(R.string.stop_alarm)));
 		Assert.assertTrue("Correct alarm toggle button state", solo_.isToggleButtonChecked(solo_.getString(R.string.stop_alarm)));
@@ -169,12 +137,15 @@ public class TestPortraitUI
 		//TODO: check music?
 		//TODO: check vibration
 		//TODO: check notification
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "set_alarm");
 		solo_.clickOnButton(solo_.getString(R.string.stop_alarm));
 		solo_.sleep(1000);
-		captureScreen("test_setAlarmTest.png");
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "set_alarm");
+
 		Assert.assertTrue("check wakeup label", targetTimeLabel.getText().length() == 0);
 		Assert.assertTrue("check sleep label after alarm is stopped", sleepTimeLabel.getText().length() == 0);
 		Assert.assertTrue("Alarm stopped", !solo_.isToggleButtonChecked(solo_.getString(R.string.set_alarm)));
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "set_alarm");
 	}
 	
 	@Smoke
@@ -188,7 +159,7 @@ public class TestPortraitUI
 		solo_.sleep(200);
 		Assert.assertEquals((int)now.get(Calendar.HOUR_OF_DAY), (int)picker.getCurrentHour());
 		Assert.assertEquals((int)now.get(Calendar.MINUTE), (int)picker.getCurrentMinute());
-		captureScreen("test_setNow.png");
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "set_now");
 	}
 
 	//TODO: voice button?
@@ -199,6 +170,7 @@ public class TestPortraitUI
 		//speech recognition dialog
 		//capture
 		solo_.sendKey(Solo.DELETE);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "next_tune_short");
 	}
 
 	public void testNextTuneLong() {
@@ -215,6 +187,7 @@ public class TestPortraitUI
 		solo_.sleep(2000);
 		String afterText = view.getText().toString();
 		Assert.assertTrue(afterText == null || afterText.length() == 0);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "next_tune_long");
 	}
 
 	@Smoke
@@ -222,6 +195,7 @@ public class TestPortraitUI
 		//TODO: cannot select menu by japanese, why?
 		solo_.clickOnMenuItem(solo_.getString(R.string.stop_vibration));
 		solo_.sleep(2000);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "stop_vibration_menu");
 	}
 	
 	@Smoke
@@ -230,6 +204,7 @@ public class TestPortraitUI
 		solo_.sleep(5000);
 		solo_.clickOnMenuItem(solo_.getString(R.string.stop_music));
 		solo_.sleep(1000);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "play_menu");
 	}
 	
 	/////////////////
@@ -239,7 +214,7 @@ public class TestPortraitUI
 		startPreferenceActivity();
 		selectPreference(R.string.playlist_path_title);
 		//TODO: add more specific assert
-		captureScreen("test_Preference.png");
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "site_preference");
 	}
 	
 	@Smoke
@@ -247,18 +222,23 @@ public class TestPortraitUI
 		startPreferenceActivity();
 		selectPreference(R.string.pref_create_playlist_title);
 		solo_.sleep(5000);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "create_playlist");
 	}
 	
 	@Smoke
 	public void testSleepVolume() {
 		startPreferenceActivity();
 		selectPreference(R.string.pref_sleep_volume_title);
+        //TODO: check volume
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "sleep_volume");
 	}
 
 	@Smoke
 	public void testWakeupVolume() {
 		startPreferenceActivity();
 		selectPreference(R.string.pref_wakeup_volume_title);
+        //TODO: check volume
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "wakeup_volume");
 	}
 
 	@Smoke
@@ -268,6 +248,7 @@ public class TestPortraitUI
 		solo_.clickOnButton("-");
 		solo_.clickOnButton("OK");
 		//TODO: check volume
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "volume_down");
 	}
 
 	@Smoke
@@ -277,6 +258,7 @@ public class TestPortraitUI
 		solo_.clickOnButton("\\+");
 		solo_.clickOnButton("OK");
 		//TODO: check volume
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "volume_up");
 	}
 	
 	//TODO: add to test number / alphabet into edit box of volume preference
@@ -287,6 +269,7 @@ public class TestPortraitUI
 	public void testDefaultTimePreference() {
 		startPreferenceActivity();
 		selectPreference(R.string.pref_default_time_title);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "default_time_preference");
 	}
 
 	@Smoke
@@ -294,6 +277,8 @@ public class TestPortraitUI
 		startPreferenceActivity();
 		selectPreference(R.string.pref_vibration);
 		solo_.sleep(1000);
+        //TODO: add assert
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "vibration");
 	}
 
 	@Smoke
@@ -302,6 +287,7 @@ public class TestPortraitUI
 		selectPreference(R.string.pref_sleep_playlist);
 		solo_.waitForActivity("PlaylistViewer");
 		solo_.assertCurrentActivity("Playlist viewer should start", PlaylistViewer.class);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "sleep_playlist");
 	}
 
 	@Smoke
@@ -311,6 +297,7 @@ public class TestPortraitUI
 		solo_.waitForActivity("PlaylistViewer");
 		//TODO: check title
 		solo_.assertCurrentActivity("Playlist viewer should start", PlaylistViewer.class);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "wakeup_playlist");
 	}
 
 	@Smoke
@@ -319,8 +306,8 @@ public class TestPortraitUI
 		selectPreference(R.string.pref_sleep_playlist);
 		solo_.waitForActivity("PlaylistViewer");
 		solo_.clickLongInList(0);
-		//TODO: add check
-		captureScreen("test_playlistlong.png");
+		//TODO: add assert
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_long");
 	}
 	
 
@@ -328,6 +315,8 @@ public class TestPortraitUI
 	public void testReloadPlaylist() {
 		startPreferenceActivity();
 		selectPreference(R.string.pref_reload_playlist);
+
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "reload_play_list");
 	}
 	
 	@Smoke
@@ -335,6 +324,7 @@ public class TestPortraitUI
 		startPreferenceActivity();
 		selectPreference(R.string.pref_clear_webview_cache_title);
 		solo_.sleep(500);
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "clear_cache");
 	}
 	
 	@Smoke
@@ -342,15 +332,17 @@ public class TestPortraitUI
 		startPreferenceActivity();
 		selectPreference(R.string.help_title);
 		solo_.sleep(4000);
-		captureScreen("test_Help.png");
+		FalconSpoon.screenshot(solo_.getCurrentActivity(), "help");
 	}
 	
 	public void testDummyListScroll() {
 		startPreferenceActivity();
 		solo_.scrollDown();
 		solo_.sleep(500);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "list_scroll");
+                
 		View targetView = null;
-		for (TextView view : solo_.getCurrentTextViews(null)) {
+		for (TextView view : solo_.getCurrentViews(TextView.class)) {
 			Log.i(TAG, "title: " + view.getText());
 			if(view.getText().equals("Sleep tunes volume")){
 				targetView = view;
@@ -360,6 +352,7 @@ public class TestPortraitUI
 			solo_.clickOnView(targetView);
 		}
 		solo_.sleep(5000);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "list_scroll");
 	}
 	
 	@Smoke
@@ -369,7 +362,7 @@ public class TestPortraitUI
 		ImageView view = solo_.getImage(1);
 		solo_.clickOnView(view);
 		//TODO: check that browser starts
-		captureScreen("test_Version.png");
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "version");
 	}
 
 //	@Smoke
@@ -404,6 +397,7 @@ public class TestPortraitUI
 		solo_.sleep(5000);
 		//goto prev index
 		solo_.finishOpenedActivities();
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "double_touch_left");
 	}
 	
 	//TODO: fix!
@@ -414,6 +408,7 @@ public class TestPortraitUI
 		solo_.sleep(100);
 		solo_.clickOnScreen(x, y);
 		solo_.sleep(5000);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "double_touch_right");
 	}
 	
 	//TODO: default config test	

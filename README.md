@@ -21,9 +21,9 @@ Resources
 http://www.youtube.com/watch?v=vA2F_dO0mQA
 
 ### Screenshot
-![Japanese screen shot](https://github.com/mamewotoko/malarm/raw/master/doc/alarm_ja.png)
-![English screen shot](https://github.com/mamewotoko/malarm/raw/master/doc/alarm_en.png)
-![Preference](https://github.com/mamewotoko/malarm/raw/master/doc/malarm_pref.png)
+![main screen](doc/init.png)
+![preference screen](doc/menu.png)
+![playilst](doc/playlist.png)
 
 ### Help page
 * [Japanese](http://mamewotoko.github.com/malarm/doc/index.html) 
