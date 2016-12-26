@@ -78,25 +78,37 @@ Limitation
 
 TODO
 ----
+* use Actionbar
+* support android-6, 7, 8 and remove malarm78
+* stop playing on phone call
+  * requires READ_PHONE_STATE permission, then should be liked to the privacy policy of this app
+* easy play list
+  * record voice like "wakeup!" and use it
+* preset voice
+  * using miku?
+  * read text on web using text to speech 
+    http://developer.android.com/resources/articles/tts.html
+* use [Compatibility Test Suite](http://source.android.com/compatibility/cts-intro.html) to test
 * use gradle to build
   * download robotium and scirocco jar from repository
+  * but ant is enough and fast....
 * merge PlayserService from podplayer project
 * add UI to widen WebView area
 * use playlist created by Google music player
-    * add UI to select playlist for wakeup and sleep.
+  * add UI to select playlist for wakeup and sleep.
 * Write more detail to help page
-    * how to create playlist
-    * how to create customized url list file
+  * how to create playlist
+  * how to create customized url list file
 * add preference to avoid network access from web viewer
-    * add network preference, disable/enable
-    * e.g. display photo
+  * add network preference, disable/enable
+  * e.g. display photo
 * fix bugs
-    * long press set alarm button
-      -> rotate
-      -> then notification disappears but alarm is set
-    * alarm set
-      -> pause music from menu
-      -> notification title is incorrect
+  * long press set alarm button
+    -> rotate
+    -> then notification disappears but alarm is set
+  * alarm set
+    -> pause music from menu
+    -> notification title is incorrect
 * make COOL widget to set alarm (make clock widget?)
 * show music title as a notification, not filename
 * add play button on volume preference to check volume
@@ -107,37 +119,38 @@ http://android-developers.blogspot.jp/2012/04/accessibility-are-you-serving-all-
 * add introduction guide or tutorial to create playlist
 * improve wording especially one of notification
 * parse preference.xml to test preference easily. (remove lookup and table)
-* use text to speech to read web page
-http://developer.android.com/resources/articles/tts.html
 * add preference to set silent mode or restore volume
 * change notification icon while playing music
 * change webview into photo view, movie player...
-    * separate webview part from main activity
+  * separate webview part from main activity
 * add UI to play ringtone on VolumePreference to check volume
 * hide time picker after malarm is set? (or count down?)
-    * scale of web contents
+  * scale of web contents
 * move current playing position when playlist is edited
 * add mode to display alert dialog if device is not charged when alarm is set
 * fix UI update bug when sleep timer expires (broadcast -> activity)
 * conditional playlist
-    * Sunday, holiday playlist etc...
+  * Sunday, holiday playlist etc...
 * add more test cases
-    * setAlarm -> Activity quits
-    * double touch of webview
-    * label text is updated when music is stopped or alarm is canceled
-    * check default config value
+  * setAlarm -> Activity quits
+  * double touch of webview
+  * label text is updated when music is stopped or alarm is canceled
+  * check default config value
 * fix bug when native player is used....
 * support HVGA, WVGA, WVGA+ resolution
-    * http://developer.android.com/resources/dashboard/screens.html
+  * http://developer.android.com/resources/dashboard/screens.html
 
 Future work
 -----------
-* localize: French, Chinese (needs pull request...?)
+* localize: Germany, French, Chinese
 * support multiple episode of podcast?
 * support shuffle of music
-* use Actionbar
 * Design for tablets
 * record wakeup time
+* gift app with audio files
+  * e.g. buy some music files from google play
+  * e.g. mp4 file which recorded my playing the piano (free audio)
+  * config music files, playlist and web site list, pack and send to friend
 
 Appendix
 --------
@@ -145,27 +158,31 @@ Appendix
 1. Create local.properties file and set sdk.dir property to location where you installed android SDK
     `sdk.dir=<path to android SDK>`
 2. In project top directory execute following command
-```bash
-ant debug
-```
+
+    ```bash
+    ant debug
+    ```
 3. malarm-debug.apk will be created in bin directory, if successed
 
 ### Start Android Emulator And Install APK From Command Line
 1. start android emulator
-```bash
-emulator -avd <avdname>
-```
+
+    ```bash
+    emulator -avd <avdname>
+    ```
 2. install application on android emulator
-```bash
-adb install bin/malarm-cmd.apk
-```
+
+    ```bash
+    adb install bin/malarm-cmd.apk
+    ```
 (build.xml and *.property files are created by android create command)
 or install app using ant
-```bash
-ant installd
-```
 
-### Automated UI Testing
+    ```bash
+    ant installd
+    ```
+   
+### Automated UI Test
 There is a GUI automated test using Robotium, named
 [malarm_test](https://github.com/mamewotoko/malarm_test)
 

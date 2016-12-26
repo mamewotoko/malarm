@@ -2,10 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.mamewo.malarm24"
       android:installLocation="auto"
-      android:versionCode="9"
-      android:versionName="0.99">
+      android:versionCode="10"
+      android:versionName="1.0">
       <!-- 7 = 2.1 -->
-    <uses-sdk android:minSdkVersion="9"
+    <uses-sdk android:minSdkVersion="6"
               android:targetSdkVersion="10"/>
     
     <uses-permission android:name="android.permission.INTERNET" />
