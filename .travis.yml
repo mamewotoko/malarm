@@ -1,0 +1,14 @@
+language: android
+android:
+    components:
+        - build-tools-19.1.0
+        - android-16
+    licences:
+        - '.+'
+
+before_script:
+    - android update project -t android-16 -p .
+    - android update lib-project -p libsrc/podcast_parser
+
+script:
+    - ant debug
