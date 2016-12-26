@@ -113,6 +113,10 @@
             android:key="malarm_version"
             android:selectable="true"
             android:title="@string/malarm_version_title" />
+        <Preference
+            android:key="privacy_policy"
+            android:selectable="true"
+            android:title="@string/privacy_policy" />
     </PreferenceCategory>
 
 </PreferenceScreen>

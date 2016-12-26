@@ -37,6 +37,7 @@ public class MalarmPreference
 {
 	private Preference help_;
 	private Preference version_;
+	private Preference privacyPolicy_;
 	private Preference createPlaylist_;
 	private Preference sleepTime_;
 	private Preference wakeupTime_;
@@ -117,6 +118,12 @@ public class MalarmPreference
 			dialog.show();
 			result = true;
 		}
+        else if(preference == privacyPolicy_){
+            //open url
+            final Uri url = Uri.parse(getString(R.string.privacy_policy_url));
+            startActivity(new Intent(Intent.ACTION_VIEW, url));
+            result = true;
+        }
 		else if (preference == createPlaylist_) {
 			final String [] playlists = 
 				{ MalarmActivity.WAKEUP_PLAYLIST_FILENAME,
@@ -200,6 +207,10 @@ public class MalarmPreference
 			version_.setSummary("unknown");
 		}
 		version_.setOnPreferenceClickListener(this);
+
+        privacyPolicy_ = findPreference("privacy_policy");
+        privacyPolicy_.setOnPreferenceClickListener(this);
+        
 		help_ = findPreference("help");
 		help_.setOnPreferenceClickListener(this);
 		createPlaylist_ = findPreference("create_playlist");
