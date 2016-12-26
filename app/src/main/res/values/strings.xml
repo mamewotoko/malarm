@@ -107,5 +107,10 @@
     <string name="pref_reset_url_index">Start from initial page on wakeup</string>
 
 <!--  TODO: translate -->
-    <string name="pref_open_drawable_title">Open drawable on wakeup</string>
+<string name="pref_open_drawable_title">Open drawable on wakeup</string>
+
+    <string name="notification_icon_desc_previous">Previous</string>
+    <string name="notification_icon_desc_pause">Pause</string>
+    <string name="notification_icon_desc_play">Play</string>
+    <string name="notification_icon_desc_next">Next</string>
 </resources>

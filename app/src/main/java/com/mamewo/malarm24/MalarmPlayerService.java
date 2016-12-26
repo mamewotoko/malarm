@@ -27,9 +27,13 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.Vibrator;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.widget.RemoteViews;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Cache;
@@ -60,6 +64,12 @@ public class MalarmPlayerService
 	final static
 	public String STOP_MUSIC_ACTION = PACKAGE_NAME + ".STOP_MUSIC_ACTION";
 	final static
+	public String START_MUSIC_ACTION = PACKAGE_NAME + ".START_MUSIC_ACTION";
+	final static
+	public String NEXT_MUSIC_ACTION = PACKAGE_NAME + ".NEXT_MUSIC_ACTION";
+	final static
+	public String PREVIOUS_MUSIC_ACTION = PACKAGE_NAME + ".PREVIOUS_MUSIC_ACTION";
+	final static
 	public String LOAD_PLAYLIST_ACTION = PACKAGE_NAME + ".LOAD_PLAYLIST_ACTION";
 	final static
 	public String UNPLUGGED_ACTION = PACKAGE_NAME + ".UNPLUGGED_ACTION";
@@ -76,7 +86,6 @@ public class MalarmPlayerService
     //2Mbyte
     final static
     public long HTTP_CACHE_SIZE = 2*1024*1024; 
-
 
 	//error code from base/include/media/stagefright/MediaErrors.h
 	final static
@@ -180,6 +189,17 @@ public class MalarmPlayerService
 		}
 		else if (STOP_MUSIC_ACTION.equals(action)) {
 			stopMusic();
+		}
+        //////
+		else if (START_MUSIC_ACTION.equals(action)) {
+			playMusic();
+		}
+		else if (NEXT_MUSIC_ACTION.equals(action)) {
+            playNext();
+		}
+		else if (PREVIOUS_MUSIC_ACTION.equals(action)) {
+            //rewind
+            playMusic();
 		}
 		else if (PLAYSTOP_ACTION.equals(action)) {
 			if (isPlaying()) {
@@ -360,13 +380,60 @@ public class MalarmPlayerService
 	}
 
 	public void showNotification(String title, String description, int iconId) {
-		iconId_ = iconId;
-		currentNoteTitle_ = title;
-		Notification note =
-				new Notification(iconId, title, 0);
-		Intent ni = new Intent(this, userClass_);
-		PendingIntent npi = PendingIntent.getActivity(this, 0, ni, 0);
-		note.setLatestEventInfo(this, title, description, npi);
+        iconId_ = iconId;
+        currentNoteTitle_ = title;
+        Log.d(TAG, "showNotification:" + title +" "+ description);
+
+        //TODO: notifiction with controller
+		// RemoteViews rvs = new RemoteViews(getClass().getPackage().getName(), R.layout.notification);
+		// rvs.setTextViewText(R.id.notification_title, title);
+		
+		// Intent pauseIntent = new Intent(this, getClass());
+		// if(isPlaying()){
+		// 	pauseIntent.setAction(STOP_MUSIC_ACTION);
+		// 	rvs.setImageViewResource(R.id.notification_pause, android.R.drawable.ic_media_pause);
+		// 	// if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+		// 	// 	rvs.setContentDescription(R.id.notification_pause, getString(R.string.notification_icon_desc_pause));
+		// 	// }
+		// }
+		// else {
+		// 	pauseIntent.setAction(START_MUSIC_ACTION);
+		// 	rvs.setImageViewResource(R.id.notification_pause, android.R.drawable.ic_media_play);
+		// 	// if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+		// 	// 	rvs.setContentDescription(R.id.notification_pause, getString(R.string.notification_icon_desc_play));
+		// 	// }
+		// }
+		// PendingIntent pausePendingIntent = PendingIntent.getService(this, 0, pauseIntent, 0);
+		// rvs.setOnClickPendingIntent(R.id.notification_pause, pausePendingIntent);
+		
+		// Intent prevIntent = new Intent(this, getClass());
+		// prevIntent.setAction(PREVIOUS_MUSIC_ACTION);
+		// PendingIntent previousPendingIntent = PendingIntent.getService(this, 0, prevIntent, 0);
+		// rvs.setOnClickPendingIntent(R.id.notification_previous, previousPendingIntent);
+
+		// Intent nextIntent = new Intent(this, getClass());
+		// nextIntent.setAction(NEXT_MUSIC_ACTION);
+		// PendingIntent nextPendingIntent = PendingIntent.getService(this, 0, nextIntent, 0);
+		// rvs.setOnClickPendingIntent(R.id.notification_next, nextPendingIntent);
+
+		//for backward compatibility
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+			.setSmallIcon(R.drawable.ic_status)
+			.setContentTitle(title)
+			.setContentText(description)
+			.setAutoCancel(false)
+			.setOngoing(true);
+            //.setContent(rvs);
+		//.setForegroundService(true)
+        //.setCategory(Notification.CATEGORY_TRANSPORT)
+		Intent resultIntent = new Intent(this, userClass_);
+		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+		stackBuilder.addParentStack(userClass_);
+		stackBuilder.addNextIntent(resultIntent);
+		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+		builder.setContentIntent(resultPendingIntent);
+		Notification note = builder.build();
+        Log.d(TAG, "startForeground");
 		startForeground(NOTIFY_PLAYING_ID, note);
 	}
 
@@ -375,6 +442,7 @@ public class MalarmPlayerService
 	}
 
 	public void clearNotification() {
+        Log.d(TAG, "clearNotification");
 		stopForeground(true);
 		iconId_ = 0;
 	}
