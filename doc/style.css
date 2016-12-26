@@ -1,15 +1,11 @@
-h1 { font-size: 150%;
+h1 { font-size: large;
      text-align: center
  }
-h2 { font-size: large;
+h2 { font-size: midium;
      font-weight: bold;
      text-decoration: underline;
 }
 h3 { font-size: medium;
-     font-weight: bold;
-     text-decoration: underline;
-}
-h4 { font-size: medium;
      text-decoration: underline;
 }
 code { 
