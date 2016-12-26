@@ -108,6 +108,9 @@ public class TestPortraitUI
 	}
 
 	private void startPreferenceActivity() {
+		boolean mainActWait = solo_.waitForActivity("MalarmActivity");
+        Log.d(TAG, "waitMainActivity: "+mainActWait);
+        solo_.sleep(500);
 		solo_.clickOnMenuItem(solo_.getString(R.string.pref_menu));
 		solo_.waitForActivity("MalarmPreference");
 		solo_.sleep(500);

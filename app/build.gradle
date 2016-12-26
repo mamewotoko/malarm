@@ -76,7 +76,7 @@ spoon {
   debug = true
   
   // className = 
-  // methodName = 
+  //methodName = 'testClearCache'
   //from 1.5.0?
   //codeCoverage = true
 }
