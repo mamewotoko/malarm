@@ -78,6 +78,7 @@ Limitation
 
 TODO
 ----
+
 * use NotificationCompat
 * use Actionbar
 * support android-6, 7, 8 and remove malarm78

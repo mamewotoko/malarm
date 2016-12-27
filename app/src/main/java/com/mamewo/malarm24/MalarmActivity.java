@@ -72,15 +72,19 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+
 final
 public class MalarmActivity
-        extends Activity
-        implements OnClickListener,
-        OnSharedPreferenceChangeListener,
-        OnLongClickListener,
-        OnKeyListener,
-        ServiceConnection,
-        MalarmPlayerService.PlayerStateListener {
+    extends AppCompatActivity
+    implements OnClickListener,
+               OnSharedPreferenceChangeListener,
+               OnLongClickListener,
+               OnKeyListener,
+               ServiceConnection,
+               MalarmPlayerService.PlayerStateListener
+{
     final static
     public String PACKAGE_NAME = MalarmActivity.class.getPackage().getName();
     final static
@@ -136,7 +140,8 @@ public class MalarmActivity
             Calendar.SATURDAY,
     };
 
-    public final static class MalarmState
+    final
+    public static class MalarmState
             implements Serializable {
         private static final long serialVersionUID = 1L;
         public Calendar targetTime_;
@@ -184,6 +189,9 @@ public class MalarmActivity
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        
         PreferenceManager.setDefaultValues(this, R.xml.preference, false);
         pref_ =
                 PreferenceManager.getDefaultSharedPreferences(this);
