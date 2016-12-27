@@ -280,19 +280,7 @@ public class MalarmActivity
             public void onLoadResource(WebView view, String url) {
                 //addhoc polling...
                 //TODO: move to resource
-                //TODO: automate scrolling
-                int height = view.getContentHeight();
-                if ((url.contains("bijint") ||
-                        url.contains("bijo-linux")) && height > 400) {
-                    if (url.contains("binan") && height > 420) {
-                        view.scrollTo(0, 420);
-                    } else if (url.contains("bijo-linux") && height > 100) {
-                        view.scrollTo(310, 740);
-                    } else if (height > 400) {
-                        //bijin tokei
-                        view.scrollTo(0, 400);
-                    }
-                }
+                //TODO: automate scrolling in adaptive way
             }
 
             @Override
