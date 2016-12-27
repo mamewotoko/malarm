@@ -54,7 +54,6 @@ import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -74,6 +73,8 @@ import java.util.regex.Pattern;
 
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.SwitchCompat;
 
 final
 public class MalarmActivity
@@ -119,7 +120,7 @@ public class MalarmActivity
     private TimePicker timePicker_;
     private TextView timeLabel_;
     private WebView webview_;
-    private ToggleButton alarmButton_;
+    private SwitchCompat alarmButton_;
     private Button setNowButton_;
     private GestureDetector gd_;
     private Intent speechIntent_;
@@ -189,9 +190,6 @@ public class MalarmActivity
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        
         PreferenceManager.setDefaultValues(this, R.xml.preference, false);
         pref_ =
                 PreferenceManager.getDefaultSharedPreferences(this);
@@ -202,6 +200,12 @@ public class MalarmActivity
         } else {
             setContentView(R.layout.main);
         }
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Log.d(TAG, "toolbar: "+toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionbar = getSupportActionBar();
+        actionbar.setDisplayShowTitleEnabled(false);
+        
         Intent intent = new Intent(this, MalarmPlayerService.class);
         startService(intent);
         //TODO: handle failure of bindService
@@ -237,7 +241,8 @@ public class MalarmActivity
         sleepTimeLabel_ = (TextView) findViewById(R.id.sleep_time_label);
 
         webview_ = (WebView) findViewById(R.id.webView1);
-        alarmButton_ = (ToggleButton) findViewById(R.id.alarm_button);
+
+        alarmButton_ = (SwitchCompat) findViewById(R.id.alarm_button);
         alarmButton_.setOnClickListener(this);
         alarmButton_.setLongClickable(true);
         alarmButton_.setOnLongClickListener(this);
@@ -245,7 +250,6 @@ public class MalarmActivity
         alarmButton_.setOnKeyListener(this);
 
         CookieSyncManager.createInstance(this);
-
         //umm...
         webview_.setOnKeyListener(this);
         WebSettings webSettings = webview_.getSettings();
