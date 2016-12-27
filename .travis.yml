@@ -14,4 +14,4 @@ android:
         - '.+'
 
 script:
-    - ./gradlew assembleDebug
+    - ./gradlew assembleDebug assembleAndroidTest lint
