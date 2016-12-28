@@ -1,120 +1,152 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
 
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:orientation="vertical">
+  <include layout="@layout/main_toolbar"
+           android:id="@+id/toolbar" /> 
+
+  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="horizontal">
+    
     <LinearLayout
         android:id="@+id/linearLayout1"
-        android:layout_width="152dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingBottom="0dp" >
 
+        <TimePicker
+            android:id="@+id/timePicker1"
+            android:layout_width="152dp"
+            android:layout_height="144dp"            
+            android:timePickerMode="spinner"
+            android:inputType="number" />
+
+      <LinearLayout
+          android:id="@+id/linearLayout3"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:gravity="right"
+          android:orientation="vertical" >
+
         <LinearLayout
             android:id="@+id/linearLayout4"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             >
+          
+          <Button
+              android:id="@+id/set_now_button"
+              android:layout_width="0dip"
+              android:layout_height="wrap_content"
+              android:layout_weight="2"
+              android:text="@string/set_now_short" />
 
-            <LinearLayout
-                android:id="@+id/linearLayout41"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" >
+          <ImageButton
+              android:id="@+id/set_by_voice"
+              android:layout_width="0dip"
+              android:layout_height="match_parent"
+              android:layout_weight="2"
+              android:contentDescription="@string/voice_button_desc"
+              android:src="@android:drawable/ic_btn_speak_now"
+              android:tint="#fff" />
 
-                <TextView
-                    android:id="@+id/target_time_label"
-                    android:layout_width="114dp"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
+          <ProgressBar
+              android:id="@+id/loading_icon"
+              android:layout_width="38dp"
+              android:layout_height="38dp"
+	      android:visibility="invisible"
+              android:layout_gravity="center"
+              />
+        <!--             style="?android:attr/progressBarStyleLarge" -->
+      </LinearLayout>
 
-                <TextView
-                    android:id="@+id/sleep_time_label"
-                    android:layout_width="114dp"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
-            </LinearLayout>
-
-            <ProgressBar
-                android:id="@+id/loading_icon"
-    	        android:visibility="invisible"
-                style="?android:attr/progressBarStyleSmall"
-                android:layout_width="38dp"
-                android:layout_height="fill_parent"
-                 />
-        </LinearLayout>
-
+      <!--
+          <ToggleButton
+          android:id="@+id/alarm_button"
+          android:layout_width="fill_parent"
+          android:layout_height="50dp"
+          android:textOff="@string/set_alarm"
+          android:textOn="@string/stop_alarm" />
+      -->
+      <LinearLayout
+          android:id="@+id/linearLayout_contbutton"
+          android:layout_width="fill_parent"
+          android:layout_height="46dp"
+          android:orientation="horizontal"
+          >
+        <ImageButton
+            android:id="@+id/previous_button"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="25"
+            android:contentDescription="@string/previous_button_desc"
+            android:src="@android:drawable/ic_media_previous"
+            android:tint="#fff" />
+        <ImageButton
+            android:id="@+id/play_button"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="25"
+            android:contentDescription="@string/play_button_desc"
+            android:src="@android:drawable/ic_media_play"
+            android:tint="#fff" />
+        <ImageButton
+            android:id="@+id/next_button"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="25"
+            android:contentDescription="@string/next_button_desc"
+            android:src="@android:drawable/ic_media_next"
+            android:tint="#fff" />
+      </LinearLayout>
+<!--
         <LinearLayout
-            android:id="@+id/linearLayout2"
-            android:layout_width="152dp"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="2dp"
-            android:orientation="vertical" >
-
-            <TimePicker
-                android:id="@+id/timePicker1"
-                android:layout_width="152dp"
-                android:layout_height="wrap_content"
-                android:inputType="number" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/linearLayout3"
+            android:id="@+id/linearLayout_contbutton"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="right"
-            android:orientation="vertical" >
+            android:layout_height="42dp" >
 
-            <ToggleButton
-                android:id="@+id/alarm_button"
-                android:layout_width="fill_parent"
-                android:layout_height="50dp"
-                android:textOff="@string/set_alarm"
-                android:textOn="@string/stop_alarm" />
+          <Button
+              android:id="@+id/set_now_button"
+              android:layout_width="0dp"
+              android:layout_height="fill_parent"
+              android:layout_weight="50"
+              android:paddingLeft="0dp"
+              android:text="@string/set_now_short" />
 
-            <LinearLayout
-                android:id="@+id/linearLayout_contbutton"
-                android:layout_width="fill_parent"
-                android:layout_height="42dp" >
+          <ImageButton
+              android:id="@+id/set_by_voice"
+              android:layout_width="0dp"
+              android:layout_height="fill_parent"
+              android:layout_weight="25"
+              android:contentDescription="@string/voice_button_desc"
+              android:src="@android:drawable/ic_btn_speak_now"
+              android:tint="#fff" />
 
-                <Button
-                    android:id="@+id/set_now_button"
-                    android:layout_width="0dp"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="50"
-                    android:paddingLeft="0dp"
-                    android:text="@string/set_now_short" />
+          <ImageButton
+              android:id="@+id/next_button"
+              android:layout_width="0dp"
+              android:layout_height="fill_parent"
+              android:layout_weight="25"
+              android:contentDescription="@string/next_button_desc"
+              android:src="@android:drawable/ic_media_next"
+              android:tint="#fff" />
+              </LinearLayout>
+              -->
+      </LinearLayout>
 
-                <ImageButton
-                    android:id="@+id/set_by_voice"
-                    android:layout_width="0dp"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="25"
-                    android:contentDescription="@string/voice_button_desc"
-                    android:src="@android:drawable/ic_btn_speak_now"
-                    android:tint="#fff" />
-
-                <ImageButton
-                    android:id="@+id/next_button"
-                    android:layout_width="0dp"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="25"
-                    android:contentDescription="@string/next_button_desc"
-                    android:src="@android:drawable/ic_media_next"
-                    android:tint="#fff" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/playlist_name_view"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="0dp"
-            android:paddingTop="0dp"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+      <TextView
+          android:id="@+id/playlist_name_view"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:paddingBottom="0dp"
+          android:paddingTop="0dp"
+          android:textAppearance="?android:attr/textAppearanceSmall" />
     </LinearLayout>
 
     <WebView
@@ -125,4 +157,5 @@
         android:focusableInTouchMode="true" >
     </WebView>
 
+  </LinearLayout>
 </LinearLayout>

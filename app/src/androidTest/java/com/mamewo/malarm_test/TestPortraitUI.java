@@ -122,16 +122,13 @@ public class TestPortraitUI
         solo_.clickOnView(solo_.getView(R.id.alarm_button));
         solo_.sleep(2000);
         TextView targetTimeLabel = (TextView) solo_.getView(R.id.target_time_label);
-        //TextView sleepTimeLabel = (TextView) solo_.getView(R.id.sleep_time_label);
         Assert.assertTrue("check wakeup label", targetTimeLabel.getText().length() > 0);
-        //Assert.assertTrue("check sleep label", sleepTimeLabel.getText().length() > 0);
         solo_.goBack();
 
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "set_alarm");
         solo_.sleep(61 * 1000);
         Assert.assertTrue("Switch alarm button wording", solo_.searchToggleButton(solo_.getString(R.string.stop_alarm)));
         Assert.assertTrue("Correct alarm toggle button state", solo_.isToggleButtonChecked(solo_.getString(R.string.stop_alarm)));
-        //Assert.assertTrue("check sleep label after wakeup", sleepTimeLabel.getText().length() == 0);
         //TODO: check music?
         //TODO: check vibration
         //TODO: check notification
@@ -141,7 +138,6 @@ public class TestPortraitUI
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "set_alarm");
 
         Assert.assertTrue("check wakeup label", targetTimeLabel.getText().length() == 0);
-        //Assert.assertTrue("check sleep label after alarm is stopped", sleepTimeLabel.getText().length() == 0);
         Assert.assertTrue("Alarm stopped", !solo_.isToggleButtonChecked(solo_.getString(R.string.set_alarm)));
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "set_alarm");
     }
@@ -175,16 +171,9 @@ public class TestPortraitUI
         View nextButton = solo_.getView(R.id.next_button);
         solo_.clickLongOnView(nextButton);
         solo_.sleep(2000);
-        TextView view = (TextView) solo_.getView(R.id.sleep_time_label);
-        String text = view.getText().toString();
-        Log.i(TAG, "LongPressNext: text = " + text);
-        Assert.assertTrue(text != null);
         //TODO: check preference value...
-        Assert.assertTrue(text.length() > 0);
         solo_.clickOnMenuItem(solo_.getString(R.string.stop_music));
         solo_.sleep(2000);
-        String afterText = view.getText().toString();
-        Assert.assertTrue(afterText == null || afterText.length() == 0);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "next_tune_long");
     }
 
