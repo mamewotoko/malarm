@@ -9,6 +9,7 @@
     <string name="stop_vibration">Stop vibaration</string>
     <string name="play_wakeup">Play</string>
     <string name="pref_menu">Preference</string>
+    <string name="pref_title">Preference</string>
     <string name="pref_webview_url">Web site list</string>
     <string name="preference_time_title">Sleep time</string>
     <string name="pref_sleeptime">Sleep time</string>

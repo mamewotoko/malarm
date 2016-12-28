@@ -22,6 +22,8 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.view.LayoutInflater;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -29,12 +31,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.MessageFormat;
 
+import android.support.v7.widget.Toolbar;
+
 public class MalarmPreference
         extends PreferenceActivity
         implements OnPreferenceClickListener,
         View.OnClickListener,
         FileFilter,
-        OnSharedPreferenceChangeListener {
+        OnSharedPreferenceChangeListener
+{
     private Preference selectURL_;
     private Preference help_;
     private Preference version_;
@@ -243,6 +248,16 @@ public class MalarmPreference
         clearWebviewCache_ = findPreference("clear_webview_cache");
         clearWebviewCache_.setOnPreferenceClickListener(this);
 
+        LinearLayout root = (LinearLayout)findViewById(android.R.id.list).getParent().getParent().getParent();
+        Toolbar toolbar = (Toolbar)LayoutInflater.from(this).inflate(R.layout.preference_toolbar, root, false);
+        root.addView(toolbar, 0); // insert at top
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+       
         pref_.registerOnSharedPreferenceChangeListener(this);
     }
 
