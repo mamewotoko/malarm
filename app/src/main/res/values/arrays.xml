@@ -7,8 +7,6 @@
         <item>binan-tokei</item>
         <item>GMail</item>
         <item>Google Calendar</item>
-        <item>Google Reader</item>
-        <item>OkuiAki.com gumi</item>
     </string-array>
 
     <string-array name="pref_url_list_value">
@@ -18,8 +16,6 @@
         <item>http://www.bijint.com/binan/</item>
         <item>http://www.google.com/mail/</item>
         <item>https://www.google.com/calendar/</item>
-        <item>http://www.google.com/reader/</item>
-        <item>http://www.okuiaki.com/mobile/login.php</item>
     </string-array>
 
     <string-array name="preference_time_key">

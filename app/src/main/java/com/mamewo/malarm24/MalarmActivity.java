@@ -127,7 +127,7 @@ public class MalarmActivity
     private ProgressBar loadingIcon_;
     private boolean runningSpeechActivity_;
     //	private TextView playlistLabel_;
-    private TextView sleepTimeLabel_;
+    //private TextView sleepTimeLabel_;
     private MalarmPlayerService player_ = null;
     private SharedPreferences pref_;
 
@@ -238,7 +238,7 @@ public class MalarmActivity
         setNowButton_.setOnClickListener(this);
 
         timeLabel_ = (TextView) findViewById(R.id.target_time_label);
-        sleepTimeLabel_ = (TextView) findViewById(R.id.sleep_time_label);
+        //sleepTimeLabel_ = (TextView) findViewById(R.id.sleep_time_label);
 
         webview_ = (WebView) findViewById(R.id.webView1);
 
@@ -638,13 +638,13 @@ public class MalarmActivity
                 timePicker_.setCurrentMinute(prefDefaultMin);
             }
         }
-        int sleepMin = state_.sleepMin_;
-        if (sleepMin > 0) {
-            sleepTimeLabel_.setText(MessageFormat.format(getString(R.string.unit_min),
-                    Integer.valueOf(sleepMin)));
-        } else {
-            sleepTimeLabel_.setText("");
-        }
+        // int sleepMin = state_.sleepMin_;
+        // if (sleepMin > 0) {
+        //     sleepTimeLabel_.setText(MessageFormat.format(getString(R.string.unit_min),
+        //             Integer.valueOf(sleepMin)));
+        // } else {
+        //     sleepTimeLabel_.setText("");
+        // }
         alarmButton_.setChecked(null != state_.targetTime_);
         //following two buttons can be hidden
         speechButton_.setEnabled(null == state_.targetTime_);

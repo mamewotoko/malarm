@@ -8,8 +8,6 @@
         <item>美男時計(미남시계 )</item>
         <item>GMail</item>
         <item>Google캘린더 </item>
-        <item>Google Reader</item>
-        <item>OkuiAki.com Fun Club</item>
     </string-array>
 
     <string-array name="pref_url_list_value" formatted="false">
@@ -20,8 +18,6 @@
         <item>http://www.bijint.com/binan/</item>
         <item>http://www.google.com/mail/</item>
         <item>https://www.google.com/calendar/</item>
-        <item>http://www.google.com/reader/</item>
-        <item>http://www.okuiaki.com/mobile/login.php</item>
     </string-array>
 
     <string-array name="preference_time_key">

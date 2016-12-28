@@ -122,9 +122,9 @@ public class TestPortraitUI
         solo_.clickOnView(solo_.getView(R.id.alarm_button));
         solo_.sleep(2000);
         TextView targetTimeLabel = (TextView) solo_.getView(R.id.target_time_label);
-        TextView sleepTimeLabel = (TextView) solo_.getView(R.id.sleep_time_label);
+        //TextView sleepTimeLabel = (TextView) solo_.getView(R.id.sleep_time_label);
         Assert.assertTrue("check wakeup label", targetTimeLabel.getText().length() > 0);
-        Assert.assertTrue("check sleep label", sleepTimeLabel.getText().length() > 0);
+        //Assert.assertTrue("check sleep label", sleepTimeLabel.getText().length() > 0);
         solo_.goBack();
 
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "set_alarm");

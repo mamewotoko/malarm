@@ -4,7 +4,6 @@
   <item android:id="@+id/stop_vibration"
         android:title="@string/stop_vibration"
         android:icon="@android:drawable/ic_menu_close_clear_cancel"
-        app:showAsAction="ifRoom"
         />
   <item android:id="@+id/play_wakeup"
         android:title="@string/play_wakeup"
