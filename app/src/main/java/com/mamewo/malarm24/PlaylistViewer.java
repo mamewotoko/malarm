@@ -71,6 +71,9 @@ public final class PlaylistViewer
         previousButton_.setOnClickListener(this);
         nextButton_ = (ImageButton) findViewById(R.id.next_button);
         nextButton_.setOnClickListener(this);
+
+        ActionBar toolbar = getSupportActionBar();
+        toolbar.setDisplayHomeAsUpEnabled(true);
         
         player_ = null;
         Intent i = getIntent();
@@ -91,20 +94,27 @@ public final class PlaylistViewer
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        boolean handled = false;
         switch (item.getItemId()) {
-            case R.id.save_playlist:
-                try {
-                    playlist_.save();
+        case R.id.save_playlist:
+            try {
+                playlist_.save();
                     MalarmActivity.showMessage(this, getString(R.string.saved));
-                }
-                catch (IOException e) {
-                    MalarmActivity.showMessage(this, getString(R.string.failed) + ": " + e.getMessage());
-                }
-                break;
-            default:
-                break;
+            }
+            catch (IOException e) {
+                MalarmActivity.showMessage(this, getString(R.string.failed) + ": " + e.getMessage());
+            }
+            handled = true;
+            break;
+        case android.R.id.home:
+            //TODO: use NaviUtil
+            finish();
+            handled = true;
+            break;
+        default:
+            break;
         }
-        return true;
+        return handled;
     }
 
     //TODO: implement undo?
@@ -237,10 +247,11 @@ public final class PlaylistViewer
         listView_.setAdapter(adapter_);
         //setTitle(titleID);
 
-        ActionBar toolbar = getSupportActionBar();
+        ActionBar actionbar = getSupportActionBar();
         //toolbar.setHomeAsUpIndicator(R.drawale.ic_arrow_left);
-        toolbar.setTitle(titleID);
-        toolbar.setSubtitle(playlist_.getPlaylistFile().getAbsolutePath());
+        actionbar.setTitle(titleID);
+        actionbar.setSubtitle(playlist_.getPlaylistFile().getAbsolutePath());
+        
         updateUI();
     }
 
