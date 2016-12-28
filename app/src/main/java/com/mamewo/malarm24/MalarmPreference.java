@@ -360,7 +360,7 @@ public class MalarmPreference
             case VERSION_DIALOG:
                 //show dialog
                 dialog = new Dialog(this);
-                dialog.setContentView(R.layout.dialog);
+                dialog.setContentView(R.layout.version_dialog);
                 logo_ = dialog.findViewById(R.id.dialog_logo);
                 logo_.setOnClickListener(this);
                 dialog.setTitle(R.string.dialog_title);
