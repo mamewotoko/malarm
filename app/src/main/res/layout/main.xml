@@ -100,9 +100,9 @@
         <ProgressBar
             android:id="@+id/loading_icon"
             android:layout_width="38dp"
-            android:layout_height="fill_parent"
+            android:layout_height="38dp"
 	    android:visibility="invisible"
-            android:gravity="right"
+            android:gravity="center"
             />
         <!--             style="?android:attr/progressBarStyleLarge" -->
       </LinearLayout>
