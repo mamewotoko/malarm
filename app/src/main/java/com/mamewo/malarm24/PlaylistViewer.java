@@ -23,7 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.ToggleButton;
+import android.widget.ImageButton;
 
 import com.mamewo.malarm24.MalarmPlayerService.PlayerStateListener;
 
@@ -38,13 +38,16 @@ public final class PlaylistViewer
         OnItemClickListener,
         OnClickListener,
         ServiceConnection,
-        PlayerStateListener {
+        PlayerStateListener
+{
     private ListView listView_;
     //private ArrayAdapter<String> adapter_;
     private MusicAdapter adapter_;
     private M3UPlaylist playlist_;
     private MalarmPlayerService player_;
-    private ToggleButton playButton_;
+    private ImageButton playButton_;
+    private ImageButton previousButton_;
+    private ImageButton nextButton_;
 
     //R.array.tune_operation
     static private final int UP_INDEX = 0;
@@ -62,9 +65,13 @@ public final class PlaylistViewer
         listView_.setLongClickable(true);
         listView_.setOnItemLongClickListener(this);
         listView_.setOnItemClickListener(this);
-        playButton_ = (ToggleButton) findViewById(R.id.play_button);
+        playButton_ = (ImageButton) findViewById(R.id.play_button);
         playButton_.setOnClickListener(this);
-        playButton_.setEnabled(false);
+        previousButton_ = (ImageButton) findViewById(R.id.previous_button);
+        previousButton_.setOnClickListener(this);
+        nextButton_ = (ImageButton) findViewById(R.id.next_button);
+        nextButton_.setOnClickListener(this);
+        
         player_ = null;
         Intent i = getIntent();
         playlistName_ = i.getStringExtra("playlist");
@@ -89,7 +96,8 @@ public final class PlaylistViewer
                 try {
                     playlist_.save();
                     MalarmActivity.showMessage(this, getString(R.string.saved));
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     MalarmActivity.showMessage(this, getString(R.string.failed) + ": " + e.getMessage());
                 }
                 break;
@@ -217,9 +225,11 @@ public final class PlaylistViewer
             titleID = R.string.sleep_playlist_viewer_title;
         }
         else {
+            Log.d(TAG, "wakeup before: "+MalarmPlayerService.wakeupPlaylist_);
             if (null == MalarmPlayerService.wakeupPlaylist_) {
                 player_.loadPlaylist();
             }
+            Log.d(TAG, "wakeup after: "+MalarmPlayerService.wakeupPlaylist_);
             playlist_ = MalarmPlayerService.wakeupPlaylist_;
             titleID = R.string.wakeup_playlist_viewer_title;
         }
@@ -243,7 +253,14 @@ public final class PlaylistViewer
 
     private void updateUI() {
         if (null != player_) {
-            playButton_.setChecked(player_.isPlaying());
+            if(player_.isPlaying()){
+                playButton_.setImageResource(android.R.drawable.ic_media_pause);
+                playButton_.setContentDescription(getString(R.string.pause_button_desc));
+            }
+            else {
+                playButton_.setImageResource(android.R.drawable.ic_media_play);                
+                playButton_.setContentDescription(getString(R.string.play_button_desc));
+            }
         }
         adapter_.notifyDataSetChanged();
     }
@@ -261,6 +278,12 @@ public final class PlaylistViewer
                 player_.setCurrentPlaylist(playlist_);
                 player_.playMusic();
             }
+        }
+        else if(view == previousButton_){
+            player_.playPrevious();
+        }
+        else if(view == nextButton_){
+            player_.playNext();
         }
     }
 

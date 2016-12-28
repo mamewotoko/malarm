@@ -264,20 +264,23 @@ public class MalarmPlayerService
         Log.d(TAG, "loadPlaylist is called:" + playlistPath);
         try {
             wakeupPlaylist_ = new M3UPlaylist(playlistPath, WAKEUP_PLAYLIST_FILENAME);
-        } catch (FileNotFoundException e) {
-            Log.i(TAG, "wakeup playlist is not found: " + WAKEUP_PLAYLIST_FILENAME);
+        }
+        catch (FileNotFoundException e) {
+            Log.d(TAG, "wakeup playlist is not found: " + WAKEUP_PLAYLIST_FILENAME, e);
             wakeupPlaylist_ = null;
-        } catch (Exception e) {
-            Log.i(TAG, "wakeup playlist cannot be load: " + WAKEUP_PLAYLIST_FILENAME);
+        }
+        catch (Exception e) {
+            Log.d(TAG, "wakeup playlist cannot be load: " + WAKEUP_PLAYLIST_FILENAME, e);
             wakeupPlaylist_ = null;
         }
         try {
             sleepPlaylist_ = new M3UPlaylist(playlistPath, SLEEP_PLAYLIST_FILENAME);
         } catch (FileNotFoundException e) {
-            Log.i(TAG, "sleep playlist is not found: " + SLEEP_PLAYLIST_FILENAME);
+            Log.d(TAG, "sleep playlist is not found: " + SLEEP_PLAYLIST_FILENAME, e);
             sleepPlaylist_ = null;
-        } catch (Exception e) {
-            Log.i(TAG, "sleep playlist cannot be load: " + WAKEUP_PLAYLIST_FILENAME);
+        }
+        catch (Exception e) {
+            Log.d(TAG, "sleep playlist cannot be load: " + WAKEUP_PLAYLIST_FILENAME, e);
             sleepPlaylist_ = null;
         }
     }
@@ -548,7 +551,8 @@ public class MalarmPlayerService
                 //TODO: modify notification title
                 showNotification(currentNoteTitle_, currentMusicName_, iconId_);
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             return false;
         }
         return true;

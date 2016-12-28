@@ -8,13 +8,39 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ToggleButton
+      <LinearLayout
+          android:id="@+id/linearLayout_contbutton"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal"
+          >
+        <ImageButton
+            android:id="@+id/previous_button"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="25"
+            android:contentDescription="@string/previous_button_desc"
+            android:src="@android:drawable/ic_media_previous"
+            android:tint="#fff" />
+        <ImageButton
             android:id="@+id/play_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textOff="@string/play"
-            android:textOn="@string/pause" />
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="25"
+            android:contentDescription="@string/play_button_desc"
+            android:src="@android:drawable/ic_media_play"
+            android:tint="#fff" />
+        <ImageButton
+            android:id="@+id/next_button"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="25"
+            android:contentDescription="@string/next_button_desc"
+            android:src="@android:drawable/ic_media_next"
+            android:tint="#fff" />
+      </LinearLayout>
 
+        
     </LinearLayout>
     <ListView
         android:id="@+id/play_list_view"

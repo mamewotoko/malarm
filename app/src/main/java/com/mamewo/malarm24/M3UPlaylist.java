@@ -18,24 +18,29 @@ import java.util.List;
 
 //TODO: change to proper interface
 public final class M3UPlaylist
-        implements Playlist {
+        implements Playlist
+{
     private static final String TAG = "malarm";
     private int currentIndex_ = 0;
     private final String basepath_;
     private final String playlistFilename_;
+    //use array list to call clone....
     private ArrayList<String> playlist_;
+    private List<String> missinglist_;
 
     /**
      * @param basepath         path to directory which contains play list
      * @param playlistFilename filename of playlist (not absolute path)
      */
     public M3UPlaylist(String basepath, String playlistFilename)
-            throws FileNotFoundException, IOException {
+            throws FileNotFoundException, IOException
+    {
         basepath_ = basepath;
         playlistFilename_ = playlistFilename;
         String playlist_abs_path =
                 (new File(basepath, playlistFilename)).getAbsolutePath();
         playlist_ = new ArrayList<String>();
+        missinglist_ = new ArrayList<String>();
         currentIndex_ = 0;
         load(playlist_abs_path);
     }
@@ -83,12 +88,26 @@ public final class M3UPlaylist
     }
 
     protected void load(String filename)
-            throws FileNotFoundException, IOException {
+            throws FileNotFoundException, IOException
+    {
         BufferedReader br = new BufferedReader(new FileReader(filename));
-        String music_filename;
-        while ((music_filename = br.readLine()) != null) {
-            if (music_filename.length() > 0 && music_filename.charAt(0) != '#') {
-                playlist_.add(music_filename);
+        String musicFilename;
+        while ((musicFilename = br.readLine()) != null) {
+            if (musicFilename.length() > 0 && musicFilename.charAt(0) != '#') {
+                //TODO: check podcast
+                if (musicFilename.startsWith("podcast:http")) {
+                    playlist_.add(musicFilename);
+                }
+                else {
+                    File f = new File(basepath_, musicFilename);
+                    if(f.exists()){
+                        playlist_.add(musicFilename);
+                    }
+                    else {
+                        //report missing file
+                        missinglist_.add(musicFilename);
+                    }
+                }
             }
         }
         br.close();
