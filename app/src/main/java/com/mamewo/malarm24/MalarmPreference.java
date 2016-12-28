@@ -133,10 +133,12 @@ public class MalarmPreference
             Uri url = Uri.parse(getString(R.string.help_url));
             startActivity(new Intent(Intent.ACTION_VIEW, url));
             result = true;
-        } else if (preference == version_) {
+        }
+        else if (preference == version_) {
             showDialog(VERSION_DIALOG);
             result = true;
-        } else if (preference == createPlaylist_) {
+        }
+        else if (preference == createPlaylist_) {
             String[] playlists =
                     {MalarmPlayerService.WAKEUP_PLAYLIST_FILENAME,
                             MalarmPlayerService.SLEEP_PLAYLIST_FILENAME};
@@ -155,7 +157,8 @@ public class MalarmPreference
                 MalarmActivity.showMessage(this, msg);
             }
             result = true;
-        } else if (preference == sleepPlaylist_ || preference == wakeupPlaylist_) {
+        }
+        else if (preference == sleepPlaylist_ || preference == wakeupPlaylist_) {
             Log.d(TAG, "View Sleep Playlist from check");
             //TODO: move check code to Playlist class
             String prefKey;
@@ -164,7 +167,8 @@ public class MalarmPreference
             if (preference == sleepPlaylist_) {
                 prefKey = "sleep";
                 playlistFilename = MalarmPlayerService.SLEEP_PLAYLIST_FILENAME;
-            } else {
+            }
+            else {
                 prefKey = "wakeup";
                 playlistFilename = MalarmPlayerService.WAKEUP_PLAYLIST_FILENAME;
             }
@@ -176,14 +180,16 @@ public class MalarmPreference
             if (!(new File(path, playlistFilename)).exists()) {
                 MalarmActivity.showMessage(this, getString(R.string.pref_playlist_does_not_exist));
                 ((CheckBoxPreference) preference).setChecked(false);
-            } else {
+            }
+            else {
                 Intent i = new Intent(this, PlaylistViewer.class);
                 //TODO: define key as constant
                 i.putExtra("playlist", prefKey);
                 startActivity(i);
             }
             result = true;
-        } else if (preference == clearWebviewCache_) {
+        }
+        else if (preference == clearWebviewCache_) {
             String prefKey = preference.getKey();
             SharedPreferences pref = preference.getSharedPreferences();
             SharedPreferences.Editor editor = preference.getEditor();
@@ -191,7 +197,8 @@ public class MalarmPreference
             //compatibility: apply method is not available in 7
             editor.apply();
             result = true;
-        } else if (preference == reloadPlaylist_) {
+        }
+        else if (preference == reloadPlaylist_) {
             Intent i = new Intent(this, MalarmPlayerService.class);
             i.setAction(MalarmPlayerService.LOAD_PLAYLIST_ACTION);
             startService(i);

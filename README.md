@@ -81,6 +81,8 @@ TODO
   * add title and status text
   * layout of switch
 * add controlls to notification
+* handle error
+  * add on error method to listener
 * stop playing on phone call
   * requires READ_PHONE_STATE permission, then should be liked to the privacy policy of this app
 * easy play list

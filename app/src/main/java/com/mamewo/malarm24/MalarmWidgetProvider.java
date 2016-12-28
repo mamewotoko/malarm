@@ -39,7 +39,8 @@ public class MalarmWidgetProvider
             if (r.left > 130) {
                 i.setAction(MalarmPlayerService.PLAYNEXT_ACTION);
                 context.startService(i);
-            } else {
+            }
+            else {
                 i.setAction(MalarmPlayerService.PLAYSTOP_ACTION);
                 context.startService(i);
             }

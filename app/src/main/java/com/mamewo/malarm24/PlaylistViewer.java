@@ -121,7 +121,8 @@ public final class PlaylistViewer
 
                             playlist_.remove(pos);
                             playlist_.insert(pos - 1, title);
-                        } else if (which == DOWN_INDEX) {
+                        }
+                        else if (which == DOWN_INDEX) {
                             if (pos == adapter_.getCount() - 1) {
                                 //TODO: disable item
                                 return;
@@ -131,7 +132,8 @@ public final class PlaylistViewer
 
                             playlist_.remove(pos);
                             playlist_.insert(pos + 1, title);
-                        } else if (which == DELETE_INDEX) {
+                        }
+                        else if (which == DELETE_INDEX) {
                             adapter_.remove(playlist_.toList().get(pos));
                             playlist_.remove(pos);
                         }
@@ -153,7 +155,8 @@ public final class PlaylistViewer
                 && currentList == playlist_
                 && currentList.getCurrentPosition() == pos) {
             player_.pauseMusic();
-        } else {
+        }
+        else {
             player_.playMusic(playlist_, pos, true);
         }
         updateUI();
@@ -173,7 +176,8 @@ public final class PlaylistViewer
             View view;
             if (null == convertView) {
                 view = View.inflate(PlaylistViewer.this, R.layout.playlist_item, null);
-            } else {
+            }
+            else {
                 view = convertView;
             }
             String title = getItem(position);
@@ -208,7 +212,8 @@ public final class PlaylistViewer
             }
             playlist_ = MalarmPlayerService.sleepPlaylist_;
             titleID = R.string.sleep_playlist_viewer_title;
-        } else {
+        }
+        else {
             if (null == MalarmPlayerService.wakeupPlaylist_) {
                 player_.loadPlaylist();
             }
@@ -243,7 +248,8 @@ public final class PlaylistViewer
             }
             if (player_.isPlaying()) {
                 player_.pauseMusic();
-            } else {
+            }
+            else {
                 player_.setCurrentPlaylist(playlist_);
                 player_.playMusic();
             }

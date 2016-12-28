@@ -16,6 +16,6 @@ foreach my $line (@LINES) {
 	print $line."\n";
 	next;
     }
-    $line =~ s|^.*/||;
+    #$line =~ s|^.*/||;
     print NFKC($line)."\n";
 }

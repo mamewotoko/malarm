@@ -59,7 +59,8 @@ public final class M3UPlaylist
             //TODO: support multiple episode
             //result = getFirstEpisodeURL(result);
             result = new MusicURL(MusicURL.URLType.PODCAST_XML, xmlURL);
-        } else {
+        }
+        else {
             if (!(new File(path)).isAbsolute()) {
                 path = (new File(basepath_, path)).getAbsolutePath();
             }

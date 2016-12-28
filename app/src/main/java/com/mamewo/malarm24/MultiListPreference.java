@@ -79,7 +79,8 @@ public class MultiListPreference
     public String[] parseStoredValue(CharSequence val) {
         if (null == val || "".equals(val)) {
             return null;
-        } else {
+        }
+        else {
             return ((String) val).split(SEPARATOR);
         }
     }

@@ -167,7 +167,8 @@ public class MalarmPlayerService
                 if (null != tone_) {
                     tone_.play();
                 }
-            } else {
+            }
+            else {
                 currentNoteTitle_ = getString(R.string.notify_wakeup_text);
                 mgr.setStreamVolume(AudioManager.STREAM_MUSIC, volume, AudioManager.FLAG_SHOW_UI);
                 Log.d(TAG, "onStartCommand: playMusic");
@@ -182,42 +183,50 @@ public class MalarmPlayerService
             activityIntent.setAction(WAKEUP_ACTION);
             activityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(activityIntent);
-        } else if (STOP_MUSIC_ACTION.equals(action)) {
+        }
+        else if (STOP_MUSIC_ACTION.equals(action)) {
             stopMusic();
         }
         //////
         else if (START_MUSIC_ACTION.equals(action)) {
             playMusic();
-        } else if (NEXT_MUSIC_ACTION.equals(action)) {
+        }
+        else if (NEXT_MUSIC_ACTION.equals(action)) {
             playNext();
-        } else if (PREVIOUS_MUSIC_ACTION.equals(action)) {
-            //rewind
-            playMusic();
-        } else if (PLAYSTOP_ACTION.equals(action)) {
+        }
+        else if (PREVIOUS_MUSIC_ACTION.equals(action)) {
+            playPrevious();
+        }
+        else if (PLAYSTOP_ACTION.equals(action)) {
             if (isPlaying()) {
                 pauseMusic();
-            } else {
+            }
+            else {
                 if (null == currentPlaylist_) {
                     loadPlaylist();
                     currentPlaylist_ = wakeupPlaylist_;
                 }
                 playMusic(true);
             }
-        } else if (PLAYNEXT_ACTION.equals(action)) {
+        }
+        else if (PLAYNEXT_ACTION.equals(action)) {
             if (isPlaying()) {
                 playNext();
             }
-        } else if (LOAD_PLAYLIST_ACTION.equals(action)) {
+        }
+        else if (LOAD_PLAYLIST_ACTION.equals(action)) {
             Log.d(TAG, "LOAD_PLAYLIST_ACTION");
             loadPlaylist();
-        } else if (UNPLUGGED_ACTION.equals(action)) {
+        }
+        else if (UNPLUGGED_ACTION.equals(action)) {
             SharedPreferences pref =
                     PreferenceManager.getDefaultSharedPreferences(this);
             boolean stop = pref.getBoolean("stop_on_unplugged", true);
             if (stop) {
                 pauseMusic();
             }
-        } else if (MEDIA_BUTTON_ACTION.equals(action)) {
+        }
+        else if (MEDIA_BUTTON_ACTION.equals(action)) {
             KeyEvent event = intent.getParcelableExtra("event");
             Log.d(TAG, "SERVICE: Received media button: " + event.getKeyCode());
             if (event.getAction() != KeyEvent.ACTION_UP) {
@@ -227,7 +236,8 @@ public class MalarmPlayerService
                 case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
                     if (player_.isPlaying()) {
                         pauseMusic();
-                    } else {
+                    }
+                    else {
                         playMusic(true);
                     }
                     break;
@@ -237,8 +247,7 @@ public class MalarmPlayerService
                     }
                     break;
                 case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-                    //rewind...
-                    playMusic();
+                    playPrevious();
                     break;
                 default:
                     break;
@@ -286,6 +295,21 @@ public class MalarmPlayerService
         context.startActivity(i);
     }
 
+    public void playPrevious() {
+        if (isPlaying()) {
+            stopMusic();
+        }
+        int pos = currentPlaylist_.getCurrentPosition();
+        int prevPos = pos;
+        pos--;
+        if(pos < 0){
+            pos = pos + currentPlaylist_.size();
+        }
+        Log.d(TAG, "playPrevious: " + prevPos + " "+ pos);
+        currentPlaylist_.setPosition(pos);
+        playMusic(true);
+    }
+
     //TODO: show notification if it is shown previous
     public void playNext() {
         if (isPlaying()) {
@@ -294,7 +318,7 @@ public class MalarmPlayerService
         int pos = currentPlaylist_.getCurrentPosition();
         pos = (pos + 1) % currentPlaylist_.size();
         currentPlaylist_.setPosition(pos);
-        playMusic();
+        playMusic(true);
     }
 
     public void onCompletion(MediaPlayer mp) {
@@ -553,9 +577,13 @@ public class MalarmPlayerService
     }
 
     public void pauseMusic() {
+        Log.d(TAG, "pauseMusic");
         if (!player_.isPlaying()) {
+            Log.d(TAG, "pauseMusic: not playing. return");
             return;
         }
+        Log.d(TAG, "pauseMusic: pause");
+
         AudioManager manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         manager.abandonAudioFocus(this);
         player_.pause();
@@ -652,7 +680,8 @@ public class MalarmPlayerService
                 Intent i = new Intent(context, MalarmPlayerService.class);
                 i.setAction(START_WAKEUP_SERVICE_ACTION);
                 context.startService(i);
-            } else if (SLEEP_ACTION.equals(action)) {
+            }
+            else if (SLEEP_ACTION.equals(action)) {
                 //TODO: support native player
                 Intent i = new Intent(context, MalarmPlayerService.class);
                 i.setAction(STOP_MUSIC_ACTION);
@@ -676,7 +705,8 @@ public class MalarmPlayerService
                     i.setAction(UNPLUGGED_ACTION);
                     context.startService(i);
                 }
-            } else if (Intent.ACTION_MEDIA_BUTTON.equals(action)) {
+            }
+            else if (Intent.ACTION_MEDIA_BUTTON.equals(action)) {
                 Log.d(TAG, "media button");
                 KeyEvent event = intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
                 if (null == event) {

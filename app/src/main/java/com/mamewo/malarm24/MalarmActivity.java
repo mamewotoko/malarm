@@ -116,7 +116,9 @@ public class MalarmActivity
     private static MalarmState state_;
 
     private ImageButton speechButton_;
+    private ImageButton previousButton_;
     private ImageButton nextButton_;
+    private ImageButton playButton_;
     private TimePicker timePicker_;
     private TextView timeLabel_;
     private WebView webview_;
@@ -168,9 +170,11 @@ public class MalarmActivity
             int side_width = width / 3;
             if (x <= side_width) {
                 state_.webIndex_--;
-            } else if (x > width - side_width) {
+            }
+            else if (x > width - side_width) {
                 state_.webIndex_++;
-            } else {
+            }
+            else {
                 start_browser = true;
             }
             if (start_browser) {
@@ -180,7 +184,8 @@ public class MalarmActivity
                 }
                 Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 startActivity(i);
-            } else {
+            }
+            else {
                 loadWebPage();
             }
             return true;
@@ -197,7 +202,8 @@ public class MalarmActivity
         syncPreferences(pref_, "ALL");
         if (pref_.getBoolean("pref_use_drawable_ui", false)) {
             setContentView(R.layout.main_drawing);
-        } else {
+        }
+        else {
             setContentView(R.layout.main);
         }
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -217,7 +223,8 @@ public class MalarmActivity
 
         if (null == savedInstanceState) {
             state_ = new MalarmState();
-        } else {
+        }
+        else {
             state_ = (MalarmState) savedInstanceState.get("state");
         }
         loadingIcon_ = (ProgressBar) findViewById(R.id.loading_icon);
@@ -230,10 +237,18 @@ public class MalarmActivity
         speechButton_.setOnClickListener(this);
         runningSpeechActivity_ = false;
 
+        previousButton_ = (ImageButton) findViewById(R.id.previous_button);
+        previousButton_.setOnClickListener(this);
+        previousButton_.setOnLongClickListener(this);
+
+        playButton_ = (ImageButton) findViewById(R.id.play_button);
+        playButton_.setOnClickListener(this);
+        playButton_.setOnLongClickListener(this);
+
         nextButton_ = (ImageButton) findViewById(R.id.next_button);
         nextButton_.setOnClickListener(this);
         nextButton_.setOnLongClickListener(this);
-
+        
         setNowButton_ = (Button) findViewById(R.id.set_now_button);
         setNowButton_.setOnClickListener(this);
 
@@ -435,7 +450,8 @@ public class MalarmActivity
                         }
                     }
                 }
-            } else {
+            }
+            else {
                 addURLListFromPref(pref);
                 WEB_PAGE_LIST.add(MYURL);
             }
@@ -489,12 +505,14 @@ public class MalarmActivity
                 url.contains("yahoo") ||
                 url.contains("so-net")) {
             config.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
-        } else {
+        }
+        else {
             config.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
         }
         if (url.contains("bijo-linux") || url.contains("bijin-tokei")) {
             config.setDefaultZoom(WebSettings.ZoomDensity.FAR);
-        } else {
+        }
+        else {
             config.setDefaultZoom(WebSettings.ZoomDensity.MEDIUM);
         }
     }
@@ -571,17 +589,20 @@ public class MalarmActivity
                 state_.webIndex_ = 0;
             }
             setIntent(intent);
-        } else if (LOADWEB_ACTION.equals(action)) {
+        }
+        else if (LOADWEB_ACTION.equals(action)) {
             String url = intent.getStringExtra("url");
             loadWebPage(url);
-        } else if (PLAY_ACTION.equals(action)) {
+        }
+        else if (PLAY_ACTION.equals(action)) {
             //sleep | wakeup
             String playlist = intent.getStringExtra("playlist");
             int pos = intent.getIntExtra("position", 0);
             Playlist list;
             if (null == playlist || "wakeup".equals(playlist)) {
                 list = MalarmPlayerService.wakeupPlaylist_;
-            } else {
+            }
+            else {
                 list = MalarmPlayerService.sleepPlaylist_;
             }
             player_.playMusic(list, pos, null == state_.targetTime_);
@@ -624,13 +645,28 @@ public class MalarmActivity
                 dow_str);
     }
 
+    private void updatePlayStopButton(){
+        if(player_ == null){
+            return;
+        }
+        if(player_.isPlaying()){
+            playButton_.setImageResource(android.R.drawable.ic_media_pause);
+            playButton_.setContentDescription(getString(R.string.pause_button_desc));
+        }
+        else {
+            playButton_.setImageResource(android.R.drawable.ic_media_play);
+            playButton_.setContentDescription(getString(R.string.play_button_desc));
+        }
+    }
+    
     private void updateUI() {
         Calendar target = state_.targetTime_;
         if (null != target) {
             timeLabel_.setText(dateStr(target));
             timePicker_.setCurrentHour(target.get(Calendar.HOUR_OF_DAY));
             timePicker_.setCurrentMinute(target.get(Calendar.MINUTE));
-        } else {
+        }
+        else {
             //alarm is not set
             timeLabel_.setText("");
             if (!runningSpeechActivity_) {
@@ -638,18 +674,20 @@ public class MalarmActivity
                 timePicker_.setCurrentMinute(prefDefaultMin);
             }
         }
+
+        updatePlayStopButton();
         // int sleepMin = state_.sleepMin_;
         // if (sleepMin > 0) {
         //     sleepTimeLabel_.setText(MessageFormat.format(getString(R.string.unit_min),
         //             Integer.valueOf(sleepMin)));
-        // } else {
+        // }
+        // else {
         //     sleepTimeLabel_.setText("");
         // }
         alarmButton_.setChecked(null != state_.targetTime_);
         //following two buttons can be hidden
         speechButton_.setEnabled(null == state_.targetTime_);
         setNowButton_.setEnabled(null == state_.targetTime_);
-
         timePicker_.setEnabled(null == state_.targetTime_);
         //TODO: add function to get player state
         //playlistLabel_.setText(Player.getCurrentPlaylistName());
@@ -792,26 +830,42 @@ public class MalarmActivity
 
     @Override
     public void onClick(View v) {
-        if (v == nextButton_) {
-            if (player_.isPlaying()) {
-                player_.playNext();
+        if(v == previousButton_){
+            player_.playPrevious();
+        }
+        else if (v == nextButton_) {
+            player_.playNext();
+        }
+        else if (v == playButton_) {
+            //TODO: set playilst?
+            Log.d(TAG, "playButton_ of main screen");
+
+            if(player_.isPlaying()){
+                player_.pauseMusic();
             }
-            // otherwise confirm and play music?
-        } else if (v == speechButton_) {
+            else {
+                player_.playMusic(true);
+            }
+            //update ui will called in async way
+        }
+        else if (v == speechButton_) {
             setTimeBySpeech();
-        } else if (v == alarmButton_) {
+        }
+        else if (v == alarmButton_) {
             InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             mgr.hideSoftInputFromWindow(timePicker_.getWindowToken(), 0);
             if (state_.targetTime_ != null) {
                 Log.d(TAG, "Stop Alarm");
                 stopAlarm();
-            } else {
+            }
+            else {
                 Log.d(TAG, "Set Alarm");
                 setAlarm();
                 playSleepMusic(state_.targetTime_.getTimeInMillis());
                 updateUI();
             }
-        } else if (v == setNowButton_) {
+        }
+        else if (v == setNowButton_) {
             setNow();
         }
     }
@@ -883,16 +937,6 @@ public class MalarmActivity
             showDialog(DIALOG_PLAY_SLEEP_TUNE);
             return true;
         }
-        //TODO: implement
-//		if (view == playlistLabel_) {
-//			if (player_.isPlaying()) {
-//				return false;
-//			}
-//			shortVibrate();
-//			Player.switchPlaylist();
-//			updateUI();
-//			return true;
-//		}
         if (view == nextButton_) {
             shortVibrate();
             if (!player_.isPlaying()) {
@@ -992,16 +1036,19 @@ public class MalarmActivity
                     String minStr = m.group(2);
                     if (null == minStr) {
                         minute = 0;
-                    } else if ("半".equals(minStr)) {
+                    }
+                    else if ("半".equals(minStr)) {
                         minute = 30;
-                    } else {
+                    }
+                    else {
                         minute = Integer.valueOf(m.group(3)) % 60;
                     }
                     String key = hour + ":" + minute;
                     if (!result.containsKey(key)) {
                         result.put(key, new TimePickerTime(hour, minute, speech));
                     }
-                } else {
+                }
+                else {
                     Matcher m2 = AFTER_TIME_PATTERN.matcher(speech);
                     if (m2.matches()) {
                         String hourStr = m2.group(2);
@@ -1034,9 +1081,11 @@ public class MalarmActivity
             }
             if (result.isEmpty()) {
                 showMessage(this, getString(R.string.voice_fail));
-            } else if (result.size() == 1) {
+            }
+            else if (result.size() == 1) {
                 setTimePickerTime(result.values().iterator().next());
-            } else {
+            }
+            else {
                 String[] speechArray = new String[result.size()];
                 Iterator<TimePickerTime> iter = result.values().iterator();
                 for (int i = 0; i < result.size(); i++) {

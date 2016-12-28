@@ -69,7 +69,8 @@ public class VolumePreference
         int value = v;
         if (value > maxVolume_) {
             value = maxVolume_;
-        } else if (value < 0) {
+        }
+        else if (value < 0) {
             value = 0;
         }
         if (callChangeListener(value)) {
@@ -84,7 +85,8 @@ public class VolumePreference
 
         if (restoreValue) {
             volume = Integer.parseInt(getPersistedString(Integer.toString(volume_)));
-        } else {
+        }
+        else {
             volume = Integer.parseInt((String) defaultValue);
         }
         setVolume(volume);
@@ -100,12 +102,14 @@ public class VolumePreference
         }
         if (view == minusButton_) {
             volume_value--;
-        } else if (view == plusButton_) {
+        }
+        else if (view == plusButton_) {
             volume_value++;
         }
         if (volume_value < 0) {
             volume_value = 0;
-        } else if (volume_value > maxVolume_) {
+        }
+        else if (volume_value > maxVolume_) {
             volume_value = maxVolume_;
         }
         editText_.setText(Integer.toString(volume_value));

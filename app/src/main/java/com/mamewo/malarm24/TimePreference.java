@@ -47,7 +47,8 @@ public class TimePreference
         String time;
         if (restoreValue) {
             time = getPersistedString(time_);
-        } else {
+        }
+        else {
             time = (String) defaultValue;
         }
         setTime(time);
