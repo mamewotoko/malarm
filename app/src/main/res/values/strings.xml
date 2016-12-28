@@ -69,8 +69,9 @@
     <string name="stop_loading">Loading aborted</string>
     <string name="volume_minus"> - </string>
     <string name="volume_plus"> + </string>
-    <string name="sleep_playlist_viewer_title">malarm: Sleep playlist (sleep.m3u)</string>
-    <string name="wakeup_playlist_viewer_title">malarm: Wakeup playlist (wakeup.m3u)</string>
+    <string name="sleep_playlist_viewer_title">malarm: Sleep playlist</string>
+    <string name="wakeup_playlist_viewer_title">malarm: Wakeup playlist</string>
+
     <string name="pref_about_title">About malarm</string>
     <string name="select_time_from_list">Select alarm time</string>
     <string name="ask_play_sleep_tune">Do you listen sleep tunes?</string>

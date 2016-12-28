@@ -44,6 +44,10 @@ public final class M3UPlaylist
         //TODO: refactoring
     }
 
+    public File getPlaylistFile(){
+        return new File(basepath_, playlistFilename_);
+    }
+    
     //add repeat setting, shuffle mode
     // file | mp3 file on web | podcast
     @Override

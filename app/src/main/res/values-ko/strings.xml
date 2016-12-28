@@ -68,8 +68,8 @@
     <string name="volume_minus"> - </string>
     <string name="volume_plus"> + </string>
         
-    <string name="sleep_playlist_viewer_title">휴식 플레이 리스트 (sleep.m3u)</string>
-    <string name="wakeup_playlist_viewer_title">안녕하세요 플레이 리스트 (wakeup.m3u)</string>
+    <string name="sleep_playlist_viewer_title">휴식 플레이 리스트</string>
+    <string name="wakeup_playlist_viewer_title">안녕하세요 플레이 리스트</string>
     <string name="pref_about_title">M알람에 대해서 </string>
     <string name="select_time_from_list">시각을 선택해 주십시오 </string>
     <string name="ask_play_sleep_tune">휴식의 음악을 흘려보냅니까? </string>

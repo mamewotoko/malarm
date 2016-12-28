@@ -29,9 +29,11 @@ import com.mamewo.malarm24.MalarmPlayerService.PlayerStateListener;
 
 import java.io.IOException;
 import java.util.List;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.ActionBar;
 
 public final class PlaylistViewer
-        extends Activity
+        extends AppCompatActivity
         implements OnItemLongClickListener,
         OnItemClickListener,
         OnClickListener,
@@ -205,7 +207,8 @@ public final class PlaylistViewer
         player_ = ((MalarmPlayerService.LocalBinder) binder).getService();
         player_.addPlayerStateListener(this);
         playButton_.setEnabled(true);
-        int titleID = 0;
+        int titleID;
+        String playlistPath;
         if ("sleep".equals(playlistName_)) {
             if (null == MalarmPlayerService.sleepPlaylist_) {
                 player_.loadPlaylist();
@@ -222,7 +225,12 @@ public final class PlaylistViewer
         }
         adapter_ = new MusicAdapter(this, playlist_.toList());
         listView_.setAdapter(adapter_);
-        setTitle(titleID);
+        //setTitle(titleID);
+
+        ActionBar toolbar = getSupportActionBar();
+        //toolbar.setHomeAsUpIndicator(R.drawale.ic_arrow_left);
+        toolbar.setTitle(titleID);
+        toolbar.setSubtitle(playlist_.getPlaylistFile().getAbsolutePath());
         updateUI();
     }
 

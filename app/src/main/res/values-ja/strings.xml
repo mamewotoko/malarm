@@ -68,8 +68,8 @@
     <string name="volume_minus"> - </string>
     <string name="volume_plus"> + </string>
         
-    <string name="sleep_playlist_viewer_title">おやすみプレイリスト(sleep.m3u)</string>
-    <string name="wakeup_playlist_viewer_title">おはようプレイリスト(wakeup.m3u)</string>
+    <string name="sleep_playlist_viewer_title">おやすみプレイリスト</string>
+    <string name="wakeup_playlist_viewer_title">おはようプレイリスト</string>
     <string name="pref_about_title">まらーむについて</string>
     <string name="select_time_from_list">時刻を選んでください</string>
     <string name="ask_play_sleep_tune">おやすみの音楽を流しますか?</string>
