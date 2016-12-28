@@ -16,7 +16,7 @@
         android:id="@+id/dialog_logo"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="#0C0"
+        android:background="#FFF"
         android:src="@drawable/github" />
 
 </LinearLayout>
