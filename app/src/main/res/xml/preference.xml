@@ -48,7 +48,6 @@
             android:dialogMessage="@string/enter_path_to_playlist"
             android:dialogTitle="@string/playlist_path_title"
             android:enabled="true"
-            android:summary="@string/playlist_path_summary"
             android:title="@string/playlist_path_title" />
 
         <CheckBoxPreference

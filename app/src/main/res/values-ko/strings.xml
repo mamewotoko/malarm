@@ -21,7 +21,7 @@
     <string name="use_internal_player">MediaPlayer를 사용한다 </string>
     <string name="use_native_player">Native의 음악 player를 사용한다 </string>
     <string name="playlist_path_title">플레이 리스트의 장소 </string>
-    <string name="playlist_path_summary">플레이 리스트sleep. m3u와 wakeup. m3u를 보존한 디렉토리 </string>
+
     <string name="enter_path_to_playlist">플레이 리스트sleep. m3u와 wakeup. m3u를 보존한 디렉토리를 입력해 주십시오. </string>
     <string name="malarm_version_title">버전 </string>
     <string name="help_url">http://mamewotoko.github.com/malarm/doc/0.99/index_en.html</string>

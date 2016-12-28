@@ -45,6 +45,7 @@ public class MalarmPreference
     private Preference wakeupVolume_;
     private Preference reloadPlaylist_;
     private Preference clearWebviewCache_;
+    private Preference playlistPath_;
     private View logo_;
     private CheckBoxPreference sleepPlaylist_;
     private CheckBoxPreference wakeupPlaylist_;
@@ -124,7 +125,6 @@ public class MalarmPreference
             }
         }
     }
-
 
     @Override
     public boolean onPreferenceClick(Preference preference) {
@@ -234,6 +234,7 @@ public class MalarmPreference
         reloadPlaylist_ = findPreference("reload_playlist");
         reloadPlaylist_.setOnPreferenceClickListener(this);
         sleepVolume_ = findPreference("sleep_volume");
+        playlistPath_ = findPreference(PREFKEY_PLAYLIST_PATH);
         sleepPlaylist_ = (CheckBoxPreference) findPreference("sleep_playlist");
         sleepPlaylist_.setOnPreferenceClickListener(this);
         wakeupPlaylist_ = (CheckBoxPreference) findPreference("wakeup_playlist");
@@ -327,6 +328,12 @@ public class MalarmPreference
         }
         if (updateAll || "wakeup_volume".equals(key)) {
             setVolumeSummary(pref, "wakeup_volume", wakeupVolume_, DEFAULT_WAKEUP_VOLUME);
+        }
+        Log.d(TAG, "updateSummary: "+ updateAll + " " + key);
+        if(updateAll || PREFKEY_PLAYLIST_PATH.equals(key)){
+            String path =
+                pref.getString(PREFKEY_PLAYLIST_PATH, DEFAULT_PLAYLIST_PATH.getAbsolutePath());
+            playlistPath_.setSummary(path);
         }
         //url_list has no summary
     }
