@@ -30,7 +30,6 @@ http://www.youtube.com/watch?v=vA2F_dO0mQA
 * [English](http://mamewotoko.github.com/malarm/doc/index_en.html)
 
 ### Google Play
- [![my play page](http://www.android.com/images/brand/get_it_on_play_logo_small.png)](http://play.google.com/store/search?q=pub:mamewo)
 * [For 2.3.x](https://play.google.com/store/apps/details?id=com.mamewo.malarm24)
 * [For 2.1 - 2.2](https://play.google.com/store/apps/details?id=com.mamewo.malarm78)
 
@@ -79,6 +78,8 @@ Limitation
 TODO
 ---- 
 * use Actionbar
+  * add title and status text
+  * layout of switch
 * add controlls to notification
 * stop playing on phone call
   * requires READ_PHONE_STATE permission, then should be liked to the privacy policy of this app
