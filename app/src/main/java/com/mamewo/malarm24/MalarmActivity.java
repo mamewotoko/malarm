@@ -95,8 +95,6 @@ public class MalarmActivity
     final static
     private String TAG = "malarm";
     final static
-    private String MYURL = "http://mamewo.ddo.jp/mobile_shop.html";
-    final static
     private int SPEECH_RECOGNITION_REQUEST_CODE = 2121;
     final static
     private String NATIVE_PLAYER_KEY = "nativeplayer";
@@ -431,9 +429,9 @@ public class MalarmActivity
                         String url = titleURL[1];
                         WEB_PAGE_LIST.add(url);
                     }
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     addURLListFromPref(pref);
-                    WEB_PAGE_LIST.add(MYURL);
                 } finally {
                     if (null != br) {
                         try {
@@ -453,7 +451,6 @@ public class MalarmActivity
             }
             else {
                 addURLListFromPref(pref);
-                WEB_PAGE_LIST.add(MYURL);
             }
         }
         if (updateAll || "use_native_player".equals(key)) {
