@@ -29,9 +29,9 @@
     <string name="help_title">ヘルプ</string>
     <string name="help_summary">使い方を書いたヘルプ(Webページ)を表示します。ネットワークに接続しますので、接続料金がかかることがあります。</string>
 
-    <string name="git_url">https://github.com/mamewotoko/malarm/</string>
     <string name="dialog_title">まらーむダウンロードページ</string>
-    
+    <string name="mail_to_author">作者にメールを送る</string>
+
     <string name="pref_playlist_category">プレイリスト設定</string>
     <string name="pref_wakeup_playlist">wakeup.m3uプレイリスト</string>
     <string name="pref_no_wakeup_playlist">ないです。 (作ってください)</string>

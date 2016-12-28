@@ -51,9 +51,12 @@ public class MalarmPreference
     private Preference reloadPlaylist_;
     private Preference clearWebviewCache_;
     private Preference playlistPath_;
+    private Preference mailToAuthor_;
     private View logo_;
     private CheckBoxPreference sleepPlaylist_;
     private CheckBoxPreference wakeupPlaylist_;
+
+    private String versionStr_;
     private SharedPreferences pref_;
     private static final String TAG = "malarm";
     static final
@@ -147,6 +150,7 @@ public class MalarmPreference
             String[] playlists =
                     {MalarmPlayerService.WAKEUP_PLAYLIST_FILENAME,
                             MalarmPlayerService.SLEEP_PLAYLIST_FILENAME};
+            //TODO: confirm if playlist exists
             for (String filename : playlists) {
                 File file = new File(MalarmActivity.prefPlaylistPath, filename);
                 if (file.exists()) {
@@ -211,6 +215,13 @@ public class MalarmPreference
             MalarmActivity.showMessage(this, getString(R.string.playlist_reload));
             result = true;
         }
+        else if(preference == mailToAuthor_){
+            Intent i = new Intent(Intent.ACTION_SEND);
+            i.setType("message/rfc822");
+            i.putExtra(Intent.EXTRA_EMAIL, new String[]{"mamewotoko@gmail.com"});
+            i.putExtra(Intent.EXTRA_SUBJECT, "[malarm24 "+versionStr_+"] ");
+            startActivity(i);
+        }
         return result;
     }
 
@@ -221,12 +232,14 @@ public class MalarmPreference
         addPreferencesFromResource(R.xml.preference);
         version_ = findPreference("malarm_version");
         PackageInfo pi;
+        
         try {
             pi = getPackageManager().getPackageInfo(MalarmActivity.PACKAGE_NAME, 0);
-            version_.setSummary(pi.versionName);
+            versionStr_ = pi.versionName;
         } catch (NameNotFoundException e) {
-            version_.setSummary("unknown");
+            versionStr_ = "unknown";
         }
+        version_.setSummary(versionStr_);
         version_.setOnPreferenceClickListener(this);
         selectURL_ = findPreference("url_list");
         help_ = findPreference("help");
@@ -244,7 +257,8 @@ public class MalarmPreference
         sleepPlaylist_.setOnPreferenceClickListener(this);
         wakeupPlaylist_ = (CheckBoxPreference) findPreference("wakeup_playlist");
         wakeupPlaylist_.setOnPreferenceClickListener(this);
-
+        mailToAuthor_ = findPreference("mail_to_author");
+        mailToAuthor_.setOnPreferenceClickListener(this);
         clearWebviewCache_ = findPreference("clear_webview_cache");
         clearWebviewCache_.setOnPreferenceClickListener(this);
 
@@ -256,7 +270,7 @@ public class MalarmPreference
             public void onClick(View v) {
                 finish();
             }
-        });
+        });    
        
         pref_.registerOnSharedPreferenceChangeListener(this);
     }

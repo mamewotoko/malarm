@@ -29,8 +29,8 @@
     <string name="help_title">도움 </string>
     <string name="help_summary">사용방법을 쓴 도움(홈페이지)을 표시합니다. 네트워크에 접속하므로, 접속 요금이 걸릴 것이 있습니다. </string>
 
-    <string name="git_url">https://github.com/mamewotoko/malarm/</string>
     <string name="dialog_title">다운로드 페이지 </string>
+    <string name="mail_to_author">작성자에 메일을 보내는</string>
     
     <string name="pref_playlist_category">플레이 리스트 설정 </string>
     <string name="pref_wakeup_playlist">wakeup.m3u플레이 리스트 </string>

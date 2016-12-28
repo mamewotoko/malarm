@@ -150,5 +150,9 @@
             android:key="malarm_version"
             android:selectable="true"
             android:title="@string/malarm_version_title" />
+        <Preference
+            android:key="mail_to_author"
+            android:summary="@string/author_name"
+            android:title="@string/mail_to_author" />
     </PreferenceCategory>
 </PreferenceScreen>
