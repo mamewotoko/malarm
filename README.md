@@ -21,7 +21,7 @@ Resources
 http://www.youtube.com/watch?v=vA2F_dO0mQA
 
 ### Screenshot
-![main screen](doc/init.png)
+![main screen](doc/init_jp.png)
 ![preference screen](doc/menu.png)
 ![playilst](doc/playlist.png)
 
@@ -77,11 +77,9 @@ Limitation
 * Music stops when DRM decoding failed
 
 TODO
-----
-
-* use NotificationCompat
+---- 
 * use Actionbar
-* support android-6, 7, 8 and remove malarm78
+* add controlls to notification
 * stop playing on phone call
   * requires READ_PHONE_STATE permission, then should be liked to the privacy policy of this app
 * easy play list
