@@ -4,8 +4,6 @@
     <string name="stop_music">Stop Music</string>
     <string name="music_stopped">Music stopped</string>
 
-    <string name="set_alarm">Set Alarm</string>
-    <string name="stop_alarm">Cancel Alarm</string>
     <string name="stop_vibration">Stop vibaration</string>
     <string name="play_wakeup">Play</string>
     <string name="pref_menu">Preference</string>

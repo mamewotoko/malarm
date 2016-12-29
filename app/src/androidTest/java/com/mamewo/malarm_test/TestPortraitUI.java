@@ -25,6 +25,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import android.support.v7.widget.SwitchCompat;
+
 public class TestPortraitUI
         extends ActivityInstrumentationTestCase2<MalarmActivity>
 {
@@ -116,7 +118,7 @@ public class TestPortraitUI
     }
 
     ///////////////////////////////
-    //@SmallTest
+    @SmallTest
     public void testSetAlarm() {
         Date now = new Date(System.currentTimeMillis() + 60 * 1000);
         solo_.setTimePicker(0, now.getHours(), now.getMinutes());
@@ -126,26 +128,26 @@ public class TestPortraitUI
         solo_.sleep(2000);
         TextView targetTimeLabel = (TextView) solo_.getView(R.id.target_time_label);
         Assert.assertTrue("check wakeup label", targetTimeLabel.getText().length() > 0);
-        solo_.goBack();
+        //solo_.goBack();
 
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "set_alarm");
         solo_.sleep(61 * 1000);
-        Assert.assertTrue("Switch alarm button wording", solo_.searchToggleButton(solo_.getString(R.string.stop_alarm)));
-        Assert.assertTrue("Correct alarm toggle button state", solo_.isToggleButtonChecked(solo_.getString(R.string.stop_alarm)));
+        SwitchCompat alarmSwitch = (SwitchCompat)solo_.getView(R.id.alarm_button);
+        Assert.assertTrue("Correct alarm toggle button state", alarmSwitch.isChecked());
         //TODO: check music?
         //TODO: check vibration
         //TODO: check notification
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "set_alarm");
-        solo_.clickOnButton(solo_.getString(R.string.stop_alarm));
+        solo_.clickOnView(alarmSwitch);
         solo_.sleep(1000);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "set_alarm");
 
         Assert.assertTrue("check wakeup label", targetTimeLabel.getText().length() == 0);
-        Assert.assertTrue("Alarm stopped", !solo_.isToggleButtonChecked(solo_.getString(R.string.set_alarm)));
+        Assert.assertTrue("Alarm stopped", !alarmSwitch.isChecked());
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "set_alarm");
     }
 
-    //@SmallTest
+    @SmallTest
     public void testSetNow() {
         //cannot get timepicker of Xperia acro...
         //TimePicker picker = solo_.getCurrentTimePickers().get(0);
@@ -194,7 +196,7 @@ public class TestPortraitUI
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "next_tune_long");
     }
 
-    //@SmallTest
+    @SmallTest
     public void testStopVibrationMenu() {
         //TODO: cannot select menu by japanese, why?
         solo_.clickOnMenuItem(solo_.getString(R.string.stop_vibration));
@@ -202,18 +204,9 @@ public class TestPortraitUI
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "stop_vibration_menu");
     }
 
-    //@SmallTest
-    public void testPlayMenu() {
-        solo_.clickOnMenuItem(solo_.getString(R.string.play_wakeup));
-        solo_.sleep(5000);
-        solo_.clickOnMenuItem(solo_.getString(R.string.stop_music));
-        solo_.sleep(1000);
-        FalconSpoon.screenshot(solo_.getCurrentActivity(), "play_menu");
-    }
-
     /////////////////
     //config screen
-    //@SmallTest
+    @SmallTest
     public void testSitePreference() {
         startPreferenceActivity();
         selectPreference(R.string.playlist_path_title);
@@ -304,7 +297,7 @@ public class TestPortraitUI
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_long");
     }
 
-    //@SmallTest
+    @SmallTest
     public void testPlaylistPlay() {
         startPreferenceActivity();
         selectPreference(R.string.pref_sleep_playlist);

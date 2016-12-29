@@ -10,8 +10,6 @@
       android:layout_height="wrap_content"
       >
     <android.support.v7.widget.SwitchCompat
-        android:textOff="@string/set_alarm"
-        android:textOn="@string/stop_alarm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/alarm_button" />
@@ -28,14 +26,5 @@
         android:layout_height="wrap_content"
         android:gravity="right"
         android:textAppearance="?android:attr/textAppearanceSmall" />
-    <!--
-        <TextView
-        android:id="@+id/sleep_time_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#FFFFFF"
-        android:background="#005500"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
-    -->
   </LinearLayout>
 </android.support.v7.widget.Toolbar>

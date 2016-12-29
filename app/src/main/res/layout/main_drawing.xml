@@ -70,8 +70,7 @@
                     android:id="@+id/alarm_button"
                     android:layout_width="fill_parent"
                     android:layout_height="50dp"
-                    android:textOff="@string/set_alarm"
-                    android:textOn="@string/stop_alarm" />
+                    />
 
                 <LinearLayout
                     android:id="@+id/linearLayout_contbutton"

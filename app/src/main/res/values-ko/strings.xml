@@ -4,8 +4,6 @@
     <string name="stop_music">음악을 멈춘다</string>
     <string name="music_stopped">M알람을 세웠습니다 </string>
 
-    <string name="set_alarm">M알람을 세트 </string>
-    <string name="stop_alarm">알람을 세운다 </string>
     <string name="stop_vibration">바이브레이터를 멈춘다</string>
     <string name="play_wakeup">재생 </string>
     <string name="pref_menu">설정 </string>
