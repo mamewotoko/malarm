@@ -166,7 +166,7 @@ public class TestPortraitUI
     }
 
     public void testPreviousButton() {
-        View nextButton = solo_.getView(R.id.previous_button);
+        View previousButton = solo_.getView(R.id.previous_button);
         solo_.clickOnView(previousButton);
         solo_.sleep(2000);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "previous_button");
