@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import android.support.v7.widget.SwitchCompat;
+import android.support.v7.widget.ActionMenuView;
 
 public class TestPortraitUI
         extends ActivityInstrumentationTestCase2<MalarmActivity>
@@ -107,14 +108,23 @@ public class TestPortraitUI
         return true;
     }
 
+    private void clickOverflowMenu(int menuStringId){
+        ActionMenuView menuview = solo_.getView(ActionMenuView.class, 0);
+        int numChild = menuview.getChildCount();
+        View overflowMenuIcon = menuview.getChildAt(numChild-1);
+        solo_.clickOnView(overflowMenuIcon);
+        solo_.sleep(500);
+        solo_.clickOnText(solo_.getString(menuStringId));
+    }
+    
     private void startPreferenceActivity() {
         boolean mainActWait = solo_.waitForActivity("MalarmActivity");
         Log.d(TAG, "waitMainActivity: " + mainActWait);
-        solo_.sleep(500);
-        solo_.clickOnMenuItem(solo_.getString(R.string.pref_menu));
+        
+        //solo_.clickOnMenuItem(solo_.getString(R.string.pref_menu));
+        clickOverflowMenu(R.string.pref_menu);
+        
         solo_.waitForActivity("MalarmPreference");
-        solo_.sleep(500);
-        FalconSpoon.screenshot(solo_.getCurrentActivity(), "start_preference_activity");
     }
 
     ///////////////////////////////
@@ -186,12 +196,14 @@ public class TestPortraitUI
     }
     
     //sleep timer starts
-    public void testPlayLong() {
-        View nextButton = solo_.getView(R.id.next_button);
-        solo_.clickLongOnView(nextButton);
+    public void testPlayLongSleepTimer() {
+        View playButton = solo_.getView(R.id.play_button);
+        solo_.clickLongOnView(playButton);
         solo_.sleep(2000);
-        //TODO: check preference value...
-        solo_.clickOnMenuItem(solo_.getString(R.string.stop_music));
+        //TODO: check preference value, playing...
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "next_tune_long");
+        //stop
+        solo_.clickOnView(playButton);
         solo_.sleep(2000);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "next_tune_long");
     }
@@ -199,7 +211,9 @@ public class TestPortraitUI
     @SmallTest
     public void testStopVibrationMenu() {
         //TODO: cannot select menu by japanese, why?
-        solo_.clickOnMenuItem(solo_.getString(R.string.stop_vibration));
+        //solo_.clickOnMenuItem(solo_.getString(R.string.stop_vibration));
+        clickOverflowMenu(R.string.stop_vibration);
+
         solo_.sleep(2000);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "stop_vibration_menu");
     }
@@ -209,7 +223,7 @@ public class TestPortraitUI
     @SmallTest
     public void testSitePreference() {
         startPreferenceActivity();
-        selectPreference(R.string.playlist_path_title);
+        selectPreference(R.string.pref_webview_url);
         //TODO: add more specific assert
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "site_preference");
     }
@@ -272,50 +286,112 @@ public class TestPortraitUI
     }
 
     @SmallTest
-    public void testSleepPlaylist() {
+    public void testSleepPlaylistPlay() {
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_play");
+
         startPreferenceActivity();
-        selectPreference(R.string.pref_sleep_playlist);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_play");
         solo_.waitForActivity("PlaylistViewer");
-        solo_.assertCurrentActivity("Playlist viewer should start", PlaylistViewer.class);
-        FalconSpoon.screenshot(solo_.getCurrentActivity(), "sleep_playlist");
+        selectPreference(R.string.pref_sleep_playlist);
+
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_play");
+        View playButton = solo_.getView(R.id.play_button);
+        
+        solo_.clickOnView(playButton);
+        solo_.sleep(500);
+        //TODO: check icon
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_play");
+        
+        solo_.clickOnView(playButton);
+        //TODO: check icon
+        solo_.sleep(500);
+        
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_play");
     }
 
-    public void testWakeupPlaylist() {
+    public void testWakeupPlaylistPlay() {
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_play");
+
         startPreferenceActivity();
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_play");
+        solo_.waitForActivity("PlaylistViewer");
         selectPreference(R.string.pref_wakeup_playlist);
-        solo_.waitForActivity("PlaylistViewer");
-        //TODO: check title
-        solo_.assertCurrentActivity("Playlist viewer should start", PlaylistViewer.class);
-        FalconSpoon.screenshot(solo_.getCurrentActivity(), "wakeup_playlist");
+
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_play");
+        View playButton = solo_.getView(R.id.play_button);
+        
+        solo_.clickOnView(playButton);
+        solo_.sleep(500);
+        //TODO: check icon
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_play");
+        
+        solo_.clickOnView(playButton);
+        //TODO: check icon
+        solo_.sleep(500);
+        
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_play");
     }
 
-    public void testPlaylistLong() {
+    public void testSleepPlaylistClickShort() {
         startPreferenceActivity();
         selectPreference(R.string.pref_sleep_playlist);
         solo_.waitForActivity("PlaylistViewer");
-        solo_.clickLongInList(0);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_long");
+        solo_.clickInList(0);
         //TODO: add assert
+        solo_.sleep(500);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_long");
     }
 
-    @SmallTest
-    public void testPlaylistPlay() {
+    public void testSleepPlaylistClickLong() {
         startPreferenceActivity();
         selectPreference(R.string.pref_sleep_playlist);
         solo_.waitForActivity("PlaylistViewer");
-        View playButton = solo_.getView(R.id.play_button);
-        FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_play");
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_long");
+        solo_.clickLongInList(0);
+        //TODO: add assert
+        solo_.sleep(500);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_long");
+    }
+    
+    public void testSleepPlaylistNext() {
+        startPreferenceActivity();
+        selectPreference(R.string.pref_sleep_playlist);
+        solo_.waitForActivity("PlaylistViewer");
+
+        View nextButton = solo_.getView(R.id.next_button);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_next");
         
-        solo_.clickOnView(playButton);
+        solo_.clickOnView(nextButton);
         solo_.sleep(500);
         //TODO: check icon
-        FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_play");
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_next");
         
-        solo_.clickOnView(playButton);
+        solo_.clickOnView(nextButton);
         //TODO: check icon
         solo_.sleep(500);
         
-        FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_play");
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_next");
+    }
+
+    public void testSleepPlaylistPrevious() {
+        startPreferenceActivity();
+        selectPreference(R.string.pref_sleep_playlist);
+        solo_.waitForActivity("PlaylistViewer");
+
+        View previousButton = solo_.getView(R.id.previous_button);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_previous");
+        
+        solo_.clickOnView(previousButton);
+        solo_.sleep(500);
+        //TODO: check icon
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_previous");
+        
+        solo_.clickOnView(previousButton);
+        //TODO: check icon
+        solo_.sleep(500);
+        
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_previous");
     }
     
     public void testReloadPlaylist() {
@@ -404,8 +480,10 @@ public class TestPortraitUI
     public void testPreferenceScroll(){
         startPreferenceActivity();
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "preference_scroll");
-        for(int i = 0; i < 10; i++){
+        //XXX
+        for(int i = 0; i < 6; i++){
             solo_.scrollDown();
+            solo_.sleep(100);
             FalconSpoon.screenshot(solo_.getCurrentActivity(), "preference_scroll");
         }
     }
