@@ -1,7 +1,9 @@
 package com.mamewo.malarm_test;
 
 import android.test.ActivityInstrumentationTestCase2;
-import android.test.suitebuilder.annotation.Smoke;
+//import android.test.suitebuilder.annotation.Smoke;
+import android.test.suitebuilder.annotation.SmallTest;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -114,7 +116,7 @@ public class TestPortraitUI
     }
 
     ///////////////////////////////
-    @Smoke
+    //@SmallTest
     public void testSetAlarm() {
         Date now = new Date(System.currentTimeMillis() + 60 * 1000);
         solo_.setTimePicker(0, now.getHours(), now.getMinutes());
@@ -143,7 +145,7 @@ public class TestPortraitUI
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "set_alarm");
     }
 
-    @Smoke
+    //@SmallTest
     public void testSetNow() {
         //cannot get timepicker of Xperia acro...
         //TimePicker picker = solo_.getCurrentTimePickers().get(0);
@@ -192,7 +194,7 @@ public class TestPortraitUI
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "next_tune_long");
     }
 
-    @Smoke
+    //@SmallTest
     public void testStopVibrationMenu() {
         //TODO: cannot select menu by japanese, why?
         solo_.clickOnMenuItem(solo_.getString(R.string.stop_vibration));
@@ -200,7 +202,7 @@ public class TestPortraitUI
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "stop_vibration_menu");
     }
 
-    @Smoke
+    //@SmallTest
     public void testPlayMenu() {
         solo_.clickOnMenuItem(solo_.getString(R.string.play_wakeup));
         solo_.sleep(5000);
@@ -211,7 +213,7 @@ public class TestPortraitUI
 
     /////////////////
     //config screen
-    @Smoke
+    //@SmallTest
     public void testSitePreference() {
         startPreferenceActivity();
         selectPreference(R.string.playlist_path_title);
@@ -219,7 +221,6 @@ public class TestPortraitUI
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "site_preference");
     }
 
-    @Smoke
     public void testCreatePlaylists() {
         startPreferenceActivity();
         selectPreference(R.string.pref_create_playlist_title);
@@ -227,7 +228,6 @@ public class TestPortraitUI
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "create_playlist");
     }
 
-    @Smoke
     public void testSleepVolume() {
         startPreferenceActivity();
         selectPreference(R.string.pref_sleep_volume_title);
@@ -235,7 +235,6 @@ public class TestPortraitUI
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "sleep_volume");
     }
 
-    @Smoke
     public void testWakeupVolume() {
         startPreferenceActivity();
         selectPreference(R.string.pref_wakeup_volume_title);
@@ -243,7 +242,6 @@ public class TestPortraitUI
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "wakeup_volume");
     }
 
-    @Smoke
     public void testVolumeDown() {
         startPreferenceActivity();
         selectPreference(R.string.pref_wakeup_volume_title);
@@ -253,7 +251,6 @@ public class TestPortraitUI
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "volume_down");
     }
 
-    @Smoke
     public void testVolumeUp() {
         startPreferenceActivity();
         selectPreference(R.string.pref_wakeup_volume_title);
@@ -267,14 +264,12 @@ public class TestPortraitUI
 
     //add double tap test of webview
 
-    @Smoke
     public void testDefaultTimePreference() {
         startPreferenceActivity();
         selectPreference(R.string.pref_default_time_title);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "default_time_preference");
     }
 
-    @Smoke
     public void testVibration() {
         startPreferenceActivity();
         selectPreference(R.string.pref_vibration);
@@ -283,7 +278,6 @@ public class TestPortraitUI
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "vibration");
     }
 
-    @Smoke
     public void testSleepPlaylist() {
         startPreferenceActivity();
         selectPreference(R.string.pref_sleep_playlist);
@@ -292,7 +286,6 @@ public class TestPortraitUI
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "sleep_playlist");
     }
 
-    @Smoke
     public void testWakeupPlaylist() {
         startPreferenceActivity();
         selectPreference(R.string.pref_wakeup_playlist);
@@ -302,7 +295,6 @@ public class TestPortraitUI
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "wakeup_playlist");
     }
 
-    @Smoke
     public void testPlaylistLong() {
         startPreferenceActivity();
         selectPreference(R.string.pref_sleep_playlist);
@@ -312,7 +304,26 @@ public class TestPortraitUI
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_long");
     }
 
-    @Smoke
+    //@SmallTest
+    public void testPlaylistPlay() {
+        startPreferenceActivity();
+        selectPreference(R.string.pref_sleep_playlist);
+        solo_.waitForActivity("PlaylistViewer");
+        View playButton = solo_.getView(R.id.play_button);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_play");
+        
+        solo_.clickOnView(playButton);
+        solo_.sleep(500);
+        //TODO: check icon
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_play");
+        
+        solo_.clickOnView(playButton);
+        //TODO: check icon
+        solo_.sleep(500);
+        
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_play");
+    }
+    
     public void testReloadPlaylist() {
         startPreferenceActivity();
         selectPreference(R.string.pref_reload_playlist);
@@ -320,7 +331,6 @@ public class TestPortraitUI
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "reload_play_list");
     }
 
-    @Smoke
     public void testClearCache() {
         startPreferenceActivity();
         selectPreference(R.string.pref_clear_webview_cache_title);
@@ -328,7 +338,6 @@ public class TestPortraitUI
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "clear_cache");
     }
 
-    @Smoke
     public void testHelp() {
         startPreferenceActivity();
         selectPreference(R.string.help_title);
@@ -356,7 +365,6 @@ public class TestPortraitUI
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "list_scroll");
     }
 
-    @Smoke
     public void testVersion() {
         startPreferenceActivity();
         selectPreference(R.string.malarm_version_title);
