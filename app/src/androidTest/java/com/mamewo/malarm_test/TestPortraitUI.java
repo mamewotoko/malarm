@@ -271,6 +271,7 @@ public class TestPortraitUI
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "vibration");
     }
 
+    @SmallTest
     public void testSleepPlaylist() {
         startPreferenceActivity();
         selectPreference(R.string.pref_sleep_playlist);
@@ -397,6 +398,16 @@ public class TestPortraitUI
         solo_.clickOnScreen(x, y);
         solo_.sleep(5000);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "double_touch_right");
+    }
+
+    @SmallTest
+    public void testPreferenceScroll(){
+        startPreferenceActivity();
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "preference_scroll");
+        for(int i = 0; i < 10; i++){
+            solo_.scrollDown();
+            FalconSpoon.screenshot(solo_.getCurrentActivity(), "preference_scroll");
+        }
     }
 
     //TODO: default config test
