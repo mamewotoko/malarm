@@ -20,6 +20,7 @@
                     android:id="@+id/timePicker1"
                     android:layout_width="152dp"
                     android:layout_height="wrap_content"
+                    android:timePickerMode="spinner"
                     android:inputType="number" />
             </LinearLayout>
 

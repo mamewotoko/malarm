@@ -2,11 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_root"
     android:layout_width="fill_parent"
-    android:weightSum="1" android:orientation="vertical" android:layout_height="wrap_content">
+    android:weightSum="1"
+    android:orientation="vertical"
+    android:layout_height="wrap_content">
 
     <TimePicker
         android:id="@+id/time_pref_time_picker"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" 
+        android:layout_height="wrap_content"
+        android:timePickerMode="spinner"
         android:inputType="number" />
 </LinearLayout>

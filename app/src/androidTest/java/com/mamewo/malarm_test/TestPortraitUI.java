@@ -445,36 +445,36 @@ public class TestPortraitUI
     }
 
     //TODO: fix!
-    public void testDoubleTouchLeft() {
-        float x = (float) (SCREEN_WIDTH / 6);
-        float y = (float) (SCREEN_HEIGHT - 100);
-        solo_.clickLongOnView(solo_.getView(R.id.loading_icon));
-        View webview = solo_.getView(R.id.webView1);
-        int[] pos = new int[2];
-        webview.getLocationOnScreen(pos);
-        Log.i("malarm_test", "view pos: " + pos[0] + " " + pos[1]);
+    // public void testDoubleTouchLeft() {
+    //     float x = (float) (SCREEN_WIDTH / 6);
+    //     float y = (float) (SCREEN_HEIGHT - 100);
+    //     solo_.clickLongOnView(solo_.getView(R.id.loading_icon));
+    //     View webview = solo_.getView(R.id.webView1);
+    //     int[] pos = new int[2];
+    //     webview.getLocationOnScreen(pos);
+    //     Log.i("malarm_test", "view pos: " + pos[0] + " " + pos[1]);
 
-        x = pos[0] + 40;
-        y = pos[1] + 40;
-        solo_.clickOnScreen(x, y);
-        solo_.sleep(100);
-        solo_.clickOnScreen(x, y);
-        solo_.sleep(5000);
-        //goto prev index
-        solo_.finishOpenedActivities();
-        FalconSpoon.screenshot(solo_.getCurrentActivity(), "double_touch_left");
-    }
+    //     x = pos[0] + 40;
+    //     y = pos[1] + 40;
+    //     solo_.clickOnScreen(x, y);
+    //     solo_.sleep(100);
+    //     solo_.clickOnScreen(x, y);
+    //     solo_.sleep(5000);
+    //     //goto prev index
+    //     solo_.finishOpenedActivities();
+    //     FalconSpoon.screenshot(solo_.getCurrentActivity(), "double_touch_left");
+    // }
 
     //TODO: fix!
-    public void testDoubleTouchRight() {
-        float x = (float) (SCREEN_WIDTH - (SCREEN_WIDTH / 6));
-        float y = (float) (SCREEN_HEIGHT - 40);
-        solo_.clickOnScreen(x, y);
-        solo_.sleep(100);
-        solo_.clickOnScreen(x, y);
-        solo_.sleep(5000);
-        FalconSpoon.screenshot(solo_.getCurrentActivity(), "double_touch_right");
-    }
+    // public void testDoubleTouchRight() {
+    //     float x = (float) (SCREEN_WIDTH - (SCREEN_WIDTH / 6));
+    //     float y = (float) (SCREEN_HEIGHT - 40);
+    //     solo_.clickOnScreen(x, y);
+    //     solo_.sleep(100);
+    //     solo_.clickOnScreen(x, y);
+    //     solo_.sleep(5000);
+    //     FalconSpoon.screenshot(solo_.getCurrentActivity(), "double_touch_right");
+    // }
 
     @SmallTest
     public void testPreferenceScroll(){

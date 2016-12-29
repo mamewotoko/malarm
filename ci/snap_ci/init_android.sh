@@ -14,7 +14,6 @@ if [ ! -e ${INITIALIZATION_FILE} ]; then
     echo y | android update sdk --no-ui --filter tools,platform-tools > /dev/null
     echo y | android update sdk --no-ui --all --filter build-tools-25.0.2 # > /dev/null
     echo y | android update sdk --no-ui --all --filter build-tools-24.0.3 # > /dev/null
-    echo y | android update sdk --no-ui --all --filter extra-android-support > /dev/null
     echo y | android update sdk --no-ui --filter extra-android-m2repository > /dev/null
 
     echo y | android update sdk --no-ui --all --filter sys-img-armeabi-v7a-android-10 > /dev/null
