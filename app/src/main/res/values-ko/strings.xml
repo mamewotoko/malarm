@@ -79,7 +79,10 @@
 
     <string name="init_voice">음성인식 초기화중 </string>
     <string name="voice_button_desc">목소리로 시각을 설정한다 </string>
+    <string name="previous_button_desc">이전 곡 재생</string>
+    <string name="play_button_desc">곡 조정하기</string>
     <string name="next_button_desc">다음 곡을 재생한다 </string>
+    
     <string name="webview_cache_cleared">Webview의 이력을 삭제했습니다. </string>
     <string name="unit_min">{0}분 </string>
     <string name="play_with_sleep_timer">휴식 대마를 세트 했습니다. </string>
@@ -105,4 +108,9 @@
     <string name="pref_reset_url_index">일어날 때 처음 사이트를 열</string>
 
     <string name="pref_open_drawable_title">일어날 때 서랍 UI 열기</string>
+
+    <string name="notification_icon_desc_previous">너무 이른</string>
+    <string name="notification_icon_desc_pause">중지</string>
+    <string name="notification_icon_desc_play">재생</string>
+    <string name="notification_icon_desc_next">다음 것</string>    
 </resources>

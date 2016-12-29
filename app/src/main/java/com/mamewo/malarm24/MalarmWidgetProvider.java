@@ -48,23 +48,14 @@ public class MalarmWidgetProvider
         super.onReceive(context, intent);
     }
 
+    //TODO: fix
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.appwidget);
-        {
-            Intent intent = new Intent(context, MalarmWidgetProvider.class);
-            intent.setAction(PLAYER_ACTION);
-            PendingIntent pintent =
-                    PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            rv.setOnClickPendingIntent(R.id.widget_play, pintent);
-        }
-        {
-            Intent intent = new Intent(context, MalarmWidgetProvider.class);
-            intent.setAction(PLAYER_ACTION);
-            PendingIntent pintent =
-                    PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            rv.setOnClickPendingIntent(R.id.widget_next, pintent);
-        }
+        Intent intent = new Intent(context, MalarmWidgetProvider.class);
+        intent.setAction(PLAYER_ACTION);
+        PendingIntent pintent =
+            PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         appWidgetManager.updateAppWidget(appWidgetIds[0], rv);
     }
 }

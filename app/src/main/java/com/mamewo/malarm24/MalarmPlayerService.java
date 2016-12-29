@@ -127,7 +127,6 @@ public class MalarmPlayerService
     private OkHttpClient client_;
     private MediaPlayer player_;
     private UnpluggedReceiver receiver_;
-    private int iconId_ = 0;
     private ComponentName mediaButtonReceiver_;
     private boolean isVibrating_;
     
@@ -390,8 +389,8 @@ public class MalarmPlayerService
         return false;
     }
 
-    public void showNotification(String title, String description, int iconId) {
-        iconId_ = iconId;
+    public void showNotification(String title, String description) {
+        int iconId = R.drawable.ic_status;
         currentNoteTitle_ = title;
         Log.d(TAG, "showNotification:" + title + " " + description);
 
@@ -448,14 +447,9 @@ public class MalarmPlayerService
         startForeground(NOTIFY_PLAYING_ID, note);
     }
 
-    public void showNotification(String title, String description) {
-        showNotification(title, description, R.drawable.ic_status);
-    }
-
     public void clearNotification() {
         Log.d(TAG, "clearNotification");
         stopForeground(true);
-        iconId_ = 0;
     }
 
     public void setCurrentPlaylist(Playlist list) {
@@ -487,7 +481,6 @@ public class MalarmPlayerService
 
     public boolean playMusic(boolean playingNotification) {
         if (playingNotification) {
-            iconId_ = R.drawable.playing;
             currentNoteTitle_ = getString(R.string.playing);
         }
         return playMusic();
@@ -549,10 +542,8 @@ public class MalarmPlayerService
             for (PlayerStateListener listener : listenerList_) {
                 listener.onStartMusic(currentMusicName_);
             }
-            if (iconId_ != 0) {
-                //TODO: modify notification title
-                showNotification(currentNoteTitle_, currentMusicName_, iconId_);
-            }
+            //TODO: modify notification title
+            showNotification(currentNoteTitle_, currentMusicName_);
         }
         catch (IOException e) {
             return false;
@@ -572,14 +563,10 @@ public class MalarmPlayerService
                 listener.onStopMusic();
             }
         }
-        //umm...
-        if (iconId_ == R.drawable.playing) {
-            clearNotification();
-        }
+        //TODO: update notification
+        clearNotification();
         //clear music title
-        if (iconId_ == R.drawable.img) {
-            showNotification(currentNoteTitle_, "");
-        }
+        showNotification(currentNoteTitle_, "");
     }
 
     public void pauseMusic() {
@@ -597,13 +584,9 @@ public class MalarmPlayerService
             listener.onStopMusic();
         }
         //umm...
-        if (iconId_ == R.drawable.playing) {
-            clearNotification();
-        }
+        clearNotification();
         //clear music title
-        if (iconId_ == R.drawable.img) {
-            showNotification(currentNoteTitle_, "");
-        }
+        showNotification(currentNoteTitle_, "");
     }
 
     public void startVibrator() {
@@ -776,9 +759,7 @@ public class MalarmPlayerService
         for (PlayerStateListener listener : listenerList_) {
             listener.onStartMusic(currentMusicName_);
         }
-        if (iconId_ != 0) {
-            //TODO: modify notification title
-            showNotification(currentNoteTitle_, currentMusicName_, iconId_);
-        }
+        //TODO: modify notification title
+        showNotification(currentNoteTitle_, currentMusicName_);
     }
 }

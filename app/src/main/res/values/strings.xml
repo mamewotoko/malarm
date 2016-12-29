@@ -85,9 +85,9 @@
     <string name="voice_button_desc">Set time by voice</string>
     <string name="previous_button_desc">Play previous tune</string>
     <string name="play_button_desc">Play tune</string>
+    <string name="next_button_desc">Play next tune</string>
     <string name="pause_button_desc">Pause playing tune</string>
 
-    <string name="next_button_desc">Play next tune</string>
     <string name="webview_cache_cleared">Webview cache is cleared</string>
     <string name="unit_min">{0} min</string>
     <string name="play_with_sleep_timer">Playing music with sleep timer</string>

@@ -80,6 +80,7 @@ TODO
 * use Actionbar
   * add title and status text
   * layout of switch
+* make COOL widget to set alarm (make clock widget?)  
 * add controlls to notification
 * handle error
   * add on error method to listener
@@ -112,7 +113,6 @@ TODO
   * alarm set
     -> pause music from menu
     -> notification title is incorrect
-* make COOL widget to set alarm (make clock widget?)
 * show music title as a notification, not filename
 * add play button on volume preference to check volume
 * show mark on playing music in playlist preference

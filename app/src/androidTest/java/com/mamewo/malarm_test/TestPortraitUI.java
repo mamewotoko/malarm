@@ -31,8 +31,6 @@ import android.support.v7.widget.ActionMenuView;
 public class TestPortraitUI
         extends ActivityInstrumentationTestCase2<MalarmActivity>
 {
-    static final
-    private int PORT = 3333;
     //TODO: get from device
     static final
     private int SCREEN_HEIGHT = 800;
@@ -41,31 +39,10 @@ public class TestPortraitUI
 
     private final static String TAG = "malarm_test";
     protected Solo solo_;
-    private BufferedWriter _bw;
-    private Socket _sock;
-    private String _hostname = "192.168.0.20";
-    //set true to capture screen (it requires CaptureServer in mimicj)
-    private boolean _support_capture = false;
 
     public TestPortraitUI() {
         super("com.mamewo.malarm24", MalarmActivity.class);
     }
-
-//	final static
-//	private int[] TITLE_ID_LIST = {
-//			R.string.pref_webview_url,
-//			R.string.playlist_path_title,
-//			R.string.pref_sleep_playlist,
-//			R.string.pref_wakeup_playlist,
-//			R.string.pref_reload_playlist,
-//			R.string.pref_create_playlist_title,
-//			R.string.pref_sleep_volume_title,
-//			R.string.pref_wakeup_volume_title,
-//			R.string.pref_clear_webview_cache_title,
-//			R.string.use_native_player_title,
-//			R.string.help_title,
-//			R.string.malarm_version_title
-//	};
 
     @Override
     public void setUp() throws Exception {

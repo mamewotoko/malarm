@@ -2,22 +2,22 @@
 <resources>
     <string-array name="pref_url_list_key">
         <item>美女(미녀)Linux</item>
-        <item>Yahoo! NEWS Weather </item>
         <item>Twitter</item>
         <item>美人時計(미인시계 )</item>
         <item>美男時計(미남시계 )</item>
         <item>GMail</item>
         <item>Google캘린더 </item>
+        <item>Yahoo Weather</item>
     </string-array>
 
     <string-array name="pref_url_list_value" formatted="false">
         <item>http://bijo-linux.com/</item>
-        <item>http://weather.yahoo.com/south-korea/</item>
         <item>http://twitter.com/</item>
         <item>http://www.bijint.com/jp/</item>
         <item>http://www.bijint.com/binan/</item>
         <item>http://www.google.com/mail/</item>
         <item>https://www.google.com/calendar/</item>
+        <item>https://www.yahoo.com/news/weather/</item>
     </string-array>
 
     <string-array name="preference_time_key">

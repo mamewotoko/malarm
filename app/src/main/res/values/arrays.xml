@@ -7,6 +7,7 @@
         <item>binan-tokei</item>
         <item>GMail</item>
         <item>Google Calendar</item>
+        <item>Yahoo Weather</item>
     </string-array>
 
     <string-array name="pref_url_list_value">
@@ -16,6 +17,7 @@
         <item>http://www.bijint.com/binan/</item>
         <item>http://www.google.com/mail/</item>
         <item>https://www.google.com/calendar/</item>
+        <item>https://www.yahoo.com/news/weather/</item>
     </string-array>
 
     <string-array name="preference_time_key">
