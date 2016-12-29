@@ -24,7 +24,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 public class TestPortraitUI
-        extends ActivityInstrumentationTestCase2<MalarmActivity> {
+        extends ActivityInstrumentationTestCase2<MalarmActivity>
+{
     static final
     private int PORT = 3333;
     //TODO: get from device
@@ -156,18 +157,32 @@ public class TestPortraitUI
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "set_now");
     }
 
-    //TODO: voice button?
-    public void testNextTuneShort() {
+    public void testNextButton() {
         View nextButton = solo_.getView(R.id.next_button);
         solo_.clickOnView(nextButton);
         solo_.sleep(2000);
-        //speech recognition dialog
-        //capture
-        solo_.sendKey(Solo.DELETE);
-        FalconSpoon.screenshot(solo_.getCurrentActivity(), "next_tune_short");
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "next_button");
+        //TODO: check playing item
     }
 
-    public void testNextTuneLong() {
+    public void testPreviousButton() {
+        View nextButton = solo_.getView(R.id.previous_button);
+        solo_.clickOnView(previousButton);
+        solo_.sleep(2000);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "previous_button");
+        //TODO: check playing item
+    }
+    
+    public void testPlayButton() {
+        View playButton = solo_.getView(R.id.play_button);
+        solo_.clickOnView(playButton);
+        solo_.sleep(2000);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "play_button");
+        //TODO: check playing item
+    }
+    
+    //sleep timer starts
+    public void testPlayLong() {
         View nextButton = solo_.getView(R.id.next_button);
         solo_.clickLongOnView(nextButton);
         solo_.sleep(2000);
@@ -297,7 +312,6 @@ public class TestPortraitUI
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_long");
     }
 
-
     @Smoke
     public void testReloadPlaylist() {
         startPreferenceActivity();
@@ -351,20 +365,6 @@ public class TestPortraitUI
         //TODO: check that browser starts
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "version");
     }
-
-//	@Smoke
-//	public void testDummy() {
-//		solo_.sleep(10000);
-//		solo_.clickOnScreen(20, 160);
-//		solo_.sleep(500);
-//		Log.i(TAG, "********** testDummy double click");
-////		solo_.clickOnScreen(50, 250);
-////		solo_.clickOnScreen(50, 250);
-//		View view = solo_.getView(R.id.webView1);
-//		solo_.clickOnView(view);
-//		solo_.clickOnView(view);
-//		solo_.sleep(10000);
-//	}
 
     //TODO: fix!
     public void testDoubleTouchLeft() {

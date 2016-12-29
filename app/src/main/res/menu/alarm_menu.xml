@@ -5,14 +5,6 @@
         android:title="@string/stop_vibration"
         android:icon="@android:drawable/ic_menu_close_clear_cancel"
         />
-  <item android:id="@+id/play_wakeup"
-        android:title="@string/play_wakeup"
-        android:icon="@android:drawable/ic_media_play"
-        />
-  <item android:title="@string/stop_music"
-        android:id="@+id/stop_music"
-        android:icon="@android:drawable/ic_media_pause"
-        />
   <item android:title="@string/pref_menu"
         android:id="@+id/pref"
         android:icon="@android:drawable/ic_menu_preferences"

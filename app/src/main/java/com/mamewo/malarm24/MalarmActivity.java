@@ -792,31 +792,16 @@ public class MalarmActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.stop_vibration:
+                boolean vibrating = player_.isVibrating();
+                //execute always
                 player_.stopVibrator();
-                showMessage(this, getString(R.string.notify_wakeup_text));
-                break;
-            case R.id.play_wakeup:
-                if (player_.isPlaying()) {
-                    return true;
+                if(vibrating){
+                    showMessage(this, getString(R.string.notify_wakeup_text));
                 }
-                Log.d(TAG, "play_wakeup: playMusic");
-                player_.playMusic(null == state_.targetTime_);
                 break;
             case R.id.pref:
                 //TODO: use startActivityForResult
                 startActivity(new Intent(this, MalarmPreference.class));
-                break;
-            case R.id.stop_music:
-                if (!player_.isPlaying()) {
-                    return true;
-                }
-                player_.pauseMusic();
-                //TODO: remove?
-                if (null == state_.targetTime_) {
-                    player_.clearNotification();
-                }
-                cancelSleepTimer();
-                updateUI();
                 break;
             default:
                 Log.d(TAG, "Unknown menu");
@@ -934,7 +919,7 @@ public class MalarmActivity
             showDialog(DIALOG_PLAY_SLEEP_TUNE);
             return true;
         }
-        if (view == nextButton_) {
+        if (view == playButton_) {
             shortVibrate();
             if (!player_.isPlaying()) {
                 Log.d(TAG, "onLongClick: playMusic");

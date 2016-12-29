@@ -45,7 +45,8 @@ public class MalarmPlayerService
         implements MediaPlayer.OnCompletionListener,
         MediaPlayer.OnErrorListener,
         MediaPlayer.OnPreparedListener,
-        AudioManager.OnAudioFocusChangeListener {
+        AudioManager.OnAudioFocusChangeListener
+{
     final static
     public String PACKAGE_NAME = MalarmActivity.class.getPackage().getName();
     final static
@@ -128,7 +129,8 @@ public class MalarmPlayerService
     private UnpluggedReceiver receiver_;
     private int iconId_ = 0;
     private ComponentName mediaButtonReceiver_;
-
+    private boolean isVibrating_;
+    
     static
     public M3UPlaylist wakeupPlaylist_ = null;
     static
@@ -611,6 +613,7 @@ public class MalarmPlayerService
             return;
         }
         vibrator.vibrate(VIBRATE_PATTERN, 1);
+        isVibrating_ = true;
     }
 
     public void stopVibrator() {
@@ -620,6 +623,11 @@ public class MalarmPlayerService
             return;
         }
         vibrator.cancel();
+        isVibrating_ = false;
+    }
+
+    public boolean isVibrating(){
+        return isVibrating_;
     }
 
     public class LocalBinder
@@ -634,6 +642,7 @@ public class MalarmPlayerService
         super.onCreate();
         listenerList_ = new ArrayList<PlayerStateListener>();
         tone_ = null;
+        isVibrating_ = false;
         currentMusicName_ = null;
         loadPlaylist();
         currentPlaylist_ = wakeupPlaylist_;
