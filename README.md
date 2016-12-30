@@ -80,14 +80,24 @@ TODO
 * use Actionbar
   * add title and status text
   * layout of switch
-* make COOL widget to set alarm (make clock widget?)  
+* make COOL widget to set alarm (make clock widget?)
+* fix bugs
+  * alarm switch is off when timer expired and wakeup sound starts
+  * press Now! button on 12:00 - 12:59 (noon)
+    * time picker is set 00:x
+  * long press set alarm button
+    -> rotate screen
+    -> then notification disappears but alarm is set
+  * alarm set
+    -> pause music from menu
+    -> notification title is incorrect
 * add controlls to notification
 * handle error
   * add on error method to listener
 * stop playing on phone call
   * requires READ_PHONE_STATE permission, then should be liked to the privacy policy of this app
-* easy play list
-  * record voice like "wakeup!" and use it
+* easy/simple play list
+  * e.g. record voice like "wakeup!" and use it
 * preset voice
   * using miku?
   * read text on web using text to speech 
@@ -106,13 +116,6 @@ TODO
 * add preference to avoid network access from web viewer
   * add network preference, disable/enable
   * e.g. display photo
-* fix bugs
-  * long press set alarm button
-    -> rotate
-    -> then notification disappears but alarm is set
-  * alarm set
-    -> pause music from menu
-    -> notification title is incorrect
 * show music title as a notification, not filename
 * add play button on volume preference to check volume
 * show mark on playing music in playlist preference
