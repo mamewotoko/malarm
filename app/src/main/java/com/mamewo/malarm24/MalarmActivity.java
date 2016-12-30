@@ -57,6 +57,7 @@ import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
@@ -194,8 +195,15 @@ public class MalarmActivity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         PreferenceManager.setDefaultValues(this, R.xml.preference, false);
+        //dynamic
         pref_ =
                 PreferenceManager.getDefaultSharedPreferences(this);
+        if(null == pref_.getString(MalarmPreference.PREFKEY_URL_LIST_FILE, null)){
+            File defaultSitePath = new File(getExternalFilesDir(null), "urllist.txt");
+            pref_.edit()
+                .putString(MalarmPreference.PREFKEY_URL_LIST_FILE, defaultSitePath.getAbsolutePath())
+                .apply();
+        }
         pref_.registerOnSharedPreferenceChangeListener(this);
         syncPreferences(pref_, "ALL");
         if (pref_.getBoolean("pref_use_drawable_ui", false)) {
@@ -411,11 +419,18 @@ public class MalarmActivity
         }
         if (updateAll || "url_list".equals(key)) {
             WEB_PAGE_LIST.clear();
-            if (MalarmPreference.CUSTOM_URL_LIST.exists()) {
+            //XXX .... get custom urllist
+            
+            String customURLPath = pref_.getString(MalarmPreference.PREFKEY_URL_LIST_FILE, null);
+            File path = null;
+            if(null != customURLPath){
+                path = new File(customURLPath);
+            }
+            if (null != path && path.exists()){
                 FileInputStream fis = null;
                 BufferedReader br = null;
                 try {
-                    fis = new FileInputStream(MalarmPreference.CUSTOM_URL_LIST.getAbsolutePath());
+                    fis = new FileInputStream(path.getAbsolutePath());
                     br = new BufferedReader(new InputStreamReader(fis));
                     String line;
                     while (null != (line = br.readLine())) {
@@ -432,7 +447,8 @@ public class MalarmActivity
                 }
                 catch (IOException e) {
                     addURLListFromPref(pref);
-                } finally {
+                }
+                finally {
                     if (null != br) {
                         try {
                             br.close();

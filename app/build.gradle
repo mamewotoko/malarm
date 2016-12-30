@@ -76,7 +76,7 @@ spoon {
   debug = true
   
   // className = 
-  //methodName = 'testPlaylistPlay'
+  methodName = 'testSetAlarm'
   //from 1.5.0?
   //codeCoverage = true
 }

@@ -77,14 +77,12 @@ public class MalarmPreference
     public String DEFAULT_WEB_LIST = "";
     final static
     public File DEFAULT_PLAYLIST_PATH =
-            new File(Environment.getExternalStorageDirectory(), Environment.DIRECTORY_MUSIC);
-    final static
-    public File CUSTOM_URL_LIST =
-            new File(Environment.getExternalStorageDirectory(), "./malarm/urllist.txt");
-
+        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC);
     //list preference keys
     final static
     public String PREFKEY_URL_LIST = "url_list";
+    final static
+    public String PREFKEY_URL_LIST_FILE = "url_list_file";
     final static
     public String PREFKEY_WIFI_ONLY = "wifi_only";
     final static
@@ -285,7 +283,12 @@ public class MalarmPreference
     public void onStart() {
         super.onStart();
         updatePlaylistUI();
-        selectURL_.setEnabled(!CUSTOM_URL_LIST.exists());
+        String customURLPath = pref_.getString(MalarmPreference.PREFKEY_URL_LIST_FILE, null);
+        File path = null;
+        if(null != customURLPath){
+            path = new File(customURLPath);
+        }
+        selectURL_.setEnabled(!(path != null && path.exists()));
     }
 
     //TODO: call this when playlist_path is modified by user
