@@ -41,10 +41,8 @@
         android:key="playlist_category"
         android:title="@string/pref_playlist_category" >
 
-        <!-- TODO: modify /sdcard/music -->
         <EditTextPreference
             android:key="playlist_path"
-            android:defaultValue="/sdcard/external_sd/music/"
             android:dialogMessage="@string/enter_path_to_playlist"
             android:dialogTitle="@string/playlist_path_title"
             android:enabled="true"

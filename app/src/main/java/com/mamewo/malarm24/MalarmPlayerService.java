@@ -300,6 +300,10 @@ public class MalarmPlayerService
     }
 
     public void playPrevious() {
+        if (null == currentPlaylist_) {
+            loadPlaylist();
+            currentPlaylist_ = wakeupPlaylist_;
+        }
         if (isPlaying()) {
             stopMusic();
         }
@@ -316,6 +320,10 @@ public class MalarmPlayerService
 
     //TODO: show notification if it is shown previous
     public void playNext() {
+        if (null == currentPlaylist_) {
+            loadPlaylist();
+            currentPlaylist_ = wakeupPlaylist_;
+        }
         if (isPlaying()) {
             stopMusic();
         }
