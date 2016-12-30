@@ -144,7 +144,8 @@ public class MalarmActivity
 
     final
     public static class MalarmState
-            implements Serializable {
+            implements Serializable
+    {
         private static final long serialVersionUID = 1L;
         public Calendar targetTime_;
         public int webIndex_;
@@ -200,6 +201,7 @@ public class MalarmActivity
                 PreferenceManager.getDefaultSharedPreferences(this);
         if(null == pref_.getString(MalarmPreference.PREFKEY_URL_LIST_FILE, null)){
             File defaultSitePath = new File(getExternalFilesDir(null), "urllist.txt");
+            Log.d(TAG, "urllist.txt path: " + defaultSitePath.getAbsolutePath());
             pref_.edit()
                 .putString(MalarmPreference.PREFKEY_URL_LIST_FILE, defaultSitePath.getAbsolutePath())
                 .apply();
