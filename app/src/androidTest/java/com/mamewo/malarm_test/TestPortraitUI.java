@@ -118,7 +118,7 @@ public class TestPortraitUI
         //solo_.goBack();
 
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "set_alarm");
-        solo_.sleep(61 * 1000);
+        solo_.sleep(65 * 1000);
         SwitchCompat alarmSwitch = (SwitchCompat)solo_.getView(R.id.alarm_button);
         Assert.assertTrue("Correct alarm toggle button state", alarmSwitch.isChecked());
         //TODO: check music?
@@ -151,7 +151,7 @@ public class TestPortraitUI
     public void testNextButton() {
         View nextButton = solo_.getView(R.id.next_button);
         solo_.clickOnView(nextButton);
-        solo_.sleep(2000);
+        solo_.sleep(5000);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "next_button");
         //TODO: check playing item
         
@@ -164,7 +164,7 @@ public class TestPortraitUI
     public void testPreviousButton() {
         View previousButton = solo_.getView(R.id.previous_button);
         solo_.clickOnView(previousButton);
-        solo_.sleep(2000);
+        solo_.sleep(5000);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "previous_button");
         //TODO: check playing item
 
@@ -178,7 +178,7 @@ public class TestPortraitUI
         solo_.sleep(500);
         View playButton = solo_.getView(R.id.play_button);
         solo_.clickOnView(playButton);
-        solo_.sleep(2000);
+        solo_.sleep(5000);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "play_button");
         //TODO: check playing item
 
@@ -191,7 +191,7 @@ public class TestPortraitUI
     public void testPlayLongSleepTimer() {
         View playButton = solo_.getView(R.id.play_button);
         solo_.clickLongOnView(playButton);
-        solo_.sleep(2000);
+        solo_.sleep(5000);
         //TODO: check preference value, playing...
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "next_tune_long");
         //stop
