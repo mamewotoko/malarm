@@ -176,6 +176,8 @@ public class TestPortraitUI
     
     public void testPlayButton() {
         solo_.sleep(2000);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "play_button");
+    
         View playButton = solo_.getView(R.id.play_button);
         solo_.clickOnView(playButton);
         solo_.sleep(5000);
