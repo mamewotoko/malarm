@@ -154,6 +154,11 @@ public class TestPortraitUI
         solo_.sleep(2000);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "next_button");
         //TODO: check playing item
+        
+        View playButton = solo_.getView(R.id.play_button);
+        Assert.assertEquals("play/pause button is pause",
+                            solo_.getString(R.string.pause_button_desc),
+                            playButton.getContentDescription().toString());
     }
 
     public void testPreviousButton() {
@@ -162,14 +167,24 @@ public class TestPortraitUI
         solo_.sleep(2000);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "previous_button");
         //TODO: check playing item
+
+        View playButton = solo_.getView(R.id.play_button);
+        Assert.assertEquals("play/pause button is pause",
+                            solo_.getString(R.string.pause_button_desc),
+                            playButton.getContentDescription().toString());
     }
     
     public void testPlayButton() {
+        solo_.sleep(500);
         View playButton = solo_.getView(R.id.play_button);
         solo_.clickOnView(playButton);
         solo_.sleep(2000);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "play_button");
         //TODO: check playing item
+
+        Assert.assertEquals("play/pause button is pause",
+                            solo_.getString(R.string.pause_button_desc),
+                            playButton.getContentDescription().toString());
     }
     
     //sleep timer starts
@@ -333,9 +348,13 @@ public class TestPortraitUI
     
     public void testSleepPlaylistNext() {
         startPreferenceActivity();
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_next");
+        
         selectPreference(R.string.pref_sleep_playlist);
         solo_.waitForActivity("PlaylistViewer");
 
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_next");
+        
         View nextButton = solo_.getView(R.id.next_button);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_next");
         
@@ -353,8 +372,11 @@ public class TestPortraitUI
 
     public void testSleepPlaylistPrevious() {
         startPreferenceActivity();
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_previous");
+        
         selectPreference(R.string.pref_sleep_playlist);
         solo_.waitForActivity("PlaylistViewer");
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_previous");
 
         View previousButton = solo_.getView(R.id.previous_button);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_previous");
@@ -394,25 +416,25 @@ public class TestPortraitUI
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "help");
     }
 
-    public void testDummyListScroll() {
-        startPreferenceActivity();
-        solo_.scrollDown();
-        solo_.sleep(500);
-        FalconSpoon.screenshot(solo_.getCurrentActivity(), "list_scroll");
+    // public void testDummyListScroll() {
+    //     startPreferenceActivity();
+    //     solo_.scrollDown();
+    //     solo_.sleep(500);
+    //     FalconSpoon.screenshot(solo_.getCurrentActivity(), "list_scroll");
 
-        View targetView = null;
-        for (TextView view : solo_.getCurrentViews(TextView.class)) {
-            Log.i(TAG, "title: " + view.getText());
-            if (view.getText().equals("Sleep tunes volume")) {
-                targetView = view;
-            }
-        }
-        if (targetView != null) {
-            solo_.clickOnView(targetView);
-        }
-        solo_.sleep(5000);
-        FalconSpoon.screenshot(solo_.getCurrentActivity(), "list_scroll");
-    }
+    //     View targetView = null;
+    //     for (TextView view : solo_.getCurrentViews(TextView.class)) {
+    //         Log.i(TAG, "title: " + view.getText());
+    //         if (view.getText().equals("Sleep tunes volume")) {
+    //             targetView = view;
+    //         }
+    //     }
+    //     if (targetView != null) {
+    //         solo_.clickOnView(targetView);
+    //     }
+    //     solo_.sleep(5000);
+    //     FalconSpoon.screenshot(solo_.getCurrentActivity(), "list_scroll");
+    // }
 
     public void testVersion() {
         startPreferenceActivity();
