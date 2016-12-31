@@ -14,6 +14,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Build;
 import android.os.Environment;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
@@ -260,15 +261,18 @@ public class MalarmPreference
         clearWebviewCache_ = findPreference("clear_webview_cache");
         clearWebviewCache_.setOnPreferenceClickListener(this);
 
-        LinearLayout root = (LinearLayout)findViewById(android.R.id.list).getParent().getParent().getParent();
-        Toolbar toolbar = (Toolbar)LayoutInflater.from(this).inflate(R.layout.preference_toolbar, root, false);
-        root.addView(toolbar, 0); // insert at top
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });    
+        //android10 has no linear layout...
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB){
+            LinearLayout root = (LinearLayout)findViewById(android.R.id.list).getParent().getParent().getParent();
+            Toolbar toolbar = (Toolbar)LayoutInflater.from(this).inflate(R.layout.preference_toolbar, root, false);
+            root.addView(toolbar, 0); // insert at top
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        finish();
+                    }
+                });
+        }
        
         pref_.registerOnSharedPreferenceChangeListener(this);
     }

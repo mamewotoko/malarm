@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:mamewo="http://schemas.android.com/apk/res/mamewo" >
+    <PreferenceCategory
+        android:key="general_category"
+        android:title="@string/pref_general_category" >
 
     <com.mamewo.malarm24.MultiListPreference
         android:key="url_list"
@@ -18,7 +21,7 @@
         android:summaryOff="@string/not_wifi_only"
         android:summaryOn="@string/wifi_only"
         android:title="@string/pref_wifi_only" />
-
+    </PreferenceCategory>
     <PreferenceCategory
         android:key="ui_category"
         android:title="@string/pref_ui_category" >
