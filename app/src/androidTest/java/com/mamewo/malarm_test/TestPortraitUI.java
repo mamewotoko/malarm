@@ -175,7 +175,7 @@ public class TestPortraitUI
     }
     
     public void testPlayButton() {
-        solo_.sleep(500);
+        solo_.sleep(2000);
         View playButton = solo_.getView(R.id.play_button);
         solo_.clickOnView(playButton);
         solo_.sleep(5000);
@@ -348,13 +348,10 @@ public class TestPortraitUI
     
     public void testSleepPlaylistNext() {
         startPreferenceActivity();
-        FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_next");
         
         selectPreference(R.string.pref_sleep_playlist);
         solo_.waitForActivity("PlaylistViewer");
 
-        FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_next");
-        
         View nextButton = solo_.getView(R.id.next_button);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_next");
         
@@ -372,7 +369,6 @@ public class TestPortraitUI
 
     public void testSleepPlaylistPrevious() {
         startPreferenceActivity();
-        FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_previous");
         
         selectPreference(R.string.pref_sleep_playlist);
         solo_.waitForActivity("PlaylistViewer");
@@ -479,11 +475,12 @@ public class TestPortraitUI
     @SmallTest
     public void testPreferenceScroll(){
         startPreferenceActivity();
+        solo_.sleep(500);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "preference_scroll");
         //XXX
         for(int i = 0; i < 6; i++){
             solo_.scrollDown();
-            solo_.sleep(100);
+            solo_.sleep(500);
             FalconSpoon.screenshot(solo_.getCurrentActivity(), "preference_scroll");
         }
     }
