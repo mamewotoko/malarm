@@ -80,6 +80,7 @@ TODO
 * use Actionbar
   * add title and status text
   * layout of switch
+* merge restartMusic from podplayer
 * make COOL widget to set alarm (make clock widget?)
 * fix bugs
   * alarm switch is off when timer expired and wakeup sound starts

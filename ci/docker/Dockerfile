@@ -16,16 +16,11 @@ RUN curl -L ${ANDROID_SDK_URL} | tar xz -C /usr/local
 ENV ANDROID_HOME /usr/local/android-sdk-linux
 
 # Install Android SDK components
-#ENV ANDROID_SDK_COMPONENTS platform-tools,build-tools-21.1.2,android-21,extra-android-support
-
-#ENV ANDROID_SDK_COMPONENTS android-25,android-24,tools,platform-tools,build-tools-25.1.0,build-tools-24.0.3,extra-android-support
-#RUN echo y | ${ANDROID_HOME}/tools/android update sdk --no-ui --all --filter "${ANDROID_SDK_COMPONENTS}"
-
-RUN echo y | ${ANDROID_HOME}/tools/android update sdk --no-ui --filter android-10,android-16,android-24,android-25 # > /dev/null
-RUN echo y | ${ANDROID_HOME}/tools/android update sdk --no-ui --filter tools,platform-tools 
-RUN echo y | ${ANDROID_HOME}/tools/android update sdk --no-ui --filter build-tools-25.1.0
-RUN echo y | ${ANDROID_HOME}/tools/android update sdk --no-ui --filter build-tools-24.0.3 
-RUN echo y | ${ANDROID_HOME}/tools/android update sdk --no-ui --filter extra-android-m2repository
+RUN echo y | ${ANDROID_HOME}/tools/android update sdk --no-ui --all --filter build-tools-25.1.0,build-tools-24.0.3
+RUN echo y | ${ANDROID_HOME}/tools/android update sdk --no-ui --filter tools,platform-tools
+RUN echo y | ${ANDROID_HOME}/tools/android update sdk --no-ui --all --filter android-24
+RUN echo y | ${ANDROID_HOME}/tools/android update sdk --no-ui --all --filter android-25
+RUN echo y | ${ANDROID_HOME}/tools/android update sdk --no-ui --all --filter extra-android-m2repository
 
 # Path
 ENV PATH $PATH:${ANDROID_HOME}/tools:$ANDROID_HOME/platform-tools:${GRADLE_HOME}/bin

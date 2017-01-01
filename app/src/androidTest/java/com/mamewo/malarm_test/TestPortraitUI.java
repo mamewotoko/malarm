@@ -65,23 +65,7 @@ public class TestPortraitUI
 
     public boolean selectPreference(int titleId) {
         String targetTitle = solo_.getString(titleId);
-
-        TextView view = null;
-        do {
-            ArrayList<TextView> list = solo_.getCurrentViews(TextView.class);
-            for (TextView listText : list) {
-                Log.i(TAG, "listtext: " + listText.getText());
-                if (targetTitle.equals(listText.getText())) {
-                    view = listText;
-                    break;
-                }
-            }
-        }
-        while (null == view && solo_.scrollDownList(0));
-        if (view == null) {
-            return false;
-        }
-        solo_.clickOnView(view);
+        solo_.clickOnText(targetTitle);
         return true;
     }
 
@@ -399,8 +383,9 @@ public class TestPortraitUI
     }
 
     public void testClearCache() {
-        FalconSpoon.screenshot(solo_.getCurrentActivity(), "clear_cache");
         startPreferenceActivity();
+        solo_.sleep(500);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "clear_cache");
         selectPreference(R.string.pref_clear_webview_cache_title);
         solo_.sleep(500);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "clear_cache");
