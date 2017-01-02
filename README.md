@@ -81,6 +81,8 @@ TODO
   * add title and status text
   * layout of switch
 * merge restartMusic from podplayer
+* display web site list as activity and provide editor
+  * use muliselect of preference support?
 * add more test cases
   * music list (up, down, delete)
 * make COOL widget to set alarm (make clock widget?)
@@ -95,6 +97,7 @@ TODO
     -> pause music from menu
     -> notification title is incorrect
 * add controlls to notification
+  * play, next, previous, pause
 * handle error
   * add on error method to listener
 * stop playing on phone call

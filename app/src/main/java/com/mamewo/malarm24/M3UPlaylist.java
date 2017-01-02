@@ -45,6 +45,10 @@ public final class M3UPlaylist
         load(playlist_abs_path);
     }
 
+    public void setPlaylist(ArrayList<String> playlist){
+        playlist_ = playlist;
+    }
+    
     public void goNext() {
         //TODO: refactoring
     }
@@ -141,19 +145,29 @@ public final class M3UPlaylist
     }
 
     public void save()
-            throws IOException {
+            throws IOException
+    {
         File playlist = new File(basepath_, playlistFilename_);
-        if (playlist.exists()) {
+        File f = new File(basepath_, "dummy");
+        boolean created = f.createNewFile();
+        Log.d(TAG, "create dummy: " + basepath_ + " " + created);
+        
+        if (playlist.exists() && !playlist.canWrite()) {
             if (!playlist.renameTo(new File(basepath_, "_" + playlistFilename_))) {
                 Log.i(TAG, "rename failed");
                 return;
             }
         }
         Log.i(TAG, "after rename: " + playlist.getAbsolutePath());
-        BufferedWriter bw = new BufferedWriter(new FileWriter(playlist));
-        for (String filename : playlist_) {
-            bw.append(filename + "\n");
+        try{
+            BufferedWriter bw = new BufferedWriter(new FileWriter(playlist));
+            for (String filename : playlist_) {
+                bw.append(filename + "\n");
+            }
+            bw.close();
         }
-        bw.close();
+        catch(IOException e){
+            Log.i(TAG, "save failed", e);
+        }
     }
 }
