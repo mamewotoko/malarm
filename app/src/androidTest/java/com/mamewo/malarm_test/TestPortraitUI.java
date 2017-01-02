@@ -157,7 +157,8 @@ public class TestPortraitUI
                             solo_.getString(R.string.pause_button_desc),
                             playButton.getContentDescription().toString());
     }
-    
+
+    @SmallTest
     public void testPlayButton() {
         solo_.sleep(2000);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "play_button");
@@ -278,17 +279,16 @@ public class TestPortraitUI
         View playButton = solo_.getView(R.id.play_button);
         
         solo_.clickOnView(playButton);
-        solo_.sleep(500);
+        solo_.sleep(1000);
         //TODO: check icon
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_play");
         Assert.assertEquals("pause state",
                             solo_.getString(R.string.pause_button_desc),
                             playButton.getContentDescription().toString());
         
-        
         solo_.clickOnView(playButton);
         //TODO: check icon
-        solo_.sleep(500);
+        solo_.sleep(1000);
         
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_play");
         Assert.assertEquals("play state",
@@ -319,6 +319,7 @@ public class TestPortraitUI
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_play");
     }
 
+    @SmallTest
     public void testSleepPlaylistClickShort() {
         startPreferenceActivity();
         selectPreference(R.string.pref_sleep_playlist);
@@ -336,6 +337,7 @@ public class TestPortraitUI
                             playButton.getContentDescription().toString());
     }
 
+    @SmallTest
     public void testSleepPlaylistClickLong() {
         startPreferenceActivity();
         selectPreference(R.string.pref_sleep_playlist);
@@ -377,6 +379,7 @@ public class TestPortraitUI
                             playButton.getContentDescription().toString());
     }
 
+    @SmallTest
     public void testSleepPlaylistPrevious() {
         startPreferenceActivity();
         selectPreference(R.string.pref_sleep_playlist);
