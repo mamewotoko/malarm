@@ -31,7 +31,7 @@ import android.widget.TextView;
 import android.widget.ImageButton;
 
 import com.mamewo.malarm24.MalarmPlayerService.PlayerStateListener;
-
+    
 import java.io.IOException;
 import java.util.List;
 import android.support.v7.app.AppCompatActivity;
@@ -54,9 +54,6 @@ public final class PlaylistViewer
     private ImageButton nextButton_;
 
     //R.array.tune_operation
-    static private final int UP_INDEX = 0;
-    static private final int DOWN_INDEX = 1;
-    static private final int DELETE_INDEX = 2;
     static final
     private String TAG = "malarm";
     private String playlistName_;
@@ -106,27 +103,27 @@ public final class PlaylistViewer
         super.onStop();
     }
     
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.playlist_viewer_menu, menu);
-        return true;
-    }
+    // @Override
+    // public boolean onCreateOptionsMenu(Menu menu) {
+    //     MenuInflater inflater = getMenuInflater();
+    //     inflater.inflate(R.menu.playlist_viewer_menu, menu);
+    //     return true;
+    // }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         boolean handled = false;
         switch (item.getItemId()) {
-        case R.id.save_playlist:
-            try {
-                playlist_.save();
-                MalarmActivity.showMessage(this, getString(R.string.saved));
-            }
-            catch (IOException e) {
-                MalarmActivity.showMessage(this, getString(R.string.failed) + ": " + e.getMessage());
-            }
-            handled = true;
-            break;
+        // case R.id.save_playlist:
+        //     try {
+        //         playlist_.save();
+        //         MalarmActivity.showMessage(this, getString(R.string.saved));
+        //     }
+        //     catch (IOException e) {
+        //         MalarmActivity.showMessage(this, getString(R.string.failed) + ": " + e.getMessage());
+        //     }
+        //     handled = true;
+        //     break;
         case android.R.id.home:
             //TODO: use NaviUtil
             finish();
