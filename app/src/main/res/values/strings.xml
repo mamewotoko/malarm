@@ -120,4 +120,9 @@
     <string name="notification_icon_desc_pause">Pause</string>
     <string name="notification_icon_desc_play">Play</string>
     <string name="notification_icon_desc_next">Next</string>
+
+    <string name="tune_move_down">Move down</string>
+    <string name="tune_move_up">Move up</string>
+    <string name="tune_delete">Delete</string>
+    <string name="tune_detail_desc">Tune detail</string>
 </resources>
