@@ -1,5 +1,8 @@
 package com.mamewo.malarm24;
 
+import java.util.Map;
+import java.util.HashMap;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ComponentName;
@@ -10,6 +13,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.View;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -56,6 +60,7 @@ public final class PlaylistViewer
     static final
     private String TAG = "malarm";
     private String playlistName_;
+    private Map<String, Option> optionMap_;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +76,7 @@ public final class PlaylistViewer
         previousButton_.setOnClickListener(this);
         nextButton_ = (ImageButton) findViewById(R.id.next_button);
         nextButton_.setOnClickListener(this);
+        optionMap_ = new HashMap<String, Option>();
 
         ActionBar toolbar = getSupportActionBar();
         toolbar.setDisplayHomeAsUpEnabled(true);
@@ -86,36 +92,47 @@ public final class PlaylistViewer
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.playlist_viewer_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        boolean handled = false;
-        switch (item.getItemId()) {
-        case R.id.save_playlist:
-            try {
-                playlist_.save();
-                    MalarmActivity.showMessage(this, getString(R.string.saved));
-            }
-            catch (IOException e) {
-                MalarmActivity.showMessage(this, getString(R.string.failed) + ": " + e.getMessage());
-            }
-            handled = true;
-            break;
-        case android.R.id.home:
-            //TODO: use NaviUtil
-            finish();
-            handled = true;
-            break;
-        default:
-            break;
+    public void onStop(){
+        super.onStop();
+        try{
+            playlist_.save();
         }
-        return handled;
+        catch(IOException e){
+            Log.d(TAG, "playlist save", e);
+        }
     }
+    
+    // @Override
+    // public boolean onCreateOptionsMenu(Menu menu) {
+    //     MenuInflater inflater = getMenuInflater();
+    //     inflater.inflate(R.menu.playlist_viewer_menu, menu);
+    //     return true;
+    // }
+
+    // @Override
+    // public boolean onOptionsItemSelected(MenuItem item) {
+    //     boolean handled = false;
+    //     switch (item.getItemId()) {
+    //     case R.id.save_playlist:
+    //         try {
+    //             playlist_.save();
+    //             MalarmActivity.showMessage(this, getString(R.string.saved));
+    //         }
+    //         catch (IOException e) {
+    //             MalarmActivity.showMessage(this, getString(R.string.failed) + ": " + e.getMessage());
+    //         }
+    //         handled = true;
+    //         break;
+    //     case android.R.id.home:
+    //         //TODO: use NaviUtil
+    //         finish();
+    //         handled = true;
+    //         break;
+    //     default:
+    //         break;
+    //     }
+    //     return handled;
+    // }
 
     //TODO: implement undo?
     //TODO: add selected effect
@@ -208,12 +225,38 @@ public final class PlaylistViewer
             if (currentList == playlist_ && currentList.getCurrentPosition() == position) {
                 if (player_.isPlaying()) {
                     playIcon.setImageResource(android.R.drawable.ic_media_play);
-                } else {
+                }
+                else {
                     playIcon.setImageResource(android.R.drawable.ic_media_pause);
                 }
                 playIcon.setVisibility(View.VISIBLE);
-            } else {
+            }
+            else {
                 playIcon.setVisibility(View.GONE);
+            }
+            //TODO: use position or unique ID instead of title
+            ImageButton detailButton = (ImageButton)view.findViewById(R.id.detail_button);
+            detailButton.setTag(title);
+            detailButton.setOnClickListener(new DetailButtonListener());
+            
+            View v = view.findViewById(R.id.playlist_detail_view);
+            ImageButton upButton = (ImageButton) view.findViewById(R.id.move_up);
+            ImageButton downButton = (ImageButton) view.findViewById(R.id.move_down);
+            ImageButton deleteButton = (ImageButton) view.findViewById(R.id.delete);
+            Option opt = optionMap_.get(title);
+            if(null != opt && opt.expand_){
+                upButton.setTag(title);
+                upButton.setOnClickListener(new MoveupButtonListener());
+                downButton.setTag(title);
+                downButton.setOnClickListener(new MovedownButtonListener());
+                deleteButton.setTag(title);
+                deleteButton.setOnClickListener(new DeleteButtonListener());
+                
+                v.setVisibility(View.VISIBLE);
+            }
+            else {
+                //clear tag and listener?
+                v.setVisibility(View.GONE);
             }
             return view;
         }
@@ -306,5 +349,76 @@ public final class PlaylistViewer
     @Override
     public void onStopMusic() {
         updateUI();
+    }
+
+    private class Option {
+        public boolean expand_;
+        public Option(){
+            expand_ = false;
+        }
+    }
+
+    private class MovedownButtonListener
+        implements View.OnClickListener
+    {
+        @Override
+        public void onClick(View v){
+            String title = (String)v.getTag();
+            int pos = adapter_.getPosition(title);
+            int len = adapter_.getCount();
+            adapter_.remove(title);
+            if(pos < len-1){
+                adapter_.insert(title, pos+1);
+            }
+            else {
+                adapter_.insert(title, 0);
+            }
+            adapter_.notifyDataSetChanged();
+        }
+    }
+
+    private class MoveupButtonListener
+        implements View.OnClickListener
+    {
+        @Override
+        public void onClick(View v){
+            String title = (String)v.getTag();
+            int pos = adapter_.getPosition(title);
+            adapter_.remove(title);
+            if(pos > 0){
+                adapter_.insert(title, pos-1);
+            }
+            else {
+                adapter_.add(title);
+            }
+            adapter_.notifyDataSetChanged();
+        }
+    }
+
+    private class DeleteButtonListener
+        implements View.OnClickListener
+    {
+        @Override
+        public void onClick(View v){
+            String title = (String)v.getTag();
+            adapter_.remove(title);
+            adapter_.notifyDataSetChanged();
+        }
+    }
+    
+    private class DetailButtonListener
+        implements View.OnClickListener
+    {
+        @Override
+        public void onClick(View v){
+            String title = (String)v.getTag();
+            Option opt = optionMap_.get(title);
+            if(opt == null){
+                opt = new Option();
+                optionMap_.put(title, opt);
+            }
+            opt.expand_ = !opt.expand_;
+            adapter_.notifyDataSetChanged();
+        }
     }
 }

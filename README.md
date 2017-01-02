@@ -81,6 +81,8 @@ TODO
   * add title and status text
   * layout of switch
 * merge restartMusic from podplayer
+* add more test cases
+  * music list (up, down, delete)
 * make COOL widget to set alarm (make clock widget?)
 * fix bugs
   * alarm switch is off when timer expired and wakeup sound starts
@@ -138,8 +140,7 @@ http://android-developers.blogspot.jp/2012/04/accessibility-are-you-serving-all-
 * fix UI update bug when sleep timer expires (broadcast -> activity)
 * conditional playlist
   * Sunday, holiday playlist etc...
-* add more test cases
-  * setAlarm -> Activity quits
+* setAlarm -> Activity quits
   * double touch of webview
   * label text is updated when music is stopped or alarm is canceled
   * check default config value
