@@ -162,10 +162,11 @@ public class TestPortraitUI
     public void testPlayButton() {
         solo_.sleep(2000);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "play_button");
+        solo_.sleep(5000);
     
         View playButton = solo_.getView(R.id.play_button);
         solo_.clickOnView(playButton);
-        solo_.sleep(5000);
+        solo_.sleep(2000);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "play_button");
         //TODO: check playing item
 
@@ -266,20 +267,16 @@ public class TestPortraitUI
 
     @SmallTest
     public void testSleepPlaylistPlay() {
-        FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_play");
-
         startPreferenceActivity();
-
-        solo_.sleep(500);
-        FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_play");
         solo_.waitForActivity("PlaylistViewer");
         selectPreference(R.string.pref_sleep_playlist);
 
+        solo_.sleep(500);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_play");
         View playButton = solo_.getView(R.id.play_button);
         
         solo_.clickOnView(playButton);
-        solo_.sleep(1000);
+        solo_.sleep(2000);
         //TODO: check icon
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_play");
         Assert.assertEquals("pause state",
@@ -288,7 +285,7 @@ public class TestPortraitUI
         
         solo_.clickOnView(playButton);
         //TODO: check icon
-        solo_.sleep(1000);
+        solo_.sleep(2000);
         
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_play");
         Assert.assertEquals("play state",
