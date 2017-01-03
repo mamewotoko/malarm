@@ -327,6 +327,9 @@ public class MalarmPlayerService
         if (isPlaying()) {
             stopMusic();
         }
+        if(0 == currentPlaylist_.size()){
+            return;
+        }
         int pos = currentPlaylist_.getCurrentPosition();
         pos = (pos + 1) % currentPlaylist_.size();
         currentPlaylist_.setPosition(pos);
@@ -500,6 +503,9 @@ public class MalarmPlayerService
     public boolean playMusic() {
         if (null == currentPlaylist_ || currentPlaylist_.isEmpty()) {
             Log.i(TAG, "playMusic: playlist is null");
+            return false;
+        }
+        if(0 == currentPlaylist_.size()){
             return false;
         }
         //TODO: remove this check
