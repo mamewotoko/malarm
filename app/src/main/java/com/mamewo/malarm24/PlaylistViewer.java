@@ -89,7 +89,6 @@ public final class PlaylistViewer
 
     @Override
     public void onStop(){
-        Log.d(TAG, "save playlist");
         try{
             ArrayList<String> modified = new ArrayList<String>();
             for(int i = 0; i < adapter_.getCount(); i++){
@@ -220,7 +219,6 @@ public final class PlaylistViewer
 
     @Override
     public void onServiceConnected(ComponentName name, IBinder binder) {
-        Log.d(TAG, "onServiceConnected");
         player_ = ((MalarmPlayerService.LocalBinder) binder).getService();
         player_.addPlayerStateListener(this);
         playButton_.setEnabled(true);

@@ -441,8 +441,8 @@ public class MalarmPlayerService
             .setContentText(description)
             .setAutoCancel(false)
             .setOngoing(true);
-        if(null != description && description.size() > 0){
-            builder.setTitle(description);
+        if(null != description && !description.isEmpty()){
+            builder.setTicker(description);
         }
         //.setContent(rvs);
         //.setForegroundService(true)
