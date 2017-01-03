@@ -139,9 +139,9 @@ public class TestPortraitUI
     }
 
     public void testNextButton() {
+        solo_.sleep(5000);
         View nextButton = solo_.getView(R.id.next_button);
         solo_.clickOnView(nextButton);
-        solo_.sleep(5000);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "next_button");
         //TODO: check playing item
         
@@ -151,7 +151,6 @@ public class TestPortraitUI
                             playButton.getContentDescription().toString());
 
         solo_.clickOnView(playButton);
-
         solo_.sleep(500);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "next_button");
         Assert.assertEquals("play/pause button is play",
@@ -164,15 +163,13 @@ public class TestPortraitUI
         solo_.clickOnView(previousButton);
         solo_.sleep(5000);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "previous_button");
-        //TODO: check playing item
-
         View playButton = solo_.getView(R.id.play_button);
         Assert.assertEquals("play/pause button is pause",
                             solo_.getString(R.string.pause_button_desc),
                             playButton.getContentDescription().toString());
 
+        solo_.clickOnView(playButton);
         solo_.sleep(500);
-        FalconSpoon.screenshot(solo_.getCurrentActivity(), "next_button");
         Assert.assertEquals("play/pause button is play",
                             solo_.getString(R.string.play_button_desc),
                             playButton.getContentDescription().toString());
@@ -180,17 +177,22 @@ public class TestPortraitUI
 
     @SmallTest
     public void testPlayButton() {
-        solo_.sleep(2000);
+        solo_.sleep(5000);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "play_button");
-        solo_.sleep(10000);
         View playButton = solo_.getView(R.id.play_button);
         solo_.clickOnView(playButton);
         solo_.sleep(500);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "play_button");
         //TODO: check playing item
-
         Assert.assertEquals("play/pause button is pause",
                             solo_.getString(R.string.pause_button_desc),
+                            playButton.getContentDescription().toString());
+        solo_.clickOnView(playButton);
+        solo_.sleep(500);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "play_button");
+        //TODO: check playing item
+        Assert.assertEquals("play/pause button is play",
+                            solo_.getString(R.string.play_button_desc),
                             playButton.getContentDescription().toString());
     }
     
