@@ -436,11 +436,12 @@ public class MalarmPlayerService
 
         //for backward compatibility
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.ic_status)
-                .setContentTitle(title)
-                .setContentText(description)
-                .setAutoCancel(false)
-                .setOngoing(true);
+            .setSmallIcon(R.drawable.ic_status)
+            .setContentTitle(title)
+            .setContentText(description)
+            .setTicker(description)
+            .setAutoCancel(false)
+            .setOngoing(true);
         //.setContent(rvs);
         //.setForegroundService(true)
         //.setCategory(Notification.CATEGORY_TRANSPORT)

@@ -77,12 +77,11 @@ Limitation
 
 TODO
 ---- 
-* use Actionbar
-  * add title and status text
-  * layout of switch
 * merge restartMusic from podplayer
+* try to get title from music file (m4a, mp3)
 * display web site list as activity and provide editor
   * use muliselect of preference support?
+* add UI to add music to playlist
 * add more test cases
   * music list (up, down, delete)
 * make COOL widget to set alarm (make clock widget?)
