@@ -439,9 +439,11 @@ public class MalarmPlayerService
             .setSmallIcon(R.drawable.ic_status)
             .setContentTitle(title)
             .setContentText(description)
-            .setTicker(description)
             .setAutoCancel(false)
             .setOngoing(true);
+        if(null != description && description.size() > 0){
+            builder.setTitle(description);
+        }
         //.setContent(rvs);
         //.setForegroundService(true)
         //.setCategory(Notification.CATEGORY_TRANSPORT)

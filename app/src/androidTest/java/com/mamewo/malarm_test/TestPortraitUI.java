@@ -53,6 +53,12 @@ public class TestPortraitUI
     public void tearDown() throws Exception {
         System.out.println("tearDown is called");
         try {
+            View playButton = solo_.getView(R.id.play_button);
+            if(solo_.getString(R.string.pause_button_desc).equals(playButton.getContentDescription().toString())){
+                Log.d(TAG, "XXX player playing");
+                solo_.clickOnView(playButton);
+                solo_.sleep(100);
+            }
             //Robotium will finish all the activities that have been opened
             solo_.finalize();
             solo_ = null;
@@ -127,9 +133,9 @@ public class TestPortraitUI
         //umm... yield to target activity
         Calendar now = new GregorianCalendar();
         solo_.sleep(200);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "set_now");        
         Assert.assertEquals((int) now.get(Calendar.HOUR_OF_DAY), (int) picker.getCurrentHour());
         Assert.assertEquals((int) now.get(Calendar.MINUTE), (int) picker.getCurrentMinute());
-        FalconSpoon.screenshot(solo_.getCurrentActivity(), "set_now");
     }
 
     public void testNextButton() {
@@ -142,6 +148,14 @@ public class TestPortraitUI
         View playButton = solo_.getView(R.id.play_button);
         Assert.assertEquals("play/pause button is pause",
                             solo_.getString(R.string.pause_button_desc),
+                            playButton.getContentDescription().toString());
+
+        solo_.clickOnView(playButton);
+
+        solo_.sleep(500);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "next_button");
+        Assert.assertEquals("play/pause button is play",
+                            solo_.getString(R.string.play_button_desc),
                             playButton.getContentDescription().toString());
     }
 
@@ -156,17 +170,22 @@ public class TestPortraitUI
         Assert.assertEquals("play/pause button is pause",
                             solo_.getString(R.string.pause_button_desc),
                             playButton.getContentDescription().toString());
+
+        solo_.sleep(500);
+        FalconSpoon.screenshot(solo_.getCurrentActivity(), "next_button");
+        Assert.assertEquals("play/pause button is play",
+                            solo_.getString(R.string.play_button_desc),
+                            playButton.getContentDescription().toString());
     }
 
     @SmallTest
     public void testPlayButton() {
         solo_.sleep(2000);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "play_button");
-        solo_.sleep(5000);
-    
+        solo_.sleep(10000);
         View playButton = solo_.getView(R.id.play_button);
         solo_.clickOnView(playButton);
-        solo_.sleep(2000);
+        solo_.sleep(500);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "play_button");
         //TODO: check playing item
 
@@ -303,17 +322,23 @@ public class TestPortraitUI
 
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_play");
         View playButton = solo_.getView(R.id.play_button);
-        
+       
         solo_.clickOnView(playButton);
         solo_.sleep(500);
         //TODO: check icon
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_play");
+        Assert.assertEquals("pause state",
+                            solo_.getString(R.string.pause_button_desc),
+                            playButton.getContentDescription().toString());
         
         solo_.clickOnView(playButton);
         //TODO: check icon
         solo_.sleep(500);
         
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_play");
+        Assert.assertEquals("play state",
+                            solo_.getString(R.string.play_button_desc),
+                            playButton.getContentDescription().toString());
     }
 
     @SmallTest
@@ -324,13 +349,15 @@ public class TestPortraitUI
         solo_.sleep(500);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_short");
         solo_.clickInList(0);
-
         solo_.sleep(500);
+        View playButton = solo_.getView(R.id.play_button);        
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_short");
-        View playButton = solo_.getView(R.id.play_button);
-
         Assert.assertEquals("pause state",
                             solo_.getString(R.string.pause_button_desc),
+                            playButton.getContentDescription().toString());
+        solo_.sleep(500);
+        Assert.assertEquals("play state",
+                            solo_.getString(R.string.play_button_desc),
                             playButton.getContentDescription().toString());
     }
 
