@@ -358,26 +358,13 @@ public class TestPortraitUI
         Assert.assertEquals("pause state",
                             solo_.getString(R.string.pause_button_desc),
                             playButton.getContentDescription().toString());
+        solo_.clickOnView(playButton);
         solo_.sleep(500);
         Assert.assertEquals("play state",
                             solo_.getString(R.string.play_button_desc),
                             playButton.getContentDescription().toString());
     }
 
-    @SmallTest
-    public void testSleepPlaylistClickLong() {
-        startPreferenceActivity();
-        selectPreference(R.string.pref_sleep_playlist);
-        solo_.waitForActivity("PlaylistViewer");
-        solo_.sleep(500);
-        FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_long");
-        solo_.clickLongInList(0);
-        //TODO: add assert
-        solo_.sleep(500);
-        FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_long");
-        Assert.assertTrue("operation dialog", solo_.waitForDialogToOpen(1000));
-    }
-    
     public void testSleepPlaylistNext() {
         startPreferenceActivity();
         
