@@ -317,9 +317,10 @@ public class TestPortraitUI
 
         startPreferenceActivity();
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_play");
-        solo_.waitForActivity("PlaylistViewer");
         selectPreference(R.string.pref_wakeup_playlist);
+        solo_.waitForActivity("PlaylistViewer");
 
+        solo_.sleep(500);
         FalconSpoon.screenshot(solo_.getCurrentActivity(), "playlist_play");
         View playButton = solo_.getView(R.id.play_button);
        
