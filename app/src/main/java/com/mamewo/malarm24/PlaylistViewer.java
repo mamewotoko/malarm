@@ -65,6 +65,7 @@ public final class PlaylistViewer
         setContentView(R.layout.playlist_viewer);
         listView_ = (ListView) findViewById(R.id.play_list_view);
         listView_.setOnItemClickListener(this);
+        listView_.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         playButton_ = (ImageButton) findViewById(R.id.play_button);
         playButton_.setOnClickListener(this);
         previousButton_ = (ImageButton) findViewById(R.id.previous_button);
@@ -137,6 +138,7 @@ public final class PlaylistViewer
 
     @Override
     public void onItemClick(AdapterView<?> adapter, View view, int pos, long id) {
+        Log.d(TAG, "clicked" + pos + " " + adapter_.getItem(pos));
         if (null == player_) {
             return;
         }

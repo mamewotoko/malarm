@@ -81,6 +81,7 @@
     <string name="voice_button_desc">목소리로 시각을 설정한다 </string>
     <string name="previous_button_desc">이전 곡 재생</string>
     <string name="play_button_desc">곡 조정하기</string>
+    <string name="pause_button_desc">곡 일시 중지</string>
     <string name="next_button_desc">다음 곡을 재생한다 </string>
     
     <string name="webview_cache_cleared">Webview의 이력을 삭제했습니다. </string>
@@ -113,5 +114,11 @@
     <string name="notification_icon_desc_previous">너무 이른</string>
     <string name="notification_icon_desc_pause">중지</string>
     <string name="notification_icon_desc_play">재생</string>
-    <string name="notification_icon_desc_next">다음 것</string>    
+    <string name="notification_icon_desc_next">다음 것</string>
+
+    <string name="tune_move_down">아래로 이동</string>
+    <string name="tune_move_up">상단 이동</string>
+    <string name="tune_delete">삭제</string>
+    <string name="tune_detail_desc">상세</string>
+
 </resources>

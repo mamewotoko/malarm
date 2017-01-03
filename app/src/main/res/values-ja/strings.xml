@@ -113,4 +113,9 @@
     <string name="notification_icon_desc_pause">一時停止</string>
     <string name="notification_icon_desc_play">再生</string>
     <string name="notification_icon_desc_next">次</string>
-</resources>
+
+    <string name="tune_move_down">下に移動</string>
+    <string name="tune_move_up">上に移動</string>
+    <string name="tune_delete">削除</string>
+    <string name="tune_detail_desc">詳細</string>
+  </resources>
