@@ -19,4 +19,5 @@ if [ ! -e ${INITIALIZATION_FILE} ]; then
 fi
 
 ## to merge report
-sudo pip install lxml libpulse0
+apt-cache search libpulse0
+sudo pip install lxml
