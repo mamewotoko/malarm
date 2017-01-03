@@ -206,10 +206,12 @@ public final class PlaylistViewer
                 downButton.setOnClickListener(new MovedownButtonListener());
                 deleteButton.setTag(title);
                 deleteButton.setOnClickListener(new DeleteButtonListener());
+                detailButton.setImageResource(R.drawable.ic_expand_less_white_24dp);
                 
                 v.setVisibility(View.VISIBLE);
             }
             else {
+                detailButton.setImageResource(R.drawable.ic_expand_more_white_24dp);
                 //clear tag and listener?
                 v.setVisibility(View.GONE);
             }

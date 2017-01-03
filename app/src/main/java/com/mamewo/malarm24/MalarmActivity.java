@@ -1026,7 +1026,6 @@ public class MalarmActivity
                 return;
             }
             ArrayList<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-            //ArrayList<TimePickerTime> result = new ArrayList<TimePickerTime>();
             Map<String, TimePickerTime> result = new HashMap<String, TimePickerTime>();
             for (String speech : matches) {
                 Matcher m = TIME_PATTERN.matcher(speech);
