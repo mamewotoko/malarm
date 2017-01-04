@@ -51,10 +51,5 @@
         <item>金</item>
         <item>土</item>
     </string-array>
-    
-    <string-array name="tune_operation">
-        <item>上に移動</item>
-        <item>下に移動</item>
-        <item>削除</item>
-    </string-array>
+   
 </resources>
